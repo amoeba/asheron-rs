@@ -1,0 +1,12 @@
+[package]
+name = "acprotocol"
+version.workspace = true
+edition.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+
+[build-dependencies]
+genlib = { path = "../genlib" }
