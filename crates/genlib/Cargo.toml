@@ -4,3 +4,4 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+quick-xml = "0.38.4"
