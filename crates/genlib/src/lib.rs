@@ -96,7 +96,7 @@ pub struct {type_name} {{
     out
 }
 
-pub fn generate(xml: &str) -> String {
+pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> String {
     let mut reader = Reader::from_str(xml);
     let mut buf = Vec::new();
     // TODO: Use a better data structure?
@@ -124,11 +124,21 @@ pub fn generate(xml: &str) -> String {
                             _ => {}
                         }
                     }
-                    current_type = Some(SchemaType {
-                        name: name.unwrap_or_default(),
-                        text,
-                        fields: Vec::new(),
-                    });
+
+                    if let (Some(name)) = name {
+                        // Skip type name based on active filters
+                        if let Some(ref filters) = filter_types {
+                            if !filters.contains(&name) {
+                                println!("Skipping type {name} because it's not in filter list.");
+                                continue;
+                            }
+                        }
+                        current_type = Some(SchemaType {
+                            name,
+                            text,
+                            fields: Vec::new(),
+                        });
+                    }
                 } else if tag_name == "field" {
                     if let Some(ref mut ty) = current_type {
                         let mut field_type = None;
