@@ -1,3 +1,6 @@
+use std::collections::HashMap;
+
+use log::debug;
 use quick_xml::{Reader, events::Event};
 
 #[derive(Debug)]
@@ -7,10 +10,17 @@ struct Field {
 }
 
 #[derive(Debug)]
+struct VariantFieldSet {
+    name: String,
+    fields: HashMap<u32, VariantFieldSet>,
+}
+
+#[derive(Debug)]
 struct SchemaType {
     name: String,
     text: Option<String>,
     fields: Vec<Field>,
+    variant: Option<VariantFieldSet>,
 }
 
 const RUST_RESERVED_WORDS: &[&str] = &["Self", "type"];
@@ -58,6 +68,8 @@ fn safe_field_name(name: &str) -> (String, bool) {
 }
 
 fn generate_type(schema_type: &SchemaType) -> String {
+    env_logger::init();
+
     let type_name = &schema_type.name;
     println!("generate_type: name = {type_name}");
 
@@ -104,6 +116,8 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> String {
 
     let mut types: Vec<SchemaType> = Vec::new();
     let mut current_type: Option<SchemaType> = None;
+    let mut current_variant_field_id: Option<String> = None;
+    let mut current_variant_fieldset: Option<VariantFieldSet> = None;
 
     loop {
         match reader.read_event_into(&mut buf) {
@@ -129,7 +143,7 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> String {
                         // Skip type name based on active filters
                         if let Some(ref filters) = filter_types {
                             if !filters.contains(&name) {
-                                println!("Skipping type {name} because it's not in filter list.");
+                                debug!("Skipping type {name} because it's not in filter list.");
                                 continue;
                             }
                         }
@@ -137,7 +151,10 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> String {
                             name,
                             text,
                             fields: Vec::new(),
+                            variant: None,
                         });
+
+                        debug!("current_type is now {current_type:?}");
                     }
                 } else if tag_name == "field" {
                     if let Some(ref mut ty) = current_type {
@@ -166,7 +183,40 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> String {
                                 field_type: ftype,
                             });
                         }
+
+                        debug!("after adding fields, current_type is now {current_type:?}");
                     }
+                } else if tag_name == "switch" {
+                    let mut name: Option<String> = None;
+
+                    for attr in e.attributes().flatten() {
+                        if attr.key.as_ref() == b"name" {
+                            name = Some(attr.unescape_value().unwrap().into_owned())
+                        }
+                    }
+
+                    // Mark current type as variant so we start accumulating fields as variants
+                    if let Some(name) = name {
+                        current_variant_fieldset = Some(VariantFieldSet {
+                            name,
+                            fields: HashMap::new(),
+                        });
+                    }
+
+                    debug!("current_variant_fieldset is now {current_variant_fieldset:?}");
+                } else if tag_name == "case" {
+                    let mut value = None;
+
+                    for attr in e.attributes().flatten() {
+                        match attr.key.as_ref() {
+                            b"value" => value = Some(attr.unescape_value().unwrap().into_owned()),
+                            _ => {}
+                        }
+                    }
+
+                    debug!("TODO: Need to handle <case> element");
+                    current_variant_field_id = value;
+                    debug!("current_variant_field_id is now {current_variant_field_id:?}");
                 }
             }
             Ok(Event::End(e)) => {
@@ -175,6 +225,14 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> String {
                     if let Some(ty) = current_type.take() {
                         types.push(ty);
                     }
+                } else if e.name().as_ref() == b"switch" {
+                    if let Some(ref mut ty) = current_type {
+                        if let Some(v) = current_variant_fieldset.take() {
+                            ty.variant = Some(v);
+                        }
+                    }
+                } else if e.name().as_ref() == b"case" {
+                    // TODO
                 }
             }
             Ok(Event::Eof) => break,

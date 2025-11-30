@@ -1,6 +1,8 @@
 use std::{env, fs, path::PathBuf};
 
 fn main() {
+    env_logger::init();
+
     // Get the workspace root (two levels up from the gen crate)
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let workspace_root = manifest_dir.parent().unwrap().parent().unwrap();
