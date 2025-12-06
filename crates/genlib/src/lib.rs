@@ -1,5 +1,5 @@
 use core::panic;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use log::debug;
 use quick_xml::{Reader, events::Event};
@@ -160,7 +160,7 @@ pub enum {type_name} {{\n"
 
         // Group case values by their field sets (to handle multi-value cases)
         // Map: field signature -> (primary_value, [all_values])
-        let mut field_groups: HashMap<String, (String, Vec<String>)> = HashMap::new();
+        let mut field_groups: BTreeMap<String, (String, Vec<String>)> = BTreeMap::new();
 
         for (case_value, case_fields) in variant_fields {
             // Create a signature for these fields to group identical field sets
@@ -272,7 +272,7 @@ fn process_switch_tag(
 
     if let (Some(switch_name), Some(field_set)) = (name, current_field_set) {
         field_set.switch_field = Some(switch_name);
-        field_set.variant_fields = Some(HashMap::new());
+        field_set.variant_fields = Some(BTreeMap::new());
         debug!(
             "Entered switch, switch_field = {:?}",
             field_set.switch_field

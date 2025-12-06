@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 #[derive(Debug, Clone)]
 pub struct Field {
@@ -13,7 +13,7 @@ pub struct FieldSet {
     /// Fields before the switch (or all fields if no switch)
     pub(crate) common_fields: Vec<Field>,
     /// Per-variant fields, keyed by case value. None if no switch.
-    pub(crate) variant_fields: Option<HashMap<String, Vec<Field>>>,
+    pub(crate) variant_fields: Option<BTreeMap<String, Vec<Field>>>,
 }
 
 #[derive(Debug)]
