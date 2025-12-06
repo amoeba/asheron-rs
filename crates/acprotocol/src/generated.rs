@@ -11,7 +11,7 @@ pub enum GameMoveData {
         #[serde(rename = "IdPieceToMove")]
         id_piece_to_move: String,
         #[serde(rename = "YGrid")]
-        ygrid: String,
+        y_grid: String,
     },
     #[serde(rename = "0x5")]
     Type5 {
@@ -22,11 +22,11 @@ pub enum GameMoveData {
         #[serde(rename = "IdPieceToMove")]
         id_piece_to_move: String,
         #[serde(rename = "YGrid")]
-        ygrid: String,
+        y_grid: String,
         #[serde(rename = "XTo")]
-        xto: String,
+        x_to: String,
         #[serde(rename = "YTo")]
-        yto: String,
+        y_to: String,
     },
     #[serde(rename = "0x6")]
     Type6 {
