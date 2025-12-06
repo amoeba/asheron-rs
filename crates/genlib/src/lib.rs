@@ -54,6 +54,17 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
         out.push_str(format!("// {text_str}\n").as_str());
     }
 
+    // Handle parent types as type aliases
+    if let Some(parent_type) = &protocol_type.parent {
+        let rust_type = get_rust_type(parent_type);
+        
+        // Only generate alias if the rust type differs from the XML type name
+        if rust_type != type_name {
+            out.push_str(&format!("#[allow(non_camel_case_types)]\npub type {type_name} = {rust_type};\n\n"));
+        }
+        return out;
+    }
+
     let Some(field_set) = &protocol_type.fields else {
         // No fields, generate empty struct
         out.push_str(&format!(
@@ -217,6 +228,7 @@ fn process_type_tag(
     let mut name = None;
     let mut text = None;
     let mut is_primitive = false;
+    let mut parent = None;
 
     for attr in e.attributes().flatten() {
         match attr.key.as_ref() {
@@ -226,6 +238,9 @@ fn process_type_tag(
             }
             b"primitive" => {
                 is_primitive = attr.unescape_value().unwrap() == "true";
+            }
+            b"parent" => {
+                parent = Some(attr.unescape_value().unwrap().into_owned());
             }
             _ => {}
         }
@@ -239,13 +254,14 @@ fn process_type_tag(
             return;
         }
 
-        let new_type = ProtocolType {
-            name,
-            text,
-            fields: None,
-            is_primitive,
-            rust_type: None,
-        };
+let new_type = ProtocolType {
+                name,
+                text,
+                fields: None,
+                is_primitive,
+                rust_type: None,
+                parent,
+            };
 
         // For self-closing tags, push immediately
         // For opening tags, set as current_type for further processing

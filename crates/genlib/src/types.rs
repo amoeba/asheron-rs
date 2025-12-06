@@ -25,4 +25,6 @@ pub struct ProtocolType {
     pub(crate) is_primitive: bool,
     /// Optional Rust type mapping (e.g., "i32" for "int"). Used by map_type.
     pub(crate) rust_type: Option<String>,
+    /// Parent type for type aliases (e.g., DWORD parent="uint")
+    pub(crate) parent: Option<String>,
 }
