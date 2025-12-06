@@ -25,7 +25,7 @@ pub fn to_snake_case(name: &str) -> String {
     result
 }
 
-const RUST_RESERVED_WORDS: &[&str] = &["Self", "type"];
+const RUST_RESERVED_WORDS: &[&str] = &["self", "Self", "type"];
 
 /// Check if a field name is a Rust reserved word
 pub fn is_reserved_word(name: &str) -> bool {
@@ -80,4 +80,6 @@ mod tests {
         assert_eq!(to_snake_case("HTTPServer"), "http_server");
         assert_eq!(to_snake_case("getHTTPResponse"), "get_http_response");
     }
+
+    
 }
