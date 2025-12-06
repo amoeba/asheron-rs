@@ -80,6 +80,4 @@ mod tests {
         assert_eq!(to_snake_case("HTTPServer"), "http_server");
         assert_eq!(to_snake_case("getHTTPResponse"), "get_http_response");
     }
-
-    
 }

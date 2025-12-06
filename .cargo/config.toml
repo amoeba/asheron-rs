@@ -1,2 +1,2 @@
 [env]
-FILTER_TYPES = "GameMoveData"
+FILTER_TYPES = "PackableList,PackableHashTable,PHashTable"

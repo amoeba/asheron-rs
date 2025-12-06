@@ -57,10 +57,12 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
     // Handle parent types as type aliases
     if let Some(parent_type) = &protocol_type.parent {
         let rust_type = get_rust_type(parent_type);
-        
+
         // Only generate alias if the rust type differs from the XML type name
         if rust_type != type_name {
-            out.push_str(&format!("#[allow(non_camel_case_types)]\npub type {type_name} = {rust_type};\n\n"));
+            out.push_str(&format!(
+                "#[allow(non_camel_case_types)]\npub type {type_name} = {rust_type};\n\n"
+            ));
         }
         return out;
     }
@@ -149,7 +151,10 @@ fn process_switch_tag(
     if let (Some(switch_name), Some(field_set)) = (name, current_field_set) {
         field_set.switch_field = Some(switch_name);
         field_set.variant_fields = Some(HashMap::new());
-        debug!("Entered switch, switch_field = {:?}", field_set.switch_field);
+        debug!(
+            "Entered switch, switch_field = {:?}",
+            field_set.switch_field
+        );
         true
     } else {
         false
@@ -180,20 +185,15 @@ fn process_field_tag(
 
     for attr in e.attributes().flatten() {
         match attr.key.as_ref() {
-            b"type" => {
-                field_type = Some(attr.unescape_value().unwrap().into_owned())
-            }
-            b"name" => {
-                field_name = Some(attr.unescape_value().unwrap().into_owned())
-            }
+            b"type" => field_type = Some(attr.unescape_value().unwrap().into_owned()),
+            b"name" => field_name = Some(attr.unescape_value().unwrap().into_owned()),
             _ => {}
         }
     }
 
     debug!("Processing field {field_name:?}");
 
-    if let (Some(fname), Some(ftype), Some(field_set)) =
-        (field_name, field_type, current_field_set)
+    if let (Some(fname), Some(ftype), Some(field_set)) = (field_name, field_type, current_field_set)
     {
         let new_field = Field {
             name: fname,
@@ -247,21 +247,23 @@ fn process_type_tag(
     }
 
     if let Some(name) = name {
-        let should_skip = filter_types.as_ref().map_or(false, |filters| filters.contains(&name));
+        let should_skip = filter_types
+            .as_ref()
+            .map_or(false, |filters| filters.contains(&name));
 
         if should_skip {
             debug!("Skipping type {name} because it's in exclusion list.");
             return;
         }
 
-let new_type = ProtocolType {
-                name,
-                text,
-                fields: None,
-                is_primitive,
-                rust_type: None,
-                parent,
-            };
+        let new_type = ProtocolType {
+            name,
+            text,
+            fields: None,
+            is_primitive,
+            rust_type: None,
+            parent,
+        };
 
         // For self-closing tags, push immediately
         // For opening tags, set as current_type for further processing
@@ -313,7 +315,7 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> String {
                     );
                 } else if tag_name == "field" {
                     process_field_tag(&e, &mut current_field_set, in_switch, &current_case_value);
-} else if tag_name == "switch" {
+                } else if tag_name == "switch" {
                     in_switch = process_switch_tag(&e, &mut current_field_set);
                 } else if tag_name == "case" {
                     current_case_value = process_case_tag(&e);
