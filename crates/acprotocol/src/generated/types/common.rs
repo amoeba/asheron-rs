@@ -61,127 +61,127 @@ pub type DataId = PackedDWORD;
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub struct LayeredSpellId {
     #[serde(rename = "Id")]
-    id: SpellId,
+    pub id: SpellId,
     #[serde(rename = "Layer")]
-    layer: u16,
+    pub layer: u16,
 }
 
 // List which is packable for network
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PackableList<T> {
     #[serde(rename = "Count")]
-    count: u32,
+    pub count: u32,
     #[serde(rename = "List")]
-    list: Vec<T>,
+    pub list: Vec<T>,
 }
 
 // HashTable which is packable for network
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PackableHashTable<T: std::cmp::Eq + std::hash::Hash, U> {
     #[serde(rename = "Count")]
-    count: u16,
+    pub count: u16,
     #[serde(rename = "MaxSize")]
-    max_size: u16,
+    pub max_size: u16,
     #[serde(rename = "Table")]
-    table: std::collections::HashMap<T, U>,
+    pub table: std::collections::HashMap<T, U>,
 }
 
 // HashTable which is packable for network
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PHashTable<T: std::cmp::Eq + std::hash::Hash, U> {
     #[serde(rename = "PackedSize")]
-    packed_size: u32,
+    pub packed_size: u32,
     #[serde(rename = "Table")]
-    table: std::collections::HashMap<T, U>,
+    pub table: std::collections::HashMap<T, U>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Vector3 {
     #[serde(rename = "X")]
-    x: f32,
+    pub x: f32,
     #[serde(rename = "Y")]
-    y: f32,
+    pub y: f32,
     #[serde(rename = "Z")]
-    z: f32,
+    pub z: f32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Quaternion {
     #[serde(rename = "W")]
-    w: f32,
+    pub w: f32,
     #[serde(rename = "X")]
-    x: f32,
+    pub x: f32,
     #[serde(rename = "Y")]
-    y: f32,
+    pub y: f32,
     #[serde(rename = "Z")]
-    z: f32,
+    pub z: f32,
 }
 
 // Landcell location, without orientation
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Origin {
     #[serde(rename = "Landcell")]
-    landcell: LandcellId,
+    pub landcell: LandcellId,
     #[serde(rename = "Location")]
-    location: Vector3,
+    pub location: Vector3,
 }
 
 // Landcell location, including orientation
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Position {
     #[serde(rename = "Landcell")]
-    landcell: LandcellId,
+    pub landcell: LandcellId,
     #[serde(rename = "Frame")]
-    frame: Frame,
+    pub frame: Frame,
 }
 
 // A the location and orientation of an object within a landcell
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Frame {
     #[serde(rename = "Origin")]
-    origin: Vector3,
+    pub origin: Vector3,
     #[serde(rename = "Orientation")]
-    orientation: Quaternion,
+    pub orientation: Quaternion,
 }
 
 // Optional header data when PacketHeaderFlags includes ServerSwitch
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ServerSwitchHeader {
     #[serde(rename = "Sequence")]
-    sequence: u32,
+    pub sequence: u32,
     #[serde(rename = "Type")]
-    type_: ServerSwitchType,
+    pub type_: ServerSwitchType,
 }
 
 // Optional header data when PacketHeaderFlags includes CICMDCommand
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CICMDCommandHeader {
     #[serde(rename = "Command")]
-    command: u32,
+    pub command: u32,
     #[serde(rename = "Parameter")]
-    parameter: u32,
+    pub parameter: u32,
 }
 
 // Optional header data when PacketHeaderFlags includes Flow
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FlowHeader {
     #[serde(rename = "Bytes")]
-    bytes: u32,
+    pub bytes: u32,
     #[serde(rename = "Interval")]
-    interval: u16,
+    pub interval: u16,
 }
 
 // Optional header data when PacketHeaderFlags includes LogonServerAddr
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SocketAddress {
     #[serde(rename = "Family")]
-    family: i16,
+    pub family: i16,
     #[serde(rename = "Port")]
-    port: u16,
+    pub port: u16,
     #[serde(rename = "Address")]
-    address: u32,
+    pub address: u32,
     #[serde(rename = "Empty")]
-    empty: u64,
+    pub empty: u64,
 }
 
 // Optional header data when PacketHeaderFlags includes LoginRequest
@@ -228,331 +228,331 @@ pub enum LoginRequestHeader {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ReferralHeader {
     #[serde(rename = "Cookie")]
-    cookie: u64,
+    pub cookie: u64,
     #[serde(rename = "Address")]
-    address: SocketAddress,
+    pub address: SocketAddress,
     #[serde(rename = "IdServer")]
-    id_server: u16,
+    pub id_server: u16,
     #[serde(rename = "Unknown")]
-    unknown: DWORD,
+    pub unknown: DWORD,
 }
 
 // Optional header data when PacketHeaderFlags includes ConnectRequest
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ConnectRequestHeader {
     #[serde(rename = "ServerTime")]
-    server_time: f64,
+    pub server_time: f64,
     #[serde(rename = "Cookie")]
-    cookie: u64,
+    pub cookie: u64,
     #[serde(rename = "NetID")]
-    net_id: i32,
+    pub net_id: i32,
     #[serde(rename = "OutgoingSeed")]
-    outgoing_seed: u32,
+    pub outgoing_seed: u32,
     #[serde(rename = "IncomingSeed")]
-    incoming_seed: u32,
+    pub incoming_seed: u32,
     #[serde(rename = "Unknown")]
-    unknown: DWORD,
+    pub unknown: DWORD,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NetError {
     #[serde(rename = "StringId")]
-    string_id: DataId,
+    pub string_id: DataId,
     #[serde(rename = "TableId")]
-    table_id: DataId,
+    pub table_id: DataId,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EchoResponseHeader {
     #[serde(rename = "LocalTime")]
-    local_time: f32,
+    pub local_time: f32,
     #[serde(rename = "HoldingTime")]
-    holding_time: f32,
+    pub holding_time: f32,
 }
 
 // A collection of property tables.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ACBaseQualities {
     #[serde(rename = "Flags")]
-    flags: ACBaseQualitiesFlags,
+    pub flags: ACBaseQualitiesFlags,
     #[serde(rename = "WeenieType")]
-    weenie_type: WeenieType,
+    pub weenie_type: WeenieType,
     #[serde(rename = "IntProperties")]
-    int_properties: Option<PackableHashTable<PropertyInt, int>>,
+    pub int_properties: Option<PackableHashTable<PropertyInt, int>>,
     #[serde(rename = "Int64Properties")]
-    int64_properties: Option<PackableHashTable<PropertyInt64, long>>,
+    pub int64_properties: Option<PackableHashTable<PropertyInt64, long>>,
     #[serde(rename = "BoolProperties")]
-    bool_properties: Option<PackableHashTable<PropertyBool, bool>>,
+    pub bool_properties: Option<PackableHashTable<PropertyBool, bool>>,
     #[serde(rename = "FloatProperties")]
-    float_properties: Option<PackableHashTable<PropertyFloat, double>>,
+    pub float_properties: Option<PackableHashTable<PropertyFloat, double>>,
     #[serde(rename = "StringProperties")]
-    string_properties: Option<PackableHashTable<PropertyString, string>>,
+    pub string_properties: Option<PackableHashTable<PropertyString, string>>,
     #[serde(rename = "DataProperties")]
-    data_properties: Option<PackableHashTable<PropertyDataId, DataId>>,
+    pub data_properties: Option<PackableHashTable<PropertyDataId, DataId>>,
     #[serde(rename = "InstanceProperties")]
-    instance_properties: Option<PackableHashTable<PropertyInstanceId, ObjectId>>,
+    pub instance_properties: Option<PackableHashTable<PropertyInstanceId, ObjectId>>,
     #[serde(rename = "PositionProperties")]
-    position_properties: Option<PackableHashTable<PropertyPosition, Position>>,
+    pub position_properties: Option<PackableHashTable<PropertyPosition, Position>>,
 }
 
 // The ACQualities structure contains character property lists.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ACQualities {
     #[serde(rename = "Flags")]
-    flags: ACQualitiesFlags,
+    pub flags: ACQualitiesFlags,
     #[serde(rename = "HasHealth")]
-    has_health: bool,
+    pub has_health: bool,
     #[serde(rename = "Attributes")]
-    attributes: Option<AttributeCache>,
+    pub attributes: Option<AttributeCache>,
     #[serde(rename = "Skills")]
-    skills: Option<PackableHashTable<SkillId, Skill>>,
+    pub skills: Option<PackableHashTable<SkillId, Skill>>,
     #[serde(rename = "Body")]
-    body: Option<Body>,
+    pub body: Option<Body>,
     #[serde(rename = "SpellBook")]
-    spell_book: Option<PackableHashTable<LayeredSpellId, SpellBookPage>>,
+    pub spell_book: Option<PackableHashTable<LayeredSpellId, SpellBookPage>>,
     #[serde(rename = "Enchantments")]
-    enchantments: Option<EnchantmentRegistry>,
+    pub enchantments: Option<EnchantmentRegistry>,
     #[serde(rename = "EventFilter")]
-    event_filter: Option<EventFilter>,
+    pub event_filter: Option<EventFilter>,
     #[serde(rename = "Emotes")]
-    emotes: Option<EmoteTable>,
+    pub emotes: Option<EmoteTable>,
     #[serde(rename = "CreationProfile")]
-    creation_profile: Option<PackableList<CreationProfile>>,
+    pub creation_profile: Option<PackableList<CreationProfile>>,
     #[serde(rename = "PageData")]
-    page_data: Option<PageDataList>,
+    pub page_data: Option<PageDataList>,
     #[serde(rename = "Generators")]
-    generators: Option<GeneratorTable>,
+    pub generators: Option<GeneratorTable>,
     #[serde(rename = "GeneratorRegistry")]
-    generator_registry: Option<GeneratorRegistry>,
+    pub generator_registry: Option<GeneratorRegistry>,
     #[serde(rename = "GeneratorQueue")]
-    generator_queue: Option<GeneratorQueue>,
+    pub generator_queue: Option<GeneratorQueue>,
 }
 
 // The AttributeCache structure contains information about a character attributes.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AttributeCache {
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "Strength")]
-    strength: Option<AttributeInfo>,
+    pub strength: Option<AttributeInfo>,
     #[serde(rename = "Endurance")]
-    endurance: Option<AttributeInfo>,
+    pub endurance: Option<AttributeInfo>,
     #[serde(rename = "Quickness")]
-    quickness: Option<AttributeInfo>,
+    pub quickness: Option<AttributeInfo>,
     #[serde(rename = "Coordination")]
-    coordination: Option<AttributeInfo>,
+    pub coordination: Option<AttributeInfo>,
     #[serde(rename = "Focus")]
-    focus: Option<AttributeInfo>,
+    pub focus: Option<AttributeInfo>,
     #[serde(rename = "Self")]
-    self_: Option<AttributeInfo>,
+    pub self_: Option<AttributeInfo>,
     #[serde(rename = "Health")]
-    health: Option<SecondaryAttributeInfo>,
+    pub health: Option<SecondaryAttributeInfo>,
     #[serde(rename = "Stamina")]
-    stamina: Option<SecondaryAttributeInfo>,
+    pub stamina: Option<SecondaryAttributeInfo>,
     #[serde(rename = "Mana")]
-    mana: Option<SecondaryAttributeInfo>,
+    pub mana: Option<SecondaryAttributeInfo>,
 }
 
 // The Attribute structure contains information about a character attribute.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AttributeInfo {
     #[serde(rename = "PointsRaised")]
-    points_raised: u32,
+    pub points_raised: u32,
     #[serde(rename = "InnatePoints")]
-    innate_points: u32,
+    pub innate_points: u32,
     #[serde(rename = "ExperienceSpent")]
-    experience_spent: u32,
+    pub experience_spent: u32,
 }
 
 // The SecondaryAttribute structure contains information about a character vital.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SecondaryAttributeInfo {
     #[serde(rename = "Attribute")]
-    attribute: AttributeInfo,
+    pub attribute: AttributeInfo,
     #[serde(rename = "Current")]
-    current: u32,
+    pub current: u32,
 }
 
 // The Skill structure contains information about a character skill.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Skill {
     #[serde(rename = "PointsRaised")]
-    points_raised: u16,
+    pub points_raised: u16,
     #[serde(rename = "AdjustPP")]
-    adjust_pp: u16,
+    pub adjust_pp: u16,
     #[serde(rename = "TrainingLevel")]
-    training_level: SkillAdvancementClass,
+    pub training_level: SkillAdvancementClass,
     #[serde(rename = "ExperienceSpent")]
-    experience_spent: u32,
+    pub experience_spent: u32,
     #[serde(rename = "InnatePoints")]
-    innate_points: u32,
+    pub innate_points: u32,
     #[serde(rename = "ResistanceOfLastCheck")]
-    resistance_of_last_check: u32,
+    pub resistance_of_last_check: u32,
     #[serde(rename = "LastUsedTime")]
-    last_used_time: f64,
+    pub last_used_time: f64,
 }
 
 // Contains body part table
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Body {
     #[serde(rename = "BodyParts")]
-    body_parts: PackableHashTable<uint, BodyPart>,
+    pub body_parts: PackableHashTable<uint, BodyPart>,
 }
 
 // Information on individual body parts. (Needs to be confirmed if this was used in prod)
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BodyPart {
     #[serde(rename = "HasBPSD")]
-    has_bpsd: i32,
+    pub has_bpsd: i32,
     #[serde(rename = "DamageType")]
-    damage_type: DamageType,
+    pub damage_type: DamageType,
     #[serde(rename = "DamageVal")]
-    damage_val: i32,
+    pub damage_val: i32,
     #[serde(rename = "DamageVar")]
-    damage_var: i32,
+    pub damage_var: i32,
     #[serde(rename = "ArmorCache")]
-    armor_cache: ArmorCache,
+    pub armor_cache: ArmorCache,
     #[serde(rename = "BH")]
-    bh: i32,
+    pub bh: i32,
     #[serde(rename = "BPSD")]
-    bpsd: Option<BodyPartSelectionData>,
+    pub bpsd: Option<BodyPartSelectionData>,
 }
 
 // Information on armor levels
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArmorCache {
     #[serde(rename = "BaseArmor")]
-    base_armor: i32,
+    pub base_armor: i32,
     #[serde(rename = "ArmorVsSlash")]
-    armor_vs_slash: i32,
+    pub armor_vs_slash: i32,
     #[serde(rename = "ArmorVsPierce")]
-    armor_vs_pierce: i32,
+    pub armor_vs_pierce: i32,
     #[serde(rename = "ArmorVsBludgeon")]
-    armor_vs_bludgeon: i32,
+    pub armor_vs_bludgeon: i32,
     #[serde(rename = "ArmorVsCold")]
-    armor_vs_cold: i32,
+    pub armor_vs_cold: i32,
     #[serde(rename = "ArmorVsFire")]
-    armor_vs_fire: i32,
+    pub armor_vs_fire: i32,
     #[serde(rename = "ArmorVsAcid")]
-    armor_vs_acid: i32,
+    pub armor_vs_acid: i32,
     #[serde(rename = "ArmorVsElectric")]
-    armor_vs_electric: i32,
+    pub armor_vs_electric: i32,
     #[serde(rename = "ArmorVsNether")]
-    armor_vs_nether: i32,
+    pub armor_vs_nether: i32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BodyPartSelectionData {
     #[serde(rename = "HLF")]
-    hlf: i32,
+    pub hlf: i32,
     #[serde(rename = "MLF")]
-    mlf: i32,
+    pub mlf: i32,
     #[serde(rename = "LLF")]
-    llf: i32,
+    pub llf: i32,
     #[serde(rename = "HRF")]
-    hrf: i32,
+    pub hrf: i32,
     #[serde(rename = "MRF")]
-    mrf: i32,
+    pub mrf: i32,
     #[serde(rename = "LRF")]
-    lrf: i32,
+    pub lrf: i32,
     #[serde(rename = "HLB")]
-    hlb: i32,
+    pub hlb: i32,
     #[serde(rename = "MLB")]
-    mlb: i32,
+    pub mlb: i32,
     #[serde(rename = "LLB")]
-    llb: i32,
+    pub llb: i32,
     #[serde(rename = "HRB")]
-    hrb: i32,
+    pub hrb: i32,
     #[serde(rename = "MRB")]
-    mrb: i32,
+    pub mrb: i32,
     #[serde(rename = "LRB")]
-    lrb: i32,
+    pub lrb: i32,
 }
 
 // Contains information related to the spell in your spellbook
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SpellBookPage {
     #[serde(rename = "CastingLikelihood")]
-    casting_likelihood: f32,
+    pub casting_likelihood: f32,
     #[serde(rename = "CastingLikelihood2")]
-    casting_likelihood2: Option<f32>,
+    pub casting_likelihood2: Option<f32>,
     #[serde(rename = "Unknown")]
-    unknown: Option<i32>,
+    pub unknown: Option<i32>,
 }
 
 // Contains information related to the spells in effect on the character
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EnchantmentRegistry {
     #[serde(rename = "Flags")]
-    flags: EnchantmentRegistryFlags,
+    pub flags: EnchantmentRegistryFlags,
     #[serde(rename = "LifeSpells")]
-    life_spells: Option<PackableList<Enchantment>>,
+    pub life_spells: Option<PackableList<Enchantment>>,
     #[serde(rename = "CreatureSpells")]
-    creature_spells: Option<PackableList<Enchantment>>,
+    pub creature_spells: Option<PackableList<Enchantment>>,
     #[serde(rename = "Vitae")]
-    vitae: Option<Enchantment>,
+    pub vitae: Option<Enchantment>,
     #[serde(rename = "Cooldowns")]
-    cooldowns: Option<PackableList<Enchantment>>,
+    pub cooldowns: Option<PackableList<Enchantment>>,
 }
 
 // The Enchantment structure describes an active enchantment.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Enchantment {
     #[serde(rename = "Id")]
-    id: LayeredSpellId,
+    pub id: LayeredSpellId,
     #[serde(rename = "HasEquipmentSet")]
-    has_equipment_set: u16,
+    pub has_equipment_set: u16,
     #[serde(rename = "SpellCategory")]
-    spell_category: SpellCategory,
+    pub spell_category: SpellCategory,
     #[serde(rename = "PowerLevel")]
-    power_level: u32,
+    pub power_level: u32,
     #[serde(rename = "StartTime")]
-    start_time: f64,
+    pub start_time: f64,
     #[serde(rename = "Duration")]
-    duration: f64,
+    pub duration: f64,
     #[serde(rename = "CasterId")]
-    caster_id: ObjectId,
+    pub caster_id: ObjectId,
     #[serde(rename = "DegradeModifier")]
-    degrade_modifier: f32,
+    pub degrade_modifier: f32,
     #[serde(rename = "DegradeLimit")]
-    degrade_limit: f32,
+    pub degrade_limit: f32,
     #[serde(rename = "LastTimeDegraded")]
-    last_time_degraded: f64,
+    pub last_time_degraded: f64,
     #[serde(rename = "StatMod")]
-    stat_mod: StatMod,
+    pub stat_mod: StatMod,
     #[serde(rename = "EquipmentSet")]
-    equipment_set: Option<EquipmentSet>,
+    pub equipment_set: Option<EquipmentSet>,
 }
 
 // Information on stat modification
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct StatMod {
     #[serde(rename = "Type")]
-    type_: EnchantmentTypeFlags,
+    pub type_: EnchantmentTypeFlags,
     #[serde(rename = "Key")]
-    key: u32,
+    pub key: u32,
     #[serde(rename = "Value")]
-    value: f32,
+    pub value: f32,
 }
 
 // Contains a list of events to filter? Unknown what this does currently.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EventFilter {
     #[serde(rename = "Events")]
-    events: PackableList<uint>,
+    pub events: PackableList<uint>,
 }
 
 // Contains a list of emotes for NPCs? Unknown what this does currently.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmoteTable {
     #[serde(rename = "Emotes")]
-    emotes: PackableHashTable<EmoteCategory, EmoteSetList>,
+    pub emotes: PackableHashTable<EmoteCategory, EmoteSetList>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmoteSetList {
     #[serde(rename = "Emotes")]
-    emotes: PackableList<EmoteSet>,
+    pub emotes: PackableList<EmoteSet>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -1000,139 +1000,139 @@ pub enum Emote {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CreationProfile {
     #[serde(rename = "WeenieClassId")]
-    weenie_class_id: u32,
+    pub weenie_class_id: u32,
     #[serde(rename = "Palette")]
-    palette: u32,
+    pub palette: u32,
     #[serde(rename = "Shade")]
-    shade: f32,
+    pub shade: f32,
     #[serde(rename = "Destination")]
-    destination: u32,
+    pub destination: u32,
     #[serde(rename = "StackSize")]
-    stack_size: i32,
+    pub stack_size: i32,
     #[serde(rename = "TryToBond")]
-    try_to_bond: bool,
+    pub try_to_bond: bool,
 }
 
 // List of pages in a book
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PageDataList {
     #[serde(rename = "MaxNumPages")]
-    max_num_pages: u32,
+    pub max_num_pages: u32,
     #[serde(rename = "MaxNumCharsPerPage")]
-    max_num_chars_per_page: u32,
+    pub max_num_chars_per_page: u32,
     #[serde(rename = "Pages")]
-    pages: PackableList<PageData>,
+    pub pages: PackableList<PageData>,
 }
 
 // Data for an individual page
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PageData {
     #[serde(rename = "AuthorId")]
-    author_id: ObjectId,
+    pub author_id: ObjectId,
     #[serde(rename = "AuthorName")]
-    author_name: String,
+    pub author_name: String,
     #[serde(rename = "AuthorAccount")]
-    author_account: String,
+    pub author_account: String,
     #[serde(rename = "Version")]
-    version: u32,
+    pub version: u32,
     #[serde(rename = "TextIncluded")]
-    text_included: bool,
+    pub text_included: bool,
     #[serde(rename = "IgnoreAuthor")]
-    ignore_author: bool,
+    pub ignore_author: bool,
     #[serde(rename = "PageText")]
-    page_text: Option<String>,
+    pub page_text: Option<String>,
 }
 
 // Blob fragment data used to contruct message data. These can be spread across multiple packets
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BlobFragments {
     #[serde(rename = "Sequence")]
-    sequence: u32,
+    pub sequence: u32,
     #[serde(rename = "Id")]
-    id: u32,
+    pub id: u32,
     #[serde(rename = "Count")]
-    count: u16,
+    pub count: u16,
     #[serde(rename = "Size")]
-    size: u16,
+    pub size: u16,
     #[serde(rename = "Index")]
-    index: u16,
+    pub index: u16,
     #[serde(rename = "Group")]
-    group: FragmentGroup,
+    pub group: FragmentGroup,
     #[serde(rename = "Data")]
-    data: Vec<byte>,
+    pub data: Vec<byte>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GeneratorTable {
     #[serde(rename = "Generators")]
-    generators: PackableList<GeneratorProfile>,
+    pub generators: PackableList<GeneratorProfile>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GeneratorProfile {
     #[serde(rename = "Probability")]
-    probability: f32,
+    pub probability: f32,
     #[serde(rename = "TypeId")]
-    type_id: u32,
+    pub type_id: u32,
     #[serde(rename = "Delay")]
-    delay: f64,
+    pub delay: f64,
     #[serde(rename = "InitCreate")]
-    init_create: u32,
+    pub init_create: u32,
     #[serde(rename = "MaxNum")]
-    max_num: u32,
+    pub max_num: u32,
     #[serde(rename = "WhenCreate")]
-    when_create: u32,
+    pub when_create: u32,
     #[serde(rename = "WhereCreate")]
-    where_create: u32,
+    pub where_create: u32,
     #[serde(rename = "StackSize")]
-    stack_size: u32,
+    pub stack_size: u32,
     #[serde(rename = "Ptid")]
-    ptid: u32,
+    pub ptid: u32,
     #[serde(rename = "Shade")]
-    shade: f32,
+    pub shade: f32,
     #[serde(rename = "PosVal")]
-    pos_val: Position,
+    pub pos_val: Position,
     #[serde(rename = "Slot")]
-    slot: u32,
+    pub slot: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GeneratorRegistry {
     #[serde(rename = "Registry")]
-    registry: PackableHashTable<uint, GeneratorRegistryNode>,
+    pub registry: PackableHashTable<uint, GeneratorRegistryNode>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GeneratorRegistryNode {
     #[serde(rename = "WcidOrType")]
-    wcid_or_type: u32,
+    pub wcid_or_type: u32,
     #[serde(rename = "Ts")]
-    ts: f64,
+    pub ts: f64,
     #[serde(rename = "TreasureType")]
-    treasure_type: u32,
+    pub treasure_type: u32,
     #[serde(rename = "Slot")]
-    slot: u32,
+    pub slot: u32,
     #[serde(rename = "Checkpointed")]
-    checkpointed: u32,
+    pub checkpointed: u32,
     #[serde(rename = "Shop")]
-    shop: u32,
+    pub shop: u32,
     #[serde(rename = "Amount")]
-    amount: u32,
+    pub amount: u32,
 }
 
 // Set of inventory items
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GeneratorQueue {
     #[serde(rename = "Queue")]
-    queue: PackableList<GeneratorQueueNode>,
+    pub queue: PackableList<GeneratorQueueNode>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GeneratorQueueNode {
     #[serde(rename = "Slot")]
-    slot: u32,
+    pub slot: u32,
     #[serde(rename = "When")]
-    when: f64,
+    pub when: f64,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -1253,205 +1253,205 @@ pub enum OptionProperty {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GameplayOptions {
     #[serde(rename = "Size")]
-    size: u32,
+    pub size: u32,
     #[serde(rename = "Unknown200_2")]
-    unknown200_2: u8,
+    pub unknown200_2: u8,
     #[serde(rename = "OptionPropertyCount")]
-    option_property_count: u8,
+    pub option_property_count: u8,
     #[serde(rename = "OptionProperties")]
-    option_properties: Vec<OptionProperty>,
+    pub option_properties: Vec<OptionProperty>,
 }
 
 // The PlayerModule structure contains character options.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlayerModule {
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "Options")]
-    options: CharacterOptions1,
+    pub options: CharacterOptions1,
     #[serde(rename = "Shortcuts")]
-    shortcuts: Option<PackableList<ShortCutData>>,
+    pub shortcuts: Option<PackableList<ShortCutData>>,
     #[serde(rename = "Tab1Spells")]
-    tab1_spells: PackableList<LayeredSpellId>,
+    pub tab1_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "Tab2Spells")]
-    tab2_spells: PackableList<LayeredSpellId>,
+    pub tab2_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "Tab3Spells")]
-    tab3_spells: PackableList<LayeredSpellId>,
+    pub tab3_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "Tab4Spells")]
-    tab4_spells: PackableList<LayeredSpellId>,
+    pub tab4_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "Tab5Spells")]
-    tab5_spells: PackableList<LayeredSpellId>,
+    pub tab5_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "Tab6Spells")]
-    tab6_spells: PackableList<LayeredSpellId>,
+    pub tab6_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "Tab7Spells")]
-    tab7_spells: PackableList<LayeredSpellId>,
+    pub tab7_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "Tab8Spells")]
-    tab8_spells: PackableList<LayeredSpellId>,
+    pub tab8_spells: PackableList<LayeredSpellId>,
     #[serde(rename = "FillComps")]
-    fill_comps: Option<PackableHashTable<uint, uint>>,
+    pub fill_comps: Option<PackableHashTable<uint, uint>>,
     #[serde(rename = "SpellBookFilters")]
-    spell_book_filters: Option<u32>,
+    pub spell_book_filters: Option<u32>,
     #[serde(rename = "OptionFlags")]
-    option_flags: Option<u32>,
+    pub option_flags: Option<u32>,
     #[serde(rename = "Unknown100_1")]
-    unknown100_1: Option<u32>,
+    pub unknown100_1: Option<u32>,
     #[serde(rename = "OptionStrings")]
-    option_strings: Option<PackableHashTable<uint, string>>,
+    pub option_strings: Option<PackableHashTable<uint, string>>,
     #[serde(rename = "GameplayOptions")]
-    gameplay_options: Option<GameplayOptions>,
+    pub gameplay_options: Option<GameplayOptions>,
 }
 
 // Set of shortcuts
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ShortCutManager {
     #[serde(rename = "Shortcuts")]
-    shortcuts: PackableList<ShortCutData>,
+    pub shortcuts: PackableList<ShortCutData>,
 }
 
 // Shortcut
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ShortCutData {
     #[serde(rename = "Index")]
-    index: u32,
+    pub index: u32,
     #[serde(rename = "ObjectId")]
-    object_id: ObjectId,
+    pub object_id: ObjectId,
     #[serde(rename = "SpellId")]
-    spell_id: LayeredSpellId,
+    pub spell_id: LayeredSpellId,
 }
 
 // List of spells in spell tab
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SpellTab {
     #[serde(rename = "Spells")]
-    spells: PackableList<LayeredSpellId>,
+    pub spells: PackableList<LayeredSpellId>,
 }
 
 // Set of inventory items
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ContentProfile {
     #[serde(rename = "ObjectId")]
-    object_id: ObjectId,
+    pub object_id: ObjectId,
     #[serde(rename = "ContainerType")]
-    container_type: ContainerProperties,
+    pub container_type: ContainerProperties,
 }
 
 // Set of inventory items
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InventoryPlacement {
     #[serde(rename = "ObjectId")]
-    object_id: ObjectId,
+    pub object_id: ObjectId,
     #[serde(rename = "Location")]
-    location: EquipMask,
+    pub location: EquipMask,
     #[serde(rename = "Priority")]
-    priority: CoverageMask,
+    pub priority: CoverageMask,
 }
 
 // Allegience information
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AllegianceProfile {
     #[serde(rename = "TotalMembers")]
-    total_members: u32,
+    pub total_members: u32,
     #[serde(rename = "TotalVassals")]
-    total_vassals: u32,
+    pub total_vassals: u32,
     #[serde(rename = "Hierarchy")]
-    hierarchy: AllegianceHierarchy,
+    pub hierarchy: AllegianceHierarchy,
 }
 
 // Allegience record
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AllegianceRecord {
     #[serde(rename = "TreeParent")]
-    tree_parent: ObjectId,
+    pub tree_parent: ObjectId,
     #[serde(rename = "AllegianceData")]
-    allegiance_data: AllegianceData,
+    pub allegiance_data: AllegianceData,
 }
 
 // Allegience hierarchy information
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AllegianceHierarchy {
     #[serde(rename = "RecordCount")]
-    record_count: u16,
+    pub record_count: u16,
     #[serde(rename = "OldVersion")]
-    old_version: u16,
+    pub old_version: u16,
     #[serde(rename = "Officers")]
-    officers: PHashTable<ObjectId, AllegianceOfficerLevel>,
+    pub officers: PHashTable<ObjectId, AllegianceOfficerLevel>,
     #[serde(rename = "OfficerTitles")]
-    officer_titles: PackableList<string>,
+    pub officer_titles: PackableList<string>,
     #[serde(rename = "MonarchBroadcastTime")]
-    monarch_broadcast_time: u32,
+    pub monarch_broadcast_time: u32,
     #[serde(rename = "MonarchBroadcastsToday")]
-    monarch_broadcasts_today: u32,
+    pub monarch_broadcasts_today: u32,
     #[serde(rename = "SpokesBroadcastTime")]
-    spokes_broadcast_time: u32,
+    pub spokes_broadcast_time: u32,
     #[serde(rename = "SpokesBroadcastsToday")]
-    spokes_broadcasts_today: u32,
+    pub spokes_broadcasts_today: u32,
     #[serde(rename = "Motd")]
-    motd: String,
+    pub motd: String,
     #[serde(rename = "MotdSetBy")]
-    motd_set_by: String,
+    pub motd_set_by: String,
     #[serde(rename = "ChatRoomId")]
-    chat_room_id: u32,
+    pub chat_room_id: u32,
     #[serde(rename = "Bindpoint")]
-    bindpoint: Position,
+    pub bindpoint: Position,
     #[serde(rename = "AllegianceName")]
-    allegiance_name: String,
+    pub allegiance_name: String,
     #[serde(rename = "NameLastSetTime")]
-    name_last_set_time: u32,
+    pub name_last_set_time: u32,
     #[serde(rename = "IsLocked")]
-    is_locked: bool,
+    pub is_locked: bool,
     #[serde(rename = "ApprovedVassal")]
-    approved_vassal: i32,
+    pub approved_vassal: i32,
     #[serde(rename = "MonarchData")]
-    monarch_data: Option<AllegianceData>,
+    pub monarch_data: Option<AllegianceData>,
     #[serde(rename = "Records")]
-    records: Vec<AllegianceRecord>,
+    pub records: Vec<AllegianceRecord>,
 }
 
 // Set of allegiance data for a specific player
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AllegianceData {
     #[serde(rename = "CharacterId")]
-    character_id: ObjectId,
+    pub character_id: ObjectId,
     #[serde(rename = "XPCached")]
-    xp_cached: u32,
+    pub xp_cached: u32,
     #[serde(rename = "XPTithed")]
-    xp_tithed: u32,
+    pub xp_tithed: u32,
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "Gender")]
-    gender: Gender,
+    pub gender: Gender,
     #[serde(rename = "Heritage")]
-    heritage: HeritageGroup,
+    pub heritage: HeritageGroup,
     #[serde(rename = "Rank")]
-    rank: u16,
+    pub rank: u16,
     #[serde(rename = "Level")]
-    level: Option<u32>,
+    pub level: Option<u32>,
     #[serde(rename = "Loyalty")]
-    loyalty: u16,
+    pub loyalty: u16,
     #[serde(rename = "Leadership")]
-    leadership: u16,
+    pub leadership: u16,
     #[serde(rename = "AllegianceAge")]
-    allegiance_age: Option<u32>,
+    pub allegiance_age: Option<u32>,
     #[serde(rename = "TimeOnline")]
-    time_online: Option<u64>,
+    pub time_online: Option<u64>,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FriendData {
     #[serde(rename = "FriendId")]
-    friend_id: ObjectId,
+    pub friend_id: ObjectId,
     #[serde(rename = "Online")]
-    online: bool,
+    pub online: bool,
     #[serde(rename = "AppearOffline")]
-    appear_offline: bool,
+    pub appear_offline: bool,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "OutFriends")]
-    out_friends: PackableList<ObjectId>,
+    pub out_friends: PackableList<ObjectId>,
     #[serde(rename = "InFriends")]
-    in_friends: PackableList<ObjectId>,
+    pub in_friends: PackableList<ObjectId>,
 }
 
 // Data related to an item, namely the amount and description
@@ -1482,325 +1482,325 @@ pub enum ItemProfile {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PublicWeenieDesc {
     #[serde(rename = "Header")]
-    header: u32,
+    pub header: u32,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "WeenieClassId")]
-    weenie_class_id: PackedDWORD,
+    pub weenie_class_id: PackedDWORD,
     #[serde(rename = "Icon")]
-    icon: PackedDWORD,
+    pub icon: PackedDWORD,
     #[serde(rename = "Type")]
-    type_: ItemType,
+    pub type_: ItemType,
     #[serde(rename = "Behavior")]
-    behavior: ObjectDescriptionFlag,
+    pub behavior: ObjectDescriptionFlag,
     #[serde(rename = "Header2")]
-    header2: Option<u32>,
+    pub header2: Option<u32>,
     #[serde(rename = "PluralName")]
-    plural_name: Option<String>,
+    pub plural_name: Option<String>,
     #[serde(rename = "ItemsCapacity")]
-    items_capacity: Option<u8>,
+    pub items_capacity: Option<u8>,
     #[serde(rename = "ContainerCapacity")]
-    container_capacity: Option<u8>,
+    pub container_capacity: Option<u8>,
     #[serde(rename = "AmmunitionType")]
-    ammunition_type: Option<AmmoType>,
+    pub ammunition_type: Option<AmmoType>,
     #[serde(rename = "Value")]
-    value: Option<u32>,
+    pub value: Option<u32>,
     #[serde(rename = "Useability")]
-    useability: Option<Usable>,
+    pub useability: Option<Usable>,
     #[serde(rename = "UseRadius")]
-    use_radius: Option<f32>,
+    pub use_radius: Option<f32>,
     #[serde(rename = "TargetType")]
-    target_type: Option<ItemType>,
+    pub target_type: Option<ItemType>,
     #[serde(rename = "Effects")]
-    effects: Option<IconHighlight>,
+    pub effects: Option<IconHighlight>,
     #[serde(rename = "CombatUse")]
-    combat_use: Option<WieldType>,
+    pub combat_use: Option<WieldType>,
     #[serde(rename = "Structure")]
-    structure: Option<u16>,
+    pub structure: Option<u16>,
     #[serde(rename = "MaxStructure")]
-    max_structure: Option<u16>,
+    pub max_structure: Option<u16>,
     #[serde(rename = "StackSize")]
-    stack_size: Option<u16>,
+    pub stack_size: Option<u16>,
     #[serde(rename = "MaxStackSize")]
-    max_stack_size: Option<u16>,
+    pub max_stack_size: Option<u16>,
     #[serde(rename = "ContainerId")]
-    container_id: Option<ObjectId>,
+    pub container_id: Option<ObjectId>,
     #[serde(rename = "WielderId")]
-    wielder_id: Option<ObjectId>,
+    pub wielder_id: Option<ObjectId>,
     #[serde(rename = "ValidSlots")]
-    valid_slots: Option<EquipMask>,
+    pub valid_slots: Option<EquipMask>,
     #[serde(rename = "Slot")]
-    slot: Option<EquipMask>,
+    pub slot: Option<EquipMask>,
     #[serde(rename = "Priority")]
-    priority: Option<CoverageMask>,
+    pub priority: Option<CoverageMask>,
     #[serde(rename = "BlipColor")]
-    blip_color: Option<RadarColor>,
+    pub blip_color: Option<RadarColor>,
     #[serde(rename = "RadarEnum")]
-    radar_enum: Option<RadarBehavior>,
+    pub radar_enum: Option<RadarBehavior>,
     #[serde(rename = "PhysicsScript")]
-    physics_script: Option<u16>,
+    pub physics_script: Option<u16>,
     #[serde(rename = "Workmanship")]
-    workmanship: Option<f32>,
+    pub workmanship: Option<f32>,
     #[serde(rename = "Burden")]
-    burden: Option<u16>,
+    pub burden: Option<u16>,
     #[serde(rename = "SpellId")]
-    spell_id: Option<SpellId>,
+    pub spell_id: Option<SpellId>,
     #[serde(rename = "OwnerId")]
-    owner_id: Option<ObjectId>,
+    pub owner_id: Option<ObjectId>,
     #[serde(rename = "Restrictions")]
-    restrictions: Option<RestrictionDB>,
+    pub restrictions: Option<RestrictionDB>,
     #[serde(rename = "HookItemTypes")]
-    hook_item_types: Option<HookType>,
+    pub hook_item_types: Option<HookType>,
     #[serde(rename = "MonarchId")]
-    monarch_id: Option<ObjectId>,
+    pub monarch_id: Option<ObjectId>,
     #[serde(rename = "HookType")]
-    hook_type: Option<HookType>,
+    pub hook_type: Option<HookType>,
     #[serde(rename = "IconOverlay")]
-    icon_overlay: Option<PackedDWORD>,
+    pub icon_overlay: Option<PackedDWORD>,
     #[serde(rename = "IconUnderlay")]
-    icon_underlay: Option<PackedDWORD>,
+    pub icon_underlay: Option<PackedDWORD>,
     #[serde(rename = "Material")]
-    material: Option<MaterialType>,
+    pub material: Option<MaterialType>,
     #[serde(rename = "CooldownId")]
-    cooldown_id: Option<u32>,
+    pub cooldown_id: Option<u32>,
     #[serde(rename = "CooldownDuration")]
-    cooldown_duration: Option<u64>,
+    pub cooldown_duration: Option<u64>,
     #[serde(rename = "PetOwnerId")]
-    pet_owner_id: Option<ObjectId>,
+    pub pet_owner_id: Option<ObjectId>,
 }
 
 // The RestrictionDB contains the access control list for a dwelling object.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct RestrictionDB {
     #[serde(rename = "Version")]
-    version: u32,
+    pub version: u32,
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "MonarchId")]
-    monarch_id: ObjectId,
+    pub monarch_id: ObjectId,
     #[serde(rename = "Permissions")]
-    permissions: PHashTable<ObjectId, uint>,
+    pub permissions: PHashTable<ObjectId, uint>,
 }
 
 // The OldPublicWeenieDesc structure defines an object's game behavior.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct OldPublicWeenieDesc {
     #[serde(rename = "Header")]
-    header: u32,
+    pub header: u32,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "WeenieClassId")]
-    weenie_class_id: PackedDWORD,
+    pub weenie_class_id: PackedDWORD,
     #[serde(rename = "Icon")]
-    icon: PackedDWORD,
+    pub icon: PackedDWORD,
     #[serde(rename = "Type")]
-    type_: ItemType,
+    pub type_: ItemType,
     #[serde(rename = "Bitfield")]
-    bitfield: ObjectDescriptionFlag,
+    pub bitfield: ObjectDescriptionFlag,
     #[serde(rename = "PluralName")]
-    plural_name: Option<String>,
+    pub plural_name: Option<String>,
     #[serde(rename = "ItemsCapacity")]
-    items_capacity: Option<u8>,
+    pub items_capacity: Option<u8>,
     #[serde(rename = "ContainerCapacity")]
-    container_capacity: Option<u8>,
+    pub container_capacity: Option<u8>,
     #[serde(rename = "Value")]
-    value: Option<u32>,
+    pub value: Option<u32>,
     #[serde(rename = "Useability")]
-    useability: Option<Usable>,
+    pub useability: Option<Usable>,
     #[serde(rename = "UseRadius")]
-    use_radius: Option<f32>,
+    pub use_radius: Option<f32>,
     #[serde(rename = "tTargetType")]
-    t_target_type: Option<ItemType>,
+    pub t_target_type: Option<ItemType>,
     #[serde(rename = "Effects")]
-    effects: Option<IconHighlight>,
+    pub effects: Option<IconHighlight>,
     #[serde(rename = "AmmunitionType")]
-    ammunition_type: Option<AmmoType>,
+    pub ammunition_type: Option<AmmoType>,
     #[serde(rename = "CombatUse")]
-    combat_use: Option<WieldType>,
+    pub combat_use: Option<WieldType>,
     #[serde(rename = "Structure")]
-    structure: Option<u16>,
+    pub structure: Option<u16>,
     #[serde(rename = "MaxStructure")]
-    max_structure: Option<u16>,
+    pub max_structure: Option<u16>,
     #[serde(rename = "StackSize")]
-    stack_size: Option<u16>,
+    pub stack_size: Option<u16>,
     #[serde(rename = "MaxStackSize")]
-    max_stack_size: Option<u16>,
+    pub max_stack_size: Option<u16>,
     #[serde(rename = "ContainerId")]
-    container_id: Option<ObjectId>,
+    pub container_id: Option<ObjectId>,
     #[serde(rename = "WielderId")]
-    wielder_id: Option<ObjectId>,
+    pub wielder_id: Option<ObjectId>,
     #[serde(rename = "ValidSlots")]
-    valid_slots: Option<EquipMask>,
+    pub valid_slots: Option<EquipMask>,
     #[serde(rename = "Slots")]
-    slots: Option<EquipMask>,
+    pub slots: Option<EquipMask>,
     #[serde(rename = "Priority")]
-    priority: Option<CoverageMask>,
+    pub priority: Option<CoverageMask>,
     #[serde(rename = "BlipColor")]
-    blip_color: Option<RadarColor>,
+    pub blip_color: Option<RadarColor>,
     #[serde(rename = "RadarEnum")]
-    radar_enum: Option<RadarBehavior>,
+    pub radar_enum: Option<RadarBehavior>,
     #[serde(rename = "ObviousDistance")]
-    obvious_distance: Option<f32>,
+    pub obvious_distance: Option<f32>,
     #[serde(rename = "Vndwcid")]
-    vndwcid: Option<u16>,
+    pub vndwcid: Option<u16>,
     #[serde(rename = "SpellId")]
-    spell_id: Option<SpellId>,
+    pub spell_id: Option<SpellId>,
     #[serde(rename = "HouseOwnerId")]
-    house_owner_id: Option<ObjectId>,
+    pub house_owner_id: Option<ObjectId>,
     #[serde(rename = "PhysicsScript")]
-    physics_script: Option<u16>,
+    pub physics_script: Option<u16>,
     #[serde(rename = "Restrictions")]
-    restrictions: Option<RestrictionDB>,
+    pub restrictions: Option<RestrictionDB>,
     #[serde(rename = "HookType")]
-    hook_type: Option<HookType>,
+    pub hook_type: Option<HookType>,
     #[serde(rename = "HookItemTypes")]
-    hook_item_types: Option<HookType>,
+    pub hook_item_types: Option<HookType>,
     #[serde(rename = "MonarchId")]
-    monarch_id: Option<ObjectId>,
+    pub monarch_id: Option<ObjectId>,
     #[serde(rename = "IconOverlay")]
-    icon_overlay: Option<PackedDWORD>,
+    pub icon_overlay: Option<PackedDWORD>,
     #[serde(rename = "Material")]
-    material: Option<MaterialType>,
+    pub material: Option<MaterialType>,
 }
 
 // Information related to a secure trade.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Trade {
     #[serde(rename = "PartnerId")]
-    partner_id: ObjectId,
+    pub partner_id: ObjectId,
     #[serde(rename = "Sequence")]
-    sequence: u64,
+    pub sequence: u64,
     #[serde(rename = "Status")]
-    status: u32,
+    pub status: u32,
     #[serde(rename = "InitiatorId")]
-    initiator_id: ObjectId,
+    pub initiator_id: ObjectId,
     #[serde(rename = "Accepted")]
-    accepted: bool,
+    pub accepted: bool,
     #[serde(rename = "PartnerAccepted")]
-    partner_accepted: bool,
+    pub partner_accepted: bool,
 }
 
 // A jump with sequences
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct JumpPack {
     #[serde(rename = "Extent")]
-    extent: f32,
+    pub extent: f32,
     #[serde(rename = "Velocity")]
-    velocity: Vector3,
+    pub velocity: Vector3,
     #[serde(rename = "ObjectInstanceSequence")]
-    object_instance_sequence: u16,
+    pub object_instance_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
-    object_server_control_sequence: u16,
+    pub object_server_control_sequence: u16,
     #[serde(rename = "ObjectTeleportSequence")]
-    object_teleport_sequence: u16,
+    pub object_teleport_sequence: u16,
     #[serde(rename = "ObjectForcePositionSequence")]
-    object_force_position_sequence: u16,
+    pub object_force_position_sequence: u16,
 }
 
 // A set of data related to changing states with sequences
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MoveToStatePack {
     #[serde(rename = "RawMotionState")]
-    raw_motion_state: RawMotionState,
+    pub raw_motion_state: RawMotionState,
     #[serde(rename = "Position")]
-    position: Position,
+    pub position: Position,
     #[serde(rename = "ObjectInstanceSequence")]
-    object_instance_sequence: u16,
+    pub object_instance_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
-    object_server_control_sequence: u16,
+    pub object_server_control_sequence: u16,
     #[serde(rename = "ObjectTeleportSequence")]
-    object_teleport_sequence: u16,
+    pub object_teleport_sequence: u16,
     #[serde(rename = "ObjectForcePositionSequence")]
-    object_force_position_sequence: u16,
+    pub object_force_position_sequence: u16,
     #[serde(rename = "Contact")]
-    contact: u8,
+    pub contact: u8,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PackedMotionCommand {
     #[serde(rename = "CommandId")]
-    command_id: Command,
+    pub command_id: Command,
     #[serde(rename = "PackedSequence")]
-    packed_sequence: u16,
+    pub packed_sequence: u16,
     #[serde(rename = "Speed")]
-    speed: f32,
+    pub speed: f32,
 }
 
 // Data related to the movement of the object sent from a client
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct RawMotionState {
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "CurrentHoldkey")]
-    current_holdkey: Option<HoldKey>,
+    pub current_holdkey: Option<HoldKey>,
     #[serde(rename = "CurrentStyle")]
-    current_style: Option<StanceMode>,
+    pub current_style: Option<StanceMode>,
     #[serde(rename = "ForwardCommand")]
-    forward_command: Option<MovementCommand>,
+    pub forward_command: Option<MovementCommand>,
     #[serde(rename = "ForwardHoldkey")]
-    forward_holdkey: Option<HoldKey>,
+    pub forward_holdkey: Option<HoldKey>,
     #[serde(rename = "ForwardSpeed")]
-    forward_speed: Option<f32>,
+    pub forward_speed: Option<f32>,
     #[serde(rename = "SidestepCommand")]
-    sidestep_command: Option<MovementCommand>,
+    pub sidestep_command: Option<MovementCommand>,
     #[serde(rename = "SidestepHoldkey")]
-    sidestep_holdkey: Option<HoldKey>,
+    pub sidestep_holdkey: Option<HoldKey>,
     #[serde(rename = "SidestepSpeed")]
-    sidestep_speed: Option<f32>,
+    pub sidestep_speed: Option<f32>,
     #[serde(rename = "TurnCommand")]
-    turn_command: Option<MovementCommand>,
+    pub turn_command: Option<MovementCommand>,
     #[serde(rename = "TurnHoldkey")]
-    turn_holdkey: Option<u32>,
+    pub turn_holdkey: Option<u32>,
     #[serde(rename = "TurnSpeed")]
-    turn_speed: Option<f32>,
+    pub turn_speed: Option<f32>,
     #[serde(rename = "Commands")]
-    commands: Vec<PackedMotionCommand>,
+    pub commands: Vec<PackedMotionCommand>,
 }
 
 // An autonomous position with sequences
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AutonomousPositionPack {
     #[serde(rename = "Position")]
-    position: Position,
+    pub position: Position,
     #[serde(rename = "ObjectInstanceSequence")]
-    object_instance_sequence: u16,
+    pub object_instance_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
-    object_server_control_sequence: u16,
+    pub object_server_control_sequence: u16,
     #[serde(rename = "ObjectTeleportSequence")]
-    object_teleport_sequence: u16,
+    pub object_teleport_sequence: u16,
     #[serde(rename = "ObjectForcePositionSequence")]
-    object_force_position_sequence: u16,
+    pub object_force_position_sequence: u16,
     #[serde(rename = "Contact")]
-    contact: u8,
+    pub contact: u8,
 }
 
 // A position with sequences
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PositionPack {
     #[serde(rename = "Flags")]
-    flags: PositionFlags,
+    pub flags: PositionFlags,
     #[serde(rename = "Origin")]
-    origin: Origin,
+    pub origin: Origin,
     #[serde(rename = "WQuat")]
-    w_quat: Option<f32>,
+    pub w_quat: Option<f32>,
     #[serde(rename = "XQuat")]
-    x_quat: Option<f32>,
+    pub x_quat: Option<f32>,
     #[serde(rename = "YQuat")]
-    y_quat: Option<f32>,
+    pub y_quat: Option<f32>,
     #[serde(rename = "ZQuat")]
-    z_quat: Option<f32>,
+    pub z_quat: Option<f32>,
     #[serde(rename = "Velocity")]
-    velocity: Option<Vector3>,
+    pub velocity: Option<Vector3>,
     #[serde(rename = "PlacementId")]
-    placement_id: Option<u32>,
+    pub placement_id: Option<u32>,
     #[serde(rename = "ObjectInstanceSequence")]
-    object_instance_sequence: u16,
+    pub object_instance_sequence: u16,
     #[serde(rename = "ObjectPositionSequence")]
-    object_position_sequence: u16,
+    pub object_position_sequence: u16,
     #[serde(rename = "ObjectTeleportSequence")]
-    object_teleport_sequence: u16,
+    pub object_teleport_sequence: u16,
     #[serde(rename = "ObjectForcePositionSequence")]
-    object_force_position_sequence: u16,
+    pub object_force_position_sequence: u16,
 }
 
 // Data related to the movement and animation of the object
@@ -1904,519 +1904,519 @@ pub enum MovementData {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct InterpertedMotionState {
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "CurrentStyle")]
-    current_style: Option<StanceMode>,
+    pub current_style: Option<StanceMode>,
     #[serde(rename = "ForwardCommand")]
-    forward_command: Option<MovementCommand>,
+    pub forward_command: Option<MovementCommand>,
     #[serde(rename = "SidestepCommand")]
-    sidestep_command: Option<MovementCommand>,
+    pub sidestep_command: Option<MovementCommand>,
     #[serde(rename = "TurnCommand")]
-    turn_command: Option<MovementCommand>,
+    pub turn_command: Option<MovementCommand>,
     #[serde(rename = "ForwardSpeed")]
-    forward_speed: Option<f32>,
+    pub forward_speed: Option<f32>,
     #[serde(rename = "SidestepSpeed")]
-    sidestep_speed: Option<f32>,
+    pub sidestep_speed: Option<f32>,
     #[serde(rename = "TurnSpeed")]
-    turn_speed: Option<f32>,
+    pub turn_speed: Option<f32>,
     #[serde(rename = "Commands")]
-    commands: Vec<PackedMotionCommand>,
+    pub commands: Vec<PackedMotionCommand>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct DDDRevision {
     #[serde(rename = "IdDatFile")]
-    id_dat_file: u64,
+    pub id_dat_file: u64,
     #[serde(rename = "Iteration")]
-    iteration: u32,
+    pub iteration: u32,
     #[serde(rename = "IdsToDownload")]
-    ids_to_download: PackableList<DataId>,
+    pub ids_to_download: PackableList<DataId>,
     #[serde(rename = "IdsToPurge")]
-    ids_to_purge: PackableList<DataId>,
+    pub ids_to_purge: PackableList<DataId>,
 }
 
 // Set of movement parameters required for a MoveTo movement
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct MoveToMovementParameters {
     #[serde(rename = "Bitmember")]
-    bitmember: u32,
+    pub bitmember: u32,
     #[serde(rename = "DistanceToObject")]
-    distance_to_object: f32,
+    pub distance_to_object: f32,
     #[serde(rename = "MinDistance")]
-    min_distance: f32,
+    pub min_distance: f32,
     #[serde(rename = "FailDistance")]
-    fail_distance: f32,
+    pub fail_distance: f32,
     #[serde(rename = "AnimationSpeed")]
-    animation_speed: f32,
+    pub animation_speed: f32,
     #[serde(rename = "WalkRunThreshold")]
-    walk_run_threshold: f32,
+    pub walk_run_threshold: f32,
     #[serde(rename = "DesiredHeading")]
-    desired_heading: f32,
+    pub desired_heading: f32,
 }
 
 // Set of movement parameters required for a TurnTo motion
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TurnToMovementParameters {
     #[serde(rename = "Bitmember")]
-    bitmember: u32,
+    pub bitmember: u32,
     #[serde(rename = "AnimationSpeed")]
-    animation_speed: f32,
+    pub animation_speed: f32,
     #[serde(rename = "DesiredHeading")]
-    desired_heading: f32,
+    pub desired_heading: f32,
 }
 
 // The ObjDesc structure defines an object's visual appearance.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ObjDesc {
     #[serde(rename = "Version")]
-    version: u8,
+    pub version: u8,
     #[serde(rename = "PaletteCount")]
-    palette_count: u8,
+    pub palette_count: u8,
     #[serde(rename = "TextureCount")]
-    texture_count: u8,
+    pub texture_count: u8,
     #[serde(rename = "ModelCount")]
-    model_count: u8,
+    pub model_count: u8,
     #[serde(rename = "Palette")]
-    palette: Option<DataId>,
+    pub palette: Option<DataId>,
     #[serde(rename = "Subpalettes")]
-    subpalettes: Vec<Subpalette>,
+    pub subpalettes: Vec<Subpalette>,
     #[serde(rename = "TMChanges")]
-    tm_changes: Vec<TextureMapChange>,
+    pub tm_changes: Vec<TextureMapChange>,
     #[serde(rename = "APChanges")]
-    ap_changes: Vec<AnimPartChange>,
+    pub ap_changes: Vec<AnimPartChange>,
 }
 
 // Contains data for a subpalette
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Subpalette {
     #[serde(rename = "Palette")]
-    palette: DataId,
+    pub palette: DataId,
     #[serde(rename = "Offset")]
-    offset: u8,
+    pub offset: u8,
     #[serde(rename = "NumColors")]
-    num_colors: u8,
+    pub num_colors: u8,
 }
 
 // Contains data for texture map changes
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct TextureMapChange {
     #[serde(rename = "PartIndex")]
-    part_index: u8,
+    pub part_index: u8,
     #[serde(rename = "OldTexId")]
-    old_tex_id: DataId,
+    pub old_tex_id: DataId,
     #[serde(rename = "NewTexId")]
-    new_tex_id: DataId,
+    pub new_tex_id: DataId,
 }
 
 // Contains data for animation part changes
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AnimPartChange {
     #[serde(rename = "PartIndex")]
-    part_index: u8,
+    pub part_index: u8,
     #[serde(rename = "PartId")]
-    part_id: DataId,
+    pub part_id: DataId,
 }
 
 // Data for a character creation
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CharGenResult {
     #[serde(rename = "Account")]
-    account: String,
+    pub account: String,
     #[serde(rename = "One")]
-    one: u32,
+    pub one: u32,
     #[serde(rename = "HeritageGroup")]
-    heritage_group: HeritageGroup,
+    pub heritage_group: HeritageGroup,
     #[serde(rename = "Gender")]
-    gender: Gender,
+    pub gender: Gender,
     #[serde(rename = "EyesStrip")]
-    eyes_strip: u32,
+    pub eyes_strip: u32,
     #[serde(rename = "NoseStrip")]
-    nose_strip: u32,
+    pub nose_strip: u32,
     #[serde(rename = "MouthStrip")]
-    mouth_strip: u32,
+    pub mouth_strip: u32,
     #[serde(rename = "HairColor")]
-    hair_color: u32,
+    pub hair_color: u32,
     #[serde(rename = "EyeColor")]
-    eye_color: u32,
+    pub eye_color: u32,
     #[serde(rename = "HairStyle")]
-    hair_style: u32,
+    pub hair_style: u32,
     #[serde(rename = "HeadgearStyle")]
-    headgear_style: u32,
+    pub headgear_style: u32,
     #[serde(rename = "HeadgearColor")]
-    headgear_color: u32,
+    pub headgear_color: u32,
     #[serde(rename = "ShirtStyle")]
-    shirt_style: u32,
+    pub shirt_style: u32,
     #[serde(rename = "ShirtColor")]
-    shirt_color: u32,
+    pub shirt_color: u32,
     #[serde(rename = "TrousersStyle")]
-    trousers_style: u32,
+    pub trousers_style: u32,
     #[serde(rename = "TrousersColor")]
-    trousers_color: u32,
+    pub trousers_color: u32,
     #[serde(rename = "FootwearStyle")]
-    footwear_style: u32,
+    pub footwear_style: u32,
     #[serde(rename = "FootwearColor")]
-    footwear_color: u32,
+    pub footwear_color: u32,
     #[serde(rename = "SkinShade")]
-    skin_shade: u64,
+    pub skin_shade: u64,
     #[serde(rename = "HairShade")]
-    hair_shade: u64,
+    pub hair_shade: u64,
     #[serde(rename = "HeadgearShade")]
-    headgear_shade: u64,
+    pub headgear_shade: u64,
     #[serde(rename = "ShirtShade")]
-    shirt_shade: u64,
+    pub shirt_shade: u64,
     #[serde(rename = "TrousersShade")]
-    trousers_shade: u64,
+    pub trousers_shade: u64,
     #[serde(rename = "TootwearShade")]
-    tootwear_shade: u64,
+    pub tootwear_shade: u64,
     #[serde(rename = "TemplateNum")]
-    template_num: u32,
+    pub template_num: u32,
     #[serde(rename = "Strength")]
-    strength: u32,
+    pub strength: u32,
     #[serde(rename = "Endurance")]
-    endurance: u32,
+    pub endurance: u32,
     #[serde(rename = "Coordination")]
-    coordination: u32,
+    pub coordination: u32,
     #[serde(rename = "Quickness")]
-    quickness: u32,
+    pub quickness: u32,
     #[serde(rename = "Focus")]
-    focus: u32,
+    pub focus: u32,
     #[serde(rename = "Self")]
-    self_: u32,
+    pub self_: u32,
     #[serde(rename = "Slot")]
-    slot: u32,
+    pub slot: u32,
     #[serde(rename = "ClassId")]
-    class_id: u32,
+    pub class_id: u32,
     #[serde(rename = "Skills")]
-    skills: PackableList<SkillAdvancementClass>,
+    pub skills: PackableList<SkillAdvancementClass>,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "StartArea")]
-    start_area: u32,
+    pub start_area: u32,
     #[serde(rename = "IsAdmin")]
-    is_admin: u32,
+    pub is_admin: u32,
     #[serde(rename = "IsEnvoy")]
-    is_envoy: u32,
+    pub is_envoy: u32,
     #[serde(rename = "Validation")]
-    validation: u32,
+    pub validation: u32,
 }
 
 // Basic information for a character used at the Login screen
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CharacterIdentity {
     #[serde(rename = "CharacterId")]
-    character_id: ObjectId,
+    pub character_id: ObjectId,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "SecondsGreyedOut")]
-    seconds_greyed_out: u32,
+    pub seconds_greyed_out: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EquipLocation {
     #[serde(rename = "ObjectId")]
-    object_id: ObjectId,
+    pub object_id: ObjectId,
     #[serde(rename = "Slot")]
-    slot: EquipMask,
+    pub slot: EquipMask,
 }
 
 // The PhysicsDesc structure defines an object's physical behavior.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PhysicsDesc {
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "State")]
-    state: PhysicsState,
+    pub state: PhysicsState,
     #[serde(rename = "MovementBuffer")]
-    movement_buffer: Option<PackableList<byte>>,
+    pub movement_buffer: Option<PackableList<byte>>,
     #[serde(rename = "Autonomous")]
-    autonomous: Option<bool>,
+    pub autonomous: Option<bool>,
     #[serde(rename = "AnimationFrame")]
-    animation_frame: Option<u32>,
+    pub animation_frame: Option<u32>,
     #[serde(rename = "Position")]
-    position: Option<Position>,
+    pub position: Option<Position>,
     #[serde(rename = "MotionId")]
-    motion_id: Option<DataId>,
+    pub motion_id: Option<DataId>,
     #[serde(rename = "SoundId")]
-    sound_id: Option<DataId>,
+    pub sound_id: Option<DataId>,
     #[serde(rename = "PhysicsScriptId")]
-    physics_script_id: Option<DataId>,
+    pub physics_script_id: Option<DataId>,
     #[serde(rename = "SetupId")]
-    setup_id: Option<DataId>,
+    pub setup_id: Option<DataId>,
     #[serde(rename = "ParentId")]
-    parent_id: Option<ObjectId>,
+    pub parent_id: Option<ObjectId>,
     #[serde(rename = "ParentLocation")]
-    parent_location: Option<ParentLocation>,
+    pub parent_location: Option<ParentLocation>,
     #[serde(rename = "Children")]
-    children: Option<PackableList<EquipLocation>>,
+    pub children: Option<PackableList<EquipLocation>>,
     #[serde(rename = "Scale")]
-    scale: Option<f32>,
+    pub scale: Option<f32>,
     #[serde(rename = "Friction")]
-    friction: Option<f32>,
+    pub friction: Option<f32>,
     #[serde(rename = "Elasticity")]
-    elasticity: Option<f32>,
+    pub elasticity: Option<f32>,
     #[serde(rename = "Translucency")]
-    translucency: Option<f32>,
+    pub translucency: Option<f32>,
     #[serde(rename = "Velocity")]
-    velocity: Option<Vector3>,
+    pub velocity: Option<Vector3>,
     #[serde(rename = "Acceleration")]
-    acceleration: Option<Vector3>,
+    pub acceleration: Option<Vector3>,
     #[serde(rename = "Omega")]
-    omega: Option<Vector3>,
+    pub omega: Option<Vector3>,
     #[serde(rename = "DefaultScript")]
-    default_script: Option<u32>,
+    pub default_script: Option<u32>,
     #[serde(rename = "DefaultScriptIntensity")]
-    default_script_intensity: Option<f32>,
+    pub default_script_intensity: Option<f32>,
     #[serde(rename = "ObjectPositionSequence")]
-    object_position_sequence: u16,
+    pub object_position_sequence: u16,
     #[serde(rename = "ObjectMovementSequence")]
-    object_movement_sequence: u16,
+    pub object_movement_sequence: u16,
     #[serde(rename = "ObjectStateSequence")]
-    object_state_sequence: u16,
+    pub object_state_sequence: u16,
     #[serde(rename = "ObjectVectorSequence")]
-    object_vector_sequence: u16,
+    pub object_vector_sequence: u16,
     #[serde(rename = "ObjectTeleportSequence")]
-    object_teleport_sequence: u16,
+    pub object_teleport_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
-    object_server_control_sequence: u16,
+    pub object_server_control_sequence: u16,
     #[serde(rename = "ObjectForcePositionSequence")]
-    object_force_position_sequence: u16,
+    pub object_force_position_sequence: u16,
     #[serde(rename = "ObjectVisualDescSequence")]
-    object_visual_desc_sequence: u16,
+    pub object_visual_desc_sequence: u16,
     #[serde(rename = "ObjectInstanceSequence")]
-    object_instance_sequence: u16,
+    pub object_instance_sequence: u16,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AdminAccountData {
     #[serde(rename = "AccountName")]
-    account_name: String,
+    pub account_name: String,
     #[serde(rename = "BookieId")]
-    bookie_id: u32,
+    pub bookie_id: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AdminPlayerData {
-    name: String,
+    pub name: String,
     #[serde(rename = "bookieId")]
-    bookie_id: u32,
+    pub bookie_id: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct VendorProfile {
     #[serde(rename = "Categories")]
-    categories: ItemType,
+    pub categories: ItemType,
     #[serde(rename = "MinValue")]
-    min_value: u32,
+    pub min_value: u32,
     #[serde(rename = "MaxValue")]
-    max_value: u32,
+    pub max_value: u32,
     #[serde(rename = "DealsMagic")]
-    deals_magic: bool,
+    pub deals_magic: bool,
     #[serde(rename = "BuyPrice")]
-    buy_price: f32,
+    pub buy_price: f32,
     #[serde(rename = "SellPrice")]
-    sell_price: f32,
+    pub sell_price: f32,
     #[serde(rename = "CurrencyId")]
-    currency_id: u32,
+    pub currency_id: u32,
     #[serde(rename = "CurrencyAmount")]
-    currency_amount: u32,
+    pub currency_amount: u32,
     #[serde(rename = "CurrencyName")]
-    currency_name: String,
+    pub currency_name: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ArmorProfile {
     #[serde(rename = "ProtSlashing")]
-    prot_slashing: f32,
+    pub prot_slashing: f32,
     #[serde(rename = "ProtPiercing")]
-    prot_piercing: f32,
+    pub prot_piercing: f32,
     #[serde(rename = "ProtBludgeoning")]
-    prot_bludgeoning: f32,
+    pub prot_bludgeoning: f32,
     #[serde(rename = "ProtCold")]
-    prot_cold: f32,
+    pub prot_cold: f32,
     #[serde(rename = "ProtFire")]
-    prot_fire: f32,
+    pub prot_fire: f32,
     #[serde(rename = "ProtAcid")]
-    prot_acid: f32,
+    pub prot_acid: f32,
     #[serde(rename = "ProtNether")]
-    prot_nether: f32,
+    pub prot_nether: f32,
     #[serde(rename = "ProtLightning")]
-    prot_lightning: f32,
+    pub prot_lightning: f32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CreatureAppraisalProfile {
     #[serde(rename = "Flags")]
-    flags: u32,
+    pub flags: u32,
     #[serde(rename = "Health")]
-    health: u32,
+    pub health: u32,
     #[serde(rename = "HealthMax")]
-    health_max: u32,
+    pub health_max: u32,
     #[serde(rename = "Strength")]
-    strength: Option<u32>,
+    pub strength: Option<u32>,
     #[serde(rename = "Endurance")]
-    endurance: Option<u32>,
+    pub endurance: Option<u32>,
     #[serde(rename = "Quickness")]
-    quickness: Option<u32>,
+    pub quickness: Option<u32>,
     #[serde(rename = "Coordination")]
-    coordination: Option<u32>,
+    pub coordination: Option<u32>,
     #[serde(rename = "Focus")]
-    focus: Option<u32>,
+    pub focus: Option<u32>,
     #[serde(rename = "Self")]
-    self_: Option<u32>,
+    pub self_: Option<u32>,
     #[serde(rename = "Stamina")]
-    stamina: Option<u32>,
+    pub stamina: Option<u32>,
     #[serde(rename = "Mana")]
-    mana: Option<u32>,
+    pub mana: Option<u32>,
     #[serde(rename = "StaminaMax")]
-    stamina_max: Option<u32>,
+    pub stamina_max: Option<u32>,
     #[serde(rename = "ManaMax")]
-    mana_max: Option<u32>,
+    pub mana_max: Option<u32>,
     #[serde(rename = "AttrHighlight")]
-    attr_highlight: Option<AttributeMask>,
+    pub attr_highlight: Option<AttributeMask>,
     #[serde(rename = "AttrColor")]
-    attr_color: Option<AttributeMask>,
+    pub attr_color: Option<AttributeMask>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct WeaponProfile {
     #[serde(rename = "DamageType")]
-    damage_type: DamageType,
+    pub damage_type: DamageType,
     #[serde(rename = "Speed")]
-    speed: u32,
+    pub speed: u32,
     #[serde(rename = "Skill")]
-    skill: SkillId,
+    pub skill: SkillId,
     #[serde(rename = "Damage")]
-    damage: u32,
+    pub damage: u32,
     #[serde(rename = "Variance")]
-    variance: f64,
+    pub variance: f64,
     #[serde(rename = "Modifier")]
-    modifier: f64,
+    pub modifier: f64,
     #[serde(rename = "Length")]
-    length: f64,
+    pub length: f64,
     #[serde(rename = "MaxVelocity")]
-    max_velocity: f64,
+    pub max_velocity: f64,
     #[serde(rename = "Offsense")]
-    offsense: f64,
+    pub offsense: f64,
     #[serde(rename = "MaxVelocityEstimated")]
-    max_velocity_estimated: u32,
+    pub max_velocity_estimated: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HookAppraisalProfile {
     #[serde(rename = "Flags")]
-    flags: HookAppraisalFlags,
+    pub flags: HookAppraisalFlags,
     #[serde(rename = "ValidLocations")]
-    valid_locations: EquipMask,
+    pub valid_locations: EquipMask,
     #[serde(rename = "AmmoType")]
-    ammo_type: AmmoType,
+    pub ammo_type: AmmoType,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SquelchDB {
     #[serde(rename = "AccountHash")]
-    account_hash: PackableHashTable<string, uint>,
+    pub account_hash: PackableHashTable<string, uint>,
     #[serde(rename = "CharacterHash")]
-    character_hash: PackableHashTable<ObjectId, SquelchInfo>,
+    pub character_hash: PackableHashTable<ObjectId, SquelchInfo>,
     #[serde(rename = "GlobalInfo")]
-    global_info: SquelchInfo,
+    pub global_info: SquelchInfo,
 }
 
 // Set of information related to a squelch entry
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SquelchInfo {
     #[serde(rename = "Filters")]
-    filters: PackableList<LogTextType>,
+    pub filters: PackableList<LogTextType>,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "Account")]
-    account: bool,
+    pub account: bool,
 }
 
 // Set of information related to purchasing a housing
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HouseProfile {
     #[serde(rename = "DwellingId")]
-    dwelling_id: u32,
+    pub dwelling_id: u32,
     #[serde(rename = "OwnerId")]
-    owner_id: ObjectId,
+    pub owner_id: ObjectId,
     #[serde(rename = "Flags")]
-    flags: HouseBitfield,
+    pub flags: HouseBitfield,
     #[serde(rename = "MinLevel")]
-    min_level: i32,
+    pub min_level: i32,
     #[serde(rename = "MaxLevel")]
-    max_level: i32,
+    pub max_level: i32,
     #[serde(rename = "MinAllegRank")]
-    min_alleg_rank: i32,
+    pub min_alleg_rank: i32,
     #[serde(rename = "MaxAllegRank")]
-    max_alleg_rank: i32,
+    pub max_alleg_rank: i32,
     #[serde(rename = "MaintenanceFree")]
-    maintenance_free: bool,
+    pub maintenance_free: bool,
     #[serde(rename = "Type")]
-    type_: HouseType,
+    pub type_: HouseType,
     #[serde(rename = "OwnerName")]
-    owner_name: String,
+    pub owner_name: String,
     #[serde(rename = "Buy")]
-    buy: PackableList<HousePayment>,
+    pub buy: PackableList<HousePayment>,
     #[serde(rename = "Rent")]
-    rent: PackableList<HousePayment>,
+    pub rent: PackableList<HousePayment>,
 }
 
 // The HousePayment structure contains information about a house purchase or maintenance item.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HousePayment {
     #[serde(rename = "Required")]
-    required: u32,
+    pub required: u32,
     #[serde(rename = "Paid")]
-    paid: u32,
+    pub paid: u32,
     #[serde(rename = "WeenieClassId")]
-    weenie_class_id: u32,
+    pub weenie_class_id: u32,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "PluralName")]
-    plural_name: String,
+    pub plural_name: String,
 }
 
 // Set of information related to owning a housing
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HouseData {
     #[serde(rename = "BuyTime")]
-    buy_time: u32,
+    pub buy_time: u32,
     #[serde(rename = "RentTime")]
-    rent_time: u32,
+    pub rent_time: u32,
     #[serde(rename = "Type")]
-    type_: HouseType,
+    pub type_: HouseType,
     #[serde(rename = "MaintenanceFree")]
-    maintenance_free: bool,
+    pub maintenance_free: bool,
     #[serde(rename = "Buy")]
-    buy: PackableList<HousePayment>,
+    pub buy: PackableList<HousePayment>,
     #[serde(rename = "Rent")]
-    rent: PackableList<HousePayment>,
+    pub rent: PackableList<HousePayment>,
     #[serde(rename = "Position")]
-    position: Position,
+    pub position: Position,
 }
 
 // Set of information related to house access
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct HAR {
     #[serde(rename = "Version")]
-    version: u32,
+    pub version: u32,
     #[serde(rename = "Bitmask")]
-    bitmask: u32,
+    pub bitmask: u32,
     #[serde(rename = "MonarchId")]
-    monarch_id: ObjectId,
+    pub monarch_id: ObjectId,
     #[serde(rename = "GuestList")]
-    guest_list: PackableHashTable<ObjectId, GuestInfo>,
+    pub guest_list: PackableHashTable<ObjectId, GuestInfo>,
     #[serde(rename = "RoommateList")]
-    roommate_list: PackableList<ObjectId>,
+    pub roommate_list: PackableList<ObjectId>,
 }
 
 // Set of information related to a house guest
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GuestInfo {
     #[serde(rename = "HasStoragePermission")]
-    has_storage_permission: bool,
+    pub has_storage_permission: bool,
     #[serde(rename = "GuestName")]
-    guest_name: String,
+    pub guest_name: String,
 }
 
 // Set of information related to a chess game move
@@ -2464,187 +2464,187 @@ pub enum GameMoveData {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SalvageOperationsResultData {
     #[serde(rename = "SkillUsed")]
-    skill_used: SkillId,
+    pub skill_used: SkillId,
     #[serde(rename = "NotSalvagable")]
-    not_salvagable: PackableList<ObjectId>,
+    pub not_salvagable: PackableList<ObjectId>,
     #[serde(rename = "SalvageResults")]
-    salvage_results: PackableList<SalvageResult>,
+    pub salvage_results: PackableList<SalvageResult>,
     #[serde(rename = "AugBonus")]
-    aug_bonus: i32,
+    pub aug_bonus: i32,
 }
 
 // Set of information related to a salvage of an item
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SalvageResult {
     #[serde(rename = "Material")]
-    material: MaterialType,
+    pub material: MaterialType,
     #[serde(rename = "Workmanship")]
-    workmanship: f64,
+    pub workmanship: f64,
     #[serde(rename = "Units")]
-    units: u32,
+    pub units: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct FellowshipLockData {
     #[serde(rename = "Unknown1")]
-    unknown1: u32,
+    pub unknown1: u32,
     #[serde(rename = "Unknown2")]
-    unknown2: u32,
+    pub unknown2: u32,
     #[serde(rename = "Unknown3")]
-    unknown3: u32,
+    pub unknown3: u32,
     #[serde(rename = "Timestamp")]
-    timestamp: u32,
+    pub timestamp: u32,
     #[serde(rename = "Sequence")]
-    sequence: u32,
+    pub sequence: u32,
 }
 
 // Set of information for a fellowship
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Fellowship {
     #[serde(rename = "Members")]
-    members: PackableHashTable<ObjectId, Fellow>,
+    pub members: PackableHashTable<ObjectId, Fellow>,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
     #[serde(rename = "LeaderId")]
-    leader_id: ObjectId,
+    pub leader_id: ObjectId,
     #[serde(rename = "ShareXP")]
-    share_xp: bool,
+    pub share_xp: bool,
     #[serde(rename = "EvenXPSplit")]
-    even_xp_split: bool,
+    pub even_xp_split: bool,
     #[serde(rename = "Open")]
-    open: bool,
+    pub open: bool,
     #[serde(rename = "Locked")]
-    locked: bool,
+    pub locked: bool,
     #[serde(rename = "RecentlyDeparted")]
-    recently_departed: PackableHashTable<ObjectId, int>,
+    pub recently_departed: PackableHashTable<ObjectId, int>,
     #[serde(rename = "Locks")]
-    locks: PackableHashTable<String, FellowshipLockData>,
+    pub locks: PackableHashTable<String, FellowshipLockData>,
 }
 
 // The FellowInfo structure contains information about a fellowship member.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Fellow {
     #[serde(rename = "XPCached")]
-    xp_cached: u32,
+    pub xp_cached: u32,
     #[serde(rename = "LumCached")]
-    lum_cached: u32,
+    pub lum_cached: u32,
     #[serde(rename = "Level")]
-    level: u32,
+    pub level: u32,
     #[serde(rename = "MaxHealth")]
-    max_health: u32,
+    pub max_health: u32,
     #[serde(rename = "MaxStamina")]
-    max_stamina: u32,
+    pub max_stamina: u32,
     #[serde(rename = "MaxMana")]
-    max_mana: u32,
+    pub max_mana: u32,
     #[serde(rename = "CurrentHealth")]
-    current_health: u32,
+    pub current_health: u32,
     #[serde(rename = "CurrentStamina")]
-    current_stamina: u32,
+    pub current_stamina: u32,
     #[serde(rename = "CurrentMana")]
-    current_mana: u32,
+    pub current_mana: u32,
     #[serde(rename = "ShareLoot")]
-    share_loot: bool,
+    pub share_loot: bool,
     #[serde(rename = "Name")]
-    name: String,
+    pub name: String,
 }
 
 // Contains information about a contract.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ContractTracker {
     #[serde(rename = "Version")]
-    version: u32,
+    pub version: u32,
     #[serde(rename = "ContractId")]
-    contract_id: ContractId,
+    pub contract_id: ContractId,
     #[serde(rename = "ContractStage")]
-    contract_stage: ContractStage,
+    pub contract_stage: ContractStage,
     #[serde(rename = "TimeWhenDone")]
-    time_when_done: i64,
+    pub time_when_done: i64,
     #[serde(rename = "TimeWhenRepeats")]
-    time_when_repeats: i64,
+    pub time_when_repeats: i64,
 }
 
 // Contains table of ContractTrackers
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ContractTrackerTable {
     #[serde(rename = "ContactTrackers")]
-    contact_trackers: PackableHashTable<uint, ContractTracker>,
+    pub contact_trackers: PackableHashTable<uint, ContractTracker>,
 }
 
 // Client to Server AC packet.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct C2SPacket {
     #[serde(rename = "Sequence")]
-    sequence: u32,
+    pub sequence: u32,
     #[serde(rename = "Flags")]
-    flags: PacketHeaderFlags,
+    pub flags: PacketHeaderFlags,
     #[serde(rename = "Checksum")]
-    checksum: u32,
+    pub checksum: u32,
     #[serde(rename = "RecipientId")]
-    recipient_id: u16,
+    pub recipient_id: u16,
     #[serde(rename = "TimeSinceLastPacket")]
-    time_since_last_packet: u16,
+    pub time_since_last_packet: u16,
     #[serde(rename = "Size")]
-    size: u16,
+    pub size: u16,
     #[serde(rename = "Iteration")]
-    iteration: u16,
+    pub iteration: u16,
     #[serde(rename = "ServerSwitch")]
-    server_switch: Option<ServerSwitchHeader>,
+    pub server_switch: Option<ServerSwitchHeader>,
     #[serde(rename = "RetransmitSequences")]
-    retransmit_sequences: Option<PackableList<uint>>,
+    pub retransmit_sequences: Option<PackableList<uint>>,
     #[serde(rename = "RejectSequences")]
-    reject_sequences: Option<PackableList<uint>>,
+    pub reject_sequences: Option<PackableList<uint>>,
     #[serde(rename = "AckSequence")]
-    ack_sequence: Option<u32>,
+    pub ack_sequence: Option<u32>,
     #[serde(rename = "LoginRequest")]
-    login_request: Option<LoginRequestHeader>,
+    pub login_request: Option<LoginRequestHeader>,
     #[serde(rename = "WorldLoginRequest")]
-    world_login_request: Option<u64>,
+    pub world_login_request: Option<u64>,
     #[serde(rename = "ConnectResponse")]
-    connect_response: Option<u64>,
+    pub connect_response: Option<u64>,
     #[serde(rename = "CICMDCommand")]
-    cicmd_command: Option<CICMDCommandHeader>,
+    pub cicmd_command: Option<CICMDCommandHeader>,
     #[serde(rename = "Time")]
-    time: Option<u64>,
+    pub time: Option<u64>,
     #[serde(rename = "EchoTime")]
-    echo_time: Option<f32>,
+    pub echo_time: Option<f32>,
     #[serde(rename = "Flow")]
-    flow: Option<FlowHeader>,
+    pub flow: Option<FlowHeader>,
     #[serde(rename = "Fragments")]
-    fragments: Option<BlobFragments>,
+    pub fragments: Option<BlobFragments>,
 }
 
 // Server to Client AC packet.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct S2CPacket {
     #[serde(rename = "Sequence")]
-    sequence: u32,
+    pub sequence: u32,
     #[serde(rename = "Flags")]
-    flags: PacketHeaderFlags,
+    pub flags: PacketHeaderFlags,
     #[serde(rename = "Checksum")]
-    checksum: u32,
+    pub checksum: u32,
     #[serde(rename = "RecipientId")]
-    recipient_id: u16,
+    pub recipient_id: u16,
     #[serde(rename = "TimeSinceLastPacket")]
-    time_since_last_packet: u16,
+    pub time_since_last_packet: u16,
     #[serde(rename = "Size")]
-    size: u16,
+    pub size: u16,
     #[serde(rename = "Iteration")]
-    iteration: u16,
+    pub iteration: u16,
     #[serde(rename = "AckSequence")]
-    ack_sequence: Option<u32>,
+    pub ack_sequence: Option<u32>,
     #[serde(rename = "LogonServerAddr")]
-    logon_server_addr: Option<SocketAddress>,
+    pub logon_server_addr: Option<SocketAddress>,
     #[serde(rename = "Referral")]
-    referral: Option<ReferralHeader>,
+    pub referral: Option<ReferralHeader>,
     #[serde(rename = "ConnectRequest")]
-    connect_request: Option<ConnectRequestHeader>,
+    pub connect_request: Option<ConnectRequestHeader>,
     #[serde(rename = "NetError")]
-    net_error: Option<NetError>,
+    pub net_error: Option<NetError>,
     #[serde(rename = "NetErrorDisconnect")]
-    net_error_disconnect: Option<NetError>,
+    pub net_error_disconnect: Option<NetError>,
     #[serde(rename = "EchoResponse")]
-    echo_response: Option<EchoResponseHeader>,
+    pub echo_response: Option<EchoResponseHeader>,
     #[serde(rename = "Fragments")]
-    fragments: Option<BlobFragments>,
+    pub fragments: Option<BlobFragments>,
 }
 

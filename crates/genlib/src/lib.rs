@@ -24,8 +24,66 @@ struct FieldContext {
     if_false_fields: Vec<Field>,
 }
 
+/// Context for code generation, controlling what gets generated
+#[derive(Debug, Clone)]
+pub struct GenerationContext {
+    /// List of type names to generate readers for
+    /// Empty list means no readers
+    /// ["*"] means all readers
+    filter_types: Vec<String>,
+}
+
+impl GenerationContext {
+    pub fn new(filter_types: Vec<String>) -> Self {
+        Self { filter_types }
+    }
+
+    /// Check if readers should be generated for the given type name
+    pub fn should_generate_reader(&self, type_name: &str) -> bool {
+        if self.filter_types.is_empty() {
+            return false;
+        }
+
+        if self.filter_types.contains(&"*".to_string()) {
+            return true;
+        }
+
+        self.filter_types.contains(&type_name.to_string())
+    }
+}
+
+/// Context for reader generation containing type information
+pub struct ReaderContext {
+    /// Map from enum name to its parent type (e.g., "NetAuthType" -> "uint")
+    enum_parent_map: std::collections::HashMap<String, String>,
+    /// Map from (enum_name, value) to variant name (e.g., ("NetAuthType", "0x00000002") -> "AccountPassword")
+    enum_value_map: std::collections::HashMap<(String, String), String>,
+}
+
+impl ReaderContext {
+    pub fn new(
+        enum_parent_map: std::collections::HashMap<String, String>,
+        enum_value_map: std::collections::HashMap<(String, String), String>,
+    ) -> Self {
+        Self {
+            enum_parent_map,
+            enum_value_map,
+        }
+    }
+}
+
 /// Default derives for all generated types
 const DEFAULT_DERIVES: &[&str] = &["Clone", "Debug", "PartialEq", "Serialize", "Deserialize"];
+
+/// Default derives for all generated enums (includes TryFromPrimitive for safe conversion)
+const DEFAULT_ENUM_DERIVES: &[&str] = &[
+    "Clone",
+    "Debug",
+    "PartialEq",
+    "Serialize",
+    "Deserialize",
+    "TryFromPrimitive",
+];
 
 /// Map an XML type name to a Rust type name.
 pub fn get_rust_type(xml_type: &str) -> &str {
@@ -107,7 +165,7 @@ fn merge_if_fields(true_fields: Vec<Field>, false_fields: Vec<Field>) -> Vec<Fie
     result
 }
 
-fn generate_field_line(field: &Field) -> String {
+fn generate_field_line(field: &Field, is_enum_variant: bool) -> String {
     let original_name = &field.name;
     let safe_id = safe_identifier(original_name, IdentifierType::Field);
     let mut rust_type = get_rust_type(&field.field_type).to_string();
@@ -117,13 +175,16 @@ fn generate_field_line(field: &Field) -> String {
         rust_type = format!("Option<{rust_type}>");
     }
 
+    // Enum variant fields can't have pub visibility
+    let visibility = if is_enum_variant { "" } else { "pub " };
+
     if safe_id.needs_rename {
         format!(
-            "    #[serde(rename = \"{original_name}\")]\n    {}: {rust_type}",
-            safe_id.name
+            "    #[serde(rename = \"{original_name}\")]\n    {}{}: {rust_type}",
+            visibility, safe_id.name
         )
     } else {
-        format!("    {}: {rust_type}", safe_id.name)
+        format!("    {}{}: {rust_type}", visibility, safe_id.name)
     }
 }
 
@@ -143,7 +204,10 @@ fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
     }
 
     // Generate all enums as regular enums (including mask enums)
-    let derives = build_derive_string(&protocol_enum.extra_derives);
+    // Use enum-specific derives that include TryFromPrimitive
+    let mut all_derives: Vec<String> = DEFAULT_ENUM_DERIVES.iter().map(|s| s.to_string()).collect();
+    all_derives.extend(protocol_enum.extra_derives.iter().cloned());
+    let derives = format!("#[derive({})]", all_derives.join(", "));
 
     // Add repr if parent is specified
     let repr_attr = if !protocol_enum.parent.is_empty() {
@@ -460,7 +524,7 @@ pub enum {type_name}{type_generics} {{\n"
             // Add common fields first (excluding the switch field itself, as serde uses it as the tag)
             for field in &field_set.common_fields {
                 if field.name != *switch_field {
-                    out.push_str(&generate_field_line(field));
+                    out.push_str(&generate_field_line(field, true)); // true = is enum variant
                     out.push_str(",\n");
                 }
             }
@@ -468,7 +532,7 @@ pub enum {type_name}{type_generics} {{\n"
             // Add variant-specific fields (get from variant_fields using first_value)
             if let Some(case_fields) = variant_fields.get(first_value) {
                 for field in case_fields {
-                    out.push_str(&generate_field_line(field));
+                    out.push_str(&generate_field_line(field, true)); // true = is enum variant
                     out.push_str(",\n");
                 }
             }
@@ -482,7 +546,7 @@ pub enum {type_name}{type_generics} {{\n"
         let mut field_out: Vec<String> = Vec::new();
 
         for field in &field_set.common_fields {
-            field_out.push(generate_field_line(field));
+            field_out.push(generate_field_line(field, false)); // false = is struct field
         }
 
         let fields_out: String = field_out.join(",\n") + ",";
@@ -887,6 +951,9 @@ pub struct GeneratedCode {
     pub common: String,
     pub c2s: String,
     pub s2c: String,
+    pub readers_common: String,
+    pub readers_c2s: String,
+    pub readers_s2c: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -898,7 +965,325 @@ enum MessageDirection {
     GameEvents,  // <gameevents> section (S2C)
 }
 
-pub fn generate(xml: &str) -> GeneratedCode {
+/// Generate readers for a list of types
+fn generate_readers_for_types(
+    ctx: &GenerationContext,
+    types: &[ProtocolType],
+    enums: &[ProtocolEnum],
+    module_name: &str,
+) -> String {
+    let mut out = String::new();
+    out.push_str("// Binary readers for ");
+    out.push_str(module_name);
+    out.push_str(" types\n\n");
+    out.push_str("#[allow(unused_imports)]\n");
+    out.push_str("use std::io::Read;\n");
+    out.push_str("#[allow(unused_imports)]\n");
+
+    // Common types are directly in crate::types, c2s/s2c are in submodules
+    if module_name == "common" {
+        out.push_str("use crate::types::*;\n");
+    } else {
+        out.push_str("use crate::types::");
+        out.push_str(module_name);
+        out.push_str("::*;\n");
+    }
+
+    out.push_str("#[allow(unused_imports)]\n");
+    out.push_str("use crate::enums::*;\n");
+    out.push_str("#[allow(unused_imports)]\n");
+    out.push_str("use super::*;\n\n");
+
+    // Build a map of enum names to their parent types for quick lookup
+    let enum_parent_map: std::collections::HashMap<String, String> = enums
+        .iter()
+        .map(|e| (e.name.clone(), e.parent.clone()))
+        .collect();
+
+    // Build a map of (enum_name, value) -> variant_name for switch pattern matching
+    let mut enum_value_map: std::collections::HashMap<(String, String), String> =
+        std::collections::HashMap::new();
+    for protocol_enum in enums {
+        for enum_value in &protocol_enum.values {
+            enum_value_map.insert(
+                (protocol_enum.name.clone(), enum_value.value.clone()),
+                enum_value.name.clone(),
+            );
+        }
+    }
+
+    // Create reader context with enum information
+    let reader_ctx = ReaderContext::new(enum_parent_map, enum_value_map);
+
+    for protocol_type in types {
+        if ctx.should_generate_reader(&protocol_type.name) {
+            out.push_str(&generate_reader_impl(&reader_ctx, &protocol_type));
+        }
+    }
+
+    out
+}
+
+/// Generate a reader implementation for a single type (as an impl block on the type)
+fn generate_reader_impl(ctx: &ReaderContext, protocol_type: &ProtocolType) -> String {
+    let type_name = &protocol_type.name;
+    let safe_type_name = safe_identifier(type_name, IdentifierType::Type);
+
+    // Handle primitive types and aliases - they don't need readers
+    if protocol_type.is_primitive
+        || protocol_type.parent.is_some() && protocol_type.fields.is_none()
+    {
+        return String::new();
+    }
+
+    let Some(field_set) = &protocol_type.fields else {
+        // Empty struct - no fields to read
+        return format!(
+            "impl {} {{\n    pub fn read(_reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        Ok(Self {{}})\n    }}\n}}\n\n",
+            safe_type_name.name
+        );
+    };
+
+    // Check if this is a variant type (has switch)
+    if field_set.variant_fields.is_some() {
+        generate_variant_reader_impl(ctx, protocol_type, &safe_type_name.name, field_set)
+    } else {
+        generate_struct_reader_impl(ctx, protocol_type, &safe_type_name.name, field_set)
+    }
+}
+
+/// Generate a reader for a simple struct (no variants)
+fn generate_struct_reader_impl(
+    ctx: &ReaderContext,
+    _protocol_type: &ProtocolType,
+    type_name: &str,
+    field_set: &FieldSet,
+) -> String {
+    let mut out = String::new();
+
+    out.push_str(&format!("impl {} {{\n", type_name));
+    out.push_str(
+        "    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+    );
+
+    // Read all fields
+    for field in &field_set.common_fields {
+        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+        let read_call = generate_read_call(ctx, &field.field_type, field.is_optional);
+        out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+    }
+
+    // Construct the struct
+    out.push_str("\n        Ok(Self {\n");
+    for field in &field_set.common_fields {
+        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+        out.push_str(&format!("            {},\n", field_name));
+    }
+    out.push_str("        })\n");
+    out.push_str("    }\n");
+    out.push_str("}\n\n");
+
+    out
+}
+
+/// Generate a reader for a variant type (enum with switch)
+fn generate_variant_reader_impl(
+    ctx: &ReaderContext,
+    _protocol_type: &ProtocolType,
+    type_name: &str,
+    field_set: &FieldSet,
+) -> String {
+    let mut out = String::new();
+
+    let switch_field = field_set
+        .switch_field
+        .as_ref()
+        .expect("Variant type must have switch field");
+    let variant_fields = field_set
+        .variant_fields
+        .as_ref()
+        .expect("Variant type must have variant fields");
+
+    out.push_str(&format!("impl {} {{\n", type_name));
+    out.push_str(
+        "    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+    );
+
+    // Read all common fields
+    for field in &field_set.common_fields {
+        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+        let read_call = generate_read_call(ctx, &field.field_type, field.is_optional);
+        out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+    }
+
+    // Generate match on switch field
+    let switch_field_name = safe_identifier(switch_field, IdentifierType::Field).name;
+    out.push_str(&format!("\n        match {} {{\n", switch_field_name));
+
+    // Get the type of the switch field to see if it's an enum
+    let switch_field_type = field_set
+        .common_fields
+        .iter()
+        .find(|f| f.name == *switch_field)
+        .map(|f| &f.field_type);
+
+    // Generate each variant case
+    for (case_value, case_fields) in variant_fields {
+        // Convert case value to enum variant pattern if switch field is an enum
+        let case_pattern = if let Some(switch_type) = switch_field_type {
+            if ctx.enum_parent_map.contains_key(switch_type) {
+                // It's an enum - look up the enum variant name from the value
+                if let Some(variant_name) =
+                    ctx.enum_value_map.get(&(switch_type.clone(), case_value.clone()))
+                {
+                    // Use the enum variant: EnumType::VariantName
+                    format!("{}::{}", switch_type, variant_name)
+                } else {
+                    // Fallback to raw value if variant not found
+                    case_value.clone()
+                }
+            } else {
+                case_value.clone()
+            }
+        } else {
+            case_value.clone()
+        };
+
+        out.push_str(&format!("            {} => {{\n", case_pattern));
+
+        // Read variant-specific fields
+        for field in case_fields {
+            let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+            let read_call = generate_read_call(ctx, &field.field_type, field.is_optional);
+            out.push_str(&format!(
+                "                let {} = {}?;\n",
+                field_name, read_call
+            ));
+        }
+
+        // Construct the variant
+        // Generate variant name from case value
+        let variant_name = if case_value.starts_with("0x") || case_value.starts_with("0X") {
+            format!("Type{}", &case_value[2..].to_uppercase())
+        } else if let Some(stripped) = case_value.strip_prefix('-') {
+            format!("TypeNeg{}", stripped)
+        } else {
+            format!("Type{}", case_value)
+        };
+
+        out.push_str("\n");
+        out.push_str(&format!("                Ok(Self::{} {{\n", variant_name));
+
+        // Add all common fields (except the switch field which is implicit in the variant)
+        for field in &field_set.common_fields {
+            if field.name != *switch_field {
+                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                out.push_str(&format!("                    {},\n", field_name));
+            }
+        }
+
+        // Add variant-specific fields
+        for field in case_fields {
+            let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+            out.push_str(&format!("                    {},\n", field_name));
+        }
+
+        out.push_str("                })\n");
+        out.push_str("            }\n");
+    }
+
+    // Add default case for unknown values
+    // If switch field is an enum, cast it back to the underlying type for the error message
+    let error_value = if let Some(switch_type) = switch_field_type {
+        if let Some(parent_type) = ctx.enum_parent_map.get(switch_type) {
+            let parent_rust_type = get_rust_type(parent_type);
+            format!("{} as {}", switch_field_name, parent_rust_type)
+        } else {
+            switch_field_name.clone()
+        }
+    } else {
+        switch_field_name.clone()
+    };
+
+    out.push_str(&format!(
+        "            _ => Err(format!(\"Unknown {} value: {{:#x}}\", {}).into())\n",
+        switch_field, error_value
+    ));
+    out.push_str("        }\n");
+    out.push_str("    }\n");
+    out.push_str("}\n\n");
+
+    out
+}
+
+/// Generate the appropriate read call for a given type
+fn generate_read_call(
+    ctx: &ReaderContext,
+    field_type: &str,
+    is_optional: bool,
+) -> String {
+    let rust_type = get_rust_type(field_type);
+
+    let base_read = match rust_type {
+        "u8" => "read_u8(reader)".to_string(),
+        "i8" => "read_i8(reader)".to_string(),
+        "u16" => "read_u16(reader)".to_string(),
+        "i16" => "read_i16(reader)".to_string(),
+        "u32" => "read_u32(reader)".to_string(),
+        "i32" => "read_i32(reader)".to_string(),
+        "u64" => "read_u64(reader)".to_string(),
+        "i64" => "read_i64(reader)".to_string(),
+        "f32" => "read_f32(reader)".to_string(),
+        "f64" => "read_f64(reader)".to_string(),
+        "bool" => "read_bool(reader)".to_string(),
+        "String" => "read_string(reader)".to_string(),
+        _ => {
+            // Check if it's an enum
+            if let Some(parent_type) = ctx.enum_parent_map.get(field_type) {
+                // It's an enum - read the parent type and cast
+                let parent_rust_type = get_rust_type(parent_type);
+                let read_fn = match parent_rust_type {
+                    "u8" => "read_u8",
+                    "i8" => "read_i8",
+                    "u16" => "read_u16",
+                    "i16" => "read_i16",
+                    "u32" => "read_u32",
+                    "i32" => "read_i32",
+                    "u64" => "read_u64",
+                    "i64" => "read_i64",
+                    _ => panic!("Unsupported enum parent type: {}", parent_type),
+                };
+                format!("{}::try_from({}(reader)?)", field_type, read_fn)
+            } else if field_type.starts_with("Vec<") {
+                // TODO: Handle Vec
+                format!("unimplemented!(\"Vec reading not yet implemented\")")
+            } else if field_type.starts_with("PackableList<") {
+                // TODO: Handle PackableList
+                format!("unimplemented!(\"PackableList reading not yet implemented\")")
+            } else if field_type.starts_with("std::collections::HashMap<") {
+                // TODO: Handle HashMap
+                format!("unimplemented!(\"HashMap reading not yet implemented\")")
+            } else if field_type.starts_with("PackableHashTable<") {
+                // TODO: Handle PackableHashTable
+                format!("unimplemented!(\"PackableHashTable reading not yet implemented\")")
+            } else {
+                // Custom struct type - call its read method
+                format!("{}::read(reader)", field_type)
+            }
+        }
+    };
+
+    if is_optional {
+        // TODO: Handle optional fields properly
+        // For now, just read them as normal
+        base_read
+    } else {
+        base_read
+    }
+}
+
+pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
+    let ctx = GenerationContext::new(filter_types.to_vec());
     let mut reader = Reader::from_str(xml);
     let mut buf = Vec::new();
 
@@ -1146,7 +1531,8 @@ pub fn generate(xml: &str) -> GeneratedCode {
 
     // Generate enums
     let mut enums_out = String::new();
-    enums_out.push_str("use serde::{Serialize, Deserialize};\n\n");
+    enums_out.push_str("use serde::{Serialize, Deserialize};\n");
+    enums_out.push_str("use num_enum::TryFromPrimitive;\n\n");
 
     for protocol_enum in &enums {
         enums_out.push_str(&generate_enum(protocol_enum));
@@ -1173,10 +1559,19 @@ pub fn generate(xml: &str) -> GeneratedCode {
         }
     }
 
+    // Generate reader modules
+    let readers_common =
+        generate_readers_for_types(&ctx, &rectified_common_types, &enums, "common");
+    let readers_c2s = generate_readers_for_types(&ctx, &rectified_c2s_types, &enums, "c2s");
+    let readers_s2c = generate_readers_for_types(&ctx, &rectified_s2c_types, &enums, "s2c");
+
     GeneratedCode {
         enums: enums_out,
         common: common_out,
         c2s: generate_types_code(&rectified_c2s_types),
         s2c: generate_types_code(&rectified_s2c_types),
+        readers_common,
+        readers_c2s,
+        readers_s2c,
     }
 }

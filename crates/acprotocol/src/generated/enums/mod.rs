@@ -1,7 +1,8 @@
 use serde::{Serialize, Deserialize};
+use num_enum::TryFromPrimitive;
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum PacketHeaderFlags {
     None = 0x00000000,
     Retransmission = 0x00000001,
@@ -29,7 +30,7 @@ pub enum PacketHeaderFlags {
 }
 
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum FragmentGroup {
     Event = 5,
     Private = 9,
@@ -38,14 +39,14 @@ pub enum FragmentGroup {
 
 /// The type of server to switch
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ServerSwitchType {
     World = 0,
     Logon = 1,
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AuthFlags {
     None = 0x0,
     EnableCrypto = 0x1,
@@ -54,7 +55,7 @@ pub enum AuthFlags {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum NetAuthType {
     Undef = 0x00000000,
     Account = 0x00000001,
@@ -63,7 +64,7 @@ pub enum NetAuthType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GameMessageGroup {
     Event = 0x0001,
     Control = 0x0002,
@@ -79,7 +80,7 @@ pub enum GameMessageGroup {
 
 /// Client to Server message opcodes
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum C2SMessage {
     #[serde(rename = "Login_LogOffCharacter")]
     LoginLogOffCharacter = 0xF653,
@@ -115,7 +116,7 @@ pub enum C2SMessage {
 
 /// Server to Client message opcodes
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum S2CMessage {
     #[serde(rename = "Item_ServerSaysRemove")]
     ItemServerSaysRemove = 0x0024,
@@ -305,7 +306,7 @@ pub enum S2CMessage {
 
 /// Ordered (0xF7B0) Server to Client opcodes
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GameEvent {
     #[serde(rename = "Allegiance_AllegianceUpdateAborted")]
     AllegianceAllegianceUpdateAborted = 0x0003,
@@ -511,7 +512,7 @@ pub enum GameEvent {
 
 /// Ordered (0xF7B1) Client to server opcodes
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GameAction {
     #[serde(rename = "Character_PlayerOptionChangedEvent")]
     CharacterPlayerOptionChangedEvent = 0x0005,
@@ -828,7 +829,7 @@ pub enum GameAction {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WeenieType {
     Undef = 0,
     Generic = 1,
@@ -907,7 +908,7 @@ pub enum WeenieType {
 
 /// Flags that dictate what property tables are included with the ACBaseQuali
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ACBaseQualitiesFlags {
     None = 0x0000,
     PropertyInt = 0x0001,
@@ -922,7 +923,7 @@ pub enum ACBaseQualitiesFlags {
 
 /// Set of predefined error messages that accept interpolated string argument
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WeenieErrorWithString {
     IsTooBusyToAcceptGifts = 0x001E,
     CannotCarryAnymore = 0x002B,
@@ -1104,7 +1105,7 @@ pub enum WeenieErrorWithString {
 
 /// Set of predefined error messages
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WeenieError {
     None = 0x0000,
     NoMem = 0x0001,
@@ -1482,7 +1483,7 @@ pub enum WeenieError {
 
 /// The PositionFlags value defines the fields present in the Position structure.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum PositionFlags {
     HasVelocity = 0x0001,
     HasPlacementId = 0x0002,
@@ -1495,7 +1496,7 @@ pub enum PositionFlags {
 
 /// Height of the attack.  TODO these need to be verified.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AttackHeight {
     High = 0x01,
     Medium = 0x02,
@@ -1504,7 +1505,7 @@ pub enum AttackHeight {
 
 /// Container properties of an item
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ContainerProperties {
     None = 0x00,
     Container = 0x01,
@@ -1512,7 +1513,7 @@ pub enum ContainerProperties {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AttackType {
     Undef = 0x0,
     Punch = 0x0001,
@@ -1534,7 +1535,7 @@ pub enum AttackType {
 
 /// The objects type information
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ItemType {
     MeleeWeapon = 0x00000001,
     Armor = 0x00000002,
@@ -1571,7 +1572,7 @@ pub enum ItemType {
 
 /// The Skill identifies a specific Character skill.
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum SkillId {
     Axe = 0x01,
     Bow = 0x02,
@@ -1630,7 +1631,7 @@ pub enum SkillId {
 
 /// The SkillAdvancementClass identifies whether a skill is untrained, trained or specialized.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum SkillAdvancementClass {
     Untrained = 0x01,
     Trained = 0x02,
@@ -1638,7 +1639,7 @@ pub enum SkillAdvancementClass {
 }
 
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum PropertyAttribute2nd {
     Undef = 0x00,
     MaxHealth = 0x01,
@@ -1651,7 +1652,7 @@ pub enum PropertyAttribute2nd {
 
 /// The EmoteType identifies the type of emote action
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum EmoteType {
     #[serde(rename = "Invalid_EmoteType")]
     InvalidEmoteType = 0x00,
@@ -1901,7 +1902,7 @@ pub enum EmoteType {
 
 /// The EmoteCategory identifies the category of an emote.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum EmoteCategory {
     #[serde(rename = "Invalid_EmoteCategory")]
     InvalidEmoteCategory = 0x00,
@@ -1985,7 +1986,7 @@ pub enum EmoteCategory {
 
 /// The CharacterOptions1 word contains character options.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CharacterOptions1 {
     AutoRepeatAttack = 0x00000002,
     IgnoreAllegianceRequests = 0x00000004,
@@ -2022,7 +2023,7 @@ pub enum CharacterOptions1 {
 
 /// The CharacterOptions2 word contains additional character options.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CharacterOptions2 {
     PersistentAtDay = 0x00000001,
     DisplayDateOfBirth = 0x00000002,
@@ -2054,7 +2055,7 @@ pub enum CharacterOptions2 {
 
 /// The various options for filtering the spellbook
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum SpellBookFilterOptions {
     None = 0x00000000,
     Creature = 0x00000001,
@@ -2075,7 +2076,7 @@ pub enum SpellBookFilterOptions {
 
 /// The EquipMask value describes the equipment slots an item uses.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum EquipMask {
     Head = 0x00000001,
     ChestUnderwear = 0x00000002,
@@ -2106,7 +2107,7 @@ pub enum EquipMask {
 
 /// The type of the friend change event.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum FriendsUpdateType {
     Full = 0x0000,
     Added = 0x0001,
@@ -2116,7 +2117,7 @@ pub enum FriendsUpdateType {
 
 /// The permission levels that can be given to an allegiance officer
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AllegianceOfficerLevel {
     Speaker = 0x01,
     Seneschal = 0x02,
@@ -2125,7 +2126,7 @@ pub enum AllegianceOfficerLevel {
 
 /// Actions related to /allegiance lock
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AllegianceLockAction {
     LockedOff = 0x01,
     LockedOn = 0x02,
@@ -2137,7 +2138,7 @@ pub enum AllegianceLockAction {
 
 /// Actions related to /allegiance house
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AllegianceHouseAction {
     Help = 0x01,
     GuestOpen = 0x02,
@@ -2148,7 +2149,7 @@ pub enum AllegianceHouseAction {
 
 /// The AttributeId identifies a specific Character attribute.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AttributeId {
     Strength = 0x01,
     Endurance = 0x02,
@@ -2161,7 +2162,7 @@ pub enum AttributeId {
 
 /// The VitalId identifies a specific Character vital (secondary attribute).
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum VitalId {
     MaximumHealth = 0x01,
     MaximumStamina = 0x03,
@@ -2170,7 +2171,7 @@ pub enum VitalId {
 
 /// The CurVitalId identifies a specific Character vital (secondary attribute).
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CurVitalId {
     CurrentHealth = 0x02,
     CurrentStamina = 0x04,
@@ -2179,7 +2180,7 @@ pub enum CurVitalId {
 
 /// The combat mode for a character or monster.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CombatMode {
     NonCombat = 0x1,
     Melee = 0x2,
@@ -2188,7 +2189,7 @@ pub enum CombatMode {
 }
 
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum Sound {
     Invalid = 0x00,
     Speak1 = 0x01,
@@ -2432,7 +2433,7 @@ pub enum Sound {
 
 /// The ChatFragmentType categorizes chat window messages to control color and filtering.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ChatFragmentType {
     Default = 0x00,
     Speech = 0x02,
@@ -2464,7 +2465,7 @@ pub enum ChatFragmentType {
 
 /// Flags related to the use of the item.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ObjectDescriptionFlag {
     Openable = 0x00000001,
     Inscribable = 0x00000002,
@@ -2500,7 +2501,7 @@ pub enum ObjectDescriptionFlag {
 
 /// The AmmoType value describes the type of ammunition a missile weapon uses.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AmmoType {
     ThrownWeapon = 0x0000,
     Arrow = 0x0001,
@@ -2510,7 +2511,7 @@ pub enum AmmoType {
 
 /// The useablilty flags of the object
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum Usable {
     SourceUnusable = 0x00000001,
     SourceSelf = 0x00000002,
@@ -2532,7 +2533,7 @@ pub enum Usable {
 
 /// The CoverageMask value describes what parts of the body an item protects.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CoverageMask {
     UpperLegsUnderwear = 0x00000002,
     LowerLegsUnderwear = 0x00000004,
@@ -2553,7 +2554,7 @@ pub enum CoverageMask {
 
 /// The HookType identifies the types of dwelling hooks.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HookType {
     Floor = 0x0001,
     Wall = 0x0002,
@@ -2564,7 +2565,7 @@ pub enum HookType {
 
 /// The MaterialType identifies the material an object is made of.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum MaterialType {
     Ceramic = 0x00000001,
     Porcelain = 0x00000002,
@@ -2642,7 +2643,7 @@ pub enum MaterialType {
 
 /// The ConfirmationType identifies the specific confirmation panel to be displayed.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ConfirmationType {
     SwearAllegiance = 0x01,
     AlterSkill = 0x02,
@@ -2655,7 +2656,7 @@ pub enum ConfirmationType {
 
 /// The EnvrionChangeType identifies the environment option set.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum EnvrionChangeType {
     Clear = 0x00,
     RedFog = 0x01,
@@ -2689,7 +2690,7 @@ pub enum EnvrionChangeType {
 
 /// The movement type defines the fields for the rest of the message
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum MovementType {
     InterpertedMotionState = 0x00,
     MoveToObject = 0x06,
@@ -2700,7 +2701,7 @@ pub enum MovementType {
 
 /// Additional movement options
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum MovementOption {
     None = 0x00,
     StickToObject = 0x01,
@@ -2709,7 +2710,7 @@ pub enum MovementOption {
 
 /// Command types
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum Command {
     Invalid = 0x00,
     HoldRun = 0x01,
@@ -3124,7 +3125,7 @@ pub enum Command {
 
 /// The stance for a character or monster.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum StanceMode {
     HandCombat = 0x3C,
     NonCombat = 0x3D,
@@ -3146,7 +3147,7 @@ pub enum StanceMode {
 
 /// The movement (forward, side, turn) for a character or monster.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum MovementCommand {
     HoldRun = 0x01,
     HoldSidestep = 0x02,
@@ -3161,7 +3162,7 @@ pub enum MovementCommand {
 
 /// House flags
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HouseBitfield {
     Undef = 0x0,
     Active = 0x1,
@@ -3170,7 +3171,7 @@ pub enum HouseBitfield {
 
 /// The type response to a chargen request
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CharGenResponseType {
     OK = 0x0001,
     NameInUse = 0x0003,
@@ -3183,7 +3184,7 @@ pub enum CharGenResponseType {
 
 /// The CharacterErrorType identifies the type of character error that has occured.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CharacterErrorType {
     Logon = 0x01,
     AccountLogin = 0x03,
@@ -3210,7 +3211,7 @@ pub enum CharacterErrorType {
 
 /// The state flags for an object
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum PhysicsState {
     None = 0x00000000,
     Static = 0x00000001,
@@ -3240,7 +3241,7 @@ pub enum PhysicsState {
 
 /// The TurbineChatType identifies the type of Turbine Chat message.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum TurbineChatType {
     ServerToClientMessage = 0x01,
     ClientToServerMessage = 0x03,
@@ -3249,7 +3250,7 @@ pub enum TurbineChatType {
 
 /// The DatFileType identifies the dat file to be used.
 #[repr(i64)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum DatFileType {
     #[serde(rename = "client_portal")]
     ClientPortal = 0x01,
@@ -3261,7 +3262,7 @@ pub enum DatFileType {
 
 /// The CompressionType identifies the type of data compression used.
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CompressionType {
     None = 0x00,
     ZLib = 0x01,
@@ -3269,7 +3270,7 @@ pub enum CompressionType {
 
 /// The AttributeMask selects which creature attributes highlighting is applied to.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AttributeMask {
     Strength = 0x0001,
     Endurance = 0x0002,
@@ -3285,7 +3286,7 @@ pub enum AttributeMask {
 
 /// The DamageType identifies the type of damage.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum DamageType {
     Slashing = 0x01,
     Piercing = 0x02,
@@ -3298,7 +3299,7 @@ pub enum DamageType {
 
 /// The HookAppraisalFlags identifies various properties for an item hooked.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HookAppraisalFlags {
     Inscribable = 0x01,
     IsHealer = 0x02,
@@ -3307,7 +3308,7 @@ pub enum HookAppraisalFlags {
 
 /// The ArmorHighlightMask selects which armor attributes highlighting is applied to.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ArmorHighlightMask {
     ArmorLevel = 0x0001,
     SlashingProtection = 0x0002,
@@ -3321,7 +3322,7 @@ pub enum ArmorHighlightMask {
 
 /// The ResistHighlightMask selects which wand attributes highlighting is applied to.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ResistHighlightMask {
     ResistSlash = 0x0001,
     ResistPierce = 0x0002,
@@ -3342,7 +3343,7 @@ pub enum ResistHighlightMask {
 
 /// The WeaponHighlightMask selects which weapon attributes highlighting is applied to.
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WeaponHighlightMask {
     AttackSkill = 0x0001,
     MeleeDefense = 0x0002,
@@ -3354,7 +3355,7 @@ pub enum WeaponHighlightMask {
 
 /// Additional attack information
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AttackConditionsMask {
     CriticalProtectionAugmentation = 0x01,
     Recklessness = 0x02,
@@ -3363,7 +3364,7 @@ pub enum AttackConditionsMask {
 
 /// The DamageLocation indicates where damage was done.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum DamageLocation {
     Head = 0x00,
     Chest = 0x01,
@@ -3378,7 +3379,7 @@ pub enum DamageLocation {
 
 /// The LogTextType indicates the kind of text going to the chat area.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum LogTextType {
     Default = 0x00,
     Speech = 0x02,
@@ -3410,7 +3411,7 @@ pub enum LogTextType {
 
 /// The EndTradeReason identifies the reason trading was ended.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum EndTradeReason {
     Normal = 0x00,
     EnteredCombat = 0x02,
@@ -3419,7 +3420,7 @@ pub enum EndTradeReason {
 
 /// The TradeSide identifies the side of the trade window.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum TradeSide {
     #[serde(rename = "Self")]
     Self_ = 0x01,
@@ -3428,7 +3429,7 @@ pub enum TradeSide {
 
 /// The HouseType identifies the type of house.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HouseType {
     Cottage = 0x01,
     Villa = 0x02,
@@ -3438,7 +3439,7 @@ pub enum HouseType {
 
 /// Identifies the chess move attempt result.  Negative/0 values are failures.
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ChessMoveResult {
     FailureNotYourTurn = -3,
     FailureInvalidDirection = -100,
@@ -3460,7 +3461,7 @@ pub enum ChessMoveResult {
 
 /// Type of fellow update
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum FellowUpdateType {
     FullUpdate = 0x01,
     UpdateStats = 0x02,
@@ -3469,7 +3470,7 @@ pub enum FellowUpdateType {
 
 /// Stage a contract is in.  Values 4+ appear to provide contract specific update messages
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ContractStage {
     New = 0x01,
     InProgress = 0x02,
@@ -3478,7 +3479,7 @@ pub enum ContractStage {
 
 /// Movement hold key
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HoldKey {
     Invalid = 0x00,
     None = 0x01,
@@ -3487,7 +3488,7 @@ pub enum HoldKey {
 
 /// Radar behavior
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum RadarBehavior {
     Undefined = 0x00,
     ShowNever = 0x01,
@@ -3498,7 +3499,7 @@ pub enum RadarBehavior {
 
 /// Gender of a player
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum Gender {
     Invalid = 0x00,
     Male = 0x01,
@@ -3506,7 +3507,7 @@ pub enum Gender {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum FactionBits {
     None = 0x00,
     CelestialHand = 0x01,
@@ -3516,7 +3517,7 @@ pub enum FactionBits {
 
 /// Creature type
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CreatureType {
     Olthoi = 1,
     Banderling = 2,
@@ -3622,7 +3623,7 @@ pub enum CreatureType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CombatStyle {
     Undef = 0x00000,
     Unarmed = 0x00001,
@@ -3649,7 +3650,7 @@ pub enum CombatStyle {
 
 /// Indicates what data is present in the ACQualities data
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ACQualitiesFlags {
     Attributes = 0x00000001,
     Skills = 0x00000002,
@@ -3666,7 +3667,7 @@ pub enum ACQualitiesFlags {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GeneratorDestruct {
     Undef = 0,
     Nothing = 1,
@@ -3675,7 +3676,7 @@ pub enum GeneratorDestruct {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GeneratorTimeType {
     Undef = 0,
     RealTime = 1,
@@ -3686,7 +3687,7 @@ pub enum GeneratorTimeType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GeneratorType {
     Undef = 0,
     Relative = 1,
@@ -3694,7 +3695,7 @@ pub enum GeneratorType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ImbuedEffectType {
     Undef = 0,
     CriticalStrike = 0x0001,
@@ -3718,7 +3719,7 @@ pub enum ImbuedEffectType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ItemXpStyle {
     Undef = 0,
     Fixed = 1,
@@ -3727,7 +3728,7 @@ pub enum ItemXpStyle {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum SubscriptionStatus {
     #[serde(rename = "No_Subscription")]
     NoSubscription = 0,
@@ -3742,7 +3743,7 @@ pub enum SubscriptionStatus {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WeaponType {
     Undef = 0,
     Unarmed = 1,
@@ -3760,7 +3761,7 @@ pub enum WeaponType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ActivationResponse {
     Undef = 0,
     Use = 0x2,
@@ -3772,7 +3773,7 @@ pub enum ActivationResponse {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AetheriaBitfield {
     None = 0,
     Blue = 0x1,
@@ -3781,7 +3782,7 @@ pub enum AetheriaBitfield {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HookGroupType {
     Undef = 0x0,
     NoisemakingItems = 0x1,
@@ -3793,7 +3794,7 @@ pub enum HookGroupType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ArmorType {
     None = 0,
     Cloth = 1,
@@ -3805,7 +3806,7 @@ pub enum ArmorType {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AttunedStatus {
     Normal = 0,
     Attuned = 1,
@@ -3813,7 +3814,7 @@ pub enum AttunedStatus {
 }
 
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum BondedStatus {
     Destroy = -2,
     Slippery = -1,
@@ -3823,7 +3824,7 @@ pub enum BondedStatus {
 }
 
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HouseStatus {
     Disabled = -1,
     InActive = 0,
@@ -3831,7 +3832,7 @@ pub enum HouseStatus {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum UiEffects {
     Undef = 0x0000,
     Magical = 0x0001,
@@ -3850,7 +3851,7 @@ pub enum UiEffects {
 }
 
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum PortalBitmask {
     NotPassable = 0x00,
     Unrestricted = 0x01,
@@ -3866,7 +3867,7 @@ pub enum PortalBitmask {
 }
 
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WieldRequirement {
     Undef = 0,
     Skill = 1,
@@ -3884,7 +3885,7 @@ pub enum WieldRequirement {
 }
 
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum PaletteTemplate {
     Undef = 0,
     AquaBlue = 1,
@@ -3983,7 +3984,7 @@ pub enum PaletteTemplate {
 }
 
 #[repr(i32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum SummoningMastery {
     Undef = 0,
     Primalist = 1,
@@ -3992,7 +3993,7 @@ pub enum SummoningMastery {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ContractId {
     Undef = 0,
     #[serde(rename = "Contract_1_The_Shadows_of_Bitter_Winter")]
@@ -4643,7 +4644,7 @@ pub enum ContractId {
 
 /// The PropertyInt64 identifies a specific Character or Object int64 property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyInt64 {
     TotalExperience = 0x0001,
     AvailableExperience = 0x0002,
@@ -4657,7 +4658,7 @@ pub enum PropertyInt64 {
 
 /// The PropertyBool identifies a specific Character or Object boolean property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyBool {
     Undef = 0,
     Stuck = 1,
@@ -4794,7 +4795,7 @@ pub enum PropertyBool {
 
 /// The DataPropertyId identifies a specific Character or Object data property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyDataId {
     Setup = 1,
     MotionTable = 2,
@@ -4861,7 +4862,7 @@ pub enum PropertyDataId {
 
 /// The PropertyInt identifies a specific Character or Object int property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyInt {
     ItemType = 1,
     CreatureType = 2,
@@ -5257,7 +5258,7 @@ pub enum PropertyInt {
 
 /// The PropertyInstanceId identifies a specific Character or Object instance property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyInstanceId {
     Owner = 1,
     Container = 2,
@@ -5308,7 +5309,7 @@ pub enum PropertyInstanceId {
 
 /// The PropertyPosition identifies a specific Character or Object position property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyPosition {
     Location = 1,
     Destination = 2,
@@ -5341,7 +5342,7 @@ pub enum PropertyPosition {
 
 /// The PropertyString identifies a specific Character or Object string property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyString {
     Name = 1,
     Title = 2,
@@ -5399,7 +5400,7 @@ pub enum PropertyString {
 
 /// The PropertyFloat identifies a specific Character or Object float property.
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
 pub enum PropertyFloat {
     Undef = 0,
     HeartbeatInterval = 1,
@@ -5577,7 +5578,7 @@ pub enum PropertyFloat {
 
 /// Chat channels
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum Channel {
     Undef = 0x00000000,
     Abuse = 0x00000001,
@@ -5618,7 +5619,7 @@ pub enum Channel {
 
 /// Equipment Set Ids
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum EquipmentSet {
     None = 0,
     Test = 1,
@@ -5766,7 +5767,7 @@ pub enum EquipmentSet {
 
 /// Radar Color
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum RadarColor {
     Default = 0x00,
     Blue = 0x01,
@@ -5783,7 +5784,7 @@ pub enum RadarColor {
 
 /// Flags that determine what data is contained in the EnchantmentRegistry
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum EnchantmentRegistryFlags {
     LifeSpells = 0x0001,
     CreatureSpells = 0x0002,
@@ -5792,7 +5793,7 @@ pub enum EnchantmentRegistryFlags {
 }
 
 #[repr(u16)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum SpellCategory {
     Undef = 0,
     StrengthRaising = 1,
@@ -6527,7 +6528,7 @@ pub enum SpellCategory {
 
 /// Heritage of a player
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HeritageGroup {
     Invalid = 0x00,
     Aluvian = 0x01,
@@ -6547,7 +6548,7 @@ pub enum HeritageGroup {
 
 /// the type of highlight (outline) applied to the object's icon
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum IconHighlight {
     Invalid = 0x0000,
     Magical = 0x0001,
@@ -6566,7 +6567,7 @@ pub enum IconHighlight {
 }
 
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CombatUse {
     None = 0x00,
     Melee = 0x01,
@@ -6578,7 +6579,7 @@ pub enum CombatUse {
 
 /// the type of wieldable item this is
 #[repr(u8)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WieldType {
     Invalid = 0x00000000,
     MeleeWeapon = 0x00000001,
@@ -6589,7 +6590,7 @@ pub enum WieldType {
 
 /// Chat channel type, for turbine chat
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ChatType {
     Undef = 0x00000000,
     Allegiance = 0x00000001,
@@ -6606,7 +6607,7 @@ pub enum ChatType {
 
 /// The ChatDisplayMask identifies that types of chat that are displayed in each chat window. 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ChatDisplayMask {
     Gameplay = 0x03912021,
     Mandatory = 0x0000c302,
@@ -6623,7 +6624,7 @@ pub enum ChatDisplayMask {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum EnchantmentTypeFlags {
     Undef = 0x0000000,
     Attribute = 0x0000001,
@@ -6650,7 +6651,7 @@ pub enum EnchantmentTypeFlags {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ParentLocation {
     None = 0x0000000,
     RightHand = 0x0000001,
@@ -6665,7 +6666,7 @@ pub enum ParentLocation {
 }
 
 #[repr(u32)]
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum Placement {
     Default = 0x0000000,
     RightHandCombat = 0x0000001,

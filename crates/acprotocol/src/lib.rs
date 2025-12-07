@@ -19,6 +19,8 @@ pub mod types {
     }
 }
 
+pub mod readers;
+
 // WIP: this is what I want to generate for a type that uses a switch like
 // GameMoveData. This code is just testing that out.
 //
