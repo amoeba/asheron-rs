@@ -69,21 +69,27 @@ pub struct {enum_name} {{\n        pub bits: {},\n}}\n\n",
         out.push_str(" {\n");
 
         for enum_value in &protocol_enum.values {
-            let variant_name = if enum_value.name.starts_with("0x") {
-                format!("Type{}", &enum_value.name[2..])
+            let original_name = &enum_value.name;
+
+            // Generate variant name - convert to PascalCase if it has underscores
+            let variant_name = if original_name.starts_with("0x") {
+                format!("Type{}", &original_name[2..])
             } else {
-                enum_value.name.clone()
+                original_name.clone()
             };
 
-            // Check if variant name is a reserved word
+            // Check if variant name is a reserved word or needs conversion
             let safe_variant = safe_enum_variant_name(&variant_name);
+
+            // Determine if we need serde rename (if the safe name differs from original)
+            let needs_serde_rename = safe_variant.name != *original_name;
 
             if enum_value.value.starts_with("0x") {
                 // Hex value
-                if safe_variant.needs_rename {
+                if needs_serde_rename {
                     out.push_str(&format!(
                         "    #[serde(rename = \"{}\")]\n    {} = {},\n",
-                        variant_name, safe_variant.name, enum_value.value
+                        original_name, safe_variant.name, enum_value.value
                     ));
                 } else {
                     out.push_str(&format!(
@@ -93,10 +99,10 @@ pub struct {enum_name} {{\n        pub bits: {},\n}}\n\n",
                 }
             } else {
                 // Decimal value
-                if safe_variant.needs_rename {
+                if needs_serde_rename {
                     out.push_str(&format!(
                         "    #[serde(rename = \"{}\")]\n    {} = {},\n",
-                        variant_name, safe_variant.name, enum_value.value
+                        original_name, safe_variant.name, enum_value.value
                     ));
                 } else {
                     out.push_str(&format!(

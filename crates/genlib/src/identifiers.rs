@@ -25,6 +25,25 @@ pub fn to_snake_case(name: &str) -> String {
     result
 }
 
+/// Convert snake_case or Mixed_Case to PascalCase
+pub fn to_pascal_case(name: &str) -> String {
+    let mut result = String::new();
+    let mut capitalize_next = true;
+
+    for ch in name.chars() {
+        if ch == '_' {
+            capitalize_next = true;
+        } else if capitalize_next {
+            result.push(ch.to_ascii_uppercase());
+            capitalize_next = false;
+        } else {
+            result.push(ch);
+        }
+    }
+
+    result
+}
+
 #[derive(Debug, Clone, Copy)]
 pub enum IdentifierType {
     Field,      // snake_case
@@ -62,8 +81,17 @@ pub fn safe_identifier(name: &str, identifier_type: IdentifierType) -> SafeIdent
                 snake_case
             }
         }
-        IdentifierType::EnumVariant | IdentifierType::Type => {
-            // For PascalCase, check original name
+        IdentifierType::EnumVariant => {
+            // Convert to PascalCase, removing underscores
+            let pascal_case = to_pascal_case(name);
+            if is_reserved_word(&pascal_case) {
+                format!("{pascal_case}_")
+            } else {
+                pascal_case
+            }
+        }
+        IdentifierType::Type => {
+            // For types, keep original name but check for reserved words
             if is_reserved_word(name) {
                 format!("{name}_")
             } else {
@@ -71,7 +99,7 @@ pub fn safe_identifier(name: &str, identifier_type: IdentifierType) -> SafeIdent
             }
         }
     };
-    
+
     let needs_rename = safe_name != name;
     SafeIdentifier::new(safe_name, needs_rename)
 }
