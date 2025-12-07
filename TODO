@@ -14,3 +14,4 @@ TODOs
 - Handle xor attribute in  `<maskmap name="Flags" xor="0x00000078">` in XML
 - Handle `<align type="DWORD" />` in XML
 - Document that readers have two entrance points
+- Split up lib.rs into modular components
