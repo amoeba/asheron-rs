@@ -1538,11 +1538,17 @@ fn generate_mask_field_expr(
     all_fields: &[Field],
 ) -> String {
     if let Some(mask_field_obj) = all_fields.iter().find(|f| f.name == mask_field_name) {
-        if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
+        let base_expr = if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
             // It's an enum - clone and cast to u32 (enums don't derive Copy)
             format!("{}.clone() as u32", mask_field_safe)
         } else {
             mask_field_safe.to_string()
+        };
+        // If the mask field is optional, unwrap it with a default of 0
+        if mask_field_obj.is_optional {
+            format!("{}.unwrap_or(0)", base_expr)
+        } else {
+            base_expr
         }
     } else {
         mask_field_safe.to_string()
