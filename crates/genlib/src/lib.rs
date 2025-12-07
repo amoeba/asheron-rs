@@ -1589,9 +1589,21 @@ fn generate_field_group_reads(
             }
 
             // Generate the if block
+            // Cast mask field to u32 if it's an enum type
+            let mask_field_expr = if let Some(mask_field_obj) = all_fields.iter().find(|f| f.name == *mask_field) {
+                if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
+                    // It's an enum - clone and cast to u32 (enums don't derive Copy)
+                    format!("{}.clone() as u32", mask_field_safe)
+                } else {
+                    mask_field_safe.clone()
+                }
+            } else {
+                mask_field_safe.clone()
+            };
+
             out.push_str(&format!(
                 "        if ({} & {}) != 0 {{\n",
-                mask_field_safe, mask_value_code
+                mask_field_expr, mask_value_code
             ));
             for field in fields {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
@@ -2009,10 +2021,23 @@ fn generate_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Field]) 
             } else {
                 mask_value.clone()
             };
-            // Generate: if (flags & 0x8) != 0 { read().map(Some) } else { Ok(None) }
+
+            // Cast mask field to u32 if it's an enum type
+            let mask_field_expr = if let Some(mask_field_obj) = all_fields.iter().find(|f| f.name == *mask_field) {
+                if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
+                    // It's an enum - clone and cast to u32 (enums don't derive Copy)
+                    format!("{}.clone() as u32", mask_field_safe)
+                } else {
+                    mask_field_safe.clone()
+                }
+            } else {
+                mask_field_safe.clone()
+            };
+
+            // Generate: if (flags.clone() as u32 & 0x8) != 0 { read().map(Some) } else { Ok(None) }
             format!(
                 "if ({} & {}) != 0 {{ {}.map(Some) }} else {{ Ok(None) }}",
-                mask_field_safe, mask_value_code, base_read
+                mask_field_expr, mask_value_code, base_read
             )
         } else {
             // No condition - this shouldn't happen for truly optional fields, but handle it
