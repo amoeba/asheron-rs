@@ -166,19 +166,34 @@ pub fn read_f64(reader: &mut dyn Read) -> Result<f64, Box<dyn std::error::Error>
     Ok(f64::from_le_bytes(buf))
 }
 
-/// Read a boolean (represented as u32, 0 = false, non-zero = true)
+/// Read a boolean (represented as u32, 0 = false, 1 = true)
 pub fn read_bool(reader: &mut dyn Read) -> Result<bool, Box<dyn std::error::Error>> {
-    Ok(read_u32(reader)? != 0)
+    Ok(read_u32(reader)? == 1)
 }
 
-/// Read a string (u16 length-prefixed, aligned to 4-byte boundary)
+/// Read a string (i16 length-prefixed, aligned to 4-byte boundary)
+/// If length is -1, reads a 32-bit length instead (special case for long strings)
 pub fn read_string(reader: &mut dyn Read) -> Result<String, Box<dyn std::error::Error>> {
-    let len = read_u16(reader)? as usize;
+    let len_i16 = read_i16(reader)?;
+    let len = if len_i16 == -1 {
+        // Special case: -1 means read a 32-bit length
+        read_i32(reader)? as usize
+    } else {
+        len_i16 as usize
+    };
+
     let mut buf = vec![0u8; len];
     reader.read_exact(&mut buf)?;
 
+    // Calculate bytes read (including length prefix)
+    let bytes_read = if len_i16 == -1 {
+        2 + 4 + len  // i16 + i32 + string bytes
+    } else {
+        2 + len  // i16 + string bytes
+    };
+
     // Read padding to align to 4 bytes
-    let padding = (4 - ((len + 2) % 4)) % 4;
+    let padding = (4 - (bytes_read % 4)) % 4;
     if padding > 0 {
         let mut pad_buf = vec![0u8; padding];
         reader.read_exact(&mut pad_buf)?;
