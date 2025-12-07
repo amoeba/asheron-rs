@@ -22,3 +22,23 @@ pub struct QualitiesPrivateUpdatePosition {
     pub value: Position,
 }
 
+impl QualitiesPrivateUpdatePosition {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u8(reader)?;
+        let key = PropertyPosition::try_from(read_u32(reader)?)?;
+        let value = Position::read(reader)?;
+
+        Ok(Self {
+            sequence,
+            key,
+            value,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for QualitiesPrivateUpdatePosition {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        QualitiesPrivateUpdatePosition::read(reader)
+    }
+}
+

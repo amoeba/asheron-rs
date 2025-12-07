@@ -20,3 +20,21 @@ pub struct AllegianceAllegianceUpdate {
     pub profile: AllegianceProfile,
 }
 
+impl AllegianceAllegianceUpdate {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let rank = read_u32(reader)?;
+        let profile = AllegianceProfile::read(reader)?;
+
+        Ok(Self {
+            rank,
+            profile,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceAllegianceUpdate {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceAllegianceUpdate::read(reader)
+    }
+}
+

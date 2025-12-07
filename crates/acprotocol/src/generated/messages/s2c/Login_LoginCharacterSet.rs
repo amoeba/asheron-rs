@@ -30,3 +30,31 @@ pub struct LoginLoginCharacterSet {
     pub has_throneof_destiny: bool,
 }
 
+impl LoginLoginCharacterSet {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let status = read_u32(reader)?;
+        let characters = read_packable_list::<CharacterIdentity>(reader)?;
+        let deleted_characters = read_packable_list::<CharacterIdentity>(reader)?;
+        let num_allowed_characters = read_u32(reader)?;
+        let account = read_string(reader)?;
+        let use_turbine_chat = read_bool(reader)?;
+        let has_throneof_destiny = read_bool(reader)?;
+
+        Ok(Self {
+            status,
+            characters,
+            deleted_characters,
+            num_allowed_characters,
+            account,
+            use_turbine_chat,
+            has_throneof_destiny,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for LoginLoginCharacterSet {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        LoginLoginCharacterSet::read(reader)
+    }
+}
+

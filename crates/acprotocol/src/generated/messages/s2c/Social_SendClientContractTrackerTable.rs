@@ -18,3 +18,19 @@ pub struct SocialSendClientContractTrackerTable {
     pub contract_tracker: ContractTrackerTable,
 }
 
+impl SocialSendClientContractTrackerTable {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let contract_tracker = ContractTrackerTable::read(reader)?;
+
+        Ok(Self {
+            contract_tracker,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for SocialSendClientContractTrackerTable {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        SocialSendClientContractTrackerTable::read(reader)
+    }
+}
+

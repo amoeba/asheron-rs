@@ -18,3 +18,19 @@ pub struct TradeOpenTrade {
     pub object_id: ObjectId,
 }
 
+impl TradeOpenTrade {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+
+        Ok(Self {
+            object_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for TradeOpenTrade {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        TradeOpenTrade::read(reader)
+    }
+}
+

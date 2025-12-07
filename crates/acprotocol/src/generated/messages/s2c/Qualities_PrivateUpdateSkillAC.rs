@@ -22,3 +22,23 @@ pub struct QualitiesPrivateUpdateSkillAC {
     pub value: SkillAdvancementClass,
 }
 
+impl QualitiesPrivateUpdateSkillAC {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u8(reader)?;
+        let key = SkillId::try_from(read_i32(reader)?)?;
+        let value = SkillAdvancementClass::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            sequence,
+            key,
+            value,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for QualitiesPrivateUpdateSkillAC {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        QualitiesPrivateUpdateSkillAC::read(reader)
+    }
+}
+

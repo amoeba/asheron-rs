@@ -22,3 +22,23 @@ pub struct MovementPositionAndMovementEvent {
     pub movement_data: MovementData,
 }
 
+impl MovementPositionAndMovementEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let position = PositionPack::read(reader)?;
+        let movement_data = MovementData::read(reader)?;
+
+        Ok(Self {
+            object_id,
+            position,
+            movement_data,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MovementPositionAndMovementEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MovementPositionAndMovementEvent::read(reader)
+    }
+}
+

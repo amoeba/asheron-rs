@@ -20,3 +20,21 @@ pub struct SocialSendFriendsCommand {
     pub player: String,
 }
 
+impl SocialSendFriendsCommand {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let command = read_u32(reader)?;
+        let player = read_string(reader)?;
+
+        Ok(Self {
+            command,
+            player,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for SocialSendFriendsCommand {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        SocialSendFriendsCommand::read(reader)
+    }
+}
+

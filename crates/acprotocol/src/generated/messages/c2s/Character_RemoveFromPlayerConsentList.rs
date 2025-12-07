@@ -18,3 +18,19 @@ pub struct CharacterRemoveFromPlayerConsentList {
     pub target_name: String,
 }
 
+impl CharacterRemoveFromPlayerConsentList {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let target_name = read_string(reader)?;
+
+        Ok(Self {
+            target_name,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterRemoveFromPlayerConsentList {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterRemoveFromPlayerConsentList::read(reader)
+    }
+}
+

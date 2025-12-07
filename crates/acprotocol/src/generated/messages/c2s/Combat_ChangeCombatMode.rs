@@ -18,3 +18,19 @@ pub struct CombatChangeCombatMode {
     pub mode: CombatMode,
 }
 
+impl CombatChangeCombatMode {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let mode = CombatMode::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            mode,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CombatChangeCombatMode {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CombatChangeCombatMode::read(reader)
+    }
+}
+

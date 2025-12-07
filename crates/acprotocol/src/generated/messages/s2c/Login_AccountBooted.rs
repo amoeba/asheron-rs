@@ -20,3 +20,21 @@ pub struct LoginAccountBooted {
     pub reason_text: String,
 }
 
+impl LoginAccountBooted {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let additional_reason_text = read_string(reader)?;
+        let reason_text = read_string(reader)?;
+
+        Ok(Self {
+            additional_reason_text,
+            reason_text,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for LoginAccountBooted {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        LoginAccountBooted::read(reader)
+    }
+}
+

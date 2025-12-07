@@ -20,3 +20,21 @@ pub struct CharacterSetDesiredComponentLevel {
     pub amount: u32,
 }
 
+impl CharacterSetDesiredComponentLevel {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let wcid = read_u32(reader)?;
+        let amount = read_u32(reader)?;
+
+        Ok(Self {
+            wcid,
+            amount,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterSetDesiredComponentLevel {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterSetDesiredComponentLevel::read(reader)
+    }
+}
+

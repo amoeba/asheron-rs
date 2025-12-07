@@ -18,3 +18,19 @@ pub struct CharacterAddShortCut {
     pub shortcut: ShortCutData,
 }
 
+impl CharacterAddShortCut {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let shortcut = ShortCutData::read(reader)?;
+
+        Ok(Self {
+            shortcut,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterAddShortCut {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterAddShortCut::read(reader)
+    }
+}
+

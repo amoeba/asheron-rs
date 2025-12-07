@@ -20,3 +20,21 @@ pub struct CommunicationTalkDirectByName {
     pub target_name: String,
 }
 
+impl CommunicationTalkDirectByName {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+        let target_name = read_string(reader)?;
+
+        Ok(Self {
+            message,
+            target_name,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationTalkDirectByName {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationTalkDirectByName::read(reader)
+    }
+}
+

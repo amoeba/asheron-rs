@@ -20,3 +20,21 @@ pub struct AdvocateTeleport {
     pub destination: Position,
 }
 
+impl AdvocateTeleport {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = read_string(reader)?;
+        let destination = Position::read(reader)?;
+
+        Ok(Self {
+            object_id,
+            destination,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AdvocateTeleport {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AdvocateTeleport::read(reader)
+    }
+}
+

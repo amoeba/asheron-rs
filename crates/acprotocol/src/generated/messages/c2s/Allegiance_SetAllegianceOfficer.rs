@@ -20,3 +20,21 @@ pub struct AllegianceSetAllegianceOfficer {
     pub level: AllegianceOfficerLevel,
 }
 
+impl AllegianceSetAllegianceOfficer {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let character_name = read_string(reader)?;
+        let level = AllegianceOfficerLevel::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            character_name,
+            level,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceSetAllegianceOfficer {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceSetAllegianceOfficer::read(reader)
+    }
+}
+

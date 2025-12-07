@@ -20,3 +20,21 @@ pub struct TradeTradeFailure {
     pub reason: u32,
 }
 
+impl TradeTradeFailure {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let reason = read_u32(reader)?;
+
+        Ok(Self {
+            object_id,
+            reason,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for TradeTradeFailure {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        TradeTradeFailure::read(reader)
+    }
+}
+

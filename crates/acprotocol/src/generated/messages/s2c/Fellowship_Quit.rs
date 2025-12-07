@@ -18,3 +18,19 @@ pub struct FellowshipQuit {
     pub disband: bool,
 }
 
+impl FellowshipQuit {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let disband = read_bool(reader)?;
+
+        Ok(Self {
+            disband,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for FellowshipQuit {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        FellowshipQuit::read(reader)
+    }
+}
+

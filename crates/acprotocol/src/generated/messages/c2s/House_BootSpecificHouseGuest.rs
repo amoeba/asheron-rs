@@ -18,3 +18,19 @@ pub struct HouseBootSpecificHouseGuest {
     pub guest_name: String,
 }
 
+impl HouseBootSpecificHouseGuest {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let guest_name = read_string(reader)?;
+
+        Ok(Self {
+            guest_name,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for HouseBootSpecificHouseGuest {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        HouseBootSpecificHouseGuest::read(reader)
+    }
+}
+

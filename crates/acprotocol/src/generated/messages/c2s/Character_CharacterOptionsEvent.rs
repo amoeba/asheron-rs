@@ -18,3 +18,19 @@ pub struct CharacterCharacterOptionsEvent {
     pub options: PlayerModule,
 }
 
+impl CharacterCharacterOptionsEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let options = PlayerModule::read(reader)?;
+
+        Ok(Self {
+            options,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterCharacterOptionsEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterCharacterOptionsEvent::read(reader)
+    }
+}
+

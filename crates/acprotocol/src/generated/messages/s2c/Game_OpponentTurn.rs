@@ -22,3 +22,23 @@ pub struct GameOpponentTurn {
     pub game_move: GameMoveData,
 }
 
+impl GameOpponentTurn {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let game_id = read_u32(reader)?;
+        let team = read_i32(reader)?;
+        let game_move = GameMoveData::read(reader)?;
+
+        Ok(Self {
+            game_id,
+            team,
+            game_move,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for GameOpponentTurn {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        GameOpponentTurn::read(reader)
+    }
+}
+

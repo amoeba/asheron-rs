@@ -24,3 +24,26 @@ pub struct QualitiesUpdateString {
     pub value: String,
 }
 
+impl QualitiesUpdateString {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u8(reader)?;
+        let object_id = ObjectId::read(reader)?;
+        let key = PropertyString::try_from(read_u32(reader)?)?;
+        let __alignment_marker_align_dword = align_dword(reader)?;
+        let value = read_string(reader)?;
+
+        Ok(Self {
+            sequence,
+            object_id,
+            key,
+            value,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for QualitiesUpdateString {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        QualitiesUpdateString::read(reader)
+    }
+}
+

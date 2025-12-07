@@ -20,3 +20,21 @@ pub struct GameStartGame {
     pub team: i32,
 }
 
+impl GameStartGame {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let game_id = read_u32(reader)?;
+        let team = read_i32(reader)?;
+
+        Ok(Self {
+            game_id,
+            team,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for GameStartGame {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        GameStartGame::read(reader)
+    }
+}
+

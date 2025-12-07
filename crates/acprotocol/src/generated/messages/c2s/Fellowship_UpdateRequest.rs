@@ -18,3 +18,19 @@ pub struct FellowshipUpdateRequest {
     pub on: bool,
 }
 
+impl FellowshipUpdateRequest {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let on = read_bool(reader)?;
+
+        Ok(Self {
+            on,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for FellowshipUpdateRequest {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        FellowshipUpdateRequest::read(reader)
+    }
+}
+

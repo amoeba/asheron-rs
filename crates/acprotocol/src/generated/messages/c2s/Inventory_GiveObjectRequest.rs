@@ -22,3 +22,23 @@ pub struct InventoryGiveObjectRequest {
     pub amount: u32,
 }
 
+impl InventoryGiveObjectRequest {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let target_id = ObjectId::read(reader)?;
+        let object_id = ObjectId::read(reader)?;
+        let amount = read_u32(reader)?;
+
+        Ok(Self {
+            target_id,
+            object_id,
+            amount,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for InventoryGiveObjectRequest {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        InventoryGiveObjectRequest::read(reader)
+    }
+}
+

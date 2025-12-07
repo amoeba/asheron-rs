@@ -18,3 +18,19 @@ pub struct ItemStopViewingObjectContents {
     pub object_id: ObjectId,
 }
 
+impl ItemStopViewingObjectContents {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+
+        Ok(Self {
+            object_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for ItemStopViewingObjectContents {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        ItemStopViewingObjectContents::read(reader)
+    }
+}
+

@@ -18,3 +18,19 @@ pub struct CommunicationChannelList {
     pub characters: PackableList<string>,
 }
 
+impl CommunicationChannelList {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let characters = read_packable_list::<String>(reader)?;
+
+        Ok(Self {
+            characters,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationChannelList {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationChannelList::read(reader)
+    }
+}
+

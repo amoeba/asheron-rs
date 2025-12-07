@@ -18,3 +18,19 @@ pub struct MovementJump {
     pub jump: JumpPack,
 }
 
+impl MovementJump {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let jump = JumpPack::read(reader)?;
+
+        Ok(Self {
+            jump,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MovementJump {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MovementJump::read(reader)
+    }
+}
+

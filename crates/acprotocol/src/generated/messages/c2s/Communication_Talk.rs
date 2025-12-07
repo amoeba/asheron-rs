@@ -18,3 +18,19 @@ pub struct CommunicationTalk {
     pub message: String,
 }
 
+impl CommunicationTalk {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+
+        Ok(Self {
+            message,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationTalk {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationTalk::read(reader)
+    }
+}
+

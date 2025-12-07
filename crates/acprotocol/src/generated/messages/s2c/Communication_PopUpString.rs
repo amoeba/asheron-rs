@@ -18,3 +18,19 @@ pub struct CommunicationPopUpString {
     pub message: String,
 }
 
+impl CommunicationPopUpString {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+
+        Ok(Self {
+            message,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationPopUpString {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationPopUpString::read(reader)
+    }
+}
+

@@ -18,3 +18,19 @@ pub struct AllegianceDoAllegianceHouseAction {
     pub action: AllegianceHouseAction,
 }
 
+impl AllegianceDoAllegianceHouseAction {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let action = AllegianceHouseAction::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            action,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceDoAllegianceHouseAction {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceDoAllegianceHouseAction::read(reader)
+    }
+}
+

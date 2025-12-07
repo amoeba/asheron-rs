@@ -18,3 +18,19 @@ pub struct HouseHouseData {
     pub data: HouseData,
 }
 
+impl HouseHouseData {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let data = HouseData::read(reader)?;
+
+        Ok(Self {
+            data,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for HouseHouseData {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        HouseHouseData::read(reader)
+    }
+}
+

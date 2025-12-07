@@ -18,3 +18,19 @@ pub struct InventorySalvageOperationsResultData {
     pub result: SalvageOperationsResultData,
 }
 
+impl InventorySalvageOperationsResultData {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let result = SalvageOperationsResultData::read(reader)?;
+
+        Ok(Self {
+            result,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for InventorySalvageOperationsResultData {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        InventorySalvageOperationsResultData::read(reader)
+    }
+}
+

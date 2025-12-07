@@ -18,3 +18,19 @@ pub struct HouseSetOpenHouseStatus {
     pub open_house: bool,
 }
 
+impl HouseSetOpenHouseStatus {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let open_house = read_bool(reader)?;
+
+        Ok(Self {
+            open_house,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for HouseSetOpenHouseStatus {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        HouseSetOpenHouseStatus::read(reader)
+    }
+}
+

@@ -20,3 +20,21 @@ pub struct GameMoveResponse {
     pub move_result: ChessMoveResult,
 }
 
+impl GameMoveResponse {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let game_id = read_u32(reader)?;
+        let move_result = ChessMoveResult::try_from(read_i32(reader)?)?;
+
+        Ok(Self {
+            game_id,
+            move_result,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for GameMoveResponse {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        GameMoveResponse::read(reader)
+    }
+}
+

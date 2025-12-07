@@ -18,3 +18,19 @@ pub struct MagicDispelMultipleEnchantments {
     pub enchantments: PackableList<LayeredSpellId>,
 }
 
+impl MagicDispelMultipleEnchantments {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let enchantments = read_packable_list::<LayeredSpellId>(reader)?;
+
+        Ok(Self {
+            enchantments,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MagicDispelMultipleEnchantments {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MagicDispelMultipleEnchantments::read(reader)
+    }
+}
+

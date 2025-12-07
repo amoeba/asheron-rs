@@ -18,3 +18,19 @@ pub struct MovementAutonomousPosition {
     pub position: AutonomousPositionPack,
 }
 
+impl MovementAutonomousPosition {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let position = AutonomousPositionPack::read(reader)?;
+
+        Ok(Self {
+            position,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MovementAutonomousPosition {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MovementAutonomousPosition::read(reader)
+    }
+}
+

@@ -24,3 +24,25 @@ pub struct ItemObjDescEvent {
     pub visual_desc_sequence: u16,
 }
 
+impl ItemObjDescEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let object_description = ObjDesc::read(reader)?;
+        let instance_sequence = read_u16(reader)?;
+        let visual_desc_sequence = read_u16(reader)?;
+
+        Ok(Self {
+            object_id,
+            object_description,
+            instance_sequence,
+            visual_desc_sequence,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for ItemObjDescEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        ItemObjDescEvent::read(reader)
+    }
+}
+

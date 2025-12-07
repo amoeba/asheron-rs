@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "House_BootEveryone")]
 pub struct HouseBootEveryone {}
 
+impl HouseBootEveryone {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for HouseBootEveryone {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        HouseBootEveryone::read(reader)
+    }
+}
+

@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Allegiance_QueryAllegianceName")]
 pub struct AllegianceQueryAllegianceName {}
 
+impl AllegianceQueryAllegianceName {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceQueryAllegianceName {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceQueryAllegianceName::read(reader)
+    }
+}
+

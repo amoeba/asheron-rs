@@ -18,3 +18,19 @@ pub struct CharacterAddPlayerPermission {
     pub target_name: String,
 }
 
+impl CharacterAddPlayerPermission {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let target_name = read_string(reader)?;
+
+        Ok(Self {
+            target_name,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterAddPlayerPermission {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterAddPlayerPermission::read(reader)
+    }
+}
+

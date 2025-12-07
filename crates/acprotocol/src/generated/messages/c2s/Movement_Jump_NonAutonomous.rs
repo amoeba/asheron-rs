@@ -18,3 +18,19 @@ pub struct MovementJumpNonAutonomous {
     pub extent: f32,
 }
 
+impl MovementJumpNonAutonomous {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let extent = read_f32(reader)?;
+
+        Ok(Self {
+            extent,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MovementJumpNonAutonomous {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MovementJumpNonAutonomous::read(reader)
+    }
+}
+

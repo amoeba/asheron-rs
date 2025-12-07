@@ -18,3 +18,19 @@ pub struct ObjectSendForceObjdesc {
     pub object_id: ObjectId,
 }
 
+impl ObjectSendForceObjdesc {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+
+        Ok(Self {
+            object_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for ObjectSendForceObjdesc {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        ObjectSendForceObjdesc::read(reader)
+    }
+}
+

@@ -18,3 +18,19 @@ pub struct MovementMoveToState {
     pub move_to_state: MoveToStatePack,
 }
 
+impl MovementMoveToState {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let move_to_state = MoveToStatePack::read(reader)?;
+
+        Ok(Self {
+            move_to_state,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MovementMoveToState {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MovementMoveToState::read(reader)
+    }
+}
+

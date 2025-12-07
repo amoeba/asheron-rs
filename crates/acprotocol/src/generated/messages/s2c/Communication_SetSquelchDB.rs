@@ -18,3 +18,19 @@ pub struct CommunicationSetSquelchDB {
     pub squelch_db: SquelchDB,
 }
 
+impl CommunicationSetSquelchDB {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let squelch_db = SquelchDB::read(reader)?;
+
+        Ok(Self {
+            squelch_db,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationSetSquelchDB {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationSetSquelchDB::read(reader)
+    }
+}
+

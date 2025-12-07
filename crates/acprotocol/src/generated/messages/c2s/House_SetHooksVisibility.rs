@@ -18,3 +18,19 @@ pub struct HouseSetHooksVisibility {
     pub visible: bool,
 }
 
+impl HouseSetHooksVisibility {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let visible = read_bool(reader)?;
+
+        Ok(Self {
+            visible,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for HouseSetHooksVisibility {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        HouseSetHooksVisibility::read(reader)
+    }
+}
+

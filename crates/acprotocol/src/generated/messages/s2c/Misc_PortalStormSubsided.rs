@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Misc_PortalStormSubsided")]
 pub struct MiscPortalStormSubsided {}
 
+impl MiscPortalStormSubsided {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for MiscPortalStormSubsided {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MiscPortalStormSubsided::read(reader)
+    }
+}
+

@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Communication_ChannelIndex")]
 pub struct CommunicationChannelIndex {}
 
+impl CommunicationChannelIndex {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationChannelIndex {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationChannelIndex::read(reader)
+    }
+}
+

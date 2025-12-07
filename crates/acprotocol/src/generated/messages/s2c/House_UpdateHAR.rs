@@ -18,3 +18,19 @@ pub struct HouseUpdateHAR {
     pub guest_list: HAR,
 }
 
+impl HouseUpdateHAR {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let guest_list = HAR::read(reader)?;
+
+        Ok(Self {
+            guest_list,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for HouseUpdateHAR {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        HouseUpdateHAR::read(reader)
+    }
+}
+

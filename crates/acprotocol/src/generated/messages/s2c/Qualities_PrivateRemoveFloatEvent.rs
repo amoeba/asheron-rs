@@ -20,3 +20,21 @@ pub struct QualitiesPrivateRemoveFloatEvent {
     pub type_: PropertyFloat,
 }
 
+impl QualitiesPrivateRemoveFloatEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u8(reader)?;
+        let type_ = PropertyFloat::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            sequence,
+            type_,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for QualitiesPrivateRemoveFloatEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        QualitiesPrivateRemoveFloatEvent::read(reader)
+    }
+}
+

@@ -29,3 +29,38 @@ pub enum CharacterCharGenVerificationResponse {
     Type1(CharacterCharGenVerificationResponseType1),
 }
 
+impl CharacterCharGenVerificationResponseType1 {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let character_id = ObjectId::read(reader)?;
+        let name = read_string(reader)?;
+        let seconds_until_deletion = read_u32(reader)?;
+        let __alignment_marker_align_dword = align_dword(reader)?;
+
+        Ok(Self {
+            character_id,
+            name,
+            seconds_until_deletion,
+        })
+    }
+}
+
+impl CharacterCharGenVerificationResponse {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let response_type = CharGenResponseType::try_from(read_u32(reader)?)?;
+
+        match response_type {
+            CharGenResponseType::OK => {
+                let variant_struct = CharacterCharGenVerificationResponseType1::read(reader)?;
+                Ok(Self::Type1(variant_struct))
+            },
+            _ => Err(format!("Unknown {} value: {:?}", "response_type", response_type).into()),
+        }
+    }
+}
+
+impl crate::readers::ACDataType for CharacterCharGenVerificationResponse {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterCharGenVerificationResponse::read(reader)
+    }
+}
+

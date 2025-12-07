@@ -22,3 +22,23 @@ pub struct MovementSetObjectMovement {
     pub movement_data: MovementData,
 }
 
+impl MovementSetObjectMovement {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let object_instance_sequence = read_u16(reader)?;
+        let movement_data = MovementData::read(reader)?;
+
+        Ok(Self {
+            object_id,
+            object_instance_sequence,
+            movement_data,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MovementSetObjectMovement {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MovementSetObjectMovement::read(reader)
+    }
+}
+

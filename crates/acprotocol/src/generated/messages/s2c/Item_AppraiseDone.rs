@@ -18,3 +18,19 @@ pub struct ItemAppraiseDone {
     pub unknown: u32,
 }
 
+impl ItemAppraiseDone {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let unknown = read_u32(reader)?;
+
+        Ok(Self {
+            unknown,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for ItemAppraiseDone {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        ItemAppraiseDone::read(reader)
+    }
+}
+

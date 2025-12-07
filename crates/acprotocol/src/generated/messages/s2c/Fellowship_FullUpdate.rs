@@ -18,3 +18,19 @@ pub struct FellowshipFullUpdate {
     pub fellowship: Fellowship,
 }
 
+impl FellowshipFullUpdate {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let fellowship = Fellowship::read(reader)?;
+
+        Ok(Self {
+            fellowship,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for FellowshipFullUpdate {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        FellowshipFullUpdate::read(reader)
+    }
+}
+

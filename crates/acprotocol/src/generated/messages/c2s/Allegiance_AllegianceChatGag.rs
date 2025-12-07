@@ -20,3 +20,21 @@ pub struct AllegianceAllegianceChatGag {
     pub on: bool,
 }
 
+impl AllegianceAllegianceChatGag {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let character_name = read_string(reader)?;
+        let on = read_bool(reader)?;
+
+        Ok(Self {
+            character_name,
+            on,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceAllegianceChatGag {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceAllegianceChatGag::read(reader)
+    }
+}
+

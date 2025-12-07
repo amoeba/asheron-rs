@@ -18,3 +18,19 @@ pub struct HouseModifyAllegianceGuestPermission {
     pub add: bool,
 }
 
+impl HouseModifyAllegianceGuestPermission {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let add = read_bool(reader)?;
+
+        Ok(Self {
+            add,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for HouseModifyAllegianceGuestPermission {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        HouseModifyAllegianceGuestPermission::read(reader)
+    }
+}
+

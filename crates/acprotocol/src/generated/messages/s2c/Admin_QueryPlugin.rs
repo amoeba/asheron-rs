@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Admin_QueryPlugin")]
 pub struct AdminQueryPlugin {}
 
+impl AdminQueryPlugin {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for AdminQueryPlugin {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AdminQueryPlugin::read(reader)
+    }
+}
+

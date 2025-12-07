@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Character_LoginCompleteNotification")]
 pub struct CharacterLoginCompleteNotification {}
 
+impl CharacterLoginCompleteNotification {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for CharacterLoginCompleteNotification {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterLoginCompleteNotification::read(reader)
+    }
+}
+

@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Magic_PurgeEnchantments")]
 pub struct MagicPurgeEnchantments {}
 
+impl MagicPurgeEnchantments {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for MagicPurgeEnchantments {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MagicPurgeEnchantments::read(reader)
+    }
+}
+

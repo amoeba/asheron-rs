@@ -18,3 +18,19 @@ pub struct CommunicationSetAFKMode {
     pub afk: bool,
 }
 
+impl CommunicationSetAFKMode {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let afk = read_bool(reader)?;
+
+        Ok(Self {
+            afk,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationSetAFKMode {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationSetAFKMode::read(reader)
+    }
+}
+

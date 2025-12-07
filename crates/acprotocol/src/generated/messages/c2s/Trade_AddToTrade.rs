@@ -20,3 +20,21 @@ pub struct TradeAddToTrade {
     pub slot_index: u32,
 }
 
+impl TradeAddToTrade {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let slot_index = read_u32(reader)?;
+
+        Ok(Self {
+            object_id,
+            slot_index,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for TradeAddToTrade {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        TradeAddToTrade::read(reader)
+    }
+}
+

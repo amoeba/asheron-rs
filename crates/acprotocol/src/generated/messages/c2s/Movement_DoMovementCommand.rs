@@ -22,3 +22,23 @@ pub struct MovementDoMovementCommand {
     pub hold_key: HoldKey,
 }
 
+impl MovementDoMovementCommand {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let motion = read_u32(reader)?;
+        let speed = read_f32(reader)?;
+        let hold_key = HoldKey::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            motion,
+            speed,
+            hold_key,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MovementDoMovementCommand {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MovementDoMovementCommand::read(reader)
+    }
+}
+

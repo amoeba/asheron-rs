@@ -18,3 +18,19 @@ pub struct LoginCreatePlayer {
     pub character_id: ObjectId,
 }
 
+impl LoginCreatePlayer {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let character_id = ObjectId::read(reader)?;
+
+        Ok(Self {
+            character_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for LoginCreatePlayer {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        LoginCreatePlayer::read(reader)
+    }
+}
+

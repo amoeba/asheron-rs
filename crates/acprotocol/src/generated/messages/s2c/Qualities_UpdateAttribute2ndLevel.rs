@@ -24,3 +24,25 @@ pub struct QualitiesUpdateAttribute2ndLevel {
     pub value: u32,
 }
 
+impl QualitiesUpdateAttribute2ndLevel {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u8(reader)?;
+        let object_id = ObjectId::read(reader)?;
+        let key = CurVitalId::try_from(read_u32(reader)?)?;
+        let value = read_u32(reader)?;
+
+        Ok(Self {
+            sequence,
+            object_id,
+            key,
+            value,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for QualitiesUpdateAttribute2ndLevel {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        QualitiesUpdateAttribute2ndLevel::read(reader)
+    }
+}
+

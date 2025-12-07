@@ -20,3 +20,21 @@ pub struct ItemWearItem {
     pub slot: EquipMask,
 }
 
+impl ItemWearItem {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let slot = EquipMask::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            object_id,
+            slot,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for ItemWearItem {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        ItemWearItem::read(reader)
+    }
+}
+

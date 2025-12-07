@@ -18,3 +18,19 @@ pub struct MagicDispelEnchantment {
     pub spell_id: LayeredSpellId,
 }
 
+impl MagicDispelEnchantment {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let spell_id = LayeredSpellId::read(reader)?;
+
+        Ok(Self {
+            spell_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MagicDispelEnchantment {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MagicDispelEnchantment::read(reader)
+    }
+}
+

@@ -28,3 +28,29 @@ pub struct AdminQueryPluginResponse {
     pub plugin_webpage: String,
 }
 
+impl AdminQueryPluginResponse {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let context = read_u32(reader)?;
+        let success = read_bool(reader)?;
+        let plugin_name = read_string(reader)?;
+        let plugin_author = read_string(reader)?;
+        let plugin_email = read_string(reader)?;
+        let plugin_webpage = read_string(reader)?;
+
+        Ok(Self {
+            context,
+            success,
+            plugin_name,
+            plugin_author,
+            plugin_email,
+            plugin_webpage,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AdminQueryPluginResponse {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AdminQueryPluginResponse::read(reader)
+    }
+}
+

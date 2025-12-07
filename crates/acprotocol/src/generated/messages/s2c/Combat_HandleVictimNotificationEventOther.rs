@@ -18,3 +18,19 @@ pub struct CombatHandleVictimNotificationEventOther {
     pub message: String,
 }
 
+impl CombatHandleVictimNotificationEventOther {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+
+        Ok(Self {
+            message,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CombatHandleVictimNotificationEventOther {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CombatHandleVictimNotificationEventOther::read(reader)
+    }
+}
+

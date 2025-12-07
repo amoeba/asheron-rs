@@ -18,3 +18,19 @@ pub struct CommunicationSetAFKMessage {
     pub message: String,
 }
 
+impl CommunicationSetAFKMessage {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+
+        Ok(Self {
+            message,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationSetAFKMessage {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationSetAFKMessage::read(reader)
+    }
+}
+

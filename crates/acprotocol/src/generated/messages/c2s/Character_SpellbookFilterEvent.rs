@@ -18,3 +18,19 @@ pub struct CharacterSpellbookFilterEvent {
     pub options: SpellBookFilterOptions,
 }
 
+impl CharacterSpellbookFilterEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let options = SpellBookFilterOptions::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            options,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterSpellbookFilterEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterSpellbookFilterEvent::read(reader)
+    }
+}
+

@@ -20,3 +20,21 @@ pub struct CharacterRemoveSpellFavorite {
     pub spell_bar: u32,
 }
 
+impl CharacterRemoveSpellFavorite {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let spell_id = LayeredSpellId::read(reader)?;
+        let spell_bar = read_u32(reader)?;
+
+        Ok(Self {
+            spell_id,
+            spell_bar,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterRemoveSpellFavorite {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterRemoveSpellFavorite::read(reader)
+    }
+}
+

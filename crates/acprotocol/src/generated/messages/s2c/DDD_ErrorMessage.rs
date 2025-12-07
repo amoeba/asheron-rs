@@ -22,3 +22,23 @@ pub struct DDDErrorMessage {
     pub r_error: u32,
 }
 
+impl DDDErrorMessage {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let resource_type = read_u32(reader)?;
+        let resource_id = DataId::read(reader)?;
+        let r_error = read_u32(reader)?;
+
+        Ok(Self {
+            resource_type,
+            resource_id,
+            r_error,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for DDDErrorMessage {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        DDDErrorMessage::read(reader)
+    }
+}
+

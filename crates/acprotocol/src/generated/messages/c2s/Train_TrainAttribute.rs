@@ -20,3 +20,21 @@ pub struct TrainTrainAttribute {
     pub experience: u32,
 }
 
+impl TrainTrainAttribute {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let type_ = AttributeId::try_from(read_u32(reader)?)?;
+        let experience = read_u32(reader)?;
+
+        Ok(Self {
+            type_,
+            experience,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for TrainTrainAttribute {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        TrainTrainAttribute::read(reader)
+    }
+}
+

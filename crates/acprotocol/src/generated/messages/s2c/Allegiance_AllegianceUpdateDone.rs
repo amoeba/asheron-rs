@@ -18,3 +18,19 @@ pub struct AllegianceAllegianceUpdateDone {
     pub failure_type: WeenieError,
 }
 
+impl AllegianceAllegianceUpdateDone {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let failure_type = WeenieError::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            failure_type,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceAllegianceUpdateDone {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceAllegianceUpdateDone::read(reader)
+    }
+}
+

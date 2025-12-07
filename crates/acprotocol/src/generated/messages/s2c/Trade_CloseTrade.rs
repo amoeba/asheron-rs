@@ -18,3 +18,19 @@ pub struct TradeCloseTrade {
     pub reason: EndTradeReason,
 }
 
+impl TradeCloseTrade {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let reason = EndTradeReason::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            reason,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for TradeCloseTrade {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        TradeCloseTrade::read(reader)
+    }
+}
+

@@ -22,3 +22,23 @@ pub struct VendorVendorInfo {
     pub items: PackableList<ItemProfile>,
 }
 
+impl VendorVendorInfo {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let profile = VendorProfile::read(reader)?;
+        let items = read_packable_list::<ItemProfile>(reader)?;
+
+        Ok(Self {
+            object_id,
+            profile,
+            items,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for VendorVendorInfo {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        VendorVendorInfo::read(reader)
+    }
+}
+

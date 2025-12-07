@@ -20,3 +20,21 @@ pub struct WritingBookPageData {
     pub page_num: i32,
 }
 
+impl WritingBookPageData {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let page_num = read_i32(reader)?;
+
+        Ok(Self {
+            object_id,
+            page_num,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for WritingBookPageData {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        WritingBookPageData::read(reader)
+    }
+}
+

@@ -20,3 +20,21 @@ pub struct EffectsPlayScriptId {
     pub script_id: DataId,
 }
 
+impl EffectsPlayScriptId {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let script_id = DataId::read(reader)?;
+
+        Ok(Self {
+            object_id,
+            script_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for EffectsPlayScriptId {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        EffectsPlayScriptId::read(reader)
+    }
+}
+

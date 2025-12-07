@@ -22,3 +22,23 @@ pub struct QualitiesRemoveInstanceIdEvent {
     pub type_: PropertyInstanceId,
 }
 
+impl QualitiesRemoveInstanceIdEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u8(reader)?;
+        let object_id = ObjectId::read(reader)?;
+        let type_ = PropertyInstanceId::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            sequence,
+            object_id,
+            type_,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for QualitiesRemoveInstanceIdEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        QualitiesRemoveInstanceIdEvent::read(reader)
+    }
+}
+

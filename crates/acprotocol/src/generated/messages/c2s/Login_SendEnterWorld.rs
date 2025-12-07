@@ -20,3 +20,21 @@ pub struct LoginSendEnterWorld {
     pub account: String,
 }
 
+impl LoginSendEnterWorld {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let character_id = ObjectId::read(reader)?;
+        let account = read_string(reader)?;
+
+        Ok(Self {
+            character_id,
+            account,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for LoginSendEnterWorld {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        LoginSendEnterWorld::read(reader)
+    }
+}
+

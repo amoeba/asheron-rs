@@ -18,3 +18,19 @@ pub struct AllegianceSetMotd {
     pub message: String,
 }
 
+impl AllegianceSetMotd {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+
+        Ok(Self {
+            message,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceSetMotd {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceSetMotd::read(reader)
+    }
+}
+

@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Character_ClearPlayerConsentList")]
 pub struct CharacterClearPlayerConsentList {}
 
+impl CharacterClearPlayerConsentList {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for CharacterClearPlayerConsentList {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterClearPlayerConsentList::read(reader)
+    }
+}
+

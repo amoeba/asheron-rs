@@ -18,3 +18,19 @@ pub struct CombatHandleAttackDoneEvent {
     pub number: u32,
 }
 
+impl CombatHandleAttackDoneEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let number = read_u32(reader)?;
+
+        Ok(Self {
+            number,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CombatHandleAttackDoneEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CombatHandleAttackDoneEvent::read(reader)
+    }
+}
+

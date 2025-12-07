@@ -20,3 +20,21 @@ pub struct InventoryStackableSplitTo3D {
     pub amount: u32,
 }
 
+impl InventoryStackableSplitTo3D {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let amount = read_u32(reader)?;
+
+        Ok(Self {
+            object_id,
+            amount,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for InventoryStackableSplitTo3D {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        InventoryStackableSplitTo3D::read(reader)
+    }
+}
+

@@ -18,3 +18,19 @@ pub struct MagicUpdateMultipleEnchantments {
     pub enchantments: PackableList<Enchantment>,
 }
 
+impl MagicUpdateMultipleEnchantments {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let enchantments = read_packable_list::<Enchantment>(reader)?;
+
+        Ok(Self {
+            enchantments,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MagicUpdateMultipleEnchantments {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MagicUpdateMultipleEnchantments::read(reader)
+    }
+}
+

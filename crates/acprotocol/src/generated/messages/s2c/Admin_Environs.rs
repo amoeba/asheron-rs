@@ -18,3 +18,19 @@ pub struct AdminEnvirons {
     pub envrion_option: EnvrionChangeType,
 }
 
+impl AdminEnvirons {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let envrion_option = EnvrionChangeType::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            envrion_option,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AdminEnvirons {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AdminEnvirons::read(reader)
+    }
+}
+

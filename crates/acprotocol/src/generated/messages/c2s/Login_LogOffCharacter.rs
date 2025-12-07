@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Login_LogOffCharacter")]
 pub struct LoginLogOffCharacter {}
 
+impl LoginLogOffCharacter {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for LoginLogOffCharacter {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        LoginLogOffCharacter::read(reader)
+    }
+}
+

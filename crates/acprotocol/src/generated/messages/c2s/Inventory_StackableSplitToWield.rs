@@ -22,3 +22,23 @@ pub struct InventoryStackableSplitToWield {
     pub amount: i32,
 }
 
+impl InventoryStackableSplitToWield {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let slot = EquipMask::try_from(read_u32(reader)?)?;
+        let amount = read_i32(reader)?;
+
+        Ok(Self {
+            object_id,
+            slot,
+            amount,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for InventoryStackableSplitToWield {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        InventoryStackableSplitToWield::read(reader)
+    }
+}
+

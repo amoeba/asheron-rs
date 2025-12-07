@@ -18,3 +18,19 @@ pub struct LoginAwaitingSubscriptionExpiration {
     pub seconds_remaining: u32,
 }
 
+impl LoginAwaitingSubscriptionExpiration {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let seconds_remaining = read_u32(reader)?;
+
+        Ok(Self {
+            seconds_remaining,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for LoginAwaitingSubscriptionExpiration {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        LoginAwaitingSubscriptionExpiration::read(reader)
+    }
+}
+

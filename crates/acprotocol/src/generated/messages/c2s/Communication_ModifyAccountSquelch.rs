@@ -20,3 +20,21 @@ pub struct CommunicationModifyAccountSquelch {
     pub character_name: String,
 }
 
+impl CommunicationModifyAccountSquelch {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let add = read_bool(reader)?;
+        let character_name = read_string(reader)?;
+
+        Ok(Self {
+            add,
+            character_name,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationModifyAccountSquelch {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationModifyAccountSquelch::read(reader)
+    }
+}
+

@@ -20,3 +20,21 @@ pub struct AdminQueryPluginListResponse {
     pub plugin_list: String,
 }
 
+impl AdminQueryPluginListResponse {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let context = read_u32(reader)?;
+        let plugin_list = read_string(reader)?;
+
+        Ok(Self {
+            context,
+            plugin_list,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AdminQueryPluginListResponse {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AdminQueryPluginListResponse::read(reader)
+    }
+}
+

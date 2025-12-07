@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "DDD_OnEndDDD")]
 pub struct DDDOnEndDDD {}
 
+impl DDDOnEndDDD {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for DDDOnEndDDD {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        DDDOnEndDDD::read(reader)
+    }
+}
+

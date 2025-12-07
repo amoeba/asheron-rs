@@ -20,3 +20,21 @@ pub struct WritingSetInscription {
     pub inscription: String,
 }
 
+impl WritingSetInscription {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let inscription = read_string(reader)?;
+
+        Ok(Self {
+            object_id,
+            inscription,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for WritingSetInscription {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        WritingSetInscription::read(reader)
+    }
+}
+

@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Trade_ClearTradeAcceptance")]
 pub struct TradeClearTradeAcceptance {}
 
+impl TradeClearTradeAcceptance {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for TradeClearTradeAcceptance {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        TradeClearTradeAcceptance::read(reader)
+    }
+}
+

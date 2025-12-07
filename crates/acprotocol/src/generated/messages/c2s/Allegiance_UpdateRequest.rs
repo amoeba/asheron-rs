@@ -18,3 +18,19 @@ pub struct AllegianceUpdateRequest {
     pub on: bool,
 }
 
+impl AllegianceUpdateRequest {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let on = read_bool(reader)?;
+
+        Ok(Self {
+            on,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceUpdateRequest {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceUpdateRequest::read(reader)
+    }
+}
+

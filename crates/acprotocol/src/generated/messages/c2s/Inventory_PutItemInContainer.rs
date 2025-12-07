@@ -22,3 +22,23 @@ pub struct InventoryPutItemInContainer {
     pub slot_index: u32,
 }
 
+impl InventoryPutItemInContainer {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let container_id = ObjectId::read(reader)?;
+        let slot_index = read_u32(reader)?;
+
+        Ok(Self {
+            object_id,
+            container_id,
+            slot_index,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for InventoryPutItemInContainer {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        InventoryPutItemInContainer::read(reader)
+    }
+}
+

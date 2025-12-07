@@ -18,3 +18,19 @@ pub struct ItemQueryItemMana {
     pub object_id: ObjectId,
 }
 
+impl ItemQueryItemMana {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+
+        Ok(Self {
+            object_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for ItemQueryItemMana {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        ItemQueryItemMana::read(reader)
+    }
+}
+

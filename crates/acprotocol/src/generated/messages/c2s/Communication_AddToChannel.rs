@@ -18,3 +18,19 @@ pub struct CommunicationAddToChannel {
     pub channel: Channel,
 }
 
+impl CommunicationAddToChannel {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let channel = Channel::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            channel,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationAddToChannel {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationAddToChannel::read(reader)
+    }
+}
+

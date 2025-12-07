@@ -20,3 +20,21 @@ pub struct AdminReceiveAccountData {
     pub admin_account_data: PackableList<AdminAccountData>,
 }
 
+impl AdminReceiveAccountData {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let unknown = read_u32(reader)?;
+        let admin_account_data = read_packable_list::<AdminAccountData>(reader)?;
+
+        Ok(Self {
+            unknown,
+            admin_account_data,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AdminReceiveAccountData {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AdminReceiveAccountData::read(reader)
+    }
+}
+

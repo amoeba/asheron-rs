@@ -22,3 +22,23 @@ pub struct WritingBookAddPageResponse {
     pub success: bool,
 }
 
+impl WritingBookAddPageResponse {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let book_id = ObjectId::read(reader)?;
+        let page_number = read_u32(reader)?;
+        let success = read_bool(reader)?;
+
+        Ok(Self {
+            book_id,
+            page_number,
+            success,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for WritingBookAddPageResponse {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        WritingBookAddPageResponse::read(reader)
+    }
+}
+

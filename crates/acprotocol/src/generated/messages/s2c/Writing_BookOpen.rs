@@ -28,3 +28,29 @@ pub struct WritingBookOpen {
     pub scribe_name: String,
 }
 
+impl WritingBookOpen {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let book_id = ObjectId::read(reader)?;
+        let max_num_pages = read_u32(reader)?;
+        let page_data = PageDataList::read(reader)?;
+        let inscription = read_string(reader)?;
+        let scribe_id = ObjectId::read(reader)?;
+        let scribe_name = read_string(reader)?;
+
+        Ok(Self {
+            book_id,
+            max_num_pages,
+            page_data,
+            inscription,
+            scribe_id,
+            scribe_name,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for WritingBookOpen {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        WritingBookOpen::read(reader)
+    }
+}
+

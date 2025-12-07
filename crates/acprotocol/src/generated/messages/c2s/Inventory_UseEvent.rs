@@ -18,3 +18,19 @@ pub struct InventoryUseEvent {
     pub object_id: ObjectId,
 }
 
+impl InventoryUseEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+
+        Ok(Self {
+            object_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for InventoryUseEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        InventoryUseEvent::read(reader)
+    }
+}
+

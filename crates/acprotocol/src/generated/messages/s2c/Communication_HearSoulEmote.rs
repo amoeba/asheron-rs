@@ -22,3 +22,23 @@ pub struct CommunicationHearSoulEmote {
     pub text: String,
 }
 
+impl CommunicationHearSoulEmote {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sender_id = ObjectId::read(reader)?;
+        let sender_name = read_string(reader)?;
+        let text = read_string(reader)?;
+
+        Ok(Self {
+            sender_id,
+            sender_name,
+            text,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationHearSoulEmote {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationHearSoulEmote::read(reader)
+    }
+}
+

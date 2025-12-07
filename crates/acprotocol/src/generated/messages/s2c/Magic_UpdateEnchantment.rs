@@ -18,3 +18,19 @@ pub struct MagicUpdateEnchantment {
     pub enchantment: Enchantment,
 }
 
+impl MagicUpdateEnchantment {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let enchantment = Enchantment::read(reader)?;
+
+        Ok(Self {
+            enchantment,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for MagicUpdateEnchantment {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        MagicUpdateEnchantment::read(reader)
+    }
+}
+

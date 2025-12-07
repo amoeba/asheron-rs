@@ -20,3 +20,21 @@ pub struct QualitiesPrivateRemovePositionEvent {
     pub type_: PropertyPosition,
 }
 
+impl QualitiesPrivateRemovePositionEvent {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u8(reader)?;
+        let type_ = PropertyPosition::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            sequence,
+            type_,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for QualitiesPrivateRemovePositionEvent {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        QualitiesPrivateRemovePositionEvent::read(reader)
+    }
+}
+

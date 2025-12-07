@@ -24,3 +24,25 @@ pub struct GameMove {
     pub y_to: i32,
 }
 
+impl GameMove {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let x_from = read_i32(reader)?;
+        let y_from = read_i32(reader)?;
+        let x_to = read_i32(reader)?;
+        let y_to = read_i32(reader)?;
+
+        Ok(Self {
+            x_from,
+            y_from,
+            x_to,
+            y_to,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for GameMove {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        GameMove::read(reader)
+    }
+}
+

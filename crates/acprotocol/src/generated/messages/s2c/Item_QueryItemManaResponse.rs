@@ -22,3 +22,23 @@ pub struct ItemQueryItemManaResponse {
     pub success: bool,
 }
 
+impl ItemQueryItemManaResponse {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+        let mana = read_f32(reader)?;
+        let success = read_bool(reader)?;
+
+        Ok(Self {
+            object_id,
+            mana,
+            success,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for ItemQueryItemManaResponse {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        ItemQueryItemManaResponse::read(reader)
+    }
+}
+

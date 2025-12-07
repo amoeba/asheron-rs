@@ -15,3 +15,15 @@ use crate::enums::*;
 #[serde(rename = "Login_SendEnterWorldRequest")]
 pub struct LoginSendEnterWorldRequest {}
 
+impl LoginSendEnterWorldRequest {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
+impl crate::readers::ACDataType for LoginSendEnterWorldRequest {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        LoginSendEnterWorldRequest::read(reader)
+    }
+}
+

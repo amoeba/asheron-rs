@@ -18,3 +18,19 @@ pub struct CharacterQueryAge {
     pub object_id: ObjectId,
 }
 
+impl CharacterQueryAge {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let object_id = ObjectId::read(reader)?;
+
+        Ok(Self {
+            object_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CharacterQueryAge {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CharacterQueryAge::read(reader)
+    }
+}
+

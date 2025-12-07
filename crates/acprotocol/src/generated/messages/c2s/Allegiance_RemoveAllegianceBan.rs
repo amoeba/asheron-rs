@@ -18,3 +18,19 @@ pub struct AllegianceRemoveAllegianceBan {
     pub character_name: String,
 }
 
+impl AllegianceRemoveAllegianceBan {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let character_name = read_string(reader)?;
+
+        Ok(Self {
+            character_name,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for AllegianceRemoveAllegianceBan {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        AllegianceRemoveAllegianceBan::read(reader)
+    }
+}
+

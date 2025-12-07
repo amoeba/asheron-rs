@@ -18,3 +18,19 @@ pub struct SocialSetDisplayCharacterTitle {
     pub title_id: u32,
 }
 
+impl SocialSetDisplayCharacterTitle {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let title_id = read_u32(reader)?;
+
+        Ok(Self {
+            title_id,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for SocialSetDisplayCharacterTitle {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        SocialSetDisplayCharacterTitle::read(reader)
+    }
+}
+
