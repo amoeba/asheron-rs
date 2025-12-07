@@ -1695,7 +1695,7 @@ impl BlobFragments {
         let body_size = (size - 16) as u16;
         let index = read_u16(reader)?;
         let group = FragmentGroup::try_from(read_u16(reader)?)?;
-        let data = read_vec::<u8>(reader, (body_size as usize))?;
+        let data = read_vec::<u8>(reader, body_size as usize)?;
 
         Ok(Self {
             sequence,
@@ -2351,7 +2351,7 @@ impl AllegianceHierarchy {
         if record_count > 0 {
             monarch_data = Some(AllegianceData::read(reader)?);
         }
-        let records = read_vec::<AllegianceRecord>(reader, (record_count as usize) - 1)?;
+        let records = read_vec::<AllegianceRecord>(reader, record_count as usize - 1)?;
 
         Ok(Self {
             record_count,
@@ -3082,7 +3082,7 @@ impl RawMotionState {
         if (flags & 0x00000400) != 0 {
             turn_speed = Some(read_f32(reader)?);
         }
-        let commands = read_vec::<PackedMotionCommand>(reader, (command_list_length as usize))?;
+        let commands = read_vec::<PackedMotionCommand>(reader, command_list_length as usize)?;
 
         Ok(Self {
             flags,
@@ -3355,7 +3355,7 @@ impl InterpertedMotionState {
         if (flags & 0x00000040) != 0 {
             turn_speed = Some(read_f32(reader)?);
         }
-        let commands = read_vec::<PackedMotionCommand>(reader, (command_list_length as usize))?;
+        let commands = read_vec::<PackedMotionCommand>(reader, command_list_length as usize)?;
         let __alignment_marker_align_dword = align_dword(reader)?;
 
         Ok(Self {

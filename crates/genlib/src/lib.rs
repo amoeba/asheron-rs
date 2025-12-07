@@ -2826,14 +2826,14 @@ fn convert_length_expression(expr: &str, all_fields: &[Field]) -> String {
                 // Try to find a field with this name
                 if let Some(field) = all_fields.iter().find(|f| f.name == current_token) {
                     let safe_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                    result.push_str(&format!("({} as usize)", safe_name));
+                    result.push_str(&format!("{} as usize", safe_name));
                 } else if current_token.chars().all(|c| c.is_numeric()) {
                     // It's a number
                     result.push_str(&current_token);
                 } else {
                     // Unknown token - keep as-is but make it snake_case
                     let safe_name = safe_identifier(&current_token, IdentifierType::Field).name;
-                    result.push_str(&format!("({} as usize)", safe_name));
+                    result.push_str(&format!("{} as usize", safe_name));
                 }
                 current_token.clear();
             }
@@ -2852,12 +2852,12 @@ fn convert_length_expression(expr: &str, all_fields: &[Field]) -> String {
     if !current_token.is_empty() {
         if let Some(field) = all_fields.iter().find(|f| f.name == current_token) {
             let safe_name = safe_identifier(&field.name, IdentifierType::Field).name;
-            result.push_str(&format!("({} as usize)", safe_name));
+            result.push_str(&format!("{} as usize", safe_name));
         } else if current_token.chars().all(|c| c.is_numeric()) {
             result.push_str(&current_token);
         } else {
             let safe_name = safe_identifier(&current_token, IdentifierType::Field).name;
-            result.push_str(&format!("({} as usize)", safe_name));
+            result.push_str(&format!("{} as usize", safe_name));
         }
     }
 
