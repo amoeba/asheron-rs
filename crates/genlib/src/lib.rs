@@ -1550,7 +1550,8 @@ fn generate_field_group_reads(
                 for subfield in &field.subfields {
                     let subfield_name = safe_identifier(&subfield.name, IdentifierType::Field).name;
                     let subfield_expr = convert_condition_expression(&subfield.value_expression, all_fields);
-                    out.push_str(&format!("        let {} = {};\n", subfield_name, subfield_expr));
+                    let subfield_rust_type = get_rust_type(&subfield.field_type);
+                    out.push_str(&format!("        let {} = ({}) as {};\n", subfield_name, subfield_expr, subfield_rust_type));
                 }
             }
         }
@@ -1801,7 +1802,8 @@ fn generate_variant_reader_impl(
         for subfield in &field.subfields {
             let subfield_name = safe_identifier(&subfield.name, IdentifierType::Field).name;
             let subfield_expr = convert_condition_expression(&subfield.value_expression, &field_set.common_fields);
-            out.push_str(&format!("        let {} = {};\n", subfield_name, subfield_expr));
+            let subfield_rust_type = get_rust_type(&subfield.field_type);
+            out.push_str(&format!("        let {} = ({}) as {};\n", subfield_name, subfield_expr, subfield_rust_type));
         }
     }
 
