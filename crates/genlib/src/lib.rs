@@ -1205,9 +1205,11 @@ fn generate_readers_for_types(
         std::collections::HashMap::new();
     for protocol_enum in enums {
         for enum_value in &protocol_enum.values {
+            // Use safe enum variant name (converted from "Refuse_EmoteCategory" to "RefuseEmoteCategory")
+            let safe_variant = safe_enum_variant_name(&enum_value.name);
             enum_value_map.insert(
                 (protocol_enum.name.clone(), enum_value.value.clone()),
-                enum_value.name.clone(),
+                safe_variant.name,
             );
         }
     }
@@ -1736,30 +1738,66 @@ fn generate_variant_reader_impl(
         .find(|f| f.name == *switch_field)
         .map(|f| &f.field_type);
 
-    // Generate each variant case
+    // Group case values by field signature (same as type generator)
+    // Map: field signature -> (primary_value, [all_values])
+    let mut field_groups: BTreeMap<String, (String, Vec<String>)> = BTreeMap::new();
+
     for (case_value, case_fields) in variant_fields {
-        // Convert case value to enum variant pattern if switch field is an enum
-        let case_pattern = if let Some(switch_type) = switch_field_type {
-            if ctx.enum_parent_map.contains_key(switch_type) {
-                // It's an enum - look up the enum variant name from the value
-                if let Some(variant_name) = ctx
-                    .enum_value_map
-                    .get(&(switch_type.clone(), case_value.clone()))
-                {
-                    // Use the enum variant: EnumType::VariantName
-                    format!("{}::{}", switch_type, variant_name)
+        // Create a signature for these fields to group identical field sets
+        let field_sig = case_fields
+            .iter()
+            .map(|f| format!("{}:{}", f.name, f.field_type))
+            .collect::<Vec<_>>()
+            .join(";");
+
+        field_groups
+            .entry(field_sig)
+            .or_insert_with(|| (case_value.clone(), Vec::new()))
+            .1
+            .push(case_value.clone());
+    }
+
+    // Sort by primary value for consistent output
+    let mut sorted_groups: Vec<_> = field_groups.into_iter().collect();
+    sorted_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
+
+    // Generate each variant case (now grouped)
+    for (_field_sig, (_primary_value, mut all_values)) in sorted_groups {
+        // Sort values for consistent output
+        all_values.sort();
+
+        // Use the first sorted value to determine the variant name
+        let first_value = &all_values[0];
+        let case_fields = variant_fields.get(first_value).expect("Field group must have fields");
+
+        // Generate match patterns for ALL values in this group
+        let mut case_patterns = Vec::new();
+        for case_value in &all_values {
+            // Convert case value to enum variant pattern if switch field is an enum
+            let case_pattern = if let Some(switch_type) = switch_field_type {
+                if ctx.enum_parent_map.contains_key(switch_type) {
+                    // It's an enum - look up the enum variant name from the value
+                    if let Some(variant_name) = ctx
+                        .enum_value_map
+                        .get(&(switch_type.clone(), case_value.clone()))
+                    {
+                        // Use the enum variant: EnumType::VariantName
+                        format!("{}::{}", switch_type, variant_name)
+                    } else {
+                        // Fallback to raw value if variant not found
+                        case_value.clone()
+                    }
                 } else {
-                    // Fallback to raw value if variant not found
                     case_value.clone()
                 }
             } else {
                 case_value.clone()
-            }
-        } else {
-            case_value.clone()
-        };
+            };
+            case_patterns.push(case_pattern);
+        }
 
-        out.push_str(&format!("            {} => {{\n", case_pattern));
+        // Join all patterns with |
+        out.push_str(&format!("            {} => {{\n", case_patterns.join(" | ")));
 
         // Read variant-specific fields
         for field in case_fields {
@@ -1775,13 +1813,13 @@ fn generate_variant_reader_impl(
         }
 
         // Construct the variant
-        // Generate variant name from case value
-        let variant_name = if case_value.starts_with("0x") || case_value.starts_with("0X") {
-            format!("Type{}", &case_value[2..].to_uppercase())
-        } else if let Some(stripped) = case_value.strip_prefix('-') {
+        // Generate variant name from first case value (must match type generator)
+        let variant_name = if first_value.starts_with("0x") || first_value.starts_with("0X") {
+            format!("Type{}", &first_value[2..].to_uppercase())
+        } else if let Some(stripped) = first_value.strip_prefix('-') {
             format!("TypeNeg{}", stripped)
         } else {
-            format!("Type{}", case_value)
+            format!("Type{}", first_value)
         };
 
         out.push('\n');
