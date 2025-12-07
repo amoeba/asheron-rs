@@ -1201,6 +1201,7 @@ fn generate_readers_for_types(
         out.push_str("use crate::types::*;\n");
     } else {
         out.push_str("use crate::types::*;\n");
+        out.push_str("#[allow(unused_imports)]\n");
         out.push_str("use crate::types::");
         out.push_str(module_name);
         out.push_str("::*;\n");
