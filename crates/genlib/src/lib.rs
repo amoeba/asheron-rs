@@ -132,7 +132,16 @@ fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
 
     // Generate all enums as regular enums (including mask enums)
     let derives = build_derive_string(&protocol_enum.extra_derives);
-    out.push_str(&format!("{}\npub enum ", derives));
+    
+    // Add repr if parent is specified
+    let repr_attr = if !protocol_enum.parent.is_empty() {
+        let repr_type = get_rust_type(&protocol_enum.parent);
+        format!("#[repr({})]\n", repr_type)
+    } else {
+        String::new()
+    };
+    
+    out.push_str(&format!("{}{}\npub enum ", repr_attr, derives));
     out.push_str(enum_name);
     out.push_str(" {\n");
 

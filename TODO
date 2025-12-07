@@ -10,4 +10,3 @@ TODOs
   - SpellBookPage
   - PHashTable"
 - Ensure code genreation passes cargo fmt and cargo clippy
-- We we need to handle reprs for enums like ItemType. It should be repr(u32)
