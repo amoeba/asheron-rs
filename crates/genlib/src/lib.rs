@@ -330,10 +330,7 @@ fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
                 original_name, safe_variant.name, value_literal
             ));
         } else {
-            out.push_str(&format!(
-                "    {} = {},\n",
-                safe_variant.name, value_literal
-            ));
+            out.push_str(&format!("    {} = {},\n", safe_variant.name, value_literal));
         }
     }
 
@@ -1794,9 +1791,8 @@ fn generate_variant_reader_impl(
             let case_pattern = if let Some(switch_type) = switch_field_type {
                 if ctx.enum_parent_map.contains_key(switch_type) {
                     // It's an enum - look up the enum variant name from the value
-                    if let Some(variant_name) = ctx
-                        .enum_value_map
-                        .get(&(switch_type.clone(), *case_value))
+                    if let Some(variant_name) =
+                        ctx.enum_value_map.get(&(switch_type.clone(), *case_value))
                     {
                         // Use the enum variant: EnumType::VariantName
                         format!("{}::{}", switch_type, variant_name)
