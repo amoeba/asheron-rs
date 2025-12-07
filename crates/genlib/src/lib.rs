@@ -12,6 +12,9 @@ use crate::{
 mod identifiers;
 mod types;
 
+/// Default derives for all generated types
+const DEFAULT_DERIVES: &[&str] = &["Clone", "Debug", "PartialEq", "Serialize", "Deserialize"];
+
 /// Map an XML type name to a Rust type name.
 pub fn get_rust_type(xml_type: &str) -> &str {
     match xml_type {
@@ -112,6 +115,13 @@ fn generate_field_line(field: &Field) -> String {
     }
 }
 
+/// Build derive macro string from default derives plus extra derives
+fn build_derive_string(extra_derives: &[String]) -> String {
+    let mut all_derives: Vec<String> = DEFAULT_DERIVES.iter().map(|s| s.to_string()).collect();
+    all_derives.extend(extra_derives.iter().cloned());
+    format!("#[derive({})]", all_derives.join(", "))
+}
+
 fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
     let enum_name = &protocol_enum.name;
     let mut out = String::new();
@@ -122,14 +132,16 @@ fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
 
     // For mask enums, generate as a struct with bitflags
     if protocol_enum.is_mask {
+        let derives = build_derive_string(&protocol_enum.extra_derives);
         out.push_str(&format!(
-            "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct {enum_name} {{\n        pub bits: {},\n}}\n\n",
+            "{}\npub struct {enum_name} {{\n        pub bits: {},\n}}\n\n",
+            derives,
             get_rust_type(&protocol_enum.parent)
         ));
     } else {
         // Generate regular enum
-        out.push_str("#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]\npub enum ");
+        let derives = build_derive_string(&protocol_enum.extra_derives);
+        out.push_str(&format!("{}\npub enum ", derives));
         out.push_str(enum_name);
         out.push_str(" {\n");
 
@@ -182,6 +194,111 @@ pub struct {enum_name} {{\n        pub bits: {},\n}}\n\n",
     }
 
     out
+}
+
+/// Analyze all types and add extra derives where needed
+fn rectify_dependencies(
+    common_types: &[ProtocolType],
+    c2s_types: &[ProtocolType], 
+    s2c_types: &[ProtocolType],
+    enums: &mut Vec<ProtocolEnum>,
+    common_types_out: &mut Vec<ProtocolType>,
+    c2s_types_out: &mut Vec<ProtocolType>,
+    s2c_types_out: &mut Vec<ProtocolType>,
+) {
+    let mut hash_types = std::collections::HashSet::new();
+    
+    // Collect all type names that need Hash from all type collections
+    for protocol_type in common_types.iter().chain(c2s_types).chain(s2c_types) {
+        extract_hash_requirements_from_type(protocol_type, &mut hash_types);
+    }
+    
+    // Add Hash+Eq to enums that need them
+    for protocol_enum in enums.iter_mut() {
+        if hash_types.contains(&protocol_enum.name) {
+            protocol_enum.extra_derives.push("Hash".to_string());
+            protocol_enum.extra_derives.push("Eq".to_string());
+        }
+    }
+    
+    // Add Hash+Eq to types that need them and copy to output vectors
+    for protocol_type in common_types {
+        let mut updated_type = protocol_type.clone();
+        if hash_types.contains(&protocol_type.name) {
+            updated_type.extra_derives.push("Hash".to_string());
+            updated_type.extra_derives.push("Eq".to_string());
+        }
+        common_types_out.push(updated_type);
+    }
+    
+    for protocol_type in c2s_types {
+        let mut updated_type = protocol_type.clone();
+        if hash_types.contains(&protocol_type.name) {
+            updated_type.extra_derives.push("Hash".to_string());
+            updated_type.extra_derives.push("Eq".to_string());
+        }
+        c2s_types_out.push(updated_type);
+    }
+    
+    for protocol_type in s2c_types {
+        let mut updated_type = protocol_type.clone();
+        if hash_types.contains(&protocol_type.name) {
+            updated_type.extra_derives.push("Hash".to_string());
+            updated_type.extra_derives.push("Eq".to_string());
+        }
+        s2c_types_out.push(updated_type);
+    }
+}
+
+/// Extract type names that need Hash from a single ProtocolType
+fn extract_hash_requirements_from_type(
+    protocol_type: &ProtocolType,
+    hash_types: &mut std::collections::HashSet<String>,
+) {
+    if let Some(ref field_set) = protocol_type.fields {
+        // Check common fields for HashMap usage
+        for field in &field_set.common_fields {
+            extract_hash_requirements_from_field(&field.field_type, hash_types);
+        }
+
+        // Check variant fields for HashMap usage
+        if let Some(ref variant_fields) = field_set.variant_fields {
+            for case_fields in variant_fields.values() {
+                for field in case_fields {
+                    extract_hash_requirements_from_field(&field.field_type, hash_types);
+                }
+            }
+        }
+    }
+}
+
+/// Extract type names that need Hash from a field type string
+fn extract_hash_requirements_from_field(
+    field_type: &str,
+    hash_types: &mut std::collections::HashSet<String>,
+) {
+    // Look for HashMap<KeyType, V> patterns
+    if field_type.starts_with("std::collections::HashMap<") {
+        let inner = &field_type["std::collections::HashMap<".len()..field_type.len()-1];
+        if let Some(comma_pos) = inner.find(',') {
+            let key_type = inner[..comma_pos].trim();
+            // Check if the key type is not a single letter generic (like T, U)
+            if key_type.len() > 1 && key_type.chars().next().unwrap().is_ascii_uppercase() {
+                hash_types.insert(key_type.to_string());
+            }
+        }
+    }
+    
+    // Also check for PackableHashTable<KeyType, V> patterns
+    if field_type.starts_with("PackableHashTable<") {
+        let inner = &field_type["PackableHashTable<".len()..field_type.len()-1];
+        if let Some(comma_pos) = inner.find(',') {
+            let key_type = inner[..comma_pos].trim();
+            if key_type.len() > 1 && key_type.chars().next().unwrap().is_ascii_uppercase() {
+                hash_types.insert(key_type.to_string());
+            }
+        }
+    }
 }
 
 fn generate_type(protocol_type: &ProtocolType) -> String {
@@ -239,16 +356,18 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
 
     let Some(field_set) = &protocol_type.fields else {
         // No fields, generate empty struct
+        let derives = build_derive_string(&protocol_type.extra_derives);
+
         if safe_type_name.needs_rename {
             out.push_str(&format!(
-                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(rename = \"{original_type_name}\")]
-pub struct {type_name}{type_generics} {{}}\n\n"
+                "{}\n#[serde(rename = \"{original_type_name}\")]
+pub struct {type_name}{type_generics} {{}}\n\n",
+                derives
             ));
         } else {
             out.push_str(&format!(
-                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct {type_name}{type_generics} {{}}\n\n"
+                "{}\npub struct {type_name}{type_generics} {{}}\n\n",
+                derives
             ));
         }
         return out;
@@ -259,18 +378,20 @@ pub struct {type_name}{type_generics} {{}}\n\n"
         // Generate enum
         let switch_field = field_set.switch_field.as_ref().unwrap();
 
+        let derives = build_derive_string(&protocol_type.extra_derives);
+
         if safe_type_name.needs_rename {
             out.push_str(&format!(
-                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(rename = \"{original_type_name}\")]
+                "{}\n#[serde(rename = \"{original_type_name}\")]
 #[serde(tag = \"{switch_field}\")]
-pub enum {type_name}{type_generics} {{\n"
+pub enum {type_name}{type_generics} {{\n",
+                derives
             ));
         } else {
             out.push_str(&format!(
-                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(tag = \"{switch_field}\")]
-pub enum {type_name}{type_generics} {{\n"
+                "{}\n#[serde(tag = \"{switch_field}\")]
+pub enum {type_name}{type_generics} {{\n",
+                derives
             ));
         }
 
@@ -356,20 +477,22 @@ pub enum {type_name}{type_generics} {{\n"
 
         let fields_out: String = field_out.join(",\n");
 
+        let derives = build_derive_string(&protocol_type.extra_derives);
+
         if safe_type_name.needs_rename {
             out.push_str(&format!(
-                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-#[serde(rename = \"{original_type_name}\")]
+                "{}\n#[serde(rename = \"{original_type_name}\")]
 pub struct {type_name}{type_generics} {{
 {fields_out}
-}}\n\n"
+}}\n\n",
+                derives
             ));
         } else {
             out.push_str(&format!(
-                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct {type_name}{type_generics} {{
+                "{}\npub struct {type_name}{type_generics} {{
 {fields_out}
-}}\n\n"
+}}\n\n",
+                derives
             ));
         }
     }
@@ -450,13 +573,14 @@ fn process_enum_start_tag(
 
     if let Some(name) = name {
         if let Some(parent) = parent {
-            let new_enum = ProtocolEnum {
-                name,
-                text,
-                parent,
-                values: Vec::new(),
-                is_mask,
-            };
+        let new_enum = ProtocolEnum {
+            name,
+            text,
+            parent,
+            values: Vec::new(),
+            is_mask,
+            extra_derives: Vec::new(),
+        };
             *current_enum = Some(new_enum);
         }
     }
@@ -765,6 +889,7 @@ fn process_type_tag(
             parent,
             templated,
             hash_bounds: Vec::new(),
+            extra_derives: Vec::new(),
         };
 
         // For self-closing tags, push immediately
@@ -1042,6 +1167,20 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
         buf.clear();
     }
 
+    // Rectify dependencies between types and enums
+    let mut rectified_common_types = Vec::new();
+    let mut rectified_c2s_types = Vec::new();
+    let mut rectified_s2c_types = Vec::new();
+    rectify_dependencies(
+        &common_types, 
+        &c2s_types, 
+        &s2c_types, 
+        &mut enums,
+        &mut rectified_common_types,
+        &mut rectified_c2s_types,
+        &mut rectified_s2c_types,
+    );
+
     // Helper function to generate code for a list of types
     let generate_types_code = |types: &Vec<ProtocolType>| -> String {
         let mut out = String::new();
@@ -1081,7 +1220,7 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
     let mut common_out = String::new();
     common_out.push_str("use serde::{Serialize, Deserialize};\n\n");
 
-    for protocol_type in &common_types {
+    for protocol_type in &rectified_common_types {
         if protocol_type.is_primitive {
             let type_name = &protocol_type.name;
             let rust_type = get_rust_type(type_name);
@@ -1101,7 +1240,7 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
     GeneratedCode {
         enums: enums_out,
         common: common_out,
-        c2s: generate_types_code(&c2s_types),
-        s2c: generate_types_code(&s2c_types),
+        c2s: generate_types_code(&rectified_c2s_types),
+        s2c: generate_types_code(&rectified_s2c_types),
     }
 }

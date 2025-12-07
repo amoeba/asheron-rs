@@ -8,7 +8,7 @@ pub struct Field {
     pub(crate) is_optional: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FieldSet {
     /// The field being switched on, if any (e.g., "Type")
     pub(crate) switch_field: Option<String>,
@@ -18,22 +18,23 @@ pub struct FieldSet {
     pub(crate) variant_fields: Option<BTreeMap<String, Vec<Field>>>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EnumValue {
     pub(crate) name: String,
     pub(crate) value: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ProtocolEnum {
     pub(crate) name: String,
     pub(crate) text: Option<String>,
     pub(crate) parent: String,
     pub(crate) values: Vec<EnumValue>,
     pub(crate) is_mask: bool,
+    pub(crate) extra_derives: Vec<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ProtocolType {
     pub(crate) name: String,
     pub(crate) text: Option<String>,
@@ -48,6 +49,8 @@ pub struct ProtocolType {
     pub(crate) templated: Option<String>,
     /// Generic parameters that need Eq + Hash bounds (for HashMap keys)
     pub(crate) hash_bounds: Vec<String>,
+    /// Additional derives that this type needs (e.g., "Hash", "Eq", "PartialOrd")
+    pub(crate) extra_derives: Vec<String>,
 }
 
 impl ProtocolType {

@@ -1486,7 +1486,7 @@ pub struct ItemType {
 }
 
 /// The Skill identifies a specific Character skill.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum SkillId {
     Axe = 0x01,
     Bow = 0x02,
@@ -1814,7 +1814,7 @@ pub enum EmoteType {
 }
 
 /// The EmoteCategory identifies the category of an emote.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum EmoteCategory {
     #[serde(rename = "Invalid_EmoteCategory")]
     InvalidEmoteCategory = 0x00,
@@ -4201,7 +4201,7 @@ pub enum ContractId {
 }
 
 /// The PropertyInt64 identifies a specific Character or Object int64 property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyInt64 {
     TotalExperience = 0x0001,
     AvailableExperience = 0x0002,
@@ -4214,7 +4214,7 @@ pub enum PropertyInt64 {
 }
 
 /// The PropertyBool identifies a specific Character or Object boolean property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyBool {
     Undef = 0,
     Stuck = 1,
@@ -4350,7 +4350,7 @@ pub enum PropertyBool {
 }
 
 /// The DataPropertyId identifies a specific Character or Object data property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyDataId {
     Setup = 1,
     MotionTable = 2,
@@ -4416,7 +4416,7 @@ pub enum PropertyDataId {
 }
 
 /// The PropertyInt identifies a specific Character or Object int property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyInt {
     ItemType = 1,
     CreatureType = 2,
@@ -4811,7 +4811,7 @@ pub enum PropertyInt {
 }
 
 /// The PropertyInstanceId identifies a specific Character or Object instance property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyInstanceId {
     Owner = 1,
     Container = 2,
@@ -4861,7 +4861,7 @@ pub enum PropertyInstanceId {
 }
 
 /// The PropertyPosition identifies a specific Character or Object position property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyPosition {
     Location = 1,
     Destination = 2,
@@ -4893,7 +4893,7 @@ pub enum PropertyPosition {
 }
 
 /// The PropertyString identifies a specific Character or Object string property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyString {
     Name = 1,
     Title = 2,
@@ -4950,7 +4950,7 @@ pub enum PropertyString {
 }
 
 /// The PropertyFloat identifies a specific Character or Object float property.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub enum PropertyFloat {
     Undef = 0,
     HeartbeatInterval = 1,

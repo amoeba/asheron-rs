@@ -58,7 +58,7 @@ pub type SpellId = u16;
 pub type DataId = PackedDWORD;
 
 // Full spell Id combining the spell id with the spell layer.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Hash, Eq)]
 pub struct LayeredSpellId {
         #[serde(rename = "Id")]
         id: SpellId,
