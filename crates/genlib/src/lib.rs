@@ -581,7 +581,10 @@ fn generate_variant_struct_name(parent_type_name: &str, case_value: i64) -> Stri
     } else {
         format!("{:X}", case_value)
     };
-    format!("{parent_type_name}_{case_hex_str}")
+    let name = format!("{parent_type_name}Type{case_hex_str}");
+    // Apply safe_identifier to ensure proper Rust PascalCase naming
+    let safe_name = safe_identifier(&name, IdentifierType::Type);
+    safe_name.name
 }
 
 /// Generate a standalone struct for a single enum variant with a nested switch
@@ -653,7 +656,8 @@ fn generate_variant_struct(
         }
 
         // Generate a nested enum for the switch
-        let nested_enum_name = format!("{struct_name}_{}Variant", nested_switch_obj.switch_field);
+        let nested_enum_name_raw = format!("{struct_name}{}{}", nested_switch_obj.switch_field, "Variant");
+        let nested_enum_name = safe_identifier(&nested_enum_name_raw, IdentifierType::Type).name;
         out.push_str(&format!(
             "    pub {}: {nested_enum_name},\n",
             safe_identifier(&nested_switch_obj.switch_field, IdentifierType::Field).name
@@ -676,7 +680,8 @@ fn generate_variant_struct(
             .unwrap()
             .get(&case_value)
             .unwrap();
-        let nested_enum_name = format!("{struct_name}_{}Variant", nested_switch_obj.switch_field);
+        let nested_enum_name_raw = format!("{struct_name}{}{}", nested_switch_obj.switch_field, "Variant");
+        let nested_enum_name = safe_identifier(&nested_enum_name_raw, IdentifierType::Type).name;
 
         out.push_str(&generate_nested_switch_enum(
             &nested_enum_name,
@@ -1727,6 +1732,122 @@ fn generate_variant_struct_readers(
         }
     }
 
+    // Generate a reader for the main enum that delegates to variant structs
+    out.push_str(&generate_enum_reader_impl(
+        ctx,
+        protocol_type,
+        type_name,
+        field_set,
+        variant_fields,
+    ));
+
+    out
+}
+
+/// Generate a reader for the main enum that delegates to variant struct readers
+fn generate_enum_reader_impl(
+    ctx: &ReaderContext,
+    protocol_type: &ProtocolType,
+    type_name: &str,
+    field_set: &FieldSet,
+    variant_fields: &BTreeMap<i64, Vec<Field>>,
+) -> String {
+    let mut out = String::new();
+
+    out.push_str(&format!("impl {type_name} {{\n"));
+    out.push_str("    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n");
+
+    // Read all common fields (these come before the switch)
+    for field in &field_set.common_fields {
+        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+        let read_call = generate_read_call(ctx, field, &field_set.common_fields);
+        out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+
+        // Generate subfield computations if any
+        for subfield in &field.subfields {
+            let subfield_name = safe_identifier(&subfield.name, IdentifierType::Field).name;
+            let subfield_expr =
+                convert_condition_expression(&subfield.value_expression, &field_set.common_fields);
+            let subfield_rust_type = get_rust_type(&subfield.field_type);
+            out.push_str(&format!(
+                "        let {} = ({}) as {};\n",
+                subfield_name, subfield_expr, subfield_rust_type
+            ));
+        }
+    }
+
+    // Generate match on switch field
+    let switch_field = field_set.switch_field.as_ref().unwrap();
+    let switch_field_name = safe_identifier(switch_field, IdentifierType::Field).name;
+    out.push_str(&format!("\n        match {} {{\n", switch_field_name));
+
+    // Group case values by field signature
+    let mut field_groups: BTreeMap<String, (i64, Vec<i64>)> = BTreeMap::new();
+
+    for (case_value, case_fields) in variant_fields {
+        let field_sig = case_fields
+            .iter()
+            .map(|f| format!("{}:{}", f.name, f.field_type))
+            .collect::<Vec<_>>()
+            .join(";");
+
+        field_groups
+            .entry(field_sig)
+            .or_insert_with(|| (*case_value, Vec::new()))
+            .1
+            .push(*case_value);
+    }
+
+    let mut sorted_groups: Vec<_> = field_groups.into_iter().collect();
+    sorted_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
+
+    for (_field_sig, (_primary_value, all_values)) in sorted_groups {
+        let mut sorted_values = all_values.clone();
+        sorted_values.sort();
+        let first_value = sorted_values[0];
+
+        // Generate match patterns
+        let mut case_patterns = Vec::new();
+        for case_value in &sorted_values {
+            case_patterns.push(format_hex_value(*case_value));
+        }
+
+        out.push_str(&format!(
+            "            {} => {{\n",
+            case_patterns.join(" | ")
+        ));
+
+        let variant_struct_name = generate_variant_struct_name(type_name, first_value);
+
+        // Generate variant name
+        let variant_name = if first_value < 0 {
+            format!("TypeNeg{}", first_value.abs())
+        } else {
+            let hex_str = format!("{:X}", first_value);
+            format!("Type{}", hex_str)
+        };
+
+        out.push_str(&format!(
+            "                let variant_struct = {variant_struct_name}::read(reader)?;\n"
+        ));
+        out.push_str(&format!(
+            "                Ok(Self::{variant_name}(variant_struct))\n"
+        ));
+        out.push_str("            },\n");
+    }
+
+    out.push_str(&format!(
+        "            _ => Err(format!(\"Unknown {{}} value: {{:?}}\", \"{switch_field_name}\", {switch_field_name}).into()),\n"
+    ));
+    out.push_str("        }\n");
+    out.push_str("    }\n");
+    out.push_str("}\n\n");
+
+    // Add ACDataType implementation
+    out.push_str(&format!(
+        "impl crate::readers::ACDataType for {type_name} {{\n    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        {type_name}::read(reader)\n    }}\n}}\n\n"
+    ));
+
     out
 }
 
@@ -1815,7 +1936,8 @@ fn generate_variant_struct_reader_impl(
         }
 
         // Read the nested switch enum
-        let nested_enum_name = format!("{struct_name}_{}Variant", nested_switch.switch_field);
+        let nested_enum_name_raw = format!("{struct_name}{}{}", nested_switch.switch_field, "Variant");
+        let nested_enum_name = safe_identifier(&nested_enum_name_raw, IdentifierType::Type).name;
         let nested_enum_field_name = safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
         out.push_str(&format!(
             "        let {} = {}::read(reader)?;\n",

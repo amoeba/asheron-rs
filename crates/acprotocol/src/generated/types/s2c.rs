@@ -1725,7 +1725,7 @@ pub struct CharacterSetPlayerVisualDesc {
 
 // Character creation screen initilised.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct CharacterCharGenVerificationResponse_1 {
+pub struct CharacterCharGenVerificationResponseType1 {
     #[serde(rename = "CharacterId")]
     pub character_id: ObjectId,
     #[serde(rename = "Name")]
@@ -1739,7 +1739,7 @@ pub struct CharacterCharGenVerificationResponse_1 {
 #[serde(tag = "ResponseType")]
 pub enum CharacterCharGenVerificationResponse {
     #[serde(rename = "0x01")]
-    Type1(CharacterCharGenVerificationResponse_1),
+    Type1(CharacterCharGenVerificationResponseType1),
 }
 
 // Sent when your subsciption is about to expire
@@ -2034,7 +2034,7 @@ pub struct LoginWorldInfo {
 
 // Add or update a dat file Resource.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DDDDataMessage_0 {
+pub struct DDDDataMessageType0 {
     #[serde(rename = "DatFile")]
     pub dat_file: DatFileType,
     #[serde(rename = "ResourceType")]
@@ -2052,7 +2052,7 @@ pub struct DDDDataMessage_0 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DDDDataMessage_1 {
+pub struct DDDDataMessageType1 {
     #[serde(rename = "DatFile")]
     pub dat_file: DatFileType,
     #[serde(rename = "ResourceType")]
@@ -2075,9 +2075,9 @@ pub struct DDDDataMessage_1 {
 #[serde(tag = "Compression")]
 pub enum DDDDataMessage {
     #[serde(rename = "0x00")]
-    Type0(DDDDataMessage_0),
+    Type0(DDDDataMessageType0),
     #[serde(rename = "0x01")]
-    Type1(DDDDataMessage_1),
+    Type1(DDDDataMessageType1),
 }
 
 // DDD error

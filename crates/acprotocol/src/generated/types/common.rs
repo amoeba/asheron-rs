@@ -194,7 +194,7 @@ pub struct SocketAddress {
 
 // Optional header data when PacketHeaderFlags includes LoginRequest
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct LoginRequestHeader_2 {
+pub struct LoginRequestHeaderType2 {
     #[serde(rename = "ClientVersion")]
     pub client_version: String,
     #[serde(rename = "Length")]
@@ -212,7 +212,7 @@ pub struct LoginRequestHeader_2 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct LoginRequestHeader_40000002 {
+pub struct LoginRequestHeaderType40000002 {
     #[serde(rename = "ClientVersion")]
     pub client_version: String,
     #[serde(rename = "Length")]
@@ -233,9 +233,9 @@ pub struct LoginRequestHeader_40000002 {
 #[serde(tag = "AuthType")]
 pub enum LoginRequestHeader {
     #[serde(rename = "0x02")]
-    Type2(LoginRequestHeader_2),
+    Type2(LoginRequestHeaderType2),
     #[serde(rename = "0x40000002")]
-    Type40000002(LoginRequestHeader_40000002),
+    Type40000002(LoginRequestHeaderType40000002),
 }
 
 // Optional header data when PacketHeaderFlags includes Referral
@@ -570,7 +570,7 @@ pub struct EmoteSetList {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteSet_1 {
+pub struct EmoteSetType1 {
     #[serde(rename = "Probability")]
     pub probability: f32,
     #[serde(rename = "Emotes")]
@@ -580,7 +580,7 @@ pub struct EmoteSet_1 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteSet_2 {
+pub struct EmoteSetType2 {
     #[serde(rename = "Probability")]
     pub probability: f32,
     #[serde(rename = "Emotes")]
@@ -590,7 +590,7 @@ pub struct EmoteSet_2 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteSet_5 {
+pub struct EmoteSetType5 {
     #[serde(rename = "Probability")]
     pub probability: f32,
     #[serde(rename = "Emotes")]
@@ -602,7 +602,7 @@ pub struct EmoteSet_5 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteSet_C {
+pub struct EmoteSetTypeC {
     #[serde(rename = "Probability")]
     pub probability: f32,
     #[serde(rename = "Emotes")]
@@ -612,7 +612,7 @@ pub struct EmoteSet_C {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteSet_F {
+pub struct EmoteSetTypeF {
     #[serde(rename = "Probability")]
     pub probability: f32,
     #[serde(rename = "Emotes")]
@@ -628,11 +628,11 @@ pub struct EmoteSet_F {
 pub enum EmoteSet {
     #[serde(rename = "0x01")]
     #[serde(alias = "0x06")]
-    Type1(EmoteSet_1),
+    Type1(EmoteSetType1),
     #[serde(rename = "0x02")]
-    Type2(EmoteSet_2),
+    Type2(EmoteSetType2),
     #[serde(rename = "0x05")]
-    Type5(EmoteSet_5),
+    Type5(EmoteSetType5),
     #[serde(rename = "0x0C")]
     #[serde(alias = "0x0D")]
     #[serde(alias = "0x16")]
@@ -649,13 +649,13 @@ pub enum EmoteSet {
     #[serde(alias = "0x24")]
     #[serde(alias = "0x25")]
     #[serde(alias = "0x26")]
-    TypeC(EmoteSet_C),
+    TypeC(EmoteSetTypeC),
     #[serde(rename = "0x0F")]
-    TypeF(EmoteSet_F),
+    TypeF(EmoteSetTypeF),
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_1 {
+pub struct EmoteType1 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -665,7 +665,7 @@ pub struct Emote_1 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_2 {
+pub struct EmoteType2 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -677,7 +677,7 @@ pub struct Emote_2 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_3 {
+pub struct EmoteType3 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -687,7 +687,7 @@ pub struct Emote_3 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_4 {
+pub struct EmoteType4 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -697,7 +697,7 @@ pub struct Emote_4 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_5 {
+pub struct EmoteType5 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -707,7 +707,7 @@ pub struct Emote_5 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_7 {
+pub struct EmoteType7 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -717,7 +717,7 @@ pub struct Emote_7 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_9 {
+pub struct EmoteType9 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -727,7 +727,7 @@ pub struct Emote_9 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_E {
+pub struct EmoteTypeE {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -737,7 +737,7 @@ pub struct Emote_E {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_1C {
+pub struct EmoteType1C {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -749,7 +749,7 @@ pub struct Emote_1C {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_1E {
+pub struct EmoteType1E {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -763,7 +763,7 @@ pub struct Emote_1E {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_20 {
+pub struct EmoteType20 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -775,7 +775,7 @@ pub struct Emote_20 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_22 {
+pub struct EmoteType22 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -785,7 +785,7 @@ pub struct Emote_22 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_23 {
+pub struct EmoteType23 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -797,7 +797,7 @@ pub struct Emote_23 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_24 {
+pub struct EmoteType24 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -813,7 +813,7 @@ pub struct Emote_24 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_25 {
+pub struct EmoteType25 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -829,7 +829,7 @@ pub struct Emote_25 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_26 {
+pub struct EmoteType26 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -843,7 +843,7 @@ pub struct Emote_26 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_31 {
+pub struct EmoteType31 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -857,7 +857,7 @@ pub struct Emote_31 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_32 {
+pub struct EmoteType32 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -875,7 +875,7 @@ pub struct Emote_32 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_35 {
+pub struct EmoteType35 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -887,7 +887,7 @@ pub struct Emote_35 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_38 {
+pub struct EmoteType38 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -901,7 +901,7 @@ pub struct Emote_38 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_3F {
+pub struct EmoteType3F {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -911,7 +911,7 @@ pub struct Emote_3F {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_4C {
+pub struct EmoteType4C {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -922,7 +922,7 @@ pub struct Emote_4C {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_6E {
+pub struct EmoteType6E {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -932,7 +932,7 @@ pub struct Emote_6E {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_70 {
+pub struct EmoteType70 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -942,7 +942,7 @@ pub struct Emote_70 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_72 {
+pub struct EmoteType72 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -958,7 +958,7 @@ pub struct Emote_72 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Emote_76 {
+pub struct EmoteType76 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
@@ -1001,38 +1001,38 @@ pub enum Emote {
     #[serde(alias = "0x53")]
     #[serde(alias = "0x58")]
     #[serde(alias = "0x79")]
-    Type1(Emote_1),
+    Type1(EmoteType1),
     #[serde(rename = "0x02")]
     #[serde(alias = "0x3E")]
-    Type2(Emote_2),
+    Type2(EmoteType2),
     #[serde(rename = "0x03")]
     #[serde(alias = "0x4A")]
-    Type3(Emote_3),
+    Type3(EmoteType3),
     #[serde(rename = "0x04")]
     #[serde(alias = "0x06")]
     #[serde(alias = "0x0B")]
     #[serde(alias = "0x57")]
-    Type4(Emote_4),
+    Type4(EmoteType4),
     #[serde(rename = "0x05")]
     #[serde(alias = "0x34")]
-    Type5(Emote_5),
+    Type5(EmoteType5),
     #[serde(rename = "0x07")]
-    Type7(Emote_7),
+    Type7(EmoteType7),
     #[serde(rename = "0x09")]
-    Type9(Emote_9),
+    Type9(EmoteType9),
     #[serde(rename = "0x0E")]
     #[serde(alias = "0x13")]
     #[serde(alias = "0x1B")]
     #[serde(alias = "0x49")]
-    TypeE(Emote_E),
+    TypeE(EmoteTypeE),
     #[serde(rename = "0x1C")]
     #[serde(alias = "0x1D")]
-    Type1C(Emote_1C),
+    Type1C(EmoteType1C),
     #[serde(rename = "0x1E")]
     #[serde(alias = "0x3B")]
     #[serde(alias = "0x47")]
     #[serde(alias = "0x52")]
-    Type1E(Emote_1E),
+    Type1E(EmoteType1E),
     #[serde(rename = "0x20")]
     #[serde(alias = "0x21")]
     #[serde(alias = "0x46")]
@@ -1048,7 +1048,7 @@ pub enum Emote {
     #[serde(alias = "0x6B")]
     #[serde(alias = "0x6C")]
     #[serde(alias = "0x6D")]
-    Type20(Emote_20),
+    Type20(EmoteType20),
     #[serde(rename = "0x22")]
     #[serde(alias = "0x2F")]
     #[serde(alias = "0x30")]
@@ -1056,11 +1056,11 @@ pub enum Emote {
     #[serde(alias = "0x6F")]
     #[serde(alias = "0x77")]
     #[serde(alias = "0x78")]
-    Type22(Emote_22),
+    Type22(EmoteType22),
     #[serde(rename = "0x23")]
     #[serde(alias = "0x2D")]
     #[serde(alias = "0x2E")]
-    Type23(Emote_23),
+    Type23(EmoteType23),
     #[serde(rename = "0x24")]
     #[serde(alias = "0x27")]
     #[serde(alias = "0x28")]
@@ -1068,39 +1068,39 @@ pub enum Emote {
     #[serde(alias = "0x2A")]
     #[serde(alias = "0x2B")]
     #[serde(alias = "0x2C")]
-    Type24(Emote_24),
+    Type24(EmoteType24),
     #[serde(rename = "0x25")]
-    Type25(Emote_25),
+    Type25(EmoteType25),
     #[serde(rename = "0x26")]
     #[serde(alias = "0x4B")]
-    Type26(Emote_26),
+    Type26(EmoteType26),
     #[serde(rename = "0x31")]
-    Type31(Emote_31),
+    Type31(EmoteType31),
     #[serde(rename = "0x32")]
-    Type32(Emote_32),
+    Type32(EmoteType32),
     #[serde(rename = "0x35")]
     #[serde(alias = "0x36")]
     #[serde(alias = "0x37")]
     #[serde(alias = "0x45")]
-    Type35(Emote_35),
+    Type35(EmoteType35),
     #[serde(rename = "0x38")]
-    Type38(Emote_38),
+    Type38(EmoteType38),
     #[serde(rename = "0x3F")]
     #[serde(alias = "0x63")]
     #[serde(alias = "0x64")]
-    Type3F(Emote_3F),
+    Type3F(EmoteType3F),
     #[serde(rename = "0x4C")]
-    Type4C(Emote_4C),
+    Type4C(EmoteType4C),
     #[serde(rename = "0x6E")]
     #[serde(alias = "0x73")]
-    Type6E(Emote_6E),
+    Type6E(EmoteType6E),
     #[serde(rename = "0x70")]
     #[serde(alias = "0x71")]
-    Type70(Emote_70),
+    Type70(EmoteType70),
     #[serde(rename = "0x72")]
-    Type72(Emote_72),
+    Type72(EmoteType72),
     #[serde(rename = "0x76")]
-    Type76(Emote_76),
+    Type76(EmoteType76),
 }
 
 // Set information about an item for creation
@@ -1243,7 +1243,7 @@ pub struct GeneratorQueueNode {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowProperty_1000007F {
+pub struct WindowPropertyType1000007F {
     #[serde(rename = "Unknown_j")]
     pub unknown_j: u32,
     #[serde(rename = "Value_j")]
@@ -1251,7 +1251,7 @@ pub struct WindowProperty_1000007F {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowProperty_10000086 {
+pub struct WindowPropertyType10000086 {
     #[serde(rename = "Unknown_i")]
     pub unknown_i: u32,
     #[serde(rename = "Value_i")]
@@ -1259,7 +1259,7 @@ pub struct WindowProperty_10000086 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowProperty_10000087 {
+pub struct WindowPropertyType10000087 {
     #[serde(rename = "Unknown_h")]
     pub unknown_h: u32,
     #[serde(rename = "Value_h")]
@@ -1267,7 +1267,7 @@ pub struct WindowProperty_10000087 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowProperty_10000088 {
+pub struct WindowPropertyType10000088 {
     #[serde(rename = "Unknown_f")]
     pub unknown_f: u32,
     #[serde(rename = "Value_f")]
@@ -1275,7 +1275,7 @@ pub struct WindowProperty_10000088 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowProperty_10000089 {
+pub struct WindowPropertyType10000089 {
     #[serde(rename = "Unknown_e")]
     pub unknown_e: u32,
     #[serde(rename = "Value_e")]
@@ -1283,7 +1283,7 @@ pub struct WindowProperty_10000089 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowProperty_1000008A {
+pub struct WindowPropertyType1000008A {
     #[serde(rename = "Unknown_d")]
     pub unknown_d: u32,
     #[serde(rename = "Value_d")]
@@ -1291,15 +1291,15 @@ pub struct WindowProperty_1000008A {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowProperty_1000008D {
+pub struct WindowPropertyType1000008D {
     #[serde(rename = "Unknown_c")]
     pub unknown_c: u32,
-    pub title_source: WindowProperty_1000008D_TitleSourceVariant,
+    pub title_source: WindowPropertyType1000008DTitleSourceVariant,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "TitleSource")]
-pub enum WindowProperty_1000008D_TitleSourceVariant {
+pub enum WindowPropertyType1000008DTitleSourceVariant {
     #[serde(rename = "0x00")]
     Type0 {
     #[serde(rename = "StringId")]
@@ -1318,23 +1318,23 @@ pub enum WindowProperty_1000008D_TitleSourceVariant {
 #[serde(tag = "Key_a")]
 pub enum WindowProperty {
     #[serde(rename = "0x1000007F")]
-    Type1000007F(WindowProperty_1000007F),
+    Type1000007F(WindowPropertyType1000007F),
     #[serde(rename = "0x10000086")]
-    Type10000086(WindowProperty_10000086),
+    Type10000086(WindowPropertyType10000086),
     #[serde(rename = "0x10000087")]
-    Type10000087(WindowProperty_10000087),
+    Type10000087(WindowPropertyType10000087),
     #[serde(rename = "0x10000088")]
-    Type10000088(WindowProperty_10000088),
+    Type10000088(WindowPropertyType10000088),
     #[serde(rename = "0x10000089")]
-    Type10000089(WindowProperty_10000089),
+    Type10000089(WindowPropertyType10000089),
     #[serde(rename = "0x1000008A")]
-    Type1000008A(WindowProperty_1000008A),
+    Type1000008A(WindowPropertyType1000008A),
     #[serde(rename = "0x1000008D")]
-    Type1000008D(WindowProperty_1000008D),
+    Type1000008D(WindowPropertyType1000008D),
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct WindowOption_1000008B {
+pub struct WindowOptionType1000008B {
     #[serde(rename = "Unknown_b")]
     pub unknown_b: u8,
     #[serde(rename = "PropertyCount")]
@@ -1347,25 +1347,25 @@ pub struct WindowOption_1000008B {
 #[serde(tag = "Type_a")]
 pub enum WindowOption {
     #[serde(rename = "0x1000008B")]
-    Type1000008B(WindowOption_1000008B),
+    Type1000008B(WindowOptionType1000008B),
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct OptionProperty_10000080 {
+pub struct OptionPropertyType10000080 {
     pub unknown_l: u32,
     #[serde(rename = "inactiveOpacity")]
     pub inactive_opacity: f32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct OptionProperty_10000081 {
+pub struct OptionPropertyType10000081 {
     pub unknown_k: u32,
     #[serde(rename = "activeOpacity")]
     pub active_opacity: f32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct OptionProperty_1000008C {
+pub struct OptionPropertyType1000008C {
     #[serde(rename = "Unknown_a")]
     pub unknown_a: u32,
     #[serde(rename = "WindowOptions")]
@@ -1376,11 +1376,11 @@ pub struct OptionProperty_1000008C {
 #[serde(tag = "Type")]
 pub enum OptionProperty {
     #[serde(rename = "0x10000080")]
-    Type10000080(OptionProperty_10000080),
+    Type10000080(OptionPropertyType10000080),
     #[serde(rename = "0x10000081")]
-    Type10000081(OptionProperty_10000081),
+    Type10000081(OptionPropertyType10000081),
     #[serde(rename = "0x1000008C")]
-    Type1000008C(OptionProperty_1000008C),
+    Type1000008C(OptionPropertyType1000008C),
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -1589,7 +1589,7 @@ pub struct FriendData {
 
 // Data related to an item, namely the amount and description
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ItemProfile_Neg1 {
+pub struct ItemProfileTypeNeg1 {
     #[serde(rename = "PackedAmount")]
     pub packed_amount: u32,
     #[serde(rename = "ObjectId")]
@@ -1599,7 +1599,7 @@ pub struct ItemProfile_Neg1 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ItemProfile_1 {
+pub struct ItemProfileType1 {
     #[serde(rename = "PackedAmount")]
     pub packed_amount: u32,
     #[serde(rename = "ObjectId")]
@@ -1612,9 +1612,9 @@ pub struct ItemProfile_1 {
 #[serde(tag = "PwdType")]
 pub enum ItemProfile {
     #[serde(rename = "-1")]
-    TypeNeg1(ItemProfile_Neg1),
+    TypeNeg1(ItemProfileTypeNeg1),
     #[serde(rename = "0x01")]
-    Type1(ItemProfile_1),
+    Type1(ItemProfileType1),
 }
 
 // The PublicWeenieDesc structure defines an object's game behavior.
@@ -1944,7 +1944,7 @@ pub struct PositionPack {
 
 // Data related to the movement and animation of the object
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct MovementData_0 {
+pub struct MovementDataType0 {
     #[serde(rename = "ObjectMovementSequence")]
     pub object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -1962,7 +1962,7 @@ pub struct MovementData_0 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct MovementData_6 {
+pub struct MovementDataType6 {
     #[serde(rename = "ObjectMovementSequence")]
     pub object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -1984,7 +1984,7 @@ pub struct MovementData_6 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct MovementData_7 {
+pub struct MovementDataType7 {
     #[serde(rename = "ObjectMovementSequence")]
     pub object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -2004,7 +2004,7 @@ pub struct MovementData_7 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct MovementData_8 {
+pub struct MovementDataType8 {
     #[serde(rename = "ObjectMovementSequence")]
     pub object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -2024,7 +2024,7 @@ pub struct MovementData_8 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct MovementData_9 {
+pub struct MovementDataType9 {
     #[serde(rename = "ObjectMovementSequence")]
     pub object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -2043,15 +2043,15 @@ pub struct MovementData_9 {
 #[serde(tag = "MovementType")]
 pub enum MovementData {
     #[serde(rename = "0x00")]
-    Type0(MovementData_0),
+    Type0(MovementDataType0),
     #[serde(rename = "0x06")]
-    Type6(MovementData_6),
+    Type6(MovementDataType6),
     #[serde(rename = "0x07")]
-    Type7(MovementData_7),
+    Type7(MovementDataType7),
     #[serde(rename = "0x08")]
-    Type8(MovementData_8),
+    Type8(MovementDataType8),
     #[serde(rename = "0x09")]
-    Type9(MovementData_9),
+    Type9(MovementDataType9),
 }
 
 // Contains information for animations and general free motion
@@ -2575,7 +2575,7 @@ pub struct GuestInfo {
 
 // Set of information related to a chess game move
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct GameMoveData_4 {
+pub struct GameMoveDataType4 {
     #[serde(rename = "PlayerId")]
     pub player_id: ObjectId,
     #[serde(rename = "Team")]
@@ -2587,7 +2587,7 @@ pub struct GameMoveData_4 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct GameMoveData_5 {
+pub struct GameMoveDataType5 {
     #[serde(rename = "PlayerId")]
     pub player_id: ObjectId,
     #[serde(rename = "Team")]
@@ -2603,7 +2603,7 @@ pub struct GameMoveData_5 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct GameMoveData_6 {
+pub struct GameMoveDataType6 {
     #[serde(rename = "PlayerId")]
     pub player_id: ObjectId,
     #[serde(rename = "Team")]
@@ -2616,11 +2616,11 @@ pub struct GameMoveData_6 {
 #[serde(tag = "Type")]
 pub enum GameMoveData {
     #[serde(rename = "0x04")]
-    Type4(GameMoveData_4),
+    Type4(GameMoveDataType4),
     #[serde(rename = "0x05")]
-    Type5(GameMoveData_5),
+    Type5(GameMoveDataType5),
     #[serde(rename = "0x06")]
-    Type6(GameMoveData_6),
+    Type6(GameMoveDataType6),
 }
 
 // Set of information related to a salvage operation
