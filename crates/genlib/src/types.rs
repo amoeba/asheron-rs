@@ -42,6 +42,8 @@ pub struct ProtocolType {
     pub(crate) rust_type: Option<String>,
     /// Parent type for type aliases (e.g., DWORD parent="uint")
     pub(crate) parent: Option<String>,
+    /// Template parameters (e.g., "T" or "T,U" for generic types)
+    pub(crate) templated: Option<String>,
 }
 
 impl ProtocolType {

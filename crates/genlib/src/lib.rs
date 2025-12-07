@@ -133,17 +133,30 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
         out.push_str(format!("// {text_str}\n").as_str());
     }
 
-    // Handle parent types as type aliases
-    if let Some(parent_type) = &protocol_type.parent {
-        let rust_type = get_rust_type(parent_type);
+    // Handle templated types - we'll generate them as generic structs
+    // Continue processing to include fields
+    let type_generics = if let Some(template_params) = &protocol_type.templated {
+        format!("<{}>", template_params)
+    } else {
+        String::new()
+    };
 
-        // Only generate alias if the rust type differs from the XML type name
-        if rust_type != *original_type_name {
-            out.push_str(&format!(
-                "#[allow(non_camel_case_types)]\npub type {type_name} = {rust_type};\n\n"
-            ));
+    // Handle non-templated parent types as type aliases
+    // Note: protocol.xml quirk - some types have both parent and templated attributes
+    // (e.g., PackableList has parent="List" and templated="T")
+    // For templated types, skip the parent alias and continue to struct generation
+    if protocol_type.templated.is_none() {
+        if let Some(parent_type) = &protocol_type.parent {
+            let rust_type = get_rust_type(parent_type);
+
+            // Only generate alias if the rust type differs from the XML type name
+            if rust_type != *original_type_name {
+                out.push_str(&format!(
+                    "#[allow(non_camel_case_types)]\npub type {type_name} = {rust_type};\n\n"
+                ));
+            }
+            return out;
         }
-        return out;
     }
 
     let Some(field_set) = &protocol_type.fields else {
@@ -152,12 +165,12 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
             out.push_str(&format!(
                 "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename = \"{original_type_name}\")]
-pub struct {type_name} {{}}\n\n"
+pub struct {type_name}{type_generics} {{}}\n\n"
             ));
         } else {
             out.push_str(&format!(
                 "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct {type_name} {{}}\n\n"
+pub struct {type_name}{type_generics} {{}}\n\n"
             ));
         }
         return out;
@@ -173,13 +186,13 @@ pub struct {type_name} {{}}\n\n"
                 "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename = \"{original_type_name}\")]
 #[serde(tag = \"{switch_field}\")]
-pub enum {type_name} {{\n"
+pub enum {type_name}{type_generics} {{\n"
             ));
         } else {
             out.push_str(&format!(
                 "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = \"{switch_field}\")]
-pub enum {type_name} {{\n"
+pub enum {type_name}{type_generics} {{\n"
             ));
         }
 
@@ -269,14 +282,14 @@ pub enum {type_name} {{\n"
             out.push_str(&format!(
                 "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename = \"{original_type_name}\")]
-pub struct {type_name} {{
+pub struct {type_name}{type_generics} {{
 {fields_out}
 }}\n\n"
             ));
         } else {
             out.push_str(&format!(
                 "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct {type_name} {{
+pub struct {type_name}{type_generics} {{
 {fields_out}
 }}\n\n"
             ));
@@ -448,6 +461,105 @@ fn process_field_tag(
     }
 }
 
+fn process_vector_tag(
+    e: &quick_xml::events::BytesStart,
+    current_field_set: &mut Option<FieldSet>,
+    in_switch: bool,
+    current_case_values: &Option<Vec<String>>,
+) {
+    let mut vector_type = None;
+    let mut vector_name = None;
+
+    for attr in e.attributes().flatten() {
+        match attr.key.as_ref() {
+            b"type" => vector_type = Some(attr.unescape_value().unwrap().into_owned()),
+            b"name" => vector_name = Some(attr.unescape_value().unwrap().into_owned()),
+            _ => {}
+        }
+    }
+
+    debug!("Processing vector {vector_name:?} of type {vector_type:?}");
+
+    if let (Some(vname), Some(vtype), Some(field_set)) = (vector_name, vector_type, current_field_set)
+    {
+        // Create a field with Vec<T> type
+        let vec_type = format!("Vec<{}>", vtype);
+        let new_field = Field {
+            name: vname,
+            field_type: vec_type,
+        };
+
+        if in_switch {
+            if let (Some(case_vals), Some(variant_fields)) =
+                (current_case_values, &mut field_set.variant_fields)
+            {
+                // Add the same field to all values in this case
+                for case_val in case_vals {
+                    variant_fields
+                        .entry(case_val.clone())
+                        .or_insert_with(Vec::new)
+                        .push(new_field.clone());
+                    debug!("Added vector to variant case {case_val}");
+                }
+            }
+        } else {
+            field_set.common_fields.push(new_field);
+            debug!("Added vector to common_fields");
+        }
+    }
+}
+
+fn process_table_tag(
+    e: &quick_xml::events::BytesStart,
+    current_field_set: &mut Option<FieldSet>,
+    in_switch: bool,
+    current_case_values: &Option<Vec<String>>,
+) {
+    let mut table_name = None;
+    let mut key_type = None;
+    let mut value_type = None;
+
+    for attr in e.attributes().flatten() {
+        match attr.key.as_ref() {
+            b"name" => table_name = Some(attr.unescape_value().unwrap().into_owned()),
+            b"key" => key_type = Some(attr.unescape_value().unwrap().into_owned()),
+            b"value" => value_type = Some(attr.unescape_value().unwrap().into_owned()),
+            _ => {}
+        }
+    }
+
+    debug!("Processing table {table_name:?} with key={key_type:?}, value={value_type:?}");
+
+    if let (Some(tname), Some(ktype), Some(vtype), Some(field_set)) =
+        (table_name, key_type, value_type, current_field_set)
+    {
+        // Create a field with HashMap<K, V> type
+        let map_type = format!("std::collections::HashMap<{}, {}>", ktype, vtype);
+        let new_field = Field {
+            name: tname,
+            field_type: map_type,
+        };
+
+        if in_switch {
+            if let (Some(case_vals), Some(variant_fields)) =
+                (current_case_values, &mut field_set.variant_fields)
+            {
+                // Add the same field to all values in this case
+                for case_val in case_vals {
+                    variant_fields
+                        .entry(case_val.clone())
+                        .or_insert_with(Vec::new)
+                        .push(new_field.clone());
+                    debug!("Added table to variant case {case_val}");
+                }
+            }
+        } else {
+            field_set.common_fields.push(new_field);
+            debug!("Added table to common_fields");
+        }
+    }
+}
+
 fn process_type_tag(
     e: &quick_xml::events::BytesStart,
     is_self_closing: bool,
@@ -460,6 +572,7 @@ fn process_type_tag(
     let mut text = None;
     let mut is_primitive = false;
     let mut parent = None;
+    let mut templated = None;
 
     for attr in e.attributes().flatten() {
         match attr.key.as_ref() {
@@ -472,6 +585,9 @@ fn process_type_tag(
             }
             b"parent" => {
                 parent = Some(attr.unescape_value().unwrap().into_owned());
+            }
+            b"templated" => {
+                templated = Some(attr.unescape_value().unwrap().into_owned());
             }
             _ => {}
         }
@@ -494,6 +610,7 @@ fn process_type_tag(
             is_primitive,
             rust_type: None,
             parent,
+            templated,
         };
 
         // For self-closing tags, push immediately
@@ -608,6 +725,10 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
                     );
                 } else if tag_name == "field" {
                     process_field_tag(&e, &mut current_field_set, in_switch, &current_case_values);
+                } else if tag_name == "vector" {
+                    process_vector_tag(&e, &mut current_field_set, in_switch, &current_case_values);
+                } else if tag_name == "table" {
+                    process_table_tag(&e, &mut current_field_set, in_switch, &current_case_values);
                 } else if tag_name == "value" {
                     process_enum_value_tag(&e, &mut current_enum);
                 }

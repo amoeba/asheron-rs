@@ -66,6 +66,35 @@ pub struct LayeredSpellId {
         layer: u16
 }
 
+// List which is packable for network
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PackableList<T> {
+        #[serde(rename = "Count")]
+        count: u32,
+        #[serde(rename = "List")]
+        list: Vec<T>
+}
+
+// HashTable which is packable for network
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PackableHashTable<T,U> {
+        #[serde(rename = "Count")]
+        count: u16,
+        #[serde(rename = "MaxSize")]
+        max_size: u16,
+        #[serde(rename = "Table")]
+        table: std::collections::HashMap<T, U>
+}
+
+// HashTable which is packable for network
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PHashTable<T,U> {
+        #[serde(rename = "PackedSize")]
+        packed_size: u32,
+        #[serde(rename = "Table")]
+        table: std::collections::HashMap<T, U>
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Vector3 {
         #[serde(rename = "X")]
@@ -440,6 +469,17 @@ pub struct BodyPartSelectionData {
         lrb: i32
 }
 
+// Contains information related to the spell in your spellbook
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct SpellBookPage {
+        #[serde(rename = "CastingLikelihood")]
+        casting_likelihood: f32,
+        #[serde(rename = "Unknown")]
+        unknown: i32,
+        #[serde(rename = "CastingLikelihood2")]
+        casting_likelihood2: f32
+}
+
 // Contains information related to the spells in effect on the character
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EnchantmentRegistry {
@@ -453,6 +493,35 @@ pub struct EnchantmentRegistry {
         vitae: Enchantment,
         #[serde(rename = "Cooldowns")]
         cooldowns: PackableList
+}
+
+// The Enchantment structure describes an active enchantment.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct Enchantment {
+        #[serde(rename = "Id")]
+        id: LayeredSpellId,
+        #[serde(rename = "HasEquipmentSet")]
+        has_equipment_set: u16,
+        #[serde(rename = "SpellCategory")]
+        spell_category: SpellCategory,
+        #[serde(rename = "PowerLevel")]
+        power_level: u32,
+        #[serde(rename = "StartTime")]
+        start_time: f64,
+        #[serde(rename = "Duration")]
+        duration: f64,
+        #[serde(rename = "CasterId")]
+        caster_id: ObjectId,
+        #[serde(rename = "DegradeModifier")]
+        degrade_modifier: f32,
+        #[serde(rename = "DegradeLimit")]
+        degrade_limit: f32,
+        #[serde(rename = "LastTimeDegraded")]
+        last_time_degraded: f64,
+        #[serde(rename = "StatMod")]
+        stat_mod: StatMod,
+        #[serde(rename = "EquipmentSet")]
+        equipment_set: EquipmentSet
 }
 
 // Information on stat modification
@@ -955,6 +1024,25 @@ pub struct PageDataList {
         pages: PackableList
 }
 
+// Data for an individual page
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct PageData {
+        #[serde(rename = "AuthorId")]
+        author_id: ObjectId,
+        #[serde(rename = "AuthorName")]
+        author_name: String,
+        #[serde(rename = "AuthorAccount")]
+        author_account: String,
+        #[serde(rename = "Version")]
+        version: u32,
+        #[serde(rename = "TextIncluded")]
+        text_included: bool,
+        #[serde(rename = "IgnoreAuthor")]
+        ignore_author: bool,
+        #[serde(rename = "PageText")]
+        page_text: String
+}
+
 // Blob fragment data used to contruct message data. These can be spread across multiple packets
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BlobFragments {
@@ -969,7 +1057,9 @@ pub struct BlobFragments {
         #[serde(rename = "Index")]
         index: u16,
         #[serde(rename = "Group")]
-        group: FragmentGroup
+        group: FragmentGroup,
+        #[serde(rename = "Data")]
+        data: Vec<byte>
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -1131,6 +1221,8 @@ pub enum WindowOption {
         unknown_b: u8,
         #[serde(rename = "PropertyCount")]
         property_count: u8,
+        #[serde(rename = "Properties")]
+        properties: Vec<WindowProperty>,
     },
 }
 
@@ -1165,7 +1257,9 @@ pub struct GameplayOptions {
         #[serde(rename = "Unknown200_2")]
         unknown200_2: u8,
         #[serde(rename = "OptionPropertyCount")]
-        option_property_count: u8
+        option_property_count: u8,
+        #[serde(rename = "OptionProperties")]
+        option_properties: Vec<OptionProperty>
 }
 
 // The PlayerModule structure contains character options.
@@ -1270,6 +1364,80 @@ pub struct AllegianceRecord {
         tree_parent: ObjectId,
         #[serde(rename = "AllegianceData")]
         allegiance_data: AllegianceData
+}
+
+// Allegience hierarchy information
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AllegianceHierarchy {
+        #[serde(rename = "RecordCount")]
+        record_count: u16,
+        #[serde(rename = "OldVersion")]
+        old_version: u16,
+        #[serde(rename = "Officers")]
+        officers: PHashTable,
+        #[serde(rename = "OfficerTitles")]
+        officer_titles: PackableList,
+        #[serde(rename = "MonarchBroadcastTime")]
+        monarch_broadcast_time: u32,
+        #[serde(rename = "MonarchBroadcastsToday")]
+        monarch_broadcasts_today: u32,
+        #[serde(rename = "SpokesBroadcastTime")]
+        spokes_broadcast_time: u32,
+        #[serde(rename = "SpokesBroadcastsToday")]
+        spokes_broadcasts_today: u32,
+        #[serde(rename = "Motd")]
+        motd: String,
+        #[serde(rename = "MotdSetBy")]
+        motd_set_by: String,
+        #[serde(rename = "ChatRoomId")]
+        chat_room_id: u32,
+        #[serde(rename = "Bindpoint")]
+        bindpoint: Position,
+        #[serde(rename = "AllegianceName")]
+        allegiance_name: String,
+        #[serde(rename = "NameLastSetTime")]
+        name_last_set_time: u32,
+        #[serde(rename = "IsLocked")]
+        is_locked: bool,
+        #[serde(rename = "ApprovedVassal")]
+        approved_vassal: i32,
+        #[serde(rename = "MonarchData")]
+        monarch_data: AllegianceData,
+        #[serde(rename = "Records")]
+        records: Vec<AllegianceRecord>
+}
+
+// Set of allegiance data for a specific player
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct AllegianceData {
+        #[serde(rename = "CharacterId")]
+        character_id: ObjectId,
+        #[serde(rename = "XPCached")]
+        xp_cached: u32,
+        #[serde(rename = "XPTithed")]
+        xp_tithed: u32,
+        #[serde(rename = "Flags")]
+        flags: u32,
+        #[serde(rename = "Gender")]
+        gender: Gender,
+        #[serde(rename = "Heritage")]
+        heritage: HeritageGroup,
+        #[serde(rename = "Rank")]
+        rank: u16,
+        #[serde(rename = "Level")]
+        level: u32,
+        #[serde(rename = "Loyalty")]
+        loyalty: u16,
+        #[serde(rename = "Leadership")]
+        leadership: u16,
+        #[serde(rename = "TimeOnline")]
+        time_online: u64,
+        #[serde(rename = "TimeOnline")]
+        time_online: u32,
+        #[serde(rename = "AllegianceAge")]
+        allegiance_age: u32,
+        #[serde(rename = "Name")]
+        name: String
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -1586,7 +1754,9 @@ pub struct RawMotionState {
         #[serde(rename = "TurnHoldkey")]
         turn_holdkey: u32,
         #[serde(rename = "TurnSpeed")]
-        turn_speed: f32
+        turn_speed: f32,
+        #[serde(rename = "Commands")]
+        commands: Vec<PackedMotionCommand>
 }
 
 // An autonomous position with sequences
@@ -1750,7 +1920,9 @@ pub struct InterpertedMotionState {
         #[serde(rename = "SidestepSpeed")]
         sidestep_speed: f32,
         #[serde(rename = "TurnSpeed")]
-        turn_speed: f32
+        turn_speed: f32,
+        #[serde(rename = "Commands")]
+        commands: Vec<PackedMotionCommand>
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -1793,6 +1965,27 @@ pub struct TurnToMovementParameters {
         animation_speed: f32,
         #[serde(rename = "DesiredHeading")]
         desired_heading: f32
+}
+
+// The ObjDesc structure defines an object's visual appearance.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ObjDesc {
+        #[serde(rename = "Version")]
+        version: u8,
+        #[serde(rename = "PaletteCount")]
+        palette_count: u8,
+        #[serde(rename = "TextureCount")]
+        texture_count: u8,
+        #[serde(rename = "ModelCount")]
+        model_count: u8,
+        #[serde(rename = "Palette")]
+        palette: DataId,
+        #[serde(rename = "Subpalettes")]
+        subpalettes: Vec<Subpalette>,
+        #[serde(rename = "TMChanges")]
+        tm_changes: Vec<TextureMapChange>,
+        #[serde(rename = "APChanges")]
+        ap_changes: Vec<AnimPartChange>
 }
 
 // Contains data for a subpalette

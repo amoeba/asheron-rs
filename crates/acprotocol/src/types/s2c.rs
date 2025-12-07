@@ -2062,6 +2062,23 @@ pub struct LoginWorldInfo {
 #[serde(rename = "DDD_DataMessage")]
 #[serde(tag = "Compression")]
 pub enum DDDDataMessage {
+    #[serde(rename = "0x00")]
+    Type00 {
+        #[serde(rename = "DatFile")]
+        dat_file: DatFileType,
+        #[serde(rename = "ResourceType")]
+        resource_type: u32,
+        #[serde(rename = "ResourceId")]
+        resource_id: DataId,
+        #[serde(rename = "Iteration")]
+        iteration: u32,
+        #[serde(rename = "Version")]
+        version: u32,
+        #[serde(rename = "DataSize")]
+        data_size: u32,
+        #[serde(rename = "Data")]
+        data: Vec<byte>,
+    },
     #[serde(rename = "0x01")]
     Type01 {
         #[serde(rename = "DatFile")]
@@ -2078,6 +2095,7 @@ pub enum DDDDataMessage {
         data_size: u32,
         #[serde(rename = "FileSize")]
         file_size: u32,
+        data: Vec<byte>,
     },
 }
 

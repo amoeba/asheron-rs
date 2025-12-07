@@ -1,2 +1,2 @@
 [env]
-FILTER_TYPES = "ObjDesc,AllegianceHierarchy,AllegianceData,PageData,Enchantment,SpellBookPage,PackableList,PackableHashTable,PHashTable"
+FILTER_TYPES = ""
