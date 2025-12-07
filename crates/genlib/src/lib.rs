@@ -82,19 +82,11 @@ impl GenerationContext {
 pub struct ReaderContext {
     /// Map from enum name to its parent type (e.g., "NetAuthType" -> "uint")
     enum_parent_map: std::collections::HashMap<String, String>,
-    /// Map from (enum_name, value) to variant name (e.g., ("NetAuthType", 2) -> "AccountPassword")
-    enum_value_map: std::collections::HashMap<(String, i64), String>,
 }
 
 impl ReaderContext {
-    pub fn new(
-        enum_parent_map: std::collections::HashMap<String, String>,
-        enum_value_map: std::collections::HashMap<(String, i64), String>,
-    ) -> Self {
-        Self {
-            enum_parent_map,
-            enum_value_map,
-        }
+    pub fn new(enum_parent_map: std::collections::HashMap<String, String>) -> Self {
+        Self { enum_parent_map }
     }
 }
 
@@ -484,96 +476,6 @@ fn extract_hash_requirements_from_field(
     }
 }
 
-/// Generate nested enum type for a switch within a case
-fn generate_nested_enum(
-    parent_type_name: &str,
-    case_value: i64,
-    switch_name: &str,
-    nested_switch: &NestedSwitch,
-) -> String {
-    let mut out = String::new();
-
-    // Generate name like: Type1000008dTitleSourceVariant
-    // Include the case value in the name to avoid conflicts across different cases
-    let case_hex = if case_value < 0 {
-        format!("Neg{}", case_value.abs())
-    } else {
-        format!("{:X}", case_value)
-    };
-
-    let switch_pascal = safe_identifier(switch_name, IdentifierType::Type).name;
-    let nested_enum_name = format!(
-        "Type{}{}{}Variant",
-        parent_type_name.trim_start_matches("Type"),
-        case_hex,
-        switch_pascal
-    );
-
-    out.push_str(&format!(
-        "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]\n\
-         #[serde(tag = \"{}\")]\n\
-         pub enum {} {{\n",
-        switch_name, nested_enum_name
-    ));
-
-    // Group case values by their field sets (same logic as parent type)
-    let mut field_groups: BTreeMap<String, (i64, Vec<i64>)> = BTreeMap::new();
-
-    for (case_val, case_fields) in &nested_switch.variant_fields {
-        let field_sig = case_fields
-            .iter()
-            .map(|f| format!("{}:{}", f.name, f.field_type))
-            .collect::<Vec<_>>()
-            .join(";");
-
-        field_groups
-            .entry(field_sig)
-            .or_insert_with(|| (*case_val, Vec::new()))
-            .1
-            .push(*case_val);
-    }
-
-    // Sort by primary value
-    let mut sorted_groups: Vec<_> = field_groups.into_iter().collect();
-    sorted_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
-
-    for (_field_sig, (_primary_value, mut all_values)) in sorted_groups {
-        all_values.sort();
-        let first_value = all_values[0];
-        let first_value_str = format_hex_value(first_value);
-
-        // Generate variant name
-        let variant_name = if first_value < 0 {
-            format!("TypeNeg{}", first_value.abs())
-        } else {
-            let hex_str = format!("{:X}", first_value);
-            format!("Type{}", hex_str)
-        };
-
-        out.push_str(&format!("    #[serde(rename = \"{first_value_str}\")]\n"));
-
-        for alias_value in &all_values[1..] {
-            let alias_str = format_hex_value(*alias_value);
-            out.push_str(&format!("    #[serde(alias = \"{alias_str}\")]\n"));
-        }
-
-        out.push_str(&format!("    {variant_name} {{\n"));
-
-        // Add fields for this case
-        if let Some(case_fields) = nested_switch.variant_fields.get(&first_value) {
-            for field in case_fields {
-                out.push_str(&generate_field_line(field, true));
-                out.push_str(",\n");
-            }
-        }
-
-        out.push_str("    },\n");
-    }
-
-    out.push_str("}\n\n");
-    out
-}
-
 /// Generate a name for a variant struct
 fn generate_variant_struct_name(parent_type_name: &str, case_value: i64) -> String {
     let case_hex_str = if case_value < 0 {
@@ -656,7 +558,10 @@ fn generate_variant_struct(
         }
 
         // Generate a nested enum for the switch
-        let nested_enum_name_raw = format!("{struct_name}{}{}", nested_switch_obj.switch_field, "Variant");
+        let nested_enum_name_raw = format!(
+            "{struct_name}{}{}",
+            nested_switch_obj.switch_field, "Variant"
+        );
         let nested_enum_name = safe_identifier(&nested_enum_name_raw, IdentifierType::Type).name;
         out.push_str(&format!(
             "    pub {}: {nested_enum_name},\n",
@@ -680,7 +585,10 @@ fn generate_variant_struct(
             .unwrap()
             .get(&case_value)
             .unwrap();
-        let nested_enum_name_raw = format!("{struct_name}{}{}", nested_switch_obj.switch_field, "Variant");
+        let nested_enum_name_raw = format!(
+            "{struct_name}{}{}",
+            nested_switch_obj.switch_field, "Variant"
+        );
         let nested_enum_name = safe_identifier(&nested_enum_name_raw, IdentifierType::Type).name;
 
         out.push_str(&generate_nested_switch_enum(
@@ -1211,7 +1119,7 @@ fn add_field_to_set(
                 if let Some(variant_fields) = &mut nested.variant_fields {
                     for case_val in case_vals {
                         variant_fields
-                            .entry(case_val.clone())
+                            .entry(*case_val)
                             .or_insert_with(Vec::new)
                             .push(field.clone());
                         debug!("Added field to nested switch case {case_val} (Empty event)");
@@ -1236,7 +1144,7 @@ fn add_field_to_set(
                 // Add the same field to all values in this case
                 for case_val in case_vals {
                     variant_fields
-                        .entry(case_val.clone())
+                        .entry(*case_val)
                         .or_insert_with(Vec::new)
                         .push(field.clone());
                     debug!("Added field to variant case {case_val}");
@@ -1348,7 +1256,7 @@ fn process_vector_tag(
                     // Add the same field to all values in this case
                     for case_val in case_vals {
                         variant_fields
-                            .entry(case_val.clone())
+                            .entry(*case_val)
                             .or_insert_with(Vec::new)
                             .push(new_field.clone());
                         debug!("Added vector to variant case {case_val}");
@@ -1443,7 +1351,7 @@ fn process_table_tag(
                     // Add the same field to all values in this case
                     for case_val in case_vals {
                         variant_fields
-                            .entry(case_val.clone())
+                            .entry(*case_val)
                             .or_insert_with(Vec::new)
                             .push(new_field.clone());
                         debug!("Added table to variant case {case_val}");
@@ -1574,25 +1482,8 @@ fn generate_readers_for_types(
         .map(|e| (e.name.clone(), e.parent.clone()))
         .collect();
 
-    // Build a map of (enum_name, value) -> variant_name for switch pattern matching
-    let mut enum_value_map: std::collections::HashMap<(String, i64), String> =
-        std::collections::HashMap::new();
-    for protocol_enum in enums {
-        for enum_value in &protocol_enum.values {
-            // Use safe enum variant name when referring to variant
-            // i.e., EmoteType::RefuseEmoteCategory instead of EmoteType::Refuse_EmoteCategory
-            let safe_variant = safe_enum_variant_name(&enum_value.name);
-
-            // Values are already parsed as i64, no normalization needed
-            enum_value_map.insert(
-                (protocol_enum.name.clone(), enum_value.value),
-                safe_variant.name,
-            );
-        }
-    }
-
     // Create reader context with enum information
-    let reader_ctx = ReaderContext::new(enum_parent_map, enum_value_map);
+    let reader_ctx = ReaderContext::new(enum_parent_map);
 
     for protocol_type in types {
         if ctx.should_generate_reader(&protocol_type.name) {
@@ -1676,9 +1567,9 @@ fn generate_reader_impl(ctx: &ReaderContext, protocol_type: &ProtocolType) -> St
 
     // Check if this is a variant type (has switch)
     if let Some(ref variant_fields) = field_set.variant_fields {
-        // For variant types with the new standalone struct approach, 
+        // For variant types with the new standalone struct approach,
         // we generate readers for each variant struct instead of a monolithic reader.
-        generate_variant_struct_readers(ctx, protocol_type, &safe_type_name.name, field_set, variant_fields)
+        generate_variant_struct_readers(ctx, &safe_type_name.name, field_set, variant_fields)
     } else {
         generate_struct_reader_impl(ctx, protocol_type, &safe_type_name.name, field_set)
     }
@@ -1687,7 +1578,6 @@ fn generate_reader_impl(ctx: &ReaderContext, protocol_type: &ProtocolType) -> St
 /// Generate readers for all variant structs of an enum type
 fn generate_variant_struct_readers(
     ctx: &ReaderContext,
-    protocol_type: &ProtocolType,
     type_name: &str,
     field_set: &FieldSet,
     variant_fields: &BTreeMap<i64, Vec<Field>>,
@@ -1735,7 +1625,6 @@ fn generate_variant_struct_readers(
     // Generate a reader for the main enum that delegates to variant structs
     out.push_str(&generate_enum_reader_impl(
         ctx,
-        protocol_type,
         type_name,
         field_set,
         variant_fields,
@@ -1747,7 +1636,6 @@ fn generate_variant_struct_readers(
 /// Generate a reader for the main enum that delegates to variant struct readers
 fn generate_enum_reader_impl(
     ctx: &ReaderContext,
-    protocol_type: &ProtocolType,
     type_name: &str,
     field_set: &FieldSet,
     variant_fields: &BTreeMap<i64, Vec<Field>>,
@@ -1755,7 +1643,9 @@ fn generate_enum_reader_impl(
     let mut out = String::new();
 
     out.push_str(&format!("impl {type_name} {{\n"));
-    out.push_str("    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n");
+    out.push_str(
+        "    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+    );
 
     // Read all common fields (these come before the switch)
     for field in &field_set.common_fields {
@@ -1862,7 +1752,9 @@ fn generate_variant_struct_reader_impl(
     let mut out = String::new();
 
     out.push_str(&format!("impl {struct_name} {{\n"));
-    out.push_str("    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n");
+    out.push_str(
+        "    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+    );
 
     // Read common fields (except the switch field which is handled at a higher level)
     let switch_field = field_set.switch_field.as_ref().unwrap();
@@ -1875,8 +1767,10 @@ fn generate_variant_struct_reader_impl(
             // Generate subfield computations if any
             for subfield in &field.subfields {
                 let subfield_name = safe_identifier(&subfield.name, IdentifierType::Field).name;
-                let subfield_expr =
-                    convert_condition_expression(&subfield.value_expression, &field_set.common_fields);
+                let subfield_expr = convert_condition_expression(
+                    &subfield.value_expression,
+                    &field_set.common_fields,
+                );
                 let subfield_rust_type = get_rust_type(&subfield.field_type);
                 out.push_str(&format!(
                     "        let {} = ({}) as {};\n",
@@ -1936,9 +1830,11 @@ fn generate_variant_struct_reader_impl(
         }
 
         // Read the nested switch enum
-        let nested_enum_name_raw = format!("{struct_name}{}{}", nested_switch.switch_field, "Variant");
+        let nested_enum_name_raw =
+            format!("{struct_name}{}{}", nested_switch.switch_field, "Variant");
         let nested_enum_name = safe_identifier(&nested_enum_name_raw, IdentifierType::Type).name;
-        let nested_enum_field_name = safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
+        let nested_enum_field_name =
+            safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
         out.push_str(&format!(
             "        let {} = {}::read(reader)?;\n",
             nested_enum_field_name, nested_enum_name
@@ -1954,13 +1850,13 @@ fn generate_variant_struct_reader_impl(
         }
 
         // Generate nested enum reader
-        out.push_str("\n");
+        out.push('\n');
         out.push_str(&generate_nested_switch_enum_reader(
             ctx,
             &nested_enum_name,
             nested_switch,
         ));
-        out.push_str("\n");
+        out.push('\n');
     }
 
     // Construct the struct
@@ -1981,7 +1877,12 @@ fn generate_variant_struct_reader_impl(
     }
 
     if has_nested_switch {
-        let nested_switch = field_set.nested_switches.as_ref().unwrap().get(&case_value).unwrap();
+        let nested_switch = field_set
+            .nested_switches
+            .as_ref()
+            .unwrap()
+            .get(&case_value)
+            .unwrap();
 
         for field in &nested_switch.common_fields {
             if field.name != nested_switch.switch_field {
@@ -1990,7 +1891,8 @@ fn generate_variant_struct_reader_impl(
             }
         }
 
-        let nested_field_name = safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
+        let nested_field_name =
+            safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
         out.push_str(&format!("            {},\n", nested_field_name));
 
         for field in &nested_switch.trailing_fields {
@@ -2020,10 +1922,13 @@ fn generate_nested_switch_enum_reader(
     let mut out = String::new();
 
     out.push_str(&format!("impl {enum_name} {{\n"));
-    out.push_str("    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n");
+    out.push_str(
+        "    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+    );
 
     // Read the switch field
-    let switch_field_name = safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
+    let switch_field_name =
+        safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
     out.push_str(&format!(
         "        let {switch_field_name} = read_u8(reader)?;\n"
     ));
@@ -2065,13 +1970,19 @@ fn generate_nested_switch_enum_reader(
             case_patterns.push(format!("0x{:02X}", case_value));
         }
 
-        out.push_str(&format!("            {} => {{\n", case_patterns.join(" | ")));
+        out.push_str(&format!(
+            "            {} => {{\n",
+            case_patterns.join(" | ")
+        ));
 
         // Read case fields
         for field in case_fields {
             let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
             let read_call = generate_read_call(ctx, field, case_fields);
-            out.push_str(&format!("                let {} = {}?;\n", field_name, read_call));
+            out.push_str(&format!(
+                "                let {} = {}?;\n",
+                field_name, read_call
+            ));
         }
 
         // Generate variant name
@@ -2081,7 +1992,9 @@ fn generate_nested_switch_enum_reader(
             format!("Type{:X}", first_value)
         };
 
-        out.push_str(&format!("                return Ok(Self::{variant_name} {{\n"));
+        out.push_str(&format!(
+            "                return Ok(Self::{variant_name} {{\n"
+        ));
         for field in case_fields {
             let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
             out.push_str(&format!("                    {},\n", field_name));
@@ -2530,348 +2443,6 @@ fn generate_base_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Fie
             }
         }
     }
-}
-
-/// Generate a reader for a variant type (enum with switch)
-fn generate_variant_reader_impl(
-    ctx: &ReaderContext,
-    _protocol_type: &ProtocolType,
-    type_name: &str,
-    field_set: &FieldSet,
-) -> String {
-    let mut out = String::new();
-
-    let switch_field = field_set
-        .switch_field
-        .as_ref()
-        .expect("Variant type must have switch field");
-    let variant_fields = field_set
-        .variant_fields
-        .as_ref()
-        .expect("Variant type must have variant fields");
-
-    out.push_str(&format!("impl {} {{\n", type_name));
-    out.push_str(
-        "    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
-    );
-
-    // Read all common fields
-    for field in &field_set.common_fields {
-        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-        let read_call = generate_read_call(ctx, field, &field_set.common_fields);
-        out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
-
-        // Generate subfield computations if any
-        for subfield in &field.subfields {
-            let subfield_name = safe_identifier(&subfield.name, IdentifierType::Field).name;
-            let subfield_expr =
-                convert_condition_expression(&subfield.value_expression, &field_set.common_fields);
-            let subfield_rust_type = get_rust_type(&subfield.field_type);
-            out.push_str(&format!(
-                "        let {} = ({}) as {};\n",
-                subfield_name, subfield_expr, subfield_rust_type
-            ));
-        }
-    }
-
-    // Generate match on switch field
-    let switch_field_name = safe_identifier(switch_field, IdentifierType::Field).name;
-    out.push_str(&format!("\n        match {} {{\n", switch_field_name));
-
-    // Get the type of the switch field to see if it's an enum
-    let switch_field_type = field_set
-        .common_fields
-        .iter()
-        .find(|f| f.name == *switch_field)
-        .map(|f| &f.field_type);
-
-    // Group case values by field signature (same as type generator)
-    // Map: field signature -> (primary_value, [all_values])
-    let mut field_groups: BTreeMap<String, (i64, Vec<i64>)> = BTreeMap::new();
-
-    for (case_value, case_fields) in variant_fields {
-        // Create a signature for these fields to group identical field sets
-        let field_sig = case_fields
-            .iter()
-            .map(|f| format!("{}:{}", f.name, f.field_type))
-            .collect::<Vec<_>>()
-            .join(";");
-
-        field_groups
-            .entry(field_sig)
-            .or_insert_with(|| (*case_value, Vec::new()))
-            .1
-            .push(*case_value);
-    }
-
-    // Sort by primary value for consistent output
-    let mut sorted_groups: Vec<_> = field_groups.into_iter().collect();
-    sorted_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
-
-    // Generate each variant case (now grouped)
-    for (_field_sig, (_primary_value, mut all_values)) in sorted_groups {
-        // Sort values for consistent output
-        all_values.sort();
-
-        // Use the first sorted value to determine the variant name
-        let first_value = all_values[0];
-        let case_fields = variant_fields
-            .get(&first_value)
-            .expect("Field group must have fields");
-
-        // Generate match patterns for ALL values in this group
-        let mut case_patterns = Vec::new();
-        for case_value in &all_values {
-            // Convert case value to enum variant pattern if switch field is an enum
-            let case_pattern = if let Some(switch_type) = switch_field_type {
-                if ctx.enum_parent_map.contains_key(switch_type) {
-                    // It's an enum - look up the enum variant name from the value
-                    if let Some(variant_name) =
-                        ctx.enum_value_map.get(&(switch_type.clone(), *case_value))
-                    {
-                        // Use the enum variant: EnumType::VariantName
-                        format!("{}::{}", switch_type, variant_name)
-                    } else {
-                        // Fallback to formatted hex value if variant not found
-                        format_hex_value(*case_value)
-                    }
-                } else {
-                    format_hex_value(*case_value)
-                }
-            } else {
-                format_hex_value(*case_value)
-            };
-            case_patterns.push(case_pattern);
-        }
-
-        // Join all patterns with |
-        out.push_str(&format!(
-            "            {} => {{\n",
-            case_patterns.join(" | ")
-        ));
-
-        // Check if this case has a nested switch
-        let has_nested_switch = if let Some(nested_switches) = &field_set.nested_switches {
-            nested_switches.contains_key(&first_value)
-        } else {
-            false
-        };
-
-        if has_nested_switch {
-            // Read nested switch fields
-            let nested_switch = field_set
-                .nested_switches
-                .as_ref()
-                .unwrap()
-                .get(&first_value)
-                .unwrap();
-
-            // Read fields before the nested switch
-            for field in &nested_switch.common_fields {
-                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                let mut all_fields = field_set.common_fields.clone();
-                all_fields.extend(case_fields.clone());
-                let read_call = generate_read_call(ctx, field, &all_fields);
-                out.push_str(&format!(
-                    "                let {} = {}?;\n",
-                    field_name, read_call
-                ));
-            }
-
-            // Read the nested switch discriminator
-            let nested_switch_field_name =
-                safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
-            out.push_str(&format!(
-                "                let {} = read_u8(reader)?;\n",
-                nested_switch_field_name
-            ));
-
-            // Generate match for nested switch
-            out.push_str(&format!(
-                "                let {} = match {} {{\n",
-                safe_identifier(
-                    &format!("{}_data", nested_switch.switch_field),
-                    IdentifierType::Field
-                )
-                .name,
-                nested_switch_field_name
-            ));
-
-            // Group nested case values
-            let mut nested_field_groups: BTreeMap<String, (i64, Vec<i64>)> = BTreeMap::new();
-            for (nested_case_val, nested_case_fields) in &nested_switch.variant_fields {
-                let field_sig = nested_case_fields
-                    .iter()
-                    .map(|f| format!("{}:{}", f.name, f.field_type))
-                    .collect::<Vec<_>>()
-                    .join(";");
-                nested_field_groups
-                    .entry(field_sig)
-                    .or_insert_with(|| (*nested_case_val, Vec::new()))
-                    .1
-                    .push(*nested_case_val);
-            }
-
-            let mut sorted_nested_groups: Vec<_> = nested_field_groups.into_iter().collect();
-            sorted_nested_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
-
-            for (_nested_sig, (_nested_primary, mut nested_all_values)) in sorted_nested_groups {
-                nested_all_values.sort();
-                let nested_first = nested_all_values[0];
-
-                let nested_variant_name = if nested_first < 0 {
-                    format!("TypeNeg{}", nested_first.abs())
-                } else {
-                    let hex_str = format!("{:X}", nested_first);
-                    format!("Type{}", hex_str)
-                };
-
-                // Match patterns for all values
-                let nested_patterns: Vec<String> = nested_all_values
-                    .iter()
-                    .map(|v| format_hex_value(*v))
-                    .collect();
-
-                out.push_str(&format!(
-                    "                    {} => {{\n",
-                    nested_patterns.join(" | ")
-                ));
-
-                // Read nested case fields
-                if let Some(nested_fields) = nested_switch.variant_fields.get(&nested_first) {
-                    for field in nested_fields {
-                        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                        let mut all_fields = field_set.common_fields.clone();
-                        all_fields.extend(case_fields.clone());
-                        all_fields.extend(nested_fields.clone());
-                        let read_call = generate_read_call(ctx, field, &all_fields);
-                        out.push_str(&format!(
-                            "                        let {} = {}?;\n",
-                            field_name, read_call
-                        ));
-                    }
-                }
-
-                // Construct nested variant
-                let case_hex_for_name = if first_value < 0 {
-                    format!("Neg{}", first_value.abs())
-                } else {
-                    format!("{:X}", first_value)
-                };
-
-                out.push_str(&format!(
-                    "                        Type{}{}{}Variant::{} {{\n",
-                    type_name.trim_start_matches("Type"),
-                    case_hex_for_name,
-                    safe_identifier(&nested_switch.switch_field, IdentifierType::Type).name,
-                    nested_variant_name
-                ));
-
-                if let Some(nested_fields) = nested_switch.variant_fields.get(&nested_first) {
-                    for field in nested_fields {
-                        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                        out.push_str(&format!("                            {},\n", field_name));
-                    }
-                }
-
-                out.push_str("                        }\n");
-                out.push_str("                    }\n");
-            }
-
-            out.push_str(&format!("                    _ => return Err(format!(\"Unknown {} value: {{:#x}}\", {}).into()),\n",
-                nested_switch.switch_field, nested_switch_field_name));
-            out.push_str("                };\n");
-        } else {
-            // Normal case fields (no nested switch)
-            for field in case_fields {
-                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                // For variant fields, we need to look at all available fields (common + case)
-                let mut all_fields = field_set.common_fields.clone();
-                all_fields.extend(case_fields.clone());
-                let read_call = generate_read_call(ctx, field, &all_fields);
-                out.push_str(&format!(
-                    "                let {} = {}?;\n",
-                    field_name, read_call
-                ));
-            }
-        }
-
-        // Construct the variant
-        // Generate variant name from first case value (must match type generator)
-        let variant_name = if first_value < 0 {
-            // Negative value: -1 -> "TypeNeg1"
-            format!("TypeNeg{}", first_value.abs())
-        } else {
-            // Positive value: format as hex and extract hex digits
-            // 0x04 -> "04", 0xAB -> "AB"
-            let hex_str = format!("{:X}", first_value);
-            format!("Type{}", hex_str)
-        };
-
-        out.push('\n');
-        out.push_str(&format!("                Ok(Self::{} {{\n", variant_name));
-
-        // Add all common fields (except the switch field which is implicit in the variant)
-        for field in &field_set.common_fields {
-            if field.name != *switch_field {
-                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                out.push_str(&format!("                    {},\n", field_name));
-            }
-        }
-
-        // Add variant-specific fields or nested enum field
-        if has_nested_switch {
-            let nested_switch = field_set
-                .nested_switches
-                .as_ref()
-                .unwrap()
-                .get(&first_value)
-                .unwrap();
-            let nested_switch_field_name =
-                safe_identifier(&nested_switch.switch_field, IdentifierType::Field).name;
-            out.push_str(&format!(
-                "                    {}_data,\n",
-                nested_switch_field_name
-            ));
-        } else {
-            for field in case_fields {
-                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                out.push_str(&format!("                    {},\n", field_name));
-            }
-        }
-
-        out.push_str("                })\n");
-        out.push_str("            }\n");
-    }
-
-    // Add default case for unknown values
-    // If switch field is an enum, cast it back to the underlying type for the error message
-    let error_value = if let Some(switch_type) = switch_field_type {
-        if let Some(parent_type) = ctx.enum_parent_map.get(switch_type) {
-            let parent_rust_type = get_rust_type(parent_type);
-            format!("{} as {}", switch_field_name, parent_rust_type)
-        } else {
-            switch_field_name.clone()
-        }
-    } else {
-        switch_field_name.clone()
-    };
-
-    out.push_str(&format!(
-        "            _ => Err(format!(\"Unknown {} value: {{:#x}}\", {}).into())\n",
-        switch_field, error_value
-    ));
-    out.push_str("        }\n");
-    out.push_str("    }\n");
-    out.push_str("}\n\n");
-
-    // Add ACDataType implementation
-    out.push_str(&format!(
-        "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        {}::read(reader)\n    }}\n}}\n\n",
-        type_name, type_name
-    ));
-
-    out
 }
 
 /// Generate the appropriate read call for a given field
@@ -3376,11 +2947,11 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                     debug!("Started field tag with potential subfields");
                 } else if tag_name == "subfield" {
                     // Process subfield and add to current field
-                    if let Some(subfield) = process_subfield_tag(&e) {
-                        if let Some(ref mut field) = field_ctx.current_field {
-                            field.subfields.push(subfield);
-                            debug!("Added subfield to current field");
-                        }
+                    if let Some(subfield) = process_subfield_tag(&e)
+                        && let Some(ref mut field) = field_ctx.current_field
+                    {
+                        field.subfields.push(subfield);
+                        debug!("Added subfield to current field");
                     }
                 } else if tag_name == "switch" {
                     if field_ctx.switch_nesting_level == 0 {
@@ -3415,12 +2986,11 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                     field_ctx.current_case_values = process_case_tag(&e);
                     // If this is an outer-level case that might have a nested switch, track the case value
                     // Only set current_outer_case_value when we're at the outer switch level (level 1)
-                    if field_ctx.switch_nesting_level == 1 {
-                        if let Some(ref case_vals) = field_ctx.current_case_values {
-                            if !case_vals.is_empty() {
-                                field_ctx.current_outer_case_value = Some(case_vals[0]);
-                            }
-                        }
+                    if field_ctx.switch_nesting_level == 1
+                        && let Some(ref case_vals) = field_ctx.current_case_values
+                        && !case_vals.is_empty()
+                    {
+                        field_ctx.current_outer_case_value = Some(case_vals[0]);
                     }
                 } else if tag_name == "if" {
                     _in_if = true;
@@ -3491,11 +3061,11 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                     process_field_tag(&e, &mut current_field_set, &mut field_ctx);
                 } else if tag_name == "subfield" {
                     // Process subfield and add to current field (for Event::Empty tags)
-                    if let Some(subfield) = process_subfield_tag(&e) {
-                        if let Some(ref mut field) = field_ctx.current_field {
-                            field.subfields.push(subfield);
-                            debug!("Added subfield to current field (empty tag)");
-                        }
+                    if let Some(subfield) = process_subfield_tag(&e)
+                        && let Some(ref mut field) = field_ctx.current_field
+                    {
+                        field.subfields.push(subfield);
+                        debug!("Added subfield to current field (empty tag)");
                     }
                 } else if tag_name == "vector" {
                     process_vector_tag(&e, &mut current_field_set, &mut field_ctx);
@@ -3566,7 +3136,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                                         if let Some(variant_fields) = &mut nested.variant_fields {
                                             for case_val in case_vals {
                                                 variant_fields
-                                                    .entry(case_val.clone())
+                                                    .entry(*case_val)
                                                     .or_insert_with(Vec::new)
                                                     .push(field.clone());
                                                 debug!(
@@ -3601,43 +3171,36 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                     }
                 } else if e.name().as_ref() == b"case" {
                     // If we have a nested switch that we were collecting trailing fields for, finalize it now
-                    if field_ctx.collecting_nested_trailing_fields {
-                        if let (Some(outer_case), Some(mut nested)) = (
+                    if field_ctx.collecting_nested_trailing_fields
+                        && let (Some(outer_case), Some(nested)) = (
                             field_ctx.current_outer_case_value,
                             field_ctx.nested_field_set.take(),
-                        ) {
-                            if let Some(ref mut outer_field_set) = current_field_set {
-                                if outer_field_set.nested_switches.is_none() {
-                                    outer_field_set.nested_switches = Some(BTreeMap::new());
-                                }
-                                if let Some(ref mut nested_switches) =
-                                    outer_field_set.nested_switches
-                                {
-                                    let switch_obj = NestedSwitch {
-                                        switch_field: nested
-                                            .switch_field
-                                            .clone()
-                                            .unwrap_or_default(),
-                                        common_fields: field_ctx
-                                            .nested_switch_common_fields
-                                            .clone(),
-                                        trailing_fields: field_ctx
-                                            .nested_switch_trailing_fields
-                                            .clone(),
-                                        variant_fields: nested.variant_fields.unwrap_or_default(),
-                                    };
-                                    nested_switches.insert(outer_case, switch_obj);
-                                    debug!(
-                                        "Stored nested switch for case {} with {} trailing fields",
-                                        outer_case,
-                                        field_ctx.nested_switch_trailing_fields.len()
-                                    );
-                                }
+                        )
+                    {
+                        if let Some(ref mut outer_field_set) = current_field_set {
+                            if outer_field_set.nested_switches.is_none() {
+                                outer_field_set.nested_switches = Some(BTreeMap::new());
                             }
-                            field_ctx.nested_switch_common_fields.clear();
-                            field_ctx.nested_switch_trailing_fields.clear();
-                            field_ctx.collecting_nested_trailing_fields = false;
+                            if let Some(ref mut nested_switches) = outer_field_set.nested_switches {
+                                let switch_obj = NestedSwitch {
+                                    switch_field: nested.switch_field.clone().unwrap_or_default(),
+                                    common_fields: field_ctx.nested_switch_common_fields.clone(),
+                                    trailing_fields: field_ctx
+                                        .nested_switch_trailing_fields
+                                        .clone(),
+                                    variant_fields: nested.variant_fields.unwrap_or_default(),
+                                };
+                                nested_switches.insert(outer_case, switch_obj);
+                                debug!(
+                                    "Stored nested switch for case {} with {} trailing fields",
+                                    outer_case,
+                                    field_ctx.nested_switch_trailing_fields.len()
+                                );
+                            }
                         }
+                        field_ctx.nested_switch_common_fields.clear();
+                        field_ctx.nested_switch_trailing_fields.clear();
+                        field_ctx.collecting_nested_trailing_fields = false;
                     }
                     field_ctx.current_case_values = None;
                 } else if e.name().as_ref() == b"if" {
@@ -3657,7 +3220,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                                     // Add field to all current case values
                                     for case_val in case_vals {
                                         variant_fields
-                                            .entry(case_val.clone())
+                                            .entry(*case_val)
                                             .or_insert_with(Vec::new)
                                             .push(field.clone());
                                     }

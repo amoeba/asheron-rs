@@ -4,12 +4,16 @@ pub fn parse_enum_value(value_str: &str) -> Result<i64, String> {
     let value_str = value_str.trim();
 
     // Try to parse as hex if it has 0x prefix
-    if let Some(hex_part) = value_str.strip_prefix("0x").or_else(|| value_str.strip_prefix("0X")) {
+    if let Some(hex_part) = value_str
+        .strip_prefix("0x")
+        .or_else(|| value_str.strip_prefix("0X"))
+    {
         i64::from_str_radix(hex_part, 16)
             .map_err(|e| format!("Failed to parse hex '{}': {}", value_str, e))
     } else {
         // Otherwise try to parse as decimal
-        value_str.parse::<i64>()
+        value_str
+            .parse::<i64>()
             .map_err(|e| format!("Failed to parse number '{}': {}", value_str, e))
     }
 }

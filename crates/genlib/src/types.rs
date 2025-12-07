@@ -29,6 +29,7 @@ pub struct Field {
     /// Subfields computed from this field's value (e.g., extracting bits or doing arithmetic)
     pub(crate) subfields: Vec<Subfield>,
     /// For fields with nested switches (switch following this field)
+    #[allow(dead_code)]
     pub(crate) nested_field_set: Option<Box<FieldSet>>,
 }
 
@@ -70,7 +71,7 @@ pub struct NestedSwitch {
 #[derive(Debug, Clone)]
 pub struct EnumValue {
     pub(crate) name: String,
-    pub(crate) value: i64,  // Parsed numeric value for sorting and normalization
+    pub(crate) value: i64, // Parsed numeric value for sorting and normalization
 }
 
 #[derive(Debug, Clone)]
