@@ -4,6 +4,8 @@ use std::collections::BTreeMap;
 pub struct Field {
     pub(crate) name: String,
     pub(crate) field_type: String,
+    /// Whether this field is optional (from <if> or <maskmap>)
+    pub(crate) is_optional: bool,
 }
 
 #[derive(Debug)]

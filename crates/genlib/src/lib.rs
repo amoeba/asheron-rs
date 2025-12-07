@@ -32,10 +32,78 @@ pub fn get_rust_type(xml_type: &str) -> &str {
     }
 }
 
+/// Get the size in bits of a primitive type
+fn get_type_size(xml_type: &str) -> usize {
+    match xml_type {
+        "byte" | "sbyte" => 8,
+        "short" | "ushort" => 16,
+        "int" | "uint" | "float" => 32,
+        "long" | "ulong" | "double" => 64,
+        _ => 0, // Unknown or non-numeric type
+    }
+}
+
+/// Returns the larger of two types (for underfull reads in <if> blocks)
+/// If types differ in signedness but same size, prefer the first type
+fn get_larger_type(type1: &str, type2: &str) -> String {
+    let size1 = get_type_size(type1);
+    let size2 = get_type_size(type2);
+
+    if size1 >= size2 {
+        type1.to_string()
+    } else {
+        type2.to_string()
+    }
+}
+
+/// Merge fields from <if> true and false branches
+/// - Fields with same name but different types: use larger type, make optional
+/// - Fields only in one branch: make optional
+fn merge_if_fields(
+    true_fields: Vec<Field>,
+    false_fields: Vec<Field>,
+) -> Vec<Field> {
+    use std::collections::HashMap;
+
+    let mut merged: HashMap<String, Field> = HashMap::new();
+
+    // Process true branch fields
+    for field in true_fields {
+        merged.insert(field.name.clone(), field);
+    }
+
+    // Process false branch fields
+    for false_field in false_fields {
+        if let Some(true_field) = merged.get_mut(&false_field.name) {
+            // Field exists in both branches
+            if true_field.field_type != false_field.field_type {
+                // Different types - use the larger one
+                let larger_type = get_larger_type(&true_field.field_type, &false_field.field_type);
+                true_field.field_type = larger_type;
+            }
+            // Always optional since it's conditional
+            true_field.is_optional = true;
+        } else {
+            // Field only in false branch - add it as optional
+            merged.insert(false_field.name.clone(), false_field);
+        }
+    }
+
+    // Convert to Vec and sort by name for consistent output
+    let mut result: Vec<Field> = merged.into_values().collect();
+    result.sort_by(|a, b| a.name.cmp(&b.name));
+    result
+}
+
 fn generate_field_line(field: &Field) -> String {
     let original_name = &field.name;
     let safe_id = safe_identifier(original_name, IdentifierType::Field);
-    let rust_type = get_rust_type(&field.field_type);
+    let mut rust_type = get_rust_type(&field.field_type).to_string();
+
+    // Wrap in Option if the field is optional
+    if field.is_optional {
+        rust_type = format!("Option<{}>", rust_type);
+    }
 
     if safe_id.needs_rename {
         format!(
@@ -420,43 +488,79 @@ fn process_field_tag(
     current_field_set: &mut Option<FieldSet>,
     in_switch: bool,
     current_case_values: &Option<Vec<String>>,
+    in_if_true: bool,
+    in_if_false: bool,
+    in_maskmap: bool,
+    if_true_fields: &mut Vec<Field>,
+    if_false_fields: &mut Vec<Field>,
 ) {
     let mut field_type = None;
     let mut field_name = None;
+    let mut generic_key = None;
+    let mut generic_value = None;
+    let mut generic_type = None;
 
     for attr in e.attributes().flatten() {
         match attr.key.as_ref() {
             b"type" => field_type = Some(attr.unescape_value().unwrap().into_owned()),
             b"name" => field_name = Some(attr.unescape_value().unwrap().into_owned()),
+            b"genericKey" => generic_key = Some(attr.unescape_value().unwrap().into_owned()),
+            b"genericValue" => generic_value = Some(attr.unescape_value().unwrap().into_owned()),
+            b"genericType" => generic_type = Some(attr.unescape_value().unwrap().into_owned()),
             _ => {}
         }
     }
 
     debug!("Processing field {field_name:?}");
 
-    if let (Some(fname), Some(ftype), Some(field_set)) = (field_name, field_type, current_field_set)
-    {
+    if let (Some(fname), Some(mut ftype)) = (field_name, field_type) {
+        // Handle generic types
+        if let (Some(key), Some(value)) = (generic_key, generic_value) {
+            // PackableHashTable<K, V>
+            ftype = format!("{}<{}, {}>", ftype, key, value);
+        } else if let Some(gtype) = generic_type {
+            // PackableList<T>
+            ftype = format!("{}<{}>", ftype, gtype);
+        }
+        // Fields in <if> or <maskmap> are optional
+        let is_optional = in_if_true || in_if_false || in_maskmap;
+
         let new_field = Field {
             name: fname,
             field_type: ftype,
+            is_optional,
         };
 
-        if in_switch {
-            if let (Some(case_vals), Some(variant_fields)) =
-                (current_case_values, &mut field_set.variant_fields)
-            {
-                // Add the same field to all values in this case
-                for case_val in case_vals {
-                    variant_fields
-                        .entry(case_val.clone())
-                        .or_insert_with(Vec::new)
-                        .push(new_field.clone());
-                    debug!("Added field to variant case {case_val}");
+        // If we're in an <if> block, collect fields separately
+        if in_if_true {
+            if_true_fields.push(new_field);
+            debug!("Added field to if_true_fields");
+            return;
+        } else if in_if_false {
+            if_false_fields.push(new_field);
+            debug!("Added field to if_false_fields");
+            return;
+        }
+
+        // Normal field processing
+        if let Some(field_set) = current_field_set {
+            if in_switch {
+                if let (Some(case_vals), Some(variant_fields)) =
+                    (current_case_values, &mut field_set.variant_fields)
+                {
+                    // Add the same field to all values in this case
+                    for case_val in case_vals {
+                        variant_fields
+                            .entry(case_val.clone())
+                            .or_insert_with(Vec::new)
+                            .push(new_field.clone());
+                        debug!("Added field to variant case {case_val}");
+                    }
                 }
+            } else {
+                field_set.common_fields.push(new_field);
+                debug!("Added field to common_fields");
             }
-        } else {
-            field_set.common_fields.push(new_field);
-            debug!("Added field to common_fields");
         }
     }
 }
@@ -466,6 +570,11 @@ fn process_vector_tag(
     current_field_set: &mut Option<FieldSet>,
     in_switch: bool,
     current_case_values: &Option<Vec<String>>,
+    in_if_true: bool,
+    in_if_false: bool,
+    in_maskmap: bool,
+    if_true_fields: &mut Vec<Field>,
+    if_false_fields: &mut Vec<Field>,
 ) {
     let mut vector_type = None;
     let mut vector_name = None;
@@ -480,31 +589,46 @@ fn process_vector_tag(
 
     debug!("Processing vector {vector_name:?} of type {vector_type:?}");
 
-    if let (Some(vname), Some(vtype), Some(field_set)) = (vector_name, vector_type, current_field_set)
-    {
+    if let (Some(vname), Some(vtype)) = (vector_name, vector_type) {
         // Create a field with Vec<T> type
         let vec_type = format!("Vec<{}>", vtype);
+        let is_optional = in_if_true || in_if_false || in_maskmap;
+
         let new_field = Field {
             name: vname,
             field_type: vec_type,
+            is_optional,
         };
 
-        if in_switch {
-            if let (Some(case_vals), Some(variant_fields)) =
-                (current_case_values, &mut field_set.variant_fields)
-            {
-                // Add the same field to all values in this case
-                for case_val in case_vals {
-                    variant_fields
-                        .entry(case_val.clone())
-                        .or_insert_with(Vec::new)
-                        .push(new_field.clone());
-                    debug!("Added vector to variant case {case_val}");
+        // If we're in an <if> block, collect fields separately
+        if in_if_true {
+            if_true_fields.push(new_field);
+            debug!("Added vector to if_true_fields");
+            return;
+        } else if in_if_false {
+            if_false_fields.push(new_field);
+            debug!("Added vector to if_false_fields");
+            return;
+        }
+
+        if let Some(field_set) = current_field_set {
+            if in_switch {
+                if let (Some(case_vals), Some(variant_fields)) =
+                    (current_case_values, &mut field_set.variant_fields)
+                {
+                    // Add the same field to all values in this case
+                    for case_val in case_vals {
+                        variant_fields
+                            .entry(case_val.clone())
+                            .or_insert_with(Vec::new)
+                            .push(new_field.clone());
+                        debug!("Added vector to variant case {case_val}");
+                    }
                 }
+            } else {
+                field_set.common_fields.push(new_field);
+                debug!("Added vector to common_fields");
             }
-        } else {
-            field_set.common_fields.push(new_field);
-            debug!("Added vector to common_fields");
         }
     }
 }
@@ -514,6 +638,11 @@ fn process_table_tag(
     current_field_set: &mut Option<FieldSet>,
     in_switch: bool,
     current_case_values: &Option<Vec<String>>,
+    in_if_true: bool,
+    in_if_false: bool,
+    in_maskmap: bool,
+    if_true_fields: &mut Vec<Field>,
+    if_false_fields: &mut Vec<Field>,
 ) {
     let mut table_name = None;
     let mut key_type = None;
@@ -530,32 +659,46 @@ fn process_table_tag(
 
     debug!("Processing table {table_name:?} with key={key_type:?}, value={value_type:?}");
 
-    if let (Some(tname), Some(ktype), Some(vtype), Some(field_set)) =
-        (table_name, key_type, value_type, current_field_set)
-    {
+    if let (Some(tname), Some(ktype), Some(vtype)) = (table_name, key_type, value_type) {
         // Create a field with HashMap<K, V> type
         let map_type = format!("std::collections::HashMap<{}, {}>", ktype, vtype);
+        let is_optional = in_if_true || in_if_false || in_maskmap;
+
         let new_field = Field {
             name: tname,
             field_type: map_type,
+            is_optional,
         };
 
-        if in_switch {
-            if let (Some(case_vals), Some(variant_fields)) =
-                (current_case_values, &mut field_set.variant_fields)
-            {
-                // Add the same field to all values in this case
-                for case_val in case_vals {
-                    variant_fields
-                        .entry(case_val.clone())
-                        .or_insert_with(Vec::new)
-                        .push(new_field.clone());
-                    debug!("Added table to variant case {case_val}");
+        // If we're in an <if> block, collect fields separately
+        if in_if_true {
+            if_true_fields.push(new_field);
+            debug!("Added table to if_true_fields");
+            return;
+        } else if in_if_false {
+            if_false_fields.push(new_field);
+            debug!("Added table to if_false_fields");
+            return;
+        }
+
+        if let Some(field_set) = current_field_set {
+            if in_switch {
+                if let (Some(case_vals), Some(variant_fields)) =
+                    (current_case_values, &mut field_set.variant_fields)
+                {
+                    // Add the same field to all values in this case
+                    for case_val in case_vals {
+                        variant_fields
+                            .entry(case_val.clone())
+                            .or_insert_with(Vec::new)
+                            .push(new_field.clone());
+                        debug!("Added table to variant case {case_val}");
+                    }
                 }
+            } else {
+                field_set.common_fields.push(new_field);
+                debug!("Added table to common_fields");
             }
-        } else {
-            field_set.common_fields.push(new_field);
-            debug!("Added table to common_fields");
         }
     }
 }
@@ -596,10 +739,10 @@ fn process_type_tag(
     if let Some(name) = name {
         let should_skip = filter_types
             .as_ref()
-            .map_or(false, |filters| filters.contains(&name));
+            .map_or(false, |filters| !filters.contains(&name));
 
         if should_skip {
-            debug!("Skipping type {name} because it's in exclusion list.");
+            debug!("Skipping type {name} because it's not in inclusion list.");
             return;
         }
 
@@ -661,6 +804,14 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
     let mut in_switch = false;
     let mut current_direction = MessageDirection::None;
 
+    // Track <if> and <maskmap> state
+    let mut in_if = false;
+    let mut in_if_true = false;
+    let mut in_if_false = false;
+    let mut if_true_fields: Vec<Field> = Vec::new();
+    let mut if_false_fields: Vec<Field> = Vec::new();
+    let mut in_maskmap = false;
+
     loop {
         let event = reader.read_event_into(&mut buf);
 
@@ -698,11 +849,38 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
                 } else if tag_name == "enum" {
                     process_enum_start_tag(&e, &mut current_enum);
                 } else if tag_name == "field" {
-                    process_field_tag(&e, &mut current_field_set, in_switch, &current_case_values);
+                    process_field_tag(
+                        &e,
+                        &mut current_field_set,
+                        in_switch,
+                        &current_case_values,
+                        in_if_true,
+                        in_if_false,
+                        in_maskmap,
+                        &mut if_true_fields,
+                        &mut if_false_fields,
+                    );
                 } else if tag_name == "switch" {
                     in_switch = process_switch_tag(&e, &mut current_field_set);
                 } else if tag_name == "case" {
                     current_case_values = process_case_tag(&e);
+                } else if tag_name == "if" {
+                    in_if = true;
+                    debug!("Entered <if> block");
+                } else if tag_name == "true" {
+                    in_if_true = true;
+                    if_true_fields.clear();
+                    debug!("Entered <true> block");
+                } else if tag_name == "false" {
+                    in_if_false = true;
+                    if_false_fields.clear();
+                    debug!("Entered <false> block");
+                } else if tag_name == "maskmap" {
+                    in_maskmap = true;
+                    debug!("Entered <maskmap> block");
+                } else if tag_name == "mask" {
+                    // Masks are treated the same as being in maskmap
+                    debug!("Entered <mask> block");
                 }
             }
             Ok(Event::Empty(e)) => {
@@ -724,11 +902,41 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
                         &filter_types,
                     );
                 } else if tag_name == "field" {
-                    process_field_tag(&e, &mut current_field_set, in_switch, &current_case_values);
+                    process_field_tag(
+                        &e,
+                        &mut current_field_set,
+                        in_switch,
+                        &current_case_values,
+                        in_if_true,
+                        in_if_false,
+                        in_maskmap,
+                        &mut if_true_fields,
+                        &mut if_false_fields,
+                    );
                 } else if tag_name == "vector" {
-                    process_vector_tag(&e, &mut current_field_set, in_switch, &current_case_values);
+                    process_vector_tag(
+                        &e,
+                        &mut current_field_set,
+                        in_switch,
+                        &current_case_values,
+                        in_if_true,
+                        in_if_false,
+                        in_maskmap,
+                        &mut if_true_fields,
+                        &mut if_false_fields,
+                    );
                 } else if tag_name == "table" {
-                    process_table_tag(&e, &mut current_field_set, in_switch, &current_case_values);
+                    process_table_tag(
+                        &e,
+                        &mut current_field_set,
+                        in_switch,
+                        &current_case_values,
+                        in_if_true,
+                        in_if_false,
+                        in_maskmap,
+                        &mut if_true_fields,
+                        &mut if_false_fields,
+                    );
                 } else if tag_name == "value" {
                     process_enum_value_tag(&e, &mut current_enum);
                 }
@@ -772,6 +980,46 @@ pub fn generate(xml: &str, filter_types: Option<Vec<String>>) -> GeneratedCode {
                     debug!("Exited switch");
                 } else if e.name().as_ref() == b"case" {
                     current_case_values = None;
+                } else if e.name().as_ref() == b"if" {
+                    // Merge if_true and if_false fields and add to current_field_set
+                    let merged_fields = merge_if_fields(
+                        std::mem::take(&mut if_true_fields),
+                        std::mem::take(&mut if_false_fields),
+                    );
+
+                    if let Some(field_set) = &mut current_field_set {
+                        for field in merged_fields {
+                            if in_switch {
+                                if let (Some(case_vals), Some(variant_fields)) =
+                                    (&current_case_values, &mut field_set.variant_fields)
+                                {
+                                    // Add field to all current case values
+                                    for case_val in case_vals {
+                                        variant_fields
+                                            .entry(case_val.clone())
+                                            .or_insert_with(Vec::new)
+                                            .push(field.clone());
+                                    }
+                                }
+                            } else {
+                                field_set.common_fields.push(field);
+                            }
+                        }
+                    }
+
+                    in_if = false;
+                    debug!("Exited <if> block");
+                } else if e.name().as_ref() == b"true" {
+                    in_if_true = false;
+                    debug!("Exited <true> block");
+                } else if e.name().as_ref() == b"false" {
+                    in_if_false = false;
+                    debug!("Exited <false> block");
+                } else if e.name().as_ref() == b"maskmap" {
+                    in_maskmap = false;
+                    debug!("Exited <maskmap> block");
+                } else if e.name().as_ref() == b"mask" {
+                    debug!("Exited <mask> block");
                 }
             }
             Ok(Event::Eof) => break,
