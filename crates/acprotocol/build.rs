@@ -8,8 +8,9 @@ fn main() {
     let workspace_root = manifest_dir.parent().unwrap().parent().unwrap();
     let protocol_path = workspace_root.join("ACProtocol/protocol.xml");
 
-    let enums_dir = manifest_dir.join("src/enums");
-    let types_dir = manifest_dir.join("src/types");
+    let generated_dir = manifest_dir.join("src/generated");
+    let enums_dir = generated_dir.join("enums");
+    let types_dir = generated_dir.join("types");
     fs::create_dir_all(&enums_dir).unwrap();
     fs::create_dir_all(&types_dir).unwrap();
 

@@ -1,20 +1,21 @@
-use std::{error::Error, io::Read};
-
-pub mod enums;
+pub mod enums {
+    include!("generated/enums/mod.rs");
+}
 
 pub mod types {
-    use super::enums::*;
-
+    // Import enums for use in common types
+    use crate::enums::*;
+    
     // Common types are at the module level
-    include!("types/common.rs");
+    include!("generated/types/common.rs");
 
     pub mod c2s {
         use super::*;
-        include!("types/c2s.rs");
+        include!("generated/types/c2s.rs");
     }
     pub mod s2c {
         use super::*;
-        include!("types/s2c.rs");
+        include!("generated/types/s2c.rs");
     }
 }
 
