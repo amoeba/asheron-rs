@@ -10,6 +10,10 @@ pub struct Field {
     pub(crate) length_expression: Option<String>,
     /// For optional fields, the condition under which they are present (e.g., "RecordCount > 0")
     pub(crate) optional_condition: Option<String>,
+    /// For masked fields, the field name to check (e.g., "Flags")
+    pub(crate) mask_field: Option<String>,
+    /// For masked fields, the bitmask value (e.g., "0x8")
+    pub(crate) mask_value: Option<String>,
 }
 
 #[derive(Debug, Clone)]

@@ -35,6 +35,22 @@ impl Vector3 {
     }
 }
 
+impl Quaternion {
+    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
+        let w = read_f32(reader)?;
+        let x = read_f32(reader)?;
+        let y = read_f32(reader)?;
+        let z = read_f32(reader)?;
+
+        Ok(Self {
+            w,
+            x,
+            y,
+            z,
+        })
+    }
+}
+
 impl Position {
     pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
         let landcell = LandcellId::read(reader)?;
@@ -89,7 +105,10 @@ impl AllegianceHierarchy {
         let name_last_set_time = read_u32(reader)?;
         let is_locked = read_bool(reader)?;
         let approved_vassal = read_i32(reader)?;
-        let monarch_data = if record_count > 0 { AllegianceData::read(reader).map(Some) } else { Ok(None) }?;
+        let mut monarch_data = None;
+        if record_count > 0 {
+            monarch_data = Some(AllegianceData::read(reader)?);
+        }
         let records = (|| -> Result<_, Box<dyn std::error::Error>> {
             let length = (record_count as usize) - 1;
             let mut vec = Vec::with_capacity(length);
@@ -131,11 +150,18 @@ impl AllegianceData {
         let gender = Gender::try_from(read_u8(reader)?)?;
         let heritage = HeritageGroup::try_from(read_u8(reader)?)?;
         let rank = read_u16(reader)?;
-        let level = read_u32(reader)?;
+        let mut level = None;
+        if (flags & 0x8) != 0 {
+            level = Some(read_u32(reader)?);
+        }
         let loyalty = read_u16(reader)?;
         let leadership = read_u16(reader)?;
-        let allegiance_age = if flags == 0x4 { read_u32(reader).map(Some) } else { Ok(None) }?;
-        let time_online = if flags == 0x4 { read_u64(reader).map(Some) } else { Ok(None) }?;
+        let mut allegiance_age = None;
+        let mut time_online = None;
+        if flags == 0x4 {
+            allegiance_age = Some(read_u32(reader)?);
+            time_online = Some(read_u64(reader)?);
+        }
         let name = read_string(reader)?;
 
         Ok(Self {

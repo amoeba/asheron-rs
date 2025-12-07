@@ -24,6 +24,10 @@ struct FieldContext {
     if_false_fields: Vec<Field>,
     /// The test condition from the current <if> block (e.g., "RecordCount > 0")
     current_if_condition: Option<String>,
+    /// The field name being used for maskmap (e.g., "Flags")
+    current_maskmap_field: Option<String>,
+    /// The current mask value (e.g., "0x8")
+    current_mask_value: Option<String>,
 }
 
 /// Context for code generation, controlling what gets generated
@@ -798,6 +802,16 @@ fn process_field_tag(
             } else {
                 None
             },
+            mask_field: if ctx.in_maskmap {
+                ctx.current_maskmap_field.clone()
+            } else {
+                None
+            },
+            mask_value: if ctx.in_maskmap {
+                ctx.current_mask_value.clone()
+            } else {
+                None
+            },
         };
 
         // If we're in an <if> block, collect fields separately
@@ -866,6 +880,16 @@ fn process_vector_tag(
             length_expression: length_expr,
             optional_condition: if is_optional {
                 ctx.current_if_condition.clone()
+            } else {
+                None
+            },
+            mask_field: if ctx.in_maskmap {
+                ctx.current_maskmap_field.clone()
+            } else {
+                None
+            },
+            mask_value: if ctx.in_maskmap {
+                ctx.current_mask_value.clone()
             } else {
                 None
             },
@@ -939,6 +963,16 @@ fn process_table_tag(
             length_expression: length_expr,
             optional_condition: if is_optional {
                 ctx.current_if_condition.clone()
+            } else {
+                None
+            },
+            mask_field: if ctx.in_maskmap {
+                ctx.current_maskmap_field.clone()
+            } else {
+                None
+            },
+            mask_value: if ctx.in_maskmap {
+                ctx.current_mask_value.clone()
             } else {
                 None
             },
@@ -1193,11 +1227,12 @@ fn generate_struct_reader_impl(
         "    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
     );
 
-    // Read all fields
-    for field in &field_set.common_fields {
-        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-        let read_call = generate_read_call(ctx, field, &field_set.common_fields);
-        out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+    // Group consecutive fields with the same condition
+    let field_groups = group_consecutive_fields_by_condition(&field_set.common_fields);
+
+    // Generate reads for each group
+    for group in &field_groups {
+        generate_field_group_reads(ctx, &mut out, &group.condition, &group.fields, &field_set.common_fields);
     }
 
     // Construct the struct
@@ -1211,6 +1246,217 @@ fn generate_struct_reader_impl(
     out.push_str("}\n\n");
 
     out
+}
+
+/// A group of consecutive fields with the same condition
+#[derive(Debug)]
+struct FieldGroup<'a> {
+    condition: ConditionKey,
+    fields: Vec<&'a Field>,
+}
+
+/// Group consecutive fields with the same condition for coalescing conditional reads
+/// This preserves field order from the XML
+fn group_consecutive_fields_by_condition(fields: &[Field]) -> Vec<FieldGroup<'_>> {
+    let mut groups = Vec::new();
+
+    if fields.is_empty() {
+        return groups;
+    }
+
+    let mut current_key = ConditionKey::from_field(&fields[0]);
+    let mut current_group = vec![&fields[0]];
+
+    for field in &fields[1..] {
+        let key = ConditionKey::from_field(field);
+
+        if key == current_key {
+            // Same condition - add to current group
+            current_group.push(field);
+        } else {
+            // Different condition - start new group
+            groups.push(FieldGroup {
+                condition: current_key,
+                fields: current_group,
+            });
+            current_key = key;
+            current_group = vec![field];
+        }
+    }
+
+    // Don't forget the last group
+    groups.push(FieldGroup {
+        condition: current_key,
+        fields: current_group,
+    });
+
+    groups
+}
+
+/// Key for grouping fields by their condition
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+enum ConditionKey {
+    /// No condition - always read
+    None,
+    /// <if test="condition">
+    IfTest(String),
+    /// <maskmap> with specific field and mask value
+    Mask { field: String, value: String },
+}
+
+impl ConditionKey {
+    fn from_field(field: &Field) -> Self {
+        if let Some(condition) = &field.optional_condition {
+            ConditionKey::IfTest(condition.clone())
+        } else if let (Some(mask_field), Some(mask_value)) = (&field.mask_field, &field.mask_value) {
+            ConditionKey::Mask {
+                field: mask_field.clone(),
+                value: mask_value.clone(),
+            }
+        } else {
+            ConditionKey::None
+        }
+    }
+}
+
+/// Generate reads for a group of fields with the same condition
+fn generate_field_group_reads(
+    ctx: &ReaderContext,
+    out: &mut String,
+    condition_key: &ConditionKey,
+    fields: &[&Field],
+    all_fields: &[Field],
+) {
+    match condition_key {
+        ConditionKey::None => {
+            // No condition - just read each field directly
+            for field in fields {
+                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                let read_call = generate_base_read_call(ctx, field, all_fields);
+                out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+            }
+        }
+        ConditionKey::IfTest(condition) => {
+            // Generate a single if block for all fields with this condition
+            let rust_condition = convert_condition_expression(condition, all_fields);
+
+            // Initialize all optional fields to None first
+            for field in fields {
+                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                out.push_str(&format!("        let mut {} = None;\n", field_name));
+            }
+
+            // Generate the if block
+            out.push_str(&format!("        if {} {{\n", rust_condition));
+            for field in fields {
+                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                let read_call = generate_base_read_call(ctx, field, all_fields);
+                out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+            }
+            out.push_str("        }\n");
+        }
+        ConditionKey::Mask { field: mask_field, value: mask_value } => {
+            // Generate a single if block for all fields with this mask
+            let mask_field_safe = safe_identifier(mask_field, IdentifierType::Field).name;
+            let mask_value_code = if mask_value.contains('.') {
+                let parts: Vec<&str> = mask_value.split('.').collect();
+                if parts.len() == 2 {
+                    format!("{}::{} as u32", parts[0], parts[1])
+                } else {
+                    mask_value.clone()
+                }
+            } else {
+                mask_value.clone()
+            };
+
+            // Initialize all optional fields to None first
+            for field in fields {
+                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                out.push_str(&format!("        let mut {} = None;\n", field_name));
+            }
+
+            // Generate the if block
+            out.push_str(&format!("        if ({} & {}) != 0 {{\n", mask_field_safe, mask_value_code));
+            for field in fields {
+                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                let read_call = generate_base_read_call(ctx, field, all_fields);
+                out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+            }
+            out.push_str("        }\n");
+        }
+    }
+}
+
+/// Generate the base read call without the conditional wrapper
+fn generate_base_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Field]) -> String {
+    let field_type = &field.field_type;
+    let rust_type = get_rust_type(field_type);
+
+    match rust_type {
+        "u8" => "read_u8(reader)".to_string(),
+        "i8" => "read_i8(reader)".to_string(),
+        "u16" => "read_u16(reader)".to_string(),
+        "i16" => "read_i16(reader)".to_string(),
+        "u32" => "read_u32(reader)".to_string(),
+        "i32" => "read_i32(reader)".to_string(),
+        "u64" => "read_u64(reader)".to_string(),
+        "i64" => "read_i64(reader)".to_string(),
+        "f32" => "read_f32(reader)".to_string(),
+        "f64" => "read_f64(reader)".to_string(),
+        "bool" => "read_bool(reader)".to_string(),
+        "String" => "read_string(reader)".to_string(),
+        _ => {
+            // Check if it's an enum
+            if let Some(parent_type) = ctx.enum_parent_map.get(field_type) {
+                let parent_rust_type = get_rust_type(parent_type);
+                let read_fn = match parent_rust_type {
+                    "u8" => "read_u8",
+                    "i8" => "read_i8",
+                    "u16" => "read_u16",
+                    "i16" => "read_i16",
+                    "u32" => "read_u32",
+                    "i32" => "read_i32",
+                    "u64" => "read_u64",
+                    "i64" => "read_i64",
+                    _ => panic!("Unsupported enum parent type: {}", parent_type),
+                };
+                format!("{}::try_from({}(reader)?)", field_type, read_fn)
+            } else if field_type.starts_with("Vec<") {
+                let element_type = &field_type[4..field_type.len() - 1];
+                if let Some(length_expr) = &field.length_expression {
+                    let length_code = convert_length_expression(length_expr, all_fields);
+                    generate_vec_read_with_length(element_type, &length_code, ctx)
+                } else {
+                    format!("unimplemented!(\"Vec reading without length not yet implemented\")")
+                }
+            } else if field_type.starts_with("PackableList<") {
+                format!("unimplemented!(\"PackableList reading not yet implemented\")")
+            } else if field_type.starts_with("std::collections::HashMap<") {
+                let inner = &field_type["std::collections::HashMap<".len()..field_type.len() - 1];
+                if let Some(comma_pos) = inner.find(',') {
+                    let key_type = inner[..comma_pos].trim();
+                    let value_type = inner[comma_pos + 1..].trim();
+                    if let Some(length_expr) = &field.length_expression {
+                        let length_code = convert_length_expression(length_expr, all_fields);
+                        generate_hashmap_read_with_length(key_type, value_type, &length_code, ctx)
+                    } else {
+                        format!("unimplemented!(\"HashMap reading without length not yet implemented\")")
+                    }
+                } else {
+                    format!("unimplemented!(\"HashMap reading with invalid type not yet implemented\")")
+                }
+            } else if field_type.starts_with("PackableHashTable<") {
+                format!("unimplemented!(\"PackableHashTable reading not yet implemented\")")
+            } else {
+                if let Some(pos) = field_type.find('<') {
+                    let (type_name, generics) = field_type.split_at(pos);
+                    format!("{type_name}::{generics}::read(reader)")
+                } else {
+                    format!("{field_type}::read(reader)")
+                }
+            }
+        }
+    }
 }
 
 /// Generate a reader for a variant type (enum with switch)
@@ -1440,8 +1686,9 @@ fn generate_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Field]) 
     };
 
     if is_optional {
-        // Generate conditional read based on the test condition
+        // Generate conditional read based on the test condition or mask
         if let Some(condition) = &field.optional_condition {
+            // <if test="..."> condition
             // Convert the condition to Rust code (e.g., "RecordCount > 0" -> "record_count > 0")
             let rust_condition = convert_condition_expression(condition, all_fields);
             // The base_read returns Result<T, E>, we want Result<Option<T>, E>
@@ -1449,6 +1696,28 @@ fn generate_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Field]) 
             format!(
                 "if {} {{ {}.map(Some) }} else {{ Ok(None) }}",
                 rust_condition, base_read
+            )
+        } else if let (Some(mask_field), Some(mask_value)) = (&field.mask_field, &field.mask_value)
+        {
+            // <maskmap> with <mask value="...">
+            // Generate bitwise AND check
+            let mask_field_safe = safe_identifier(mask_field, IdentifierType::Field).name;
+            // The mask_value might be a plain hex number or an enum variant like "ACBaseQualitiesFlags.PropertyInt"
+            let mask_value_code = if mask_value.contains('.') {
+                // It's an enum variant reference, convert to Rust format
+                let parts: Vec<&str> = mask_value.split('.').collect();
+                if parts.len() == 2 {
+                    format!("{}::{} as u32", parts[0], parts[1])
+                } else {
+                    mask_value.clone()
+                }
+            } else {
+                mask_value.clone()
+            };
+            // Generate: if (flags & 0x8) != 0 { read().map(Some) } else { Ok(None) }
+            format!(
+                "if ({} & {}) != 0 {{ {}.map(Some) }} else {{ Ok(None) }}",
+                mask_field_safe, mask_value_code, base_read
             )
         } else {
             // No condition - this shouldn't happen for truly optional fields, but handle it
@@ -1722,6 +1991,8 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
         if_true_fields: Vec::new(),
         if_false_fields: Vec::new(),
         current_if_condition: None,
+        current_maskmap_field: None,
+        current_mask_value: None,
     };
 
     loop {
@@ -1788,10 +2059,29 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                     debug!("Entered <false> block");
                 } else if tag_name == "maskmap" {
                     field_ctx.in_maskmap = true;
-                    debug!("Entered <maskmap> block");
+                    // Parse the name attribute (the field to check)
+                    for attr in e.attributes().flatten() {
+                        if attr.key.as_ref() == b"name" {
+                            field_ctx.current_maskmap_field =
+                                Some(attr.unescape_value().unwrap().into_owned());
+                        }
+                    }
+                    debug!(
+                        "Entered <maskmap> block for field {:?}",
+                        field_ctx.current_maskmap_field
+                    );
                 } else if tag_name == "mask" {
-                    // Masks are treated the same as being in maskmap
-                    debug!("Entered <mask> block");
+                    // Parse the value attribute (the bitmask value)
+                    for attr in e.attributes().flatten() {
+                        if attr.key.as_ref() == b"value" {
+                            field_ctx.current_mask_value =
+                                Some(attr.unescape_value().unwrap().into_owned());
+                        }
+                    }
+                    debug!(
+                        "Entered <mask> block with value {:?}",
+                        field_ctx.current_mask_value
+                    );
                 }
             }
             Ok(Event::Empty(e)) => {
@@ -1901,8 +2191,10 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                     debug!("Exited <false> block");
                 } else if e.name().as_ref() == b"maskmap" {
                     field_ctx.in_maskmap = false;
+                    field_ctx.current_maskmap_field = None;
                     debug!("Exited <maskmap> block");
                 } else if e.name().as_ref() == b"mask" {
+                    field_ctx.current_mask_value = None;
                     debug!("Exited <mask> block");
                 }
             }
