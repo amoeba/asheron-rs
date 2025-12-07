@@ -1,0 +1,11 @@
+TODOs
+
+- Make sure generated protocol handles all attributes, including lastModified and author
+- Verify these more complicated types are handled correctly: -
+  - ObjDesc
+  - AllegianceHierarchy
+  - AllegianceData
+  - PageData
+  - Enchantment
+  - SpellBookPage
+  - PHashTable"
