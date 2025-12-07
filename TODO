@@ -11,3 +11,4 @@ TODOs
   - PHashTable"
 - Ensure code genreation passes cargo fmt and cargo clippy
 - Figure out ReadPackedWORD and ReadPackedDWORD readers
+- Handle xor attribute in  `<maskmap name="Flags" xor="0x00000078">`
