@@ -370,7 +370,7 @@ fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
         };
         if !read_fn.is_empty() {
             out.push_str(&format!(
-                "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        let value = crate::readers::{read_fn}(reader)?;\n        Ok({}::try_from(value)?)\n    }}\n}}\n\n",
+                "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        let value = crate::readers::{read_fn}(reader)?;\n        Ok({}::try_from(value)?)\n    }}\n}}\n\n",
                 enum_name, enum_name
             ));
         }
@@ -514,7 +514,8 @@ fn generate_variant_struct(
 
     // Add common fields first (excluding the switch field itself, as serde uses it as the tag)
     for field in &field_set.common_fields {
-        if field.name != switch_field {
+        // Skip alignment marker fields - they're only for reading
+        if field.name != switch_field && !field.name.starts_with("__alignment_marker_") {
             out.push_str(&generate_field_line(field, false)); // false = struct field
             out.push_str(",\n");
         }
@@ -542,11 +543,12 @@ fn generate_variant_struct(
 
     for field in case_fields {
         // Skip the nested switch discriminator field - it will be represented by the enum
-        if Some(field.name.as_str()) != nested_switch_field_name {
-            out.push_str(&generate_field_line(field, false));
-            out.push_str(",\n");
-        }
-    }
+        // Also skip alignment marker fields - they're only for reading
+        if Some(field.name.as_str()) != nested_switch_field_name && !field.name.starts_with("__alignment_marker_") {
+             out.push_str(&generate_field_line(field, false));
+             out.push_str(",\n");
+         }
+     }
 
     if has_nested_switch {
         let nested_switch_obj = field_set
@@ -852,12 +854,15 @@ pub enum {type_name}{type_generics} {{\n"
 
         out.push_str("}\n\n");
     } else {
-        // Generate struct
-        let mut field_out: Vec<String> = Vec::new();
-
-        for field in &field_set.common_fields {
-            field_out.push(generate_field_line(field, false)); // false = is struct field
-        }
+         // Generate struct
+         let mut field_out: Vec<String> = Vec::new();
+    
+         for field in &field_set.common_fields {
+             // Skip alignment marker fields - they're only for reading
+             if !field.name.starts_with("__alignment_marker_") {
+                 field_out.push(generate_field_line(field, false)); // false = is struct field
+             }
+         }
 
         let fields_out: String = field_out.join(",\n") + ",";
 
@@ -1030,6 +1035,39 @@ fn process_subfield_tag(e: &quick_xml::events::BytesStart) -> Option<Subfield> {
             name,
             field_type,
             value_expression,
+        })
+    } else {
+        None
+    }
+}
+
+fn process_align_tag(e: &quick_xml::events::BytesStart) -> Option<Field> {
+    let mut align_type = None;
+
+    for attr in e.attributes().flatten() {
+        if attr.key.as_ref() == b"type" {
+            align_type = Some(attr.unescape_value().unwrap().into_owned());
+        }
+    }
+
+    if let Some(align_to) = align_type {
+        // Generate a synthetic field name for alignment padding
+        let padding_field_name = format!("__align_{}", align_to.to_lowercase());
+        
+        // Map alignment type to read call
+        // We generate code that reads the padding needed to align to the specified boundary
+        Some(Field {
+            name: padding_field_name,
+            field_type: format!("__align__{}", align_to),
+            is_optional: false,
+            length_expression: None,
+            optional_condition: None,
+            mask_field: None,
+            mask_value: None,
+            if_branch: None,
+            if_false_branch_type: None,
+            subfields: Vec::new(),
+            nested_field_set: None,
         })
     } else {
         None
@@ -1468,6 +1506,8 @@ fn generate_readers_for_types(
     out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use std::io::Read;\n");
     out.push_str("#[allow(unused_imports)]\n");
+    out.push_str("use crate::readers::ACReader;\n");
+    out.push_str("#[allow(unused_imports)]\n");
 
     // Common types are directly in crate::types, c2s/s2c are in submodules
     if module_name == "common" {
@@ -1560,11 +1600,11 @@ fn generate_reader_impl(ctx: &ReaderContext, protocol_type: &ProtocolType) -> St
                 };
 
                 let impl_code = format!(
-                    "impl {} {{\n    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        Ok(Self({}?))\n    }}\n}}\n\n",
+                    "impl {} {{\n    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        Ok(Self({}?))\n    }}\n}}\n\n",
                     safe_type_name.name, read_call
                 );
                 let acdatatype_code = format!(
-                    "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        {}::read(reader)\n    }}\n}}\n\n",
+                    "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        {}::read(reader)\n    }}\n}}\n\n",
                     safe_type_name.name, safe_type_name.name
                 );
                 return format!("{}{}", impl_code, acdatatype_code);
@@ -1577,11 +1617,11 @@ fn generate_reader_impl(ctx: &ReaderContext, protocol_type: &ProtocolType) -> St
     let Some(field_set) = &protocol_type.fields else {
         // Empty struct - no fields to read
         let impl_code = format!(
-            "impl {} {{\n    pub fn read(_reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        Ok(Self {{}})\n    }}\n}}\n\n",
+            "impl {} {{\n    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        Ok(Self {{}})\n    }}\n}}\n\n",
             safe_type_name.name
         );
         let acdatatype_code = format!(
-            "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        {}::read(reader)\n    }}\n}}\n\n",
+            "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        {}::read(reader)\n    }}\n}}\n\n",
             safe_type_name.name, safe_type_name.name
         );
         return format!("{}{}", impl_code, acdatatype_code);
@@ -1666,14 +1706,20 @@ fn generate_enum_reader_impl(
 
     out.push_str(&format!("impl {type_name} {{\n"));
     out.push_str(
-        "    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+        "    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {\n",
     );
 
     // Read all common fields (these come before the switch)
     for field in &field_set.common_fields {
         let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
         let read_call = generate_read_call(ctx, field, &field_set.common_fields);
-        out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+        
+        // Alignment fields don't need to be stored, just executed
+        if field.name.starts_with("__alignment_marker_") {
+            out.push_str(&format!("        {}?;\n", read_call));
+        } else {
+            out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+        }
 
         // Generate subfield computations if any
         for subfield in &field.subfields {
@@ -1800,7 +1846,7 @@ fn generate_enum_reader_impl(
 
     // Add ACDataType implementation
     out.push_str(&format!(
-        "impl crate::readers::ACDataType for {type_name} {{\n    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        {type_name}::read(reader)\n    }}\n}}\n\n"
+        "impl crate::readers::ACDataType for {type_name} {{\n    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        {type_name}::read(reader)\n    }}\n}}\n\n"
     ));
 
     out
@@ -1819,7 +1865,7 @@ fn generate_variant_struct_reader_impl(
     out.push_str(&format!("impl {struct_name} {{\n"));
     
     // Build function signature with common fields as parameters
-    let mut params = vec!["reader: &mut dyn Read".to_string()];
+    let mut params = vec!["reader: &mut dyn ACReader".to_string()];
     let switch_field = field_set.switch_field.as_ref().unwrap();
     for field in &field_set.common_fields {
         if field.name != *switch_field {
@@ -1920,14 +1966,16 @@ fn generate_variant_struct_reader_impl(
     out.push_str("\n        Ok(Self {\n");
 
     for field in &field_set.common_fields {
-        if field.name != *switch_field {
+        // Skip switch field and alignment marker fields
+        if field.name != *switch_field && !field.name.starts_with("__alignment_marker_") {
             let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
             out.push_str(&format!("            {},\n", field_name));
         }
     }
 
     for field in case_fields {
-        if Some(field.name.as_str()) != nested_switch_field_name {
+        // Skip nested switch field and alignment marker fields
+        if Some(field.name.as_str()) != nested_switch_field_name && !field.name.starts_with("__alignment_marker_") {
             let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
             out.push_str(&format!("            {},\n", field_name));
         }
@@ -1978,7 +2026,7 @@ fn generate_nested_switch_enum_reader(
 
     out.push_str(&format!("impl {enum_name} {{\n"));
     out.push_str(
-        "    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+        "    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {\n",
     );
 
     // Read the switch field
@@ -2077,7 +2125,7 @@ fn generate_struct_reader_impl(
 
     out.push_str(&format!("impl {} {{\n", type_name));
     out.push_str(
-        "    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {\n",
+        "    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {\n",
     );
 
     // Group consecutive fields with the same condition
@@ -2095,18 +2143,21 @@ fn generate_struct_reader_impl(
     }
 
     // Construct the struct
-    out.push_str("\n        Ok(Self {\n");
-    for field in &field_set.common_fields {
-        let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-        out.push_str(&format!("            {},\n", field_name));
-    }
-    out.push_str("        })\n");
+     out.push_str("\n        Ok(Self {\n");
+     for field in &field_set.common_fields {
+         // Skip alignment marker fields - they're only read, not stored
+         if !field.name.starts_with("__alignment_marker_") {
+             let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+             out.push_str(&format!("            {},\n", field_name));
+         }
+     }
+     out.push_str("        })\n");
     out.push_str("    }\n");
     out.push_str("}\n\n");
 
     // Add ACDataType implementation
     out.push_str(&format!(
-        "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {{\n        {}::read(reader)\n    }}\n}}\n\n",
+        "impl crate::readers::ACDataType for {} {{\n    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        {}::read(reader)\n    }}\n}}\n\n",
         type_name, type_name
     ));
 
@@ -2412,6 +2463,19 @@ fn generate_field_group_reads(
 /// Generate the base read call without the conditional wrapper
 fn generate_base_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Field]) -> String {
     let field_type = &field.field_type;
+    
+    // Handle alignment padding fields first
+    if field_type.starts_with("__align__") {
+        let align_type = &field_type[9..]; // Remove "__align__" prefix
+        let padding_code = match align_type {
+            "DWORD" => "align_dword(reader)",
+            "WORD" => "align_word(reader)",
+            "QWORD" => "align_qword(reader)",
+            _ => "read_u32(reader)",
+        };
+        return padding_code.to_string();
+    }
+    
     let rust_type = get_rust_type(field_type);
 
     match rust_type {
@@ -2510,6 +2574,18 @@ fn generate_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Field]) 
     let field_type = &field.field_type;
     let is_optional = field.is_optional;
     let rust_type = get_rust_type(field_type);
+
+    // Handle alignment padding fields
+    if field_type.starts_with("__align__") {
+        let align_type = &field_type[9..]; // Remove "__align__" prefix
+        let padding_code = match align_type {
+            "DWORD" => "align_dword(reader)",
+            "WORD" => "align_word(reader)",
+            "QWORD" => "align_qword(reader)",
+            _ => "read_u32(reader)",
+        };
+        return padding_code.to_string();
+    }
 
     let base_read = match rust_type {
         "u8" => "read_u8(reader)".to_string(),
@@ -3008,6 +3084,18 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                         field.subfields.push(subfield);
                         debug!("Added subfield to current field");
                     }
+                } else if tag_name == "align" {
+                    // Process alignment requirement - add alignment marker
+                    if let Some(mut align_field) = process_align_tag(&e) {
+                        // Mark as internal so it won't be added to struct definition
+                        align_field.name = format!("__alignment_marker_{}", align_field.name);
+                        add_field_to_set(
+                            align_field,
+                            &mut current_field_set,
+                            &mut field_ctx,
+                        );
+                        debug!("Added alignment field");
+                    }
                 } else if tag_name == "switch" {
                     if field_ctx.switch_nesting_level == 0 {
                         // Outer switch
@@ -3125,11 +3213,23 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                 } else if tag_name == "vector" {
                     process_vector_tag(&e, &mut current_field_set, &mut field_ctx);
                 } else if tag_name == "table" {
-                    process_table_tag(&e, &mut current_field_set, &mut field_ctx);
-                } else if tag_name == "value" {
-                    process_enum_value_tag(&e, &mut current_enum);
+                     process_table_tag(&e, &mut current_field_set, &mut field_ctx);
+                 } else if tag_name == "align" {
+                     // Process alignment requirement (as Empty event for self-closing tags)
+                     if let Some(mut align_field) = process_align_tag(&e) {
+                         // Mark as internal so it won't be added to struct definition
+                         align_field.name = format!("__alignment_marker_{}", align_field.name);
+                         add_field_to_set(
+                             align_field,
+                             &mut current_field_set,
+                             &mut field_ctx,
+                         );
+                         debug!("Added alignment field (empty tag)");
+                     }
+                 } else if tag_name == "value" {
+                     process_enum_value_tag(&e, &mut current_enum);
+                 }
                 }
-            }
             Ok(Event::End(e)) => {
                 if e.name().as_ref() == b"type" {
                     // Close out type
@@ -3355,7 +3455,8 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     // Generate enums
     let mut enums_out = String::new();
     enums_out.push_str("use serde::{Serialize, Deserialize};\n");
-    enums_out.push_str("use num_enum::TryFromPrimitive;\n\n");
+    enums_out.push_str("use num_enum::TryFromPrimitive;\n");
+    enums_out.push_str("use crate::readers::ACReader;\n\n");
 
     for protocol_enum in &enums {
         enums_out.push_str(&generate_enum(protocol_enum));

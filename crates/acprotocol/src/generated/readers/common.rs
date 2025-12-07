@@ -3,6 +3,8 @@
 #[allow(unused_imports)]
 use std::io::Read;
 #[allow(unused_imports)]
+use crate::readers::ACReader;
+#[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
 use crate::enums::*;
@@ -10,79 +12,79 @@ use crate::enums::*;
 use super::*;
 
 impl WString {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self(read_wstring(reader)?))
     }
 }
 
 impl crate::readers::ACDataType for WString {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         WString::read(reader)
     }
 }
 
 impl PackedWORD {
-    pub fn read(_reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {})
     }
 }
 
 impl crate::readers::ACDataType for PackedWORD {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PackedWORD::read(reader)
     }
 }
 
 impl PackedDWORD {
-    pub fn read(_reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(_reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {})
     }
 }
 
 impl crate::readers::ACDataType for PackedDWORD {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PackedDWORD::read(reader)
     }
 }
 
 impl ObjectId {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self(read_u32(reader)?))
     }
 }
 
 impl crate::readers::ACDataType for ObjectId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ObjectId::read(reader)
     }
 }
 
 impl LandcellId {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self(read_u32(reader)?))
     }
 }
 
 impl crate::readers::ACDataType for LandcellId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         LandcellId::read(reader)
     }
 }
 
 impl SpellId {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self(read_u16(reader)?))
     }
 }
 
 impl crate::readers::ACDataType for SpellId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SpellId::read(reader)
     }
 }
 
 impl LayeredSpellId {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let id = SpellId::read(reader)?;
         let layer = read_u16(reader)?;
 
@@ -94,13 +96,13 @@ impl LayeredSpellId {
 }
 
 impl crate::readers::ACDataType for LayeredSpellId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         LayeredSpellId::read(reader)
     }
 }
 
 impl Vector3 {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let x = read_f32(reader)?;
         let y = read_f32(reader)?;
         let z = read_f32(reader)?;
@@ -114,13 +116,13 @@ impl Vector3 {
 }
 
 impl crate::readers::ACDataType for Vector3 {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Vector3::read(reader)
     }
 }
 
 impl Quaternion {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let w = read_f32(reader)?;
         let x = read_f32(reader)?;
         let y = read_f32(reader)?;
@@ -136,13 +138,13 @@ impl Quaternion {
 }
 
 impl crate::readers::ACDataType for Quaternion {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Quaternion::read(reader)
     }
 }
 
 impl Origin {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let landcell = LandcellId::read(reader)?;
         let location = Vector3::read(reader)?;
 
@@ -154,13 +156,13 @@ impl Origin {
 }
 
 impl crate::readers::ACDataType for Origin {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Origin::read(reader)
     }
 }
 
 impl Position {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let landcell = LandcellId::read(reader)?;
         let frame = Frame::read(reader)?;
 
@@ -172,13 +174,13 @@ impl Position {
 }
 
 impl crate::readers::ACDataType for Position {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Position::read(reader)
     }
 }
 
 impl Frame {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let origin = Vector3::read(reader)?;
         let orientation = Quaternion::read(reader)?;
 
@@ -190,13 +192,13 @@ impl Frame {
 }
 
 impl crate::readers::ACDataType for Frame {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Frame::read(reader)
     }
 }
 
 impl ServerSwitchHeader {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let sequence = read_u32(reader)?;
         let type_ = ServerSwitchType::try_from(read_u32(reader)?)?;
 
@@ -208,13 +210,13 @@ impl ServerSwitchHeader {
 }
 
 impl crate::readers::ACDataType for ServerSwitchHeader {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ServerSwitchHeader::read(reader)
     }
 }
 
 impl CICMDCommandHeader {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let command = read_u32(reader)?;
         let parameter = read_u32(reader)?;
 
@@ -226,13 +228,13 @@ impl CICMDCommandHeader {
 }
 
 impl crate::readers::ACDataType for CICMDCommandHeader {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CICMDCommandHeader::read(reader)
     }
 }
 
 impl FlowHeader {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let bytes = read_u32(reader)?;
         let interval = read_u16(reader)?;
 
@@ -244,13 +246,13 @@ impl FlowHeader {
 }
 
 impl crate::readers::ACDataType for FlowHeader {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         FlowHeader::read(reader)
     }
 }
 
 impl SocketAddress {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let family = read_i16(reader)?;
         let port = read_u16(reader)?;
         let address = read_u32(reader)?;
@@ -266,13 +268,13 @@ impl SocketAddress {
 }
 
 impl crate::readers::ACDataType for SocketAddress {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SocketAddress::read(reader)
     }
 }
 
 impl LoginRequestHeaderType2 {
-    pub fn read(reader: &mut dyn Read, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
         let password = read_wstring(reader).map(WString)?;
 
         Ok(Self {
@@ -288,7 +290,7 @@ impl LoginRequestHeaderType2 {
 }
 
 impl LoginRequestHeaderType40000002 {
-    pub fn read(reader: &mut dyn Read, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
         let gls_ticket = read_string(reader)?;
 
         Ok(Self {
@@ -304,7 +306,7 @@ impl LoginRequestHeaderType40000002 {
 }
 
 impl LoginRequestHeader {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let client_version = read_string(reader)?;
         let length = read_u32(reader)?;
         let auth_type = NetAuthType::try_from(read_u32(reader)?)?;
@@ -328,16 +330,17 @@ impl LoginRequestHeader {
 }
 
 impl crate::readers::ACDataType for LoginRequestHeader {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         LoginRequestHeader::read(reader)
     }
 }
 
 impl ReferralHeader {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let cookie = read_u64(reader)?;
         let address = SocketAddress::read(reader)?;
         let id_server = read_u16(reader)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
         let unknown = DWORD::read(reader)?;
 
         Ok(Self {
@@ -350,13 +353,13 @@ impl ReferralHeader {
 }
 
 impl crate::readers::ACDataType for ReferralHeader {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ReferralHeader::read(reader)
     }
 }
 
 impl ConnectRequestHeader {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let server_time = read_f64(reader)?;
         let cookie = read_u64(reader)?;
         let net_id = read_i32(reader)?;
@@ -376,13 +379,13 @@ impl ConnectRequestHeader {
 }
 
 impl crate::readers::ACDataType for ConnectRequestHeader {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ConnectRequestHeader::read(reader)
     }
 }
 
 impl NetError {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let string_id = DataId::read(reader)?;
         let table_id = DataId::read(reader)?;
 
@@ -394,13 +397,13 @@ impl NetError {
 }
 
 impl crate::readers::ACDataType for NetError {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         NetError::read(reader)
     }
 }
 
 impl EchoResponseHeader {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let local_time = read_f32(reader)?;
         let holding_time = read_f32(reader)?;
 
@@ -412,13 +415,13 @@ impl EchoResponseHeader {
 }
 
 impl crate::readers::ACDataType for EchoResponseHeader {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EchoResponseHeader::read(reader)
     }
 }
 
 impl ACBaseQualities {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = ACBaseQualitiesFlags::try_from(read_u32(reader)?)?;
         let weenie_type = WeenieType::try_from(read_u32(reader)?)?;
         let mut int_properties = None;
@@ -502,13 +505,13 @@ impl ACBaseQualities {
 }
 
 impl crate::readers::ACDataType for ACBaseQualities {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ACBaseQualities::read(reader)
     }
 }
 
 impl ACQualities {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = ACQualitiesFlags::try_from(read_u32(reader)?)?;
         let has_health = read_bool(reader)?;
         let mut attributes = None;
@@ -588,13 +591,13 @@ impl ACQualities {
 }
 
 impl crate::readers::ACDataType for ACQualities {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ACQualities::read(reader)
     }
 }
 
 impl AttributeCache {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = read_u32(reader)?;
         let mut strength = None;
         if (flags & 0x00000001) != 0 {
@@ -649,13 +652,13 @@ impl AttributeCache {
 }
 
 impl crate::readers::ACDataType for AttributeCache {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AttributeCache::read(reader)
     }
 }
 
 impl AttributeInfo {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let points_raised = read_u32(reader)?;
         let innate_points = read_u32(reader)?;
         let experience_spent = read_u32(reader)?;
@@ -669,13 +672,13 @@ impl AttributeInfo {
 }
 
 impl crate::readers::ACDataType for AttributeInfo {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AttributeInfo::read(reader)
     }
 }
 
 impl SecondaryAttributeInfo {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let attribute = AttributeInfo::read(reader)?;
         let current = read_u32(reader)?;
 
@@ -687,13 +690,13 @@ impl SecondaryAttributeInfo {
 }
 
 impl crate::readers::ACDataType for SecondaryAttributeInfo {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SecondaryAttributeInfo::read(reader)
     }
 }
 
 impl Skill {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let points_raised = read_u16(reader)?;
         let adjust_pp = read_u16(reader)?;
         let training_level = SkillAdvancementClass::try_from(read_u32(reader)?)?;
@@ -715,13 +718,13 @@ impl Skill {
 }
 
 impl crate::readers::ACDataType for Skill {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Skill::read(reader)
     }
 }
 
 impl Body {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let body_parts = read_packable_hash_table_with(reader, |r| {
             Ok(read_u32(r)?)
         }, |r| {
@@ -735,13 +738,13 @@ impl Body {
 }
 
 impl crate::readers::ACDataType for Body {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Body::read(reader)
     }
 }
 
 impl BodyPart {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let has_bpsd = read_i32(reader)?;
         let damage_type = DamageType::try_from(read_u32(reader)?)?;
         let damage_val = read_i32(reader)?;
@@ -766,13 +769,13 @@ impl BodyPart {
 }
 
 impl crate::readers::ACDataType for BodyPart {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         BodyPart::read(reader)
     }
 }
 
 impl ArmorCache {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let base_armor = read_i32(reader)?;
         let armor_vs_slash = read_i32(reader)?;
         let armor_vs_pierce = read_i32(reader)?;
@@ -798,13 +801,13 @@ impl ArmorCache {
 }
 
 impl crate::readers::ACDataType for ArmorCache {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ArmorCache::read(reader)
     }
 }
 
 impl BodyPartSelectionData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let hlf = read_i32(reader)?;
         let mlf = read_i32(reader)?;
         let llf = read_i32(reader)?;
@@ -836,13 +839,13 @@ impl BodyPartSelectionData {
 }
 
 impl crate::readers::ACDataType for BodyPartSelectionData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         BodyPartSelectionData::read(reader)
     }
 }
 
 impl SpellBookPage {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let casting_likelihood = read_f32(reader)?;
         let mut casting_likelihood2 = None;
         let mut unknown = None;
@@ -860,13 +863,13 @@ impl SpellBookPage {
 }
 
 impl crate::readers::ACDataType for SpellBookPage {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SpellBookPage::read(reader)
     }
 }
 
 impl EnchantmentRegistry {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = EnchantmentRegistryFlags::try_from(read_u32(reader)?)?;
         let mut life_spells = None;
         if (flags.clone() as u32 & EnchantmentRegistryFlags::LifeSpells as u32) != 0 {
@@ -896,13 +899,13 @@ impl EnchantmentRegistry {
 }
 
 impl crate::readers::ACDataType for EnchantmentRegistry {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EnchantmentRegistry::read(reader)
     }
 }
 
 impl Enchantment {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let id = LayeredSpellId::read(reader)?;
         let has_equipment_set = read_u16(reader)?;
         let spell_category = SpellCategory::try_from(read_u16(reader)?)?;
@@ -937,13 +940,13 @@ impl Enchantment {
 }
 
 impl crate::readers::ACDataType for Enchantment {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Enchantment::read(reader)
     }
 }
 
 impl StatMod {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let type_ = EnchantmentTypeFlags::try_from(read_u32(reader)?)?;
         let key = read_u32(reader)?;
         let value = read_f32(reader)?;
@@ -957,13 +960,13 @@ impl StatMod {
 }
 
 impl crate::readers::ACDataType for StatMod {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         StatMod::read(reader)
     }
 }
 
 impl EventFilter {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let events = read_packable_list::<u32>(reader)?;
 
         Ok(Self {
@@ -973,13 +976,13 @@ impl EventFilter {
 }
 
 impl crate::readers::ACDataType for EventFilter {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EventFilter::read(reader)
     }
 }
 
 impl EmoteTable {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let emotes = read_packable_hash_table_with(reader, |r| {
             Ok(EmoteCategory::try_from(read_u32(r)?)?)
         }, |r| {
@@ -993,13 +996,13 @@ impl EmoteTable {
 }
 
 impl crate::readers::ACDataType for EmoteTable {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EmoteTable::read(reader)
     }
 }
 
 impl EmoteSetList {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let emotes = read_packable_list::<EmoteSet>(reader)?;
 
         Ok(Self {
@@ -1009,13 +1012,13 @@ impl EmoteSetList {
 }
 
 impl crate::readers::ACDataType for EmoteSetList {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EmoteSetList::read(reader)
     }
 }
 
 impl EmoteSetType1 {
-    pub fn read(reader: &mut dyn Read, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let class_id = read_u32(reader)?;
 
         Ok(Self {
@@ -1027,7 +1030,7 @@ impl EmoteSetType1 {
 }
 
 impl EmoteSetType2 {
-    pub fn read(reader: &mut dyn Read, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let vendor_type = read_u32(reader)?;
 
         Ok(Self {
@@ -1039,7 +1042,7 @@ impl EmoteSetType2 {
 }
 
 impl EmoteSetType5 {
-    pub fn read(reader: &mut dyn Read, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let style = read_u32(reader)?;
         let substyle = read_u32(reader)?;
 
@@ -1053,7 +1056,7 @@ impl EmoteSetType5 {
 }
 
 impl EmoteSetTypeC {
-    pub fn read(reader: &mut dyn Read, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let quest = read_string(reader)?;
 
         Ok(Self {
@@ -1065,7 +1068,7 @@ impl EmoteSetTypeC {
 }
 
 impl EmoteSetTypeF {
-    pub fn read(reader: &mut dyn Read, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let min_health = read_f32(reader)?;
         let max_health = read_f32(reader)?;
 
@@ -1079,7 +1082,7 @@ impl EmoteSetTypeF {
 }
 
 impl EmoteSet {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let category = EmoteCategory::try_from(read_u32(reader)?)?;
         let probability = read_f32(reader)?;
         let emotes = read_packable_list::<Emote>(reader)?;
@@ -1111,13 +1114,13 @@ impl EmoteSet {
 }
 
 impl crate::readers::ACDataType for EmoteSet {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EmoteSet::read(reader)
     }
 }
 
 impl EmoteType1 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
 
         Ok(Self {
@@ -1129,7 +1132,7 @@ impl EmoteType1 {
 }
 
 impl EmoteType2 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount64 = read_u64(reader)?;
         let hero_xp64 = read_u64(reader)?;
 
@@ -1143,7 +1146,7 @@ impl EmoteType2 {
 }
 
 impl EmoteType3 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let c_profile = CreationProfile::read(reader)?;
 
         Ok(Self {
@@ -1155,7 +1158,7 @@ impl EmoteType3 {
 }
 
 impl EmoteType4 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let frame = Frame::read(reader)?;
 
         Ok(Self {
@@ -1167,7 +1170,7 @@ impl EmoteType4 {
 }
 
 impl EmoteType5 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let motion = read_u32(reader)?;
 
         Ok(Self {
@@ -1179,7 +1182,7 @@ impl EmoteType5 {
 }
 
 impl EmoteType7 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let physics_script = read_u32(reader)?;
 
         Ok(Self {
@@ -1191,7 +1194,7 @@ impl EmoteType7 {
 }
 
 impl EmoteType9 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let sound = read_u32(reader)?;
 
         Ok(Self {
@@ -1203,7 +1206,7 @@ impl EmoteType9 {
 }
 
 impl EmoteTypeE {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let spell_id = read_u32(reader)?;
 
         Ok(Self {
@@ -1215,7 +1218,7 @@ impl EmoteTypeE {
 }
 
 impl EmoteType1C {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount = read_u32(reader)?;
         let stat = read_u32(reader)?;
 
@@ -1229,7 +1232,7 @@ impl EmoteType1C {
 }
 
 impl EmoteType1E {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let min = read_u32(reader)?;
         let max = read_u32(reader)?;
@@ -1245,7 +1248,7 @@ impl EmoteType1E {
 }
 
 impl EmoteType20 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let amount = read_u32(reader)?;
 
@@ -1259,7 +1262,7 @@ impl EmoteType20 {
 }
 
 impl EmoteType22 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount = read_u32(reader)?;
 
         Ok(Self {
@@ -1271,7 +1274,7 @@ impl EmoteType22 {
 }
 
 impl EmoteType23 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let stat = read_u32(reader)?;
 
@@ -1285,7 +1288,7 @@ impl EmoteType23 {
 }
 
 impl EmoteType24 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let min = read_u32(reader)?;
         let max = read_u32(reader)?;
@@ -1303,7 +1306,7 @@ impl EmoteType24 {
 }
 
 impl EmoteType25 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let f_min = read_f64(reader)?;
         let f_max = read_f64(reader)?;
@@ -1321,7 +1324,7 @@ impl EmoteType25 {
 }
 
 impl EmoteType26 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let test_string = read_string(reader)?;
         let stat = read_u32(reader)?;
@@ -1337,7 +1340,7 @@ impl EmoteType26 {
 }
 
 impl EmoteType31 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let percent = read_f64(reader)?;
         let min64 = read_u64(reader)?;
         let max64 = read_u64(reader)?;
@@ -1353,7 +1356,7 @@ impl EmoteType31 {
 }
 
 impl EmoteType32 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
         let percent = read_f64(reader)?;
         let min = read_u32(reader)?;
@@ -1373,7 +1376,7 @@ impl EmoteType32 {
 }
 
 impl EmoteType35 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
         let amount = read_u32(reader)?;
 
@@ -1387,7 +1390,7 @@ impl EmoteType35 {
 }
 
 impl EmoteType38 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let wealth_rating = read_i32(reader)?;
         let treasure_class = read_i32(reader)?;
         let treasure_type = read_i32(reader)?;
@@ -1403,7 +1406,7 @@ impl EmoteType38 {
 }
 
 impl EmoteType3F {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let position = Position::read(reader)?;
 
         Ok(Self {
@@ -1415,7 +1418,7 @@ impl EmoteType3F {
 }
 
 impl EmoteType4C {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let msg = read_string(reader)?;
         let c_profile = CreationProfile::read(reader)?;
 
@@ -1429,7 +1432,7 @@ impl EmoteType4C {
 }
 
 impl EmoteType6E {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
 
         Ok(Self {
@@ -1441,7 +1444,7 @@ impl EmoteType6E {
 }
 
 impl EmoteType70 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount64 = read_u64(reader)?;
 
         Ok(Self {
@@ -1453,7 +1456,7 @@ impl EmoteType70 {
 }
 
 impl EmoteType72 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let min64 = read_u64(reader)?;
         let max64 = read_u64(reader)?;
@@ -1471,7 +1474,7 @@ impl EmoteType72 {
 }
 
 impl EmoteType76 {
-    pub fn read(reader: &mut dyn Read, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
         let percent = read_f64(reader)?;
 
@@ -1485,7 +1488,7 @@ impl EmoteType76 {
 }
 
 impl Emote {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let type_ = EmoteType::try_from(read_u32(reader)?)?;
         let delay = read_f32(reader)?;
         let extent = read_f32(reader)?;
@@ -1601,13 +1604,13 @@ impl Emote {
 }
 
 impl crate::readers::ACDataType for Emote {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Emote::read(reader)
     }
 }
 
 impl CreationProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let weenie_class_id = read_u32(reader)?;
         let palette = read_u32(reader)?;
         let shade = read_f32(reader)?;
@@ -1627,13 +1630,13 @@ impl CreationProfile {
 }
 
 impl crate::readers::ACDataType for CreationProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CreationProfile::read(reader)
     }
 }
 
 impl PageDataList {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let max_num_pages = read_u32(reader)?;
         let max_num_chars_per_page = read_u32(reader)?;
         let pages = read_packable_list::<PageData>(reader)?;
@@ -1647,13 +1650,13 @@ impl PageDataList {
 }
 
 impl crate::readers::ACDataType for PageDataList {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PageDataList::read(reader)
     }
 }
 
 impl PageData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let author_id = ObjectId::read(reader)?;
         let author_name = read_string(reader)?;
         let author_account = read_string(reader)?;
@@ -1678,13 +1681,13 @@ impl PageData {
 }
 
 impl crate::readers::ACDataType for PageData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PageData::read(reader)
     }
 }
 
 impl BlobFragments {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let sequence = read_u32(reader)?;
         let id = read_u32(reader)?;
         let count = read_u16(reader)?;
@@ -1707,13 +1710,13 @@ impl BlobFragments {
 }
 
 impl crate::readers::ACDataType for BlobFragments {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         BlobFragments::read(reader)
     }
 }
 
 impl GeneratorTable {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let generators = read_packable_list::<GeneratorProfile>(reader)?;
 
         Ok(Self {
@@ -1723,13 +1726,13 @@ impl GeneratorTable {
 }
 
 impl crate::readers::ACDataType for GeneratorTable {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GeneratorTable::read(reader)
     }
 }
 
 impl GeneratorProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let probability = read_f32(reader)?;
         let type_id = read_u32(reader)?;
         let delay = read_f64(reader)?;
@@ -1761,13 +1764,13 @@ impl GeneratorProfile {
 }
 
 impl crate::readers::ACDataType for GeneratorProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GeneratorProfile::read(reader)
     }
 }
 
 impl GeneratorRegistry {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let registry = read_packable_hash_table_with(reader, |r| {
             Ok(read_u32(r)?)
         }, |r| {
@@ -1781,13 +1784,13 @@ impl GeneratorRegistry {
 }
 
 impl crate::readers::ACDataType for GeneratorRegistry {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GeneratorRegistry::read(reader)
     }
 }
 
 impl GeneratorRegistryNode {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let wcid_or_type = read_u32(reader)?;
         let ts = read_f64(reader)?;
         let treasure_type = read_u32(reader)?;
@@ -1809,13 +1812,13 @@ impl GeneratorRegistryNode {
 }
 
 impl crate::readers::ACDataType for GeneratorRegistryNode {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GeneratorRegistryNode::read(reader)
     }
 }
 
 impl GeneratorQueue {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let queue = read_packable_list::<GeneratorQueueNode>(reader)?;
 
         Ok(Self {
@@ -1825,13 +1828,13 @@ impl GeneratorQueue {
 }
 
 impl crate::readers::ACDataType for GeneratorQueue {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GeneratorQueue::read(reader)
     }
 }
 
 impl GeneratorQueueNode {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let slot = read_u32(reader)?;
         let when = read_f64(reader)?;
 
@@ -1843,13 +1846,13 @@ impl GeneratorQueueNode {
 }
 
 impl crate::readers::ACDataType for GeneratorQueueNode {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GeneratorQueueNode::read(reader)
     }
 }
 
 impl WindowPropertyType1000007F {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_j = read_u32(reader)?;
         let value_j = read_u64(reader)?;
 
@@ -1861,7 +1864,7 @@ impl WindowPropertyType1000007F {
 }
 
 impl WindowPropertyType10000086 {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_i = read_u32(reader)?;
         let value_i = read_u32(reader)?;
 
@@ -1873,7 +1876,7 @@ impl WindowPropertyType10000086 {
 }
 
 impl WindowPropertyType10000087 {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_h = read_u32(reader)?;
         let value_h = read_u32(reader)?;
 
@@ -1885,7 +1888,7 @@ impl WindowPropertyType10000087 {
 }
 
 impl WindowPropertyType10000088 {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_f = read_u32(reader)?;
         let value_f = read_u32(reader)?;
 
@@ -1897,7 +1900,7 @@ impl WindowPropertyType10000088 {
 }
 
 impl WindowPropertyType10000089 {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_e = read_u32(reader)?;
         let value_e = read_u32(reader)?;
 
@@ -1909,7 +1912,7 @@ impl WindowPropertyType10000089 {
 }
 
 impl WindowPropertyType1000008A {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_d = read_u32(reader)?;
         let value_d = read_u8(reader)?;
 
@@ -1921,12 +1924,12 @@ impl WindowPropertyType1000008A {
 }
 
 impl WindowPropertyType1000008D {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_c = read_u32(reader)?;
         let title_source = WindowPropertyType1000008DTitleSourceVariant::read(reader)?;
 
 impl WindowPropertyType1000008DTitleSourceVariant {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let title_source = read_u8(reader)?;
 
         match title_source {
@@ -1959,7 +1962,7 @@ impl WindowPropertyType1000008DTitleSourceVariant {
 }
 
 impl WindowProperty {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let key_a = read_u32(reader)?;
 
         match key_a {
@@ -1997,13 +2000,13 @@ impl WindowProperty {
 }
 
 impl crate::readers::ACDataType for WindowProperty {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         WindowProperty::read(reader)
     }
 }
 
 impl WindowOptionType1000008B {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_b = read_u8(reader)?;
         let property_count = read_u8(reader)?;
         let properties = read_vec::<WindowProperty>(reader, property_count as usize)?;
@@ -2017,7 +2020,7 @@ impl WindowOptionType1000008B {
 }
 
 impl WindowOption {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let type_a = read_u32(reader)?;
 
         match type_a {
@@ -2031,13 +2034,13 @@ impl WindowOption {
 }
 
 impl crate::readers::ACDataType for WindowOption {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         WindowOption::read(reader)
     }
 }
 
 impl OptionPropertyType10000080 {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_l = read_u32(reader)?;
         let inactive_opacity = read_f32(reader)?;
 
@@ -2049,7 +2052,7 @@ impl OptionPropertyType10000080 {
 }
 
 impl OptionPropertyType10000081 {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_k = read_u32(reader)?;
         let active_opacity = read_f32(reader)?;
 
@@ -2061,7 +2064,7 @@ impl OptionPropertyType10000081 {
 }
 
 impl OptionPropertyType1000008C {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_a = read_u32(reader)?;
         let window_options = read_packable_list::<WindowOption>(reader)?;
 
@@ -2073,7 +2076,7 @@ impl OptionPropertyType1000008C {
 }
 
 impl OptionProperty {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let type_ = read_u32(reader)?;
 
         match type_ {
@@ -2095,17 +2098,18 @@ impl OptionProperty {
 }
 
 impl crate::readers::ACDataType for OptionProperty {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         OptionProperty::read(reader)
     }
 }
 
 impl GameplayOptions {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let size = read_u32(reader)?;
         let unknown200_2 = read_u8(reader)?;
         let option_property_count = read_u8(reader)?;
         let option_properties = read_vec::<OptionProperty>(reader, option_property_count as usize)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             size,
@@ -2117,13 +2121,13 @@ impl GameplayOptions {
 }
 
 impl crate::readers::ACDataType for GameplayOptions {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GameplayOptions::read(reader)
     }
 }
 
 impl PlayerModule {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = read_u32(reader)?;
         let options = CharacterOptions1::try_from(read_u32(reader)?)?;
         let mut shortcuts = None;
@@ -2192,13 +2196,13 @@ impl PlayerModule {
 }
 
 impl crate::readers::ACDataType for PlayerModule {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PlayerModule::read(reader)
     }
 }
 
 impl ShortCutManager {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let shortcuts = read_packable_list::<ShortCutData>(reader)?;
 
         Ok(Self {
@@ -2208,13 +2212,13 @@ impl ShortCutManager {
 }
 
 impl crate::readers::ACDataType for ShortCutManager {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ShortCutManager::read(reader)
     }
 }
 
 impl ShortCutData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let index = read_u32(reader)?;
         let object_id = ObjectId::read(reader)?;
         let spell_id = LayeredSpellId::read(reader)?;
@@ -2228,13 +2232,13 @@ impl ShortCutData {
 }
 
 impl crate::readers::ACDataType for ShortCutData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ShortCutData::read(reader)
     }
 }
 
 impl SpellTab {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let spells = read_packable_list::<LayeredSpellId>(reader)?;
 
         Ok(Self {
@@ -2244,13 +2248,13 @@ impl SpellTab {
 }
 
 impl crate::readers::ACDataType for SpellTab {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SpellTab::read(reader)
     }
 }
 
 impl ContentProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let object_id = ObjectId::read(reader)?;
         let container_type = ContainerProperties::try_from(read_u32(reader)?)?;
 
@@ -2262,13 +2266,13 @@ impl ContentProfile {
 }
 
 impl crate::readers::ACDataType for ContentProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ContentProfile::read(reader)
     }
 }
 
 impl InventoryPlacement {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let object_id = ObjectId::read(reader)?;
         let location = EquipMask::try_from(read_u32(reader)?)?;
         let priority = CoverageMask::try_from(read_u32(reader)?)?;
@@ -2282,13 +2286,13 @@ impl InventoryPlacement {
 }
 
 impl crate::readers::ACDataType for InventoryPlacement {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         InventoryPlacement::read(reader)
     }
 }
 
 impl AllegianceProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let total_members = read_u32(reader)?;
         let total_vassals = read_u32(reader)?;
         let hierarchy = AllegianceHierarchy::read(reader)?;
@@ -2302,13 +2306,13 @@ impl AllegianceProfile {
 }
 
 impl crate::readers::ACDataType for AllegianceProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AllegianceProfile::read(reader)
     }
 }
 
 impl AllegianceRecord {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let tree_parent = ObjectId::read(reader)?;
         let allegiance_data = AllegianceData::read(reader)?;
 
@@ -2320,13 +2324,13 @@ impl AllegianceRecord {
 }
 
 impl crate::readers::ACDataType for AllegianceRecord {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AllegianceRecord::read(reader)
     }
 }
 
 impl AllegianceHierarchy {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let record_count = read_u16(reader)?;
         let old_version = read_u16(reader)?;
         let officers = read_phash_table::<ObjectId, AllegianceOfficerLevel>(reader)?;
@@ -2373,13 +2377,13 @@ impl AllegianceHierarchy {
 }
 
 impl crate::readers::ACDataType for AllegianceHierarchy {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AllegianceHierarchy::read(reader)
     }
 }
 
 impl AllegianceData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let character_id = ObjectId::read(reader)?;
         let xp_cached = read_u32(reader)?;
         let xp_tithed = read_u32(reader)?;
@@ -2422,13 +2426,13 @@ impl AllegianceData {
 }
 
 impl crate::readers::ACDataType for AllegianceData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AllegianceData::read(reader)
     }
 }
 
 impl FriendData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let friend_id = ObjectId::read(reader)?;
         let online = read_bool(reader)?;
         let appear_offline = read_bool(reader)?;
@@ -2448,13 +2452,13 @@ impl FriendData {
 }
 
 impl crate::readers::ACDataType for FriendData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         FriendData::read(reader)
     }
 }
 
 impl ItemProfileTypeNeg1 {
-    pub fn read(reader: &mut dyn Read, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
         let weenie_description = PublicWeenieDesc::read(reader)?;
 
         Ok(Self {
@@ -2466,7 +2470,7 @@ impl ItemProfileTypeNeg1 {
 }
 
 impl ItemProfileType1 {
-    pub fn read(reader: &mut dyn Read, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
         let old_weenie_description = OldPublicWeenieDesc::read(reader)?;
 
         Ok(Self {
@@ -2478,7 +2482,7 @@ impl ItemProfileType1 {
 }
 
 impl ItemProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let packed_amount = read_u32(reader)?;
         let amount = (packed_amount & 0x_ffffff) as i32;
         let pwd_type = (packed_amount >> 24) as i32;
@@ -2499,19 +2503,20 @@ impl ItemProfile {
 }
 
 impl crate::readers::ACDataType for ItemProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ItemProfile::read(reader)
     }
 }
 
 impl PublicWeenieDesc {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let header = read_u32(reader)?;
         let name = read_string(reader)?;
         let weenie_class_id = PackedDWORD::read(reader)?;
         let icon = PackedDWORD::read(reader)?;
         let type_ = ItemType::try_from(read_u32(reader)?)?;
         let behavior = ObjectDescriptionFlag::try_from(read_u32(reader)?)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
         let mut header2 = None;
         if (behavior.clone() as u32 & 0x04000000) != 0 {
             header2 = Some(read_u32(reader)?);
@@ -2660,6 +2665,7 @@ impl PublicWeenieDesc {
         if (header2.unwrap_or(0) & 0x00000008) != 0 {
             pet_owner_id = Some(ObjectId::read(reader)?);
         }
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             header,
@@ -2710,13 +2716,13 @@ impl PublicWeenieDesc {
 }
 
 impl crate::readers::ACDataType for PublicWeenieDesc {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PublicWeenieDesc::read(reader)
     }
 }
 
 impl RestrictionDB {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let version = read_u32(reader)?;
         let flags = read_u32(reader)?;
         let monarch_id = ObjectId::read(reader)?;
@@ -2732,13 +2738,13 @@ impl RestrictionDB {
 }
 
 impl crate::readers::ACDataType for RestrictionDB {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         RestrictionDB::read(reader)
     }
 }
 
 impl OldPublicWeenieDesc {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let header = read_u32(reader)?;
         let name = read_string(reader)?;
         let weenie_class_id = PackedDWORD::read(reader)?;
@@ -2873,6 +2879,7 @@ impl OldPublicWeenieDesc {
         if (header & 0x80000000) != 0 {
             material = Some(MaterialType::try_from(read_u32(reader)?)?);
         }
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             header,
@@ -2918,13 +2925,13 @@ impl OldPublicWeenieDesc {
 }
 
 impl crate::readers::ACDataType for OldPublicWeenieDesc {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         OldPublicWeenieDesc::read(reader)
     }
 }
 
 impl Trade {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let partner_id = ObjectId::read(reader)?;
         let sequence = read_u64(reader)?;
         let status = read_u32(reader)?;
@@ -2944,19 +2951,20 @@ impl Trade {
 }
 
 impl crate::readers::ACDataType for Trade {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Trade::read(reader)
     }
 }
 
 impl JumpPack {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let extent = read_f32(reader)?;
         let velocity = Vector3::read(reader)?;
         let object_instance_sequence = read_u16(reader)?;
         let object_server_control_sequence = read_u16(reader)?;
         let object_teleport_sequence = read_u16(reader)?;
         let object_force_position_sequence = read_u16(reader)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             extent,
@@ -2970,13 +2978,13 @@ impl JumpPack {
 }
 
 impl crate::readers::ACDataType for JumpPack {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         JumpPack::read(reader)
     }
 }
 
 impl MoveToStatePack {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let raw_motion_state = RawMotionState::read(reader)?;
         let position = Position::read(reader)?;
         let object_instance_sequence = read_u16(reader)?;
@@ -2984,6 +2992,7 @@ impl MoveToStatePack {
         let object_teleport_sequence = read_u16(reader)?;
         let object_force_position_sequence = read_u16(reader)?;
         let contact = read_u8(reader)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             raw_motion_state,
@@ -2998,13 +3007,13 @@ impl MoveToStatePack {
 }
 
 impl crate::readers::ACDataType for MoveToStatePack {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         MoveToStatePack::read(reader)
     }
 }
 
 impl PackedMotionCommand {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let command_id = Command::try_from(read_u16(reader)?)?;
         let packed_sequence = read_u16(reader)?;
         let server_action_sequence = (packed_sequence & 0x7fff) as u16;
@@ -3020,13 +3029,13 @@ impl PackedMotionCommand {
 }
 
 impl crate::readers::ACDataType for PackedMotionCommand {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PackedMotionCommand::read(reader)
     }
 }
 
 impl RawMotionState {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = read_u32(reader)?;
         let command_list_length = ((flags >> 11) & 0x_f8) as u16;
         let mut current_holdkey = None;
@@ -3094,19 +3103,20 @@ impl RawMotionState {
 }
 
 impl crate::readers::ACDataType for RawMotionState {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         RawMotionState::read(reader)
     }
 }
 
 impl AutonomousPositionPack {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let position = Position::read(reader)?;
         let object_instance_sequence = read_u16(reader)?;
         let object_server_control_sequence = read_u16(reader)?;
         let object_teleport_sequence = read_u16(reader)?;
         let object_force_position_sequence = read_u16(reader)?;
         let contact = read_u8(reader)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             position,
@@ -3120,13 +3130,13 @@ impl AutonomousPositionPack {
 }
 
 impl crate::readers::ACDataType for AutonomousPositionPack {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AutonomousPositionPack::read(reader)
     }
 }
 
 impl PositionPack {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = PositionFlags::try_from(read_u32(reader)?)?;
         let origin = Origin::read(reader)?;
         let mut w_quat = None;
@@ -3176,13 +3186,13 @@ impl PositionPack {
 }
 
 impl crate::readers::ACDataType for PositionPack {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PositionPack::read(reader)
     }
 }
 
 impl MovementDataType0 {
-    pub fn read(reader: &mut dyn Read, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let state = InterpertedMotionState::read(reader)?;
         let sticky_object = if (option_flags.clone() as u32 & 0x01) != 0 { ObjectId::read(reader).map(Some) } else { Ok(None) }?;
 
@@ -3199,7 +3209,7 @@ impl MovementDataType0 {
 }
 
 impl MovementDataType6 {
-    pub fn read(reader: &mut dyn Read, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let target = ObjectId::read(reader)?;
         let origin = Origin::read(reader)?;
         let move_to_params = MoveToMovementParameters::read(reader)?;
@@ -3220,7 +3230,7 @@ impl MovementDataType6 {
 }
 
 impl MovementDataType7 {
-    pub fn read(reader: &mut dyn Read, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let origin = Origin::read(reader)?;
         let move_to_params = MoveToMovementParameters::read(reader)?;
         let my_run_rate = read_f32(reader)?;
@@ -3239,7 +3249,7 @@ impl MovementDataType7 {
 }
 
 impl MovementDataType8 {
-    pub fn read(reader: &mut dyn Read, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let target_id = ObjectId::read(reader)?;
         let desired_heading = read_f32(reader)?;
         let turn_to_params = TurnToMovementParameters::read(reader)?;
@@ -3258,7 +3268,7 @@ impl MovementDataType8 {
 }
 
 impl MovementDataType9 {
-    pub fn read(reader: &mut dyn Read, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let turn_to_params = TurnToMovementParameters::read(reader)?;
 
         Ok(Self {
@@ -3273,7 +3283,7 @@ impl MovementDataType9 {
 }
 
 impl MovementData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let object_movement_sequence = read_u16(reader)?;
         let object_server_control_sequence = read_u16(reader)?;
         let autonomous = read_u16(reader)?;
@@ -3308,13 +3318,13 @@ impl MovementData {
 }
 
 impl crate::readers::ACDataType for MovementData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         MovementData::read(reader)
     }
 }
 
 impl InterpertedMotionState {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = read_u32(reader)?;
         let command_list_length = ((flags >> 7) & 0x7f) as u32;
         let mut current_style = None;
@@ -3346,6 +3356,7 @@ impl InterpertedMotionState {
             turn_speed = Some(read_f32(reader)?);
         }
         let commands = read_vec::<PackedMotionCommand>(reader, (command_list_length as usize))?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             flags,
@@ -3362,13 +3373,13 @@ impl InterpertedMotionState {
 }
 
 impl crate::readers::ACDataType for InterpertedMotionState {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         InterpertedMotionState::read(reader)
     }
 }
 
 impl DDDRevision {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let id_dat_file = read_u64(reader)?;
         let dat_file_type = (id_dat_file >> 32) as u32;
         let iteration = read_u32(reader)?;
@@ -3385,13 +3396,13 @@ impl DDDRevision {
 }
 
 impl crate::readers::ACDataType for DDDRevision {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         DDDRevision::read(reader)
     }
 }
 
 impl MoveToMovementParameters {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let bitmember = read_u32(reader)?;
         let distance_to_object = read_f32(reader)?;
         let min_distance = read_f32(reader)?;
@@ -3413,13 +3424,13 @@ impl MoveToMovementParameters {
 }
 
 impl crate::readers::ACDataType for MoveToMovementParameters {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         MoveToMovementParameters::read(reader)
     }
 }
 
 impl TurnToMovementParameters {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let bitmember = read_u32(reader)?;
         let animation_speed = read_f32(reader)?;
         let desired_heading = read_f32(reader)?;
@@ -3433,13 +3444,13 @@ impl TurnToMovementParameters {
 }
 
 impl crate::readers::ACDataType for TurnToMovementParameters {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         TurnToMovementParameters::read(reader)
     }
 }
 
 impl ObjDesc {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let version = read_u8(reader)?;
         let palette_count = read_u8(reader)?;
         let texture_count = read_u8(reader)?;
@@ -3451,6 +3462,7 @@ impl ObjDesc {
         let subpalettes = read_vec::<Subpalette>(reader, palette_count as usize)?;
         let tm_changes = read_vec::<TextureMapChange>(reader, texture_count as usize)?;
         let ap_changes = read_vec::<AnimPartChange>(reader, model_count as usize)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             version,
@@ -3466,13 +3478,13 @@ impl ObjDesc {
 }
 
 impl crate::readers::ACDataType for ObjDesc {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ObjDesc::read(reader)
     }
 }
 
 impl Subpalette {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let palette = DataId::read(reader)?;
         let offset = read_u8(reader)?;
         let num_colors = read_u8(reader)?;
@@ -3486,13 +3498,13 @@ impl Subpalette {
 }
 
 impl crate::readers::ACDataType for Subpalette {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Subpalette::read(reader)
     }
 }
 
 impl TextureMapChange {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let part_index = read_u8(reader)?;
         let old_tex_id = DataId::read(reader)?;
         let new_tex_id = DataId::read(reader)?;
@@ -3506,13 +3518,13 @@ impl TextureMapChange {
 }
 
 impl crate::readers::ACDataType for TextureMapChange {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         TextureMapChange::read(reader)
     }
 }
 
 impl AnimPartChange {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let part_index = read_u8(reader)?;
         let part_id = DataId::read(reader)?;
 
@@ -3524,13 +3536,13 @@ impl AnimPartChange {
 }
 
 impl crate::readers::ACDataType for AnimPartChange {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AnimPartChange::read(reader)
     }
 }
 
 impl CharGenResult {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let account = read_string(reader)?;
         let one = read_u32(reader)?;
         let heritage_group = HeritageGroup::try_from(read_u8(reader)?)?;
@@ -3616,16 +3628,17 @@ impl CharGenResult {
 }
 
 impl crate::readers::ACDataType for CharGenResult {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CharGenResult::read(reader)
     }
 }
 
 impl CharacterIdentity {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let character_id = ObjectId::read(reader)?;
         let name = read_string(reader)?;
         let seconds_greyed_out = read_u32(reader)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             character_id,
@@ -3636,13 +3649,13 @@ impl CharacterIdentity {
 }
 
 impl crate::readers::ACDataType for CharacterIdentity {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CharacterIdentity::read(reader)
     }
 }
 
 impl EquipLocation {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let object_id = ObjectId::read(reader)?;
         let slot = EquipMask::try_from(read_u32(reader)?)?;
 
@@ -3654,13 +3667,13 @@ impl EquipLocation {
 }
 
 impl crate::readers::ACDataType for EquipLocation {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EquipLocation::read(reader)
     }
 }
 
 impl PhysicsDesc {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = read_u32(reader)?;
         let state = PhysicsState::try_from(read_u32(reader)?)?;
         let mut movement_buffer = None;
@@ -3748,6 +3761,7 @@ impl PhysicsDesc {
         let object_force_position_sequence = read_u16(reader)?;
         let object_visual_desc_sequence = read_u16(reader)?;
         let object_instance_sequence = read_u16(reader)?;
+        let __alignment_marker___align_dword = align_dword(reader)?;
 
         Ok(Self {
             flags,
@@ -3786,13 +3800,13 @@ impl PhysicsDesc {
 }
 
 impl crate::readers::ACDataType for PhysicsDesc {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PhysicsDesc::read(reader)
     }
 }
 
 impl AdminAccountData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let account_name = read_string(reader)?;
         let bookie_id = read_u32(reader)?;
 
@@ -3804,13 +3818,13 @@ impl AdminAccountData {
 }
 
 impl crate::readers::ACDataType for AdminAccountData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AdminAccountData::read(reader)
     }
 }
 
 impl AdminPlayerData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let name = read_string(reader)?;
         let bookie_id = read_u32(reader)?;
 
@@ -3822,13 +3836,13 @@ impl AdminPlayerData {
 }
 
 impl crate::readers::ACDataType for AdminPlayerData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AdminPlayerData::read(reader)
     }
 }
 
 impl VendorProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let categories = ItemType::try_from(read_u32(reader)?)?;
         let min_value = read_u32(reader)?;
         let max_value = read_u32(reader)?;
@@ -3854,13 +3868,13 @@ impl VendorProfile {
 }
 
 impl crate::readers::ACDataType for VendorProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         VendorProfile::read(reader)
     }
 }
 
 impl ArmorProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let prot_slashing = read_f32(reader)?;
         let prot_piercing = read_f32(reader)?;
         let prot_bludgeoning = read_f32(reader)?;
@@ -3884,13 +3898,13 @@ impl ArmorProfile {
 }
 
 impl crate::readers::ACDataType for ArmorProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ArmorProfile::read(reader)
     }
 }
 
 impl CreatureAppraisalProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = read_u32(reader)?;
         let health = read_u32(reader)?;
         let health_max = read_u32(reader)?;
@@ -3944,13 +3958,13 @@ impl CreatureAppraisalProfile {
 }
 
 impl crate::readers::ACDataType for CreatureAppraisalProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CreatureAppraisalProfile::read(reader)
     }
 }
 
 impl WeaponProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let damage_type = DamageType::try_from(read_u32(reader)?)?;
         let speed = read_u32(reader)?;
         let skill = SkillId::try_from(read_i32(reader)?)?;
@@ -3978,13 +3992,13 @@ impl WeaponProfile {
 }
 
 impl crate::readers::ACDataType for WeaponProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         WeaponProfile::read(reader)
     }
 }
 
 impl HookAppraisalProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let flags = HookAppraisalFlags::try_from(read_u32(reader)?)?;
         let valid_locations = EquipMask::try_from(read_u32(reader)?)?;
         let ammo_type = AmmoType::try_from(read_u16(reader)?)?;
@@ -3998,13 +4012,13 @@ impl HookAppraisalProfile {
 }
 
 impl crate::readers::ACDataType for HookAppraisalProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         HookAppraisalProfile::read(reader)
     }
 }
 
 impl SquelchDB {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let account_hash = read_packable_hash_table_with(reader, |r| {
             Ok(read_string(r)?)
         }, |r| {
@@ -4026,13 +4040,13 @@ impl SquelchDB {
 }
 
 impl crate::readers::ACDataType for SquelchDB {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SquelchDB::read(reader)
     }
 }
 
 impl SquelchInfo {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let filters = read_packable_list::<LogTextType>(reader)?;
         let name = read_string(reader)?;
         let account = read_bool(reader)?;
@@ -4046,13 +4060,13 @@ impl SquelchInfo {
 }
 
 impl crate::readers::ACDataType for SquelchInfo {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SquelchInfo::read(reader)
     }
 }
 
 impl HouseProfile {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let dwelling_id = read_u32(reader)?;
         let owner_id = ObjectId::read(reader)?;
         let flags = HouseBitfield::try_from(read_u32(reader)?)?;
@@ -4084,13 +4098,13 @@ impl HouseProfile {
 }
 
 impl crate::readers::ACDataType for HouseProfile {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         HouseProfile::read(reader)
     }
 }
 
 impl HousePayment {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let required = read_u32(reader)?;
         let paid = read_u32(reader)?;
         let weenie_class_id = read_u32(reader)?;
@@ -4108,13 +4122,13 @@ impl HousePayment {
 }
 
 impl crate::readers::ACDataType for HousePayment {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         HousePayment::read(reader)
     }
 }
 
 impl HouseData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let buy_time = read_u32(reader)?;
         let rent_time = read_u32(reader)?;
         let type_ = HouseType::try_from(read_u32(reader)?)?;
@@ -4136,13 +4150,13 @@ impl HouseData {
 }
 
 impl crate::readers::ACDataType for HouseData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         HouseData::read(reader)
     }
 }
 
 impl HAR {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let version = read_u32(reader)?;
         let bitmask = read_u32(reader)?;
         let monarch_id = ObjectId::read(reader)?;
@@ -4164,13 +4178,13 @@ impl HAR {
 }
 
 impl crate::readers::ACDataType for HAR {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         HAR::read(reader)
     }
 }
 
 impl GuestInfo {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let has_storage_permission = read_bool(reader)?;
         let guest_name = read_string(reader)?;
 
@@ -4182,13 +4196,13 @@ impl GuestInfo {
 }
 
 impl crate::readers::ACDataType for GuestInfo {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GuestInfo::read(reader)
     }
 }
 
 impl GameMoveDataType4 {
-    pub fn read(reader: &mut dyn Read, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
         let id_piece_to_move = read_i32(reader)?;
         let y_grid = read_i32(reader)?;
 
@@ -4202,7 +4216,7 @@ impl GameMoveDataType4 {
 }
 
 impl GameMoveDataType5 {
-    pub fn read(reader: &mut dyn Read, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
         let id_piece_to_move = read_i32(reader)?;
         let y_grid = read_i32(reader)?;
         let x_to = read_i32(reader)?;
@@ -4220,7 +4234,7 @@ impl GameMoveDataType5 {
 }
 
 impl GameMoveDataType6 {
-    pub fn read(reader: &mut dyn Read, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
         let id_piece_to_move = read_i32(reader)?;
 
         Ok(Self {
@@ -4232,7 +4246,7 @@ impl GameMoveDataType6 {
 }
 
 impl GameMoveData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let type_ = read_i32(reader)?;
         let player_id = ObjectId::read(reader)?;
         let team = read_i32(reader)?;
@@ -4256,13 +4270,13 @@ impl GameMoveData {
 }
 
 impl crate::readers::ACDataType for GameMoveData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         GameMoveData::read(reader)
     }
 }
 
 impl SalvageOperationsResultData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let skill_used = SkillId::try_from(read_i32(reader)?)?;
         let not_salvagable = read_packable_list::<ObjectId>(reader)?;
         let salvage_results = read_packable_list::<SalvageResult>(reader)?;
@@ -4278,13 +4292,13 @@ impl SalvageOperationsResultData {
 }
 
 impl crate::readers::ACDataType for SalvageOperationsResultData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SalvageOperationsResultData::read(reader)
     }
 }
 
 impl SalvageResult {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let material = MaterialType::try_from(read_u32(reader)?)?;
         let workmanship = read_f64(reader)?;
         let units = read_u32(reader)?;
@@ -4298,13 +4312,13 @@ impl SalvageResult {
 }
 
 impl crate::readers::ACDataType for SalvageResult {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SalvageResult::read(reader)
     }
 }
 
 impl FellowshipLockData {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown1 = read_u32(reader)?;
         let unknown2 = read_u32(reader)?;
         let unknown3 = read_u32(reader)?;
@@ -4322,13 +4336,13 @@ impl FellowshipLockData {
 }
 
 impl crate::readers::ACDataType for FellowshipLockData {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         FellowshipLockData::read(reader)
     }
 }
 
 impl Fellowship {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let members = read_packable_hash_table_with(reader, |r| {
             Ok(ObjectId::read(r)?)
         }, |r| {
@@ -4366,13 +4380,13 @@ impl Fellowship {
 }
 
 impl crate::readers::ACDataType for Fellowship {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Fellowship::read(reader)
     }
 }
 
 impl Fellow {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let xp_cached = read_u32(reader)?;
         let lum_cached = read_u32(reader)?;
         let level = read_u32(reader)?;
@@ -4402,13 +4416,13 @@ impl Fellow {
 }
 
 impl crate::readers::ACDataType for Fellow {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Fellow::read(reader)
     }
 }
 
 impl ContractTracker {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let version = read_u32(reader)?;
         let contract_id = ContractId::try_from(read_u32(reader)?)?;
         let contract_stage = ContractStage::try_from(read_u32(reader)?)?;
@@ -4426,13 +4440,13 @@ impl ContractTracker {
 }
 
 impl crate::readers::ACDataType for ContractTracker {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ContractTracker::read(reader)
     }
 }
 
 impl ContractTrackerTable {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let contact_trackers = read_packable_hash_table_with(reader, |r| {
             Ok(read_u32(r)?)
         }, |r| {
@@ -4446,13 +4460,13 @@ impl ContractTrackerTable {
 }
 
 impl crate::readers::ACDataType for ContractTrackerTable {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ContractTrackerTable::read(reader)
     }
 }
 
 impl C2SPacket {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let sequence = read_u32(reader)?;
         let flags = PacketHeaderFlags::try_from(read_u32(reader)?)?;
         let checksum = read_u32(reader)?;
@@ -4534,13 +4548,13 @@ impl C2SPacket {
 }
 
 impl crate::readers::ACDataType for C2SPacket {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         C2SPacket::read(reader)
     }
 }
 
 impl S2CPacket {
-    pub fn read(reader: &mut dyn Read) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let sequence = read_u32(reader)?;
         let flags = PacketHeaderFlags::try_from(read_u32(reader)?)?;
         let checksum = read_u32(reader)?;
@@ -4602,7 +4616,7 @@ impl S2CPacket {
 }
 
 impl crate::readers::ACDataType for S2CPacket {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         S2CPacket::read(reader)
     }
 }

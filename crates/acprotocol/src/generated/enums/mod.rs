@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use num_enum::TryFromPrimitive;
+use crate::readers::ACReader;
 
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -30,7 +31,7 @@ pub enum PacketHeaderFlags {
 }
 
 impl crate::readers::ACDataType for PacketHeaderFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PacketHeaderFlags::try_from(value)?)
     }
@@ -45,7 +46,7 @@ pub enum FragmentGroup {
 }
 
 impl crate::readers::ACDataType for FragmentGroup {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(FragmentGroup::try_from(value)?)
     }
@@ -60,7 +61,7 @@ pub enum ServerSwitchType {
 }
 
 impl crate::readers::ACDataType for ServerSwitchType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ServerSwitchType::try_from(value)?)
     }
@@ -76,7 +77,7 @@ pub enum AuthFlags {
 }
 
 impl crate::readers::ACDataType for AuthFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AuthFlags::try_from(value)?)
     }
@@ -92,7 +93,7 @@ pub enum NetAuthType {
 }
 
 impl crate::readers::ACDataType for NetAuthType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(NetAuthType::try_from(value)?)
     }
@@ -114,7 +115,7 @@ pub enum GameMessageGroup {
 }
 
 impl crate::readers::ACDataType for GameMessageGroup {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GameMessageGroup::try_from(value)?)
     }
@@ -157,7 +158,7 @@ pub enum C2SMessage {
 }
 
 impl crate::readers::ACDataType for C2SMessage {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(C2SMessage::try_from(value)?)
     }
@@ -354,7 +355,7 @@ pub enum S2CMessage {
 }
 
 impl crate::readers::ACDataType for S2CMessage {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(S2CMessage::try_from(value)?)
     }
@@ -567,7 +568,7 @@ pub enum GameEvent {
 }
 
 impl crate::readers::ACDataType for GameEvent {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GameEvent::try_from(value)?)
     }
@@ -892,7 +893,7 @@ pub enum GameAction {
 }
 
 impl crate::readers::ACDataType for GameAction {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GameAction::try_from(value)?)
     }
@@ -977,7 +978,7 @@ pub enum WeenieType {
 }
 
 impl crate::readers::ACDataType for WeenieType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeenieType::try_from(value)?)
     }
@@ -999,7 +1000,7 @@ pub enum ACBaseQualitiesFlags {
 }
 
 impl crate::readers::ACDataType for ACBaseQualitiesFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ACBaseQualitiesFlags::try_from(value)?)
     }
@@ -1188,7 +1189,7 @@ pub enum WeenieErrorWithString {
 }
 
 impl crate::readers::ACDataType for WeenieErrorWithString {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeenieErrorWithString::try_from(value)?)
     }
@@ -1573,7 +1574,7 @@ pub enum WeenieError {
 }
 
 impl crate::readers::ACDataType for WeenieError {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeenieError::try_from(value)?)
     }
@@ -1593,7 +1594,7 @@ pub enum PositionFlags {
 }
 
 impl crate::readers::ACDataType for PositionFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PositionFlags::try_from(value)?)
     }
@@ -1609,7 +1610,7 @@ pub enum AttackHeight {
 }
 
 impl crate::readers::ACDataType for AttackHeight {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttackHeight::try_from(value)?)
     }
@@ -1625,7 +1626,7 @@ pub enum ContainerProperties {
 }
 
 impl crate::readers::ACDataType for ContainerProperties {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ContainerProperties::try_from(value)?)
     }
@@ -1653,7 +1654,7 @@ pub enum AttackType {
 }
 
 impl crate::readers::ACDataType for AttackType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttackType::try_from(value)?)
     }
@@ -1697,7 +1698,7 @@ pub enum ItemType {
 }
 
 impl crate::readers::ACDataType for ItemType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ItemType::try_from(value)?)
     }
@@ -1763,7 +1764,7 @@ pub enum SkillId {
 }
 
 impl crate::readers::ACDataType for SkillId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(SkillId::try_from(value)?)
     }
@@ -1779,7 +1780,7 @@ pub enum SkillAdvancementClass {
 }
 
 impl crate::readers::ACDataType for SkillAdvancementClass {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(SkillAdvancementClass::try_from(value)?)
     }
@@ -1798,7 +1799,7 @@ pub enum PropertyAttribute2nd {
 }
 
 impl crate::readers::ACDataType for PropertyAttribute2nd {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(PropertyAttribute2nd::try_from(value)?)
     }
@@ -2055,7 +2056,7 @@ pub enum EmoteType {
 }
 
 impl crate::readers::ACDataType for EmoteType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EmoteType::try_from(value)?)
     }
@@ -2146,7 +2147,7 @@ pub enum EmoteCategory {
 }
 
 impl crate::readers::ACDataType for EmoteCategory {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EmoteCategory::try_from(value)?)
     }
@@ -2190,7 +2191,7 @@ pub enum CharacterOptions1 {
 }
 
 impl crate::readers::ACDataType for CharacterOptions1 {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharacterOptions1::try_from(value)?)
     }
@@ -2229,7 +2230,7 @@ pub enum CharacterOptions2 {
 }
 
 impl crate::readers::ACDataType for CharacterOptions2 {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharacterOptions2::try_from(value)?)
     }
@@ -2257,7 +2258,7 @@ pub enum SpellBookFilterOptions {
 }
 
 impl crate::readers::ACDataType for SpellBookFilterOptions {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(SpellBookFilterOptions::try_from(value)?)
     }
@@ -2295,7 +2296,7 @@ pub enum EquipMask {
 }
 
 impl crate::readers::ACDataType for EquipMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EquipMask::try_from(value)?)
     }
@@ -2312,7 +2313,7 @@ pub enum FriendsUpdateType {
 }
 
 impl crate::readers::ACDataType for FriendsUpdateType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(FriendsUpdateType::try_from(value)?)
     }
@@ -2328,7 +2329,7 @@ pub enum AllegianceOfficerLevel {
 }
 
 impl crate::readers::ACDataType for AllegianceOfficerLevel {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AllegianceOfficerLevel::try_from(value)?)
     }
@@ -2347,7 +2348,7 @@ pub enum AllegianceLockAction {
 }
 
 impl crate::readers::ACDataType for AllegianceLockAction {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AllegianceLockAction::try_from(value)?)
     }
@@ -2365,7 +2366,7 @@ pub enum AllegianceHouseAction {
 }
 
 impl crate::readers::ACDataType for AllegianceHouseAction {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AllegianceHouseAction::try_from(value)?)
     }
@@ -2385,7 +2386,7 @@ pub enum AttributeId {
 }
 
 impl crate::readers::ACDataType for AttributeId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttributeId::try_from(value)?)
     }
@@ -2401,7 +2402,7 @@ pub enum VitalId {
 }
 
 impl crate::readers::ACDataType for VitalId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(VitalId::try_from(value)?)
     }
@@ -2417,7 +2418,7 @@ pub enum CurVitalId {
 }
 
 impl crate::readers::ACDataType for CurVitalId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CurVitalId::try_from(value)?)
     }
@@ -2434,7 +2435,7 @@ pub enum CombatMode {
 }
 
 impl crate::readers::ACDataType for CombatMode {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CombatMode::try_from(value)?)
     }
@@ -2684,7 +2685,7 @@ pub enum Sound {
 }
 
 impl crate::readers::ACDataType for Sound {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(Sound::try_from(value)?)
     }
@@ -2723,7 +2724,7 @@ pub enum ChatFragmentType {
 }
 
 impl crate::readers::ACDataType for ChatFragmentType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ChatFragmentType::try_from(value)?)
     }
@@ -2766,7 +2767,7 @@ pub enum ObjectDescriptionFlag {
 }
 
 impl crate::readers::ACDataType for ObjectDescriptionFlag {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ObjectDescriptionFlag::try_from(value)?)
     }
@@ -2783,7 +2784,7 @@ pub enum AmmoType {
 }
 
 impl crate::readers::ACDataType for AmmoType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(AmmoType::try_from(value)?)
     }
@@ -2812,7 +2813,7 @@ pub enum Usable {
 }
 
 impl crate::readers::ACDataType for Usable {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(Usable::try_from(value)?)
     }
@@ -2840,7 +2841,7 @@ pub enum CoverageMask {
 }
 
 impl crate::readers::ACDataType for CoverageMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CoverageMask::try_from(value)?)
     }
@@ -2858,7 +2859,7 @@ pub enum HookType {
 }
 
 impl crate::readers::ACDataType for HookType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(HookType::try_from(value)?)
     }
@@ -2943,7 +2944,7 @@ pub enum MaterialType {
 }
 
 impl crate::readers::ACDataType for MaterialType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(MaterialType::try_from(value)?)
     }
@@ -2963,7 +2964,7 @@ pub enum ConfirmationType {
 }
 
 impl crate::readers::ACDataType for ConfirmationType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ConfirmationType::try_from(value)?)
     }
@@ -3004,7 +3005,7 @@ pub enum EnvrionChangeType {
 }
 
 impl crate::readers::ACDataType for EnvrionChangeType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EnvrionChangeType::try_from(value)?)
     }
@@ -3022,7 +3023,7 @@ pub enum MovementType {
 }
 
 impl crate::readers::ACDataType for MovementType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(MovementType::try_from(value)?)
     }
@@ -3038,7 +3039,7 @@ pub enum MovementOption {
 }
 
 impl crate::readers::ACDataType for MovementOption {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(MovementOption::try_from(value)?)
     }
@@ -3460,7 +3461,7 @@ pub enum Command {
 }
 
 impl crate::readers::ACDataType for Command {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(Command::try_from(value)?)
     }
@@ -3489,7 +3490,7 @@ pub enum StanceMode {
 }
 
 impl crate::readers::ACDataType for StanceMode {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(StanceMode::try_from(value)?)
     }
@@ -3511,7 +3512,7 @@ pub enum MovementCommand {
 }
 
 impl crate::readers::ACDataType for MovementCommand {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(MovementCommand::try_from(value)?)
     }
@@ -3527,7 +3528,7 @@ pub enum HouseBitfield {
 }
 
 impl crate::readers::ACDataType for HouseBitfield {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HouseBitfield::try_from(value)?)
     }
@@ -3547,7 +3548,7 @@ pub enum CharGenResponseType {
 }
 
 impl crate::readers::ACDataType for CharGenResponseType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharGenResponseType::try_from(value)?)
     }
@@ -3581,7 +3582,7 @@ pub enum CharacterErrorType {
 }
 
 impl crate::readers::ACDataType for CharacterErrorType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharacterErrorType::try_from(value)?)
     }
@@ -3618,7 +3619,7 @@ pub enum PhysicsState {
 }
 
 impl crate::readers::ACDataType for PhysicsState {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PhysicsState::try_from(value)?)
     }
@@ -3634,7 +3635,7 @@ pub enum TurbineChatType {
 }
 
 impl crate::readers::ACDataType for TurbineChatType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(TurbineChatType::try_from(value)?)
     }
@@ -3653,7 +3654,7 @@ pub enum DatFileType {
 }
 
 impl crate::readers::ACDataType for DatFileType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i64(reader)?;
         Ok(DatFileType::try_from(value)?)
     }
@@ -3668,7 +3669,7 @@ pub enum CompressionType {
 }
 
 impl crate::readers::ACDataType for CompressionType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(CompressionType::try_from(value)?)
     }
@@ -3691,7 +3692,7 @@ pub enum AttributeMask {
 }
 
 impl crate::readers::ACDataType for AttributeMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(AttributeMask::try_from(value)?)
     }
@@ -3711,7 +3712,7 @@ pub enum DamageType {
 }
 
 impl crate::readers::ACDataType for DamageType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(DamageType::try_from(value)?)
     }
@@ -3727,7 +3728,7 @@ pub enum HookAppraisalFlags {
 }
 
 impl crate::readers::ACDataType for HookAppraisalFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HookAppraisalFlags::try_from(value)?)
     }
@@ -3748,7 +3749,7 @@ pub enum ArmorHighlightMask {
 }
 
 impl crate::readers::ACDataType for ArmorHighlightMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(ArmorHighlightMask::try_from(value)?)
     }
@@ -3776,7 +3777,7 @@ pub enum ResistHighlightMask {
 }
 
 impl crate::readers::ACDataType for ResistHighlightMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(ResistHighlightMask::try_from(value)?)
     }
@@ -3795,7 +3796,7 @@ pub enum WeaponHighlightMask {
 }
 
 impl crate::readers::ACDataType for WeaponHighlightMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(WeaponHighlightMask::try_from(value)?)
     }
@@ -3811,7 +3812,7 @@ pub enum AttackConditionsMask {
 }
 
 impl crate::readers::ACDataType for AttackConditionsMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttackConditionsMask::try_from(value)?)
     }
@@ -3833,7 +3834,7 @@ pub enum DamageLocation {
 }
 
 impl crate::readers::ACDataType for DamageLocation {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(DamageLocation::try_from(value)?)
     }
@@ -3872,7 +3873,7 @@ pub enum LogTextType {
 }
 
 impl crate::readers::ACDataType for LogTextType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(LogTextType::try_from(value)?)
     }
@@ -3888,7 +3889,7 @@ pub enum EndTradeReason {
 }
 
 impl crate::readers::ACDataType for EndTradeReason {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EndTradeReason::try_from(value)?)
     }
@@ -3904,7 +3905,7 @@ pub enum TradeSide {
 }
 
 impl crate::readers::ACDataType for TradeSide {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(TradeSide::try_from(value)?)
     }
@@ -3921,7 +3922,7 @@ pub enum HouseType {
 }
 
 impl crate::readers::ACDataType for HouseType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HouseType::try_from(value)?)
     }
@@ -3950,7 +3951,7 @@ pub enum ChessMoveResult {
 }
 
 impl crate::readers::ACDataType for ChessMoveResult {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(ChessMoveResult::try_from(value)?)
     }
@@ -3966,7 +3967,7 @@ pub enum FellowUpdateType {
 }
 
 impl crate::readers::ACDataType for FellowUpdateType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(FellowUpdateType::try_from(value)?)
     }
@@ -3982,7 +3983,7 @@ pub enum ContractStage {
 }
 
 impl crate::readers::ACDataType for ContractStage {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ContractStage::try_from(value)?)
     }
@@ -3998,7 +3999,7 @@ pub enum HoldKey {
 }
 
 impl crate::readers::ACDataType for HoldKey {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HoldKey::try_from(value)?)
     }
@@ -4016,7 +4017,7 @@ pub enum RadarBehavior {
 }
 
 impl crate::readers::ACDataType for RadarBehavior {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(RadarBehavior::try_from(value)?)
     }
@@ -4032,7 +4033,7 @@ pub enum Gender {
 }
 
 impl crate::readers::ACDataType for Gender {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(Gender::try_from(value)?)
     }
@@ -4048,7 +4049,7 @@ pub enum FactionBits {
 }
 
 impl crate::readers::ACDataType for FactionBits {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(FactionBits::try_from(value)?)
     }
@@ -4162,7 +4163,7 @@ pub enum CreatureType {
 }
 
 impl crate::readers::ACDataType for CreatureType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CreatureType::try_from(value)?)
     }
@@ -4195,7 +4196,7 @@ pub enum CombatStyle {
 }
 
 impl crate::readers::ACDataType for CombatStyle {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CombatStyle::try_from(value)?)
     }
@@ -4220,7 +4221,7 @@ pub enum ACQualitiesFlags {
 }
 
 impl crate::readers::ACDataType for ACQualitiesFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ACQualitiesFlags::try_from(value)?)
     }
@@ -4236,7 +4237,7 @@ pub enum GeneratorDestruct {
 }
 
 impl crate::readers::ACDataType for GeneratorDestruct {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GeneratorDestruct::try_from(value)?)
     }
@@ -4254,7 +4255,7 @@ pub enum GeneratorTimeType {
 }
 
 impl crate::readers::ACDataType for GeneratorTimeType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GeneratorTimeType::try_from(value)?)
     }
@@ -4269,7 +4270,7 @@ pub enum GeneratorType {
 }
 
 impl crate::readers::ACDataType for GeneratorType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GeneratorType::try_from(value)?)
     }
@@ -4300,7 +4301,7 @@ pub enum ImbuedEffectType {
 }
 
 impl crate::readers::ACDataType for ImbuedEffectType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ImbuedEffectType::try_from(value)?)
     }
@@ -4316,7 +4317,7 @@ pub enum ItemXpStyle {
 }
 
 impl crate::readers::ACDataType for ItemXpStyle {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ItemXpStyle::try_from(value)?)
     }
@@ -4338,7 +4339,7 @@ pub enum SubscriptionStatus {
 }
 
 impl crate::readers::ACDataType for SubscriptionStatus {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(SubscriptionStatus::try_from(value)?)
     }
@@ -4363,7 +4364,7 @@ pub enum WeaponType {
 }
 
 impl crate::readers::ACDataType for WeaponType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeaponType::try_from(value)?)
     }
@@ -4382,7 +4383,7 @@ pub enum ActivationResponse {
 }
 
 impl crate::readers::ACDataType for ActivationResponse {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ActivationResponse::try_from(value)?)
     }
@@ -4398,7 +4399,7 @@ pub enum AetheriaBitfield {
 }
 
 impl crate::readers::ACDataType for AetheriaBitfield {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AetheriaBitfield::try_from(value)?)
     }
@@ -4417,7 +4418,7 @@ pub enum HookGroupType {
 }
 
 impl crate::readers::ACDataType for HookGroupType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HookGroupType::try_from(value)?)
     }
@@ -4436,7 +4437,7 @@ pub enum ArmorType {
 }
 
 impl crate::readers::ACDataType for ArmorType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ArmorType::try_from(value)?)
     }
@@ -4451,7 +4452,7 @@ pub enum AttunedStatus {
 }
 
 impl crate::readers::ACDataType for AttunedStatus {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttunedStatus::try_from(value)?)
     }
@@ -4468,7 +4469,7 @@ pub enum BondedStatus {
 }
 
 impl crate::readers::ACDataType for BondedStatus {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(BondedStatus::try_from(value)?)
     }
@@ -4483,7 +4484,7 @@ pub enum HouseStatus {
 }
 
 impl crate::readers::ACDataType for HouseStatus {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(HouseStatus::try_from(value)?)
     }
@@ -4509,7 +4510,7 @@ pub enum UiEffects {
 }
 
 impl crate::readers::ACDataType for UiEffects {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(UiEffects::try_from(value)?)
     }
@@ -4532,7 +4533,7 @@ pub enum PortalBitmask {
 }
 
 impl crate::readers::ACDataType for PortalBitmask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(PortalBitmask::try_from(value)?)
     }
@@ -4557,7 +4558,7 @@ pub enum WieldRequirement {
 }
 
 impl crate::readers::ACDataType for WieldRequirement {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(WieldRequirement::try_from(value)?)
     }
@@ -4663,7 +4664,7 @@ pub enum PaletteTemplate {
 }
 
 impl crate::readers::ACDataType for PaletteTemplate {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(PaletteTemplate::try_from(value)?)
     }
@@ -4679,7 +4680,7 @@ pub enum SummoningMastery {
 }
 
 impl crate::readers::ACDataType for SummoningMastery {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(SummoningMastery::try_from(value)?)
     }
@@ -5336,7 +5337,7 @@ pub enum ContractId {
 }
 
 impl crate::readers::ACDataType for ContractId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ContractId::try_from(value)?)
     }
@@ -5357,7 +5358,7 @@ pub enum PropertyInt64 {
 }
 
 impl crate::readers::ACDataType for PropertyInt64 {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyInt64::try_from(value)?)
     }
@@ -5501,7 +5502,7 @@ pub enum PropertyBool {
 }
 
 impl crate::readers::ACDataType for PropertyBool {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyBool::try_from(value)?)
     }
@@ -5575,7 +5576,7 @@ pub enum PropertyDataId {
 }
 
 impl crate::readers::ACDataType for PropertyDataId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyDataId::try_from(value)?)
     }
@@ -5978,7 +5979,7 @@ pub enum PropertyInt {
 }
 
 impl crate::readers::ACDataType for PropertyInt {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyInt::try_from(value)?)
     }
@@ -6036,7 +6037,7 @@ pub enum PropertyInstanceId {
 }
 
 impl crate::readers::ACDataType for PropertyInstanceId {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyInstanceId::try_from(value)?)
     }
@@ -6076,7 +6077,7 @@ pub enum PropertyPosition {
 }
 
 impl crate::readers::ACDataType for PropertyPosition {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyPosition::try_from(value)?)
     }
@@ -6141,7 +6142,7 @@ pub enum PropertyString {
 }
 
 impl crate::readers::ACDataType for PropertyString {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyString::try_from(value)?)
     }
@@ -6326,7 +6327,7 @@ pub enum PropertyFloat {
 }
 
 impl crate::readers::ACDataType for PropertyFloat {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyFloat::try_from(value)?)
     }
@@ -6374,7 +6375,7 @@ pub enum Channel {
 }
 
 impl crate::readers::ACDataType for Channel {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(Channel::try_from(value)?)
     }
@@ -6529,7 +6530,7 @@ pub enum EquipmentSet {
 }
 
 impl crate::readers::ACDataType for EquipmentSet {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EquipmentSet::try_from(value)?)
     }
@@ -6553,7 +6554,7 @@ pub enum RadarColor {
 }
 
 impl crate::readers::ACDataType for RadarColor {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(RadarColor::try_from(value)?)
     }
@@ -6570,7 +6571,7 @@ pub enum EnchantmentRegistryFlags {
 }
 
 impl crate::readers::ACDataType for EnchantmentRegistryFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EnchantmentRegistryFlags::try_from(value)?)
     }
@@ -7311,7 +7312,7 @@ pub enum SpellCategory {
 }
 
 impl crate::readers::ACDataType for SpellCategory {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(SpellCategory::try_from(value)?)
     }
@@ -7338,7 +7339,7 @@ pub enum HeritageGroup {
 }
 
 impl crate::readers::ACDataType for HeritageGroup {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(HeritageGroup::try_from(value)?)
     }
@@ -7365,7 +7366,7 @@ pub enum IconHighlight {
 }
 
 impl crate::readers::ACDataType for IconHighlight {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(IconHighlight::try_from(value)?)
     }
@@ -7383,7 +7384,7 @@ pub enum CombatUse {
 }
 
 impl crate::readers::ACDataType for CombatUse {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(CombatUse::try_from(value)?)
     }
@@ -7401,7 +7402,7 @@ pub enum WieldType {
 }
 
 impl crate::readers::ACDataType for WieldType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(WieldType::try_from(value)?)
     }
@@ -7425,7 +7426,7 @@ pub enum ChatType {
 }
 
 impl crate::readers::ACDataType for ChatType {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ChatType::try_from(value)?)
     }
@@ -7450,7 +7451,7 @@ pub enum ChatDisplayMask {
 }
 
 impl crate::readers::ACDataType for ChatDisplayMask {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ChatDisplayMask::try_from(value)?)
     }
@@ -7484,7 +7485,7 @@ pub enum EnchantmentTypeFlags {
 }
 
 impl crate::readers::ACDataType for EnchantmentTypeFlags {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EnchantmentTypeFlags::try_from(value)?)
     }
@@ -7506,7 +7507,7 @@ pub enum ParentLocation {
 }
 
 impl crate::readers::ACDataType for ParentLocation {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ParentLocation::try_from(value)?)
     }
@@ -7556,7 +7557,7 @@ pub enum Placement {
 }
 
 impl crate::readers::ACDataType for Placement {
-    fn read(reader: &mut dyn std::io::Read) -> Result<Self, Box<dyn std::error::Error>> {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(Placement::try_from(value)?)
     }
