@@ -5,7 +5,7 @@ pub mod enums {
 pub mod types {
     // Import enums for use in common types
     use crate::enums::*;
-    
+
     // Common types are at the module level
     include!("generated/types/common.rs");
 

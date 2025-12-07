@@ -46,9 +46,9 @@ pub fn to_pascal_case(name: &str) -> String {
 
 #[derive(Debug, Clone, Copy)]
 pub enum IdentifierType {
-    Field,      // snake_case
+    Field,       // snake_case
     EnumVariant, // PascalCase
-    Type,       // PascalCase
+    Type,        // PascalCase
 }
 
 #[derive(Debug, Clone)]

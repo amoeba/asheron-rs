@@ -77,10 +77,7 @@ pub struct PackableList<T> {
 
 // HashTable which is packable for network
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PackableHashTable<T,U>
-where
-    T: std::hash::Hash + Eq + serde::Serialize + serde::de::DeserializeOwned,
-    U: serde::Serialize + serde::de::DeserializeOwned {
+pub struct PackableHashTable<T,U> {
         #[serde(rename = "Count")]
         count: u16,
         #[serde(rename = "MaxSize")]
@@ -91,10 +88,7 @@ where
 
 // HashTable which is packable for network
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PHashTable<T,U>
-where
-    T: std::hash::Hash + Eq + serde::Serialize + serde::de::DeserializeOwned,
-    U: serde::Serialize + serde::de::DeserializeOwned {
+pub struct PHashTable<T,U> {
         #[serde(rename = "PackedSize")]
         packed_size: u32,
         #[serde(rename = "Table")]
@@ -311,7 +305,7 @@ pub struct ACQualities {
         #[serde(rename = "Attributes")]
         attributes: Option<AttributeCache>,
         #[serde(rename = "Skills")]
-        skills: Option<PackableHashTable<Skill, Skill>>,
+        skills: Option<PackableHashTable<SkillId, Skill>>,
         #[serde(rename = "Body")]
         body: Option<Body>,
         #[serde(rename = "SpellBook")]
