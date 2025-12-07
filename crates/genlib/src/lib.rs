@@ -354,8 +354,8 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
     // Note: protocol.xml quirk - some types have both parent and templated attributes
     // (e.g., PackableList has parent="List" and templated="T")
     // For templated types, skip the parent alias and continue to struct generation
-    if protocol_type.templated.is_none() {
-        if let Some(parent_type) = &protocol_type.parent {
+    if protocol_type.templated.is_none()
+        && let Some(parent_type) = &protocol_type.parent {
             let rust_type = get_rust_type(parent_type);
 
             // Only generate alias if the rust type differs from the XML type name
@@ -366,7 +366,6 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
             }
             return out;
         }
-    }
 
     let Some(field_set) = &protocol_type.fields else {
         // No fields, generate empty struct
@@ -575,8 +574,8 @@ fn process_enum_start_tag(
         }
     }
 
-    if let Some(name) = name {
-        if let Some(parent) = parent {
+    if let Some(name) = name
+        && let Some(parent) = parent {
             let new_enum = ProtocolEnum {
                 name,
                 text,
@@ -586,7 +585,6 @@ fn process_enum_start_tag(
             };
             *current_enum = Some(new_enum);
         }
-    }
 }
 
 fn process_enum_value_tag(
