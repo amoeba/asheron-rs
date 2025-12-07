@@ -58,6 +58,23 @@ impl GenerationContext {
     }
 }
 
+/// Normalize hex values to have consistent format (e.g., "0xE" -> "0x0E", "0x1" -> "0x01")
+fn normalize_hex_value(value: &str) -> String {
+    if let Some(hex_part) = value
+        .strip_prefix("0x")
+        .or_else(|| value.strip_prefix("0X"))
+    {
+        // Parse as hex and reformat with leading zeros to at least 2 digits
+        if let Ok(num) = u64::from_str_radix(hex_part, 16) {
+            format!("0x{:02X}", num)
+        } else {
+            value.to_string()
+        }
+    } else {
+        value.to_string()
+    }
+}
+
 /// Context for reader generation containing type information
 pub struct ReaderContext {
     /// Map from enum name to its parent type (e.g., "NetAuthType" -> "uint")
@@ -1207,8 +1224,10 @@ fn generate_readers_for_types(
         for enum_value in &protocol_enum.values {
             // Use safe enum variant name (converted from "Refuse_EmoteCategory" to "RefuseEmoteCategory")
             let safe_variant = safe_enum_variant_name(&enum_value.name);
+            // Normalize hex values to handle both "0xE" and "0x0E" formats
+            let normalized_value = normalize_hex_value(&enum_value.value);
             enum_value_map.insert(
-                (protocol_enum.name.clone(), enum_value.value.clone()),
+                (protocol_enum.name.clone(), normalized_value),
                 safe_variant.name,
             );
         }
@@ -1589,13 +1608,21 @@ fn generate_field_group_reads(
             }
 
             // Generate the if block
-            // Cast mask field to u32 if it's an enum type
-            let mask_field_expr = if let Some(mask_field_obj) = all_fields.iter().find(|f| f.name == *mask_field) {
-                if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
+            // Cast mask field to u32 if it's an enum type, unwrap if it's Option
+            let mask_field_expr = if let Some(mask_field_obj) =
+                all_fields.iter().find(|f| f.name == *mask_field)
+            {
+                let base_expr = if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
                     // It's an enum - clone and cast to u32 (enums don't derive Copy)
                     format!("{}.clone() as u32", mask_field_safe)
                 } else {
                     mask_field_safe.clone()
+                };
+                // If the mask field is optional, unwrap it with a default of 0
+                if mask_field_obj.is_optional {
+                    format!("{}.unwrap_or(0)", base_expr)
+                } else {
+                    base_expr
                 }
             } else {
                 mask_field_safe.clone()
@@ -1780,7 +1807,9 @@ fn generate_variant_reader_impl(
 
         // Use the first sorted value to determine the variant name
         let first_value = &all_values[0];
-        let case_fields = variant_fields.get(first_value).expect("Field group must have fields");
+        let case_fields = variant_fields
+            .get(first_value)
+            .expect("Field group must have fields");
 
         // Generate match patterns for ALL values in this group
         let mut case_patterns = Vec::new();
@@ -1789,9 +1818,11 @@ fn generate_variant_reader_impl(
             let case_pattern = if let Some(switch_type) = switch_field_type {
                 if ctx.enum_parent_map.contains_key(switch_type) {
                     // It's an enum - look up the enum variant name from the value
+                    // Normalize the case value to match how enum values are stored
+                    let normalized_value = normalize_hex_value(case_value);
                     if let Some(variant_name) = ctx
                         .enum_value_map
-                        .get(&(switch_type.clone(), case_value.clone()))
+                        .get(&(switch_type.clone(), normalized_value))
                     {
                         // Use the enum variant: EnumType::VariantName
                         format!("{}::{}", switch_type, variant_name)
@@ -1809,7 +1840,10 @@ fn generate_variant_reader_impl(
         }
 
         // Join all patterns with |
-        out.push_str(&format!("            {} => {{\n", case_patterns.join(" | ")));
+        out.push_str(&format!(
+            "            {} => {{\n",
+            case_patterns.join(" | ")
+        ));
 
         // Read variant-specific fields
         for field in case_fields {
@@ -2022,13 +2056,21 @@ fn generate_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Field]) 
                 mask_value.clone()
             };
 
-            // Cast mask field to u32 if it's an enum type
-            let mask_field_expr = if let Some(mask_field_obj) = all_fields.iter().find(|f| f.name == *mask_field) {
-                if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
+            // Cast mask field to u32 if it's an enum type, unwrap if it's Option
+            let mask_field_expr = if let Some(mask_field_obj) =
+                all_fields.iter().find(|f| f.name == *mask_field)
+            {
+                let base_expr = if ctx.enum_parent_map.contains_key(&mask_field_obj.field_type) {
                     // It's an enum - clone and cast to u32 (enums don't derive Copy)
                     format!("{}.clone() as u32", mask_field_safe)
                 } else {
                     mask_field_safe.clone()
+                };
+                // If the mask field is optional, unwrap it with a default of 0
+                if mask_field_obj.is_optional {
+                    format!("{}.unwrap_or(0)", base_expr)
+                } else {
+                    base_expr
                 }
             } else {
                 mask_field_safe.clone()
