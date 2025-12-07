@@ -1,2 +1,2 @@
 [env]
-FILTER_TYPES = "PackedDWORD,Subpalette,TextureMapChange,AnimPartChange,DataId,ObjDesc,Vector3,Quaternion,LandcellId,Frame,ObjectId,Position,AllegianceData,AllegianceRecord,AllegianceHierarchy"
+FILTER_TYPES = "PackedDWORD,Subpalette,TextureMapChange,AnimPartChange,DataId,ObjDesc,Vector3,Quaternion,LandcellId,Frame,ObjectId,Position,AllegianceData,AllegianceRecord,AllegianceHierarchy,WString,SpellId,LayeredSpellId,Origin,ServerSwitchHeader,CICMDCommandHeader,FlowHeader,SocketAddress,ReferralHeader,ConnectRequestHeader,NetError,EchoResponseHeader,AttributeInfo,SecondaryAttributeInfo,Skill,BodyPart,StatMod,EmoteAction,BodyPartSelectionData,ArmorCache,EventFilter"

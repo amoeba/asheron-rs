@@ -1183,6 +1183,7 @@ fn generate_readers_for_types(
     if module_name == "common" {
         out.push_str("use crate::types::*;\n");
     } else {
+        out.push_str("use crate::types::*;\n");
         out.push_str("use crate::types::");
         out.push_str(module_name);
         out.push_str("::*;\n");
@@ -1228,8 +1229,14 @@ fn generate_reader_impl(ctx: &ReaderContext, protocol_type: &ProtocolType) -> St
     let type_name = &protocol_type.name;
     let safe_type_name = safe_identifier(type_name, IdentifierType::Type);
 
-    // Handle primitive types - they don't need readers
+    // Primitive types (u32, bool, etc.) have read_* helper functions
     if protocol_type.is_primitive {
+        return String::new();
+    }
+
+    // Templated/generic types (PackableList<T>, PackableHashTable<T,U>, etc.)
+    // use generic helper functions like read_packable_list() instead of impl blocks
+    if protocol_type.templated.is_some() {
         return String::new();
     }
 

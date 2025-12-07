@@ -3,6 +3,7 @@
 #[allow(unused_imports)]
 use std::io::Read;
 #[allow(unused_imports)]
+use crate::types::*;
 use crate::types::c2s::*;
 #[allow(unused_imports)]
 use crate::enums::*;
