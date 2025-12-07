@@ -37,14 +37,14 @@ pub struct FieldSet {
     pub(crate) switch_field: Option<String>,
     /// Fields before the switch (or all fields if no switch)
     pub(crate) common_fields: Vec<Field>,
-    /// Per-variant fields, keyed by case value. None if no switch.
-    pub(crate) variant_fields: Option<BTreeMap<String, Vec<Field>>>,
+    /// Per-variant fields, keyed by case value (parsed as i64). None if no switch.
+    pub(crate) variant_fields: Option<BTreeMap<i64, Vec<Field>>>,
 }
 
 #[derive(Debug, Clone)]
 pub struct EnumValue {
     pub(crate) name: String,
-    pub(crate) value: String,
+    pub(crate) value: i64,  // Parsed numeric value for sorting and normalization
 }
 
 #[derive(Debug, Clone)]

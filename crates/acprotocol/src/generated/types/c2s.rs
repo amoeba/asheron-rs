@@ -1396,7 +1396,7 @@ pub struct AdminSendAdminRestoreCharacter {
 pub enum CommunicationTurbineChat {
     #[serde(rename = "0x01")]
     #[serde(alias = "0x02")]
-    Type01 {
+    Type1 {
     #[serde(rename = "MmessageSize")]
     mmessage_size: u32,
     #[serde(rename = "Type")]

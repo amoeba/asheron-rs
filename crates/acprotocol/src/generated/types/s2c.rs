@@ -1728,7 +1728,7 @@ pub struct CharacterSetPlayerVisualDesc {
 #[serde(rename = "Character_CharGenVerificationResponse")]
 #[serde(tag = "ResponseType")]
 pub enum CharacterCharGenVerificationResponse {
-    #[serde(rename = "0x1")]
+    #[serde(rename = "0x01")]
     Type1 {
     #[serde(rename = "CharacterId")]
     character_id: ObjectId,
@@ -2002,7 +2002,7 @@ pub struct LoginAccountBooted {
 pub enum CommunicationTurbineChat {
     #[serde(rename = "0x01")]
     #[serde(alias = "0x02")]
-    Type01 {
+    Type1 {
     #[serde(rename = "MessageSize")]
     message_size: u32,
     #[serde(rename = "Type")]
@@ -2063,7 +2063,7 @@ pub struct LoginWorldInfo {
 #[serde(tag = "Compression")]
 pub enum DDDDataMessage {
     #[serde(rename = "0x00")]
-    Type00 {
+    Type0 {
     #[serde(rename = "DatFile")]
     dat_file: DatFileType,
     #[serde(rename = "ResourceType")]
@@ -2080,7 +2080,7 @@ pub enum DDDDataMessage {
     data: Vec<byte>,
     },
     #[serde(rename = "0x01")]
-    Type01 {
+    Type1 {
     #[serde(rename = "DatFile")]
     dat_file: DatFileType,
     #[serde(rename = "ResourceType")]

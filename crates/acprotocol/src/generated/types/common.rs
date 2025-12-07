@@ -196,8 +196,8 @@ pub struct SocketAddress {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "AuthType")]
 pub enum LoginRequestHeader {
-    #[serde(rename = "0x00000002")]
-    Type00000002 {
+    #[serde(rename = "0x02")]
+    Type2 {
     #[serde(rename = "ClientVersion")]
     client_version: String,
     #[serde(rename = "Length")]
@@ -568,7 +568,7 @@ pub struct EmoteSetList {
 pub enum EmoteSet {
     #[serde(rename = "0x01")]
     #[serde(alias = "0x06")]
-    Type01 {
+    Type1 {
     #[serde(rename = "Probability")]
     probability: f32,
     #[serde(rename = "Emotes")]
@@ -577,7 +577,7 @@ pub enum EmoteSet {
     class_id: u32,
     },
     #[serde(rename = "0x02")]
-    Type02 {
+    Type2 {
     #[serde(rename = "Probability")]
     probability: f32,
     #[serde(rename = "Emotes")]
@@ -586,7 +586,7 @@ pub enum EmoteSet {
     vendor_type: u32,
     },
     #[serde(rename = "0x05")]
-    Type05 {
+    Type5 {
     #[serde(rename = "Probability")]
     probability: f32,
     #[serde(rename = "Emotes")]
@@ -612,7 +612,7 @@ pub enum EmoteSet {
     #[serde(alias = "0x24")]
     #[serde(alias = "0x25")]
     #[serde(alias = "0x26")]
-    Type0C {
+    TypeC {
     #[serde(rename = "Probability")]
     probability: f32,
     #[serde(rename = "Emotes")]
@@ -621,7 +621,7 @@ pub enum EmoteSet {
     quest: String,
     },
     #[serde(rename = "0x0F")]
-    Type0F {
+    TypeF {
     #[serde(rename = "Probability")]
     probability: f32,
     #[serde(rename = "Emotes")]
@@ -665,7 +665,7 @@ pub enum Emote {
     #[serde(alias = "0x53")]
     #[serde(alias = "0x58")]
     #[serde(alias = "0x79")]
-    Type01 {
+    Type1 {
     #[serde(rename = "Delay")]
     delay: f32,
     #[serde(rename = "Extent")]
@@ -673,11 +673,73 @@ pub enum Emote {
     #[serde(rename = "Message")]
     message: String,
     },
-    #[serde(rename = "0x13")]
+    #[serde(rename = "0x02")]
+    #[serde(alias = "0x3E")]
+    Type2 {
+    #[serde(rename = "Delay")]
+    delay: f32,
+    #[serde(rename = "Extent")]
+    extent: f32,
+    #[serde(rename = "Amount64")]
+    amount64: u64,
+    #[serde(rename = "HeroXP64")]
+    hero_xp64: u64,
+    },
+    #[serde(rename = "0x03")]
+    #[serde(alias = "0x4A")]
+    Type3 {
+    #[serde(rename = "Delay")]
+    delay: f32,
+    #[serde(rename = "Extent")]
+    extent: f32,
+    #[serde(rename = "CProfile")]
+    c_profile: CreationProfile,
+    },
+    #[serde(rename = "0x04")]
+    #[serde(alias = "0x06")]
+    #[serde(alias = "0x0B")]
+    #[serde(alias = "0x57")]
+    Type4 {
+    #[serde(rename = "Delay")]
+    delay: f32,
+    #[serde(rename = "Extent")]
+    extent: f32,
+    #[serde(rename = "Frame")]
+    frame: Frame,
+    },
+    #[serde(rename = "0x05")]
+    #[serde(alias = "0x34")]
+    Type5 {
+    #[serde(rename = "Delay")]
+    delay: f32,
+    #[serde(rename = "Extent")]
+    extent: f32,
+    #[serde(rename = "Motion")]
+    motion: u32,
+    },
+    #[serde(rename = "0x07")]
+    Type7 {
+    #[serde(rename = "Delay")]
+    delay: f32,
+    #[serde(rename = "Extent")]
+    extent: f32,
+    #[serde(rename = "PhysicsScript")]
+    physics_script: u32,
+    },
+    #[serde(rename = "0x09")]
+    Type9 {
+    #[serde(rename = "Delay")]
+    delay: f32,
+    #[serde(rename = "Extent")]
+    extent: f32,
+    #[serde(rename = "Sound")]
+    sound: u32,
+    },
+    #[serde(rename = "0x0E")]
+    #[serde(alias = "0x13")]
     #[serde(alias = "0x1B")]
     #[serde(alias = "0x49")]
-    #[serde(alias = "0xE")]
-    Type13 {
+    TypeE {
     #[serde(rename = "Delay")]
     delay: f32,
     #[serde(rename = "Extent")]
@@ -712,18 +774,6 @@ pub enum Emote {
     min: u32,
     #[serde(rename = "Max")]
     max: u32,
-    },
-    #[serde(rename = "0x2")]
-    #[serde(alias = "0x3E")]
-    Type2 {
-    #[serde(rename = "Delay")]
-    delay: f32,
-    #[serde(rename = "Extent")]
-    extent: f32,
-    #[serde(rename = "Amount64")]
-    amount64: u64,
-    #[serde(rename = "HeroXP64")]
-    hero_xp64: u64,
     },
     #[serde(rename = "0x20")]
     #[serde(alias = "0x21")]
@@ -828,16 +878,6 @@ pub enum Emote {
     #[serde(rename = "Stat")]
     stat: u32,
     },
-    #[serde(rename = "0x3")]
-    #[serde(alias = "0x4A")]
-    Type3 {
-    #[serde(rename = "Delay")]
-    delay: f32,
-    #[serde(rename = "Extent")]
-    extent: f32,
-    #[serde(rename = "CProfile")]
-    c_profile: CreationProfile,
-    },
     #[serde(rename = "0x31")]
     Type31 {
     #[serde(rename = "Delay")]
@@ -867,16 +907,6 @@ pub enum Emote {
     max: u32,
     #[serde(rename = "Display")]
     display: bool,
-    },
-    #[serde(rename = "0x34")]
-    #[serde(alias = "0x5")]
-    Type34 {
-    #[serde(rename = "Delay")]
-    delay: f32,
-    #[serde(rename = "Extent")]
-    extent: f32,
-    #[serde(rename = "Motion")]
-    motion: u32,
     },
     #[serde(rename = "0x35")]
     #[serde(alias = "0x36")]
@@ -916,18 +946,6 @@ pub enum Emote {
     #[serde(rename = "Position")]
     position: Position,
     },
-    #[serde(rename = "0x4")]
-    #[serde(alias = "0x57")]
-    #[serde(alias = "0x6")]
-    #[serde(alias = "0xB")]
-    Type4 {
-    #[serde(rename = "Delay")]
-    delay: f32,
-    #[serde(rename = "Extent")]
-    extent: f32,
-    #[serde(rename = "Frame")]
-    frame: Frame,
-    },
     #[serde(rename = "0x4C")]
     Type4C {
     #[serde(rename = "Delay")]
@@ -947,15 +965,6 @@ pub enum Emote {
     extent: f32,
     #[serde(rename = "Stat")]
     stat: u32,
-    },
-    #[serde(rename = "0x7")]
-    Type7 {
-    #[serde(rename = "Delay")]
-    delay: f32,
-    #[serde(rename = "Extent")]
-    extent: f32,
-    #[serde(rename = "PhysicsScript")]
-    physics_script: u32,
     },
     #[serde(rename = "0x70")]
     #[serde(alias = "0x71")]
@@ -992,15 +1001,6 @@ pub enum Emote {
     stat: u32,
     #[serde(rename = "Percent")]
     percent: f64,
-    },
-    #[serde(rename = "0x9")]
-    Type9 {
-    #[serde(rename = "Delay")]
-    delay: f32,
-    #[serde(rename = "Extent")]
-    extent: f32,
-    #[serde(rename = "Sound")]
-    sound: u32,
     },
 }
 
@@ -1147,7 +1147,7 @@ pub struct GeneratorQueueNode {
 #[serde(tag = "TitleSource")]
 pub enum WindowProperty {
     #[serde(rename = "0x00")]
-    Type00 {
+    Type0 {
     #[serde(rename = "Key_a")]
     key_a: u32,
     #[serde(rename = "Unknown_1b")]
@@ -1184,7 +1184,7 @@ pub enum WindowProperty {
     file_id: u32,
     },
     #[serde(rename = "0x01")]
-    Type01 {
+    Type1 {
     #[serde(rename = "Key_a")]
     key_a: u32,
     #[serde(rename = "Unknown_1b")]
@@ -1223,7 +1223,7 @@ pub enum WindowProperty {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Type_a")]
 pub enum WindowOption {
-    #[serde(rename = "0x1000008b")]
+    #[serde(rename = "0x1000008B")]
     Type1000008B {
     #[serde(rename = "Unknown_b")]
     unknown_b: u8,
@@ -1249,7 +1249,7 @@ pub enum OptionProperty {
     #[serde(rename = "activeOpacity")]
     active_opacity: f32,
     },
-    #[serde(rename = "0x1000008c")]
+    #[serde(rename = "0x1000008C")]
     Type1000008C {
     #[serde(rename = "Unknown_a")]
     unknown_a: u32,
@@ -1466,24 +1466,6 @@ pub struct FriendData {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "PwdType")]
 pub enum ItemProfile {
-    #[serde(rename = "-1")]
-    TypeNeg1 {
-    #[serde(rename = "PackedAmount")]
-    packed_amount: u32,
-    #[serde(rename = "ObjectId")]
-    object_id: ObjectId,
-    #[serde(rename = "WeenieDescription")]
-    weenie_description: PublicWeenieDesc,
-    },
-    #[serde(rename = "1")]
-    Type1 {
-    #[serde(rename = "PackedAmount")]
-    packed_amount: u32,
-    #[serde(rename = "ObjectId")]
-    object_id: ObjectId,
-    #[serde(rename = "OldWeenieDescription")]
-    old_weenie_description: OldPublicWeenieDesc,
-    },
 }
 
 // The PublicWeenieDesc structure defines an object's game behavior.
@@ -1815,8 +1797,8 @@ pub struct PositionPack {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "MovementType")]
 pub enum MovementData {
-    #[serde(rename = "0x0000")]
-    Type0000 {
+    #[serde(rename = "0x00")]
+    Type0 {
     #[serde(rename = "ObjectMovementSequence")]
     object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -1832,8 +1814,8 @@ pub enum MovementData {
     #[serde(rename = "StickyObject")]
     sticky_object: Option<ObjectId>,
     },
-    #[serde(rename = "0x0006")]
-    Type0006 {
+    #[serde(rename = "0x06")]
+    Type6 {
     #[serde(rename = "ObjectMovementSequence")]
     object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -1853,8 +1835,8 @@ pub enum MovementData {
     #[serde(rename = "MyRunRate")]
     my_run_rate: f32,
     },
-    #[serde(rename = "0x0007")]
-    Type0007 {
+    #[serde(rename = "0x07")]
+    Type7 {
     #[serde(rename = "ObjectMovementSequence")]
     object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -1872,8 +1854,8 @@ pub enum MovementData {
     #[serde(rename = "MyRunRate")]
     my_run_rate: f32,
     },
-    #[serde(rename = "0x0008")]
-    Type0008 {
+    #[serde(rename = "0x08")]
+    Type8 {
     #[serde(rename = "ObjectMovementSequence")]
     object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -1891,8 +1873,8 @@ pub enum MovementData {
     #[serde(rename = "TurnToParams")]
     turn_to_params: TurnToMovementParameters,
     },
-    #[serde(rename = "0x0009")]
-    Type0009 {
+    #[serde(rename = "0x09")]
+    Type9 {
     #[serde(rename = "ObjectMovementSequence")]
     object_movement_sequence: u16,
     #[serde(rename = "ObjectServerControlSequence")]
@@ -2431,7 +2413,7 @@ pub struct GuestInfo {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Type")]
 pub enum GameMoveData {
-    #[serde(rename = "0x4")]
+    #[serde(rename = "0x04")]
     Type4 {
     #[serde(rename = "PlayerId")]
     player_id: ObjectId,
@@ -2442,7 +2424,7 @@ pub enum GameMoveData {
     #[serde(rename = "YGrid")]
     y_grid: i32,
     },
-    #[serde(rename = "0x5")]
+    #[serde(rename = "0x05")]
     Type5 {
     #[serde(rename = "PlayerId")]
     player_id: ObjectId,
@@ -2457,7 +2439,7 @@ pub enum GameMoveData {
     #[serde(rename = "YTo")]
     y_to: i32,
     },
-    #[serde(rename = "0x6")]
+    #[serde(rename = "0x06")]
     Type6 {
     #[serde(rename = "PlayerId")]
     player_id: ObjectId,

@@ -7,16 +7,18 @@ use quick_xml::{Reader, events::Event};
 use crate::{
     identifiers::{IdentifierType, safe_enum_variant_name, safe_identifier},
     types::{EnumValue, Field, FieldSet, IfBranch, ProtocolEnum, ProtocolType},
+    util::{format_hex_value, parse_hex_string},
 };
 
 mod identifiers;
 mod types;
+mod util;
 
 /// Context for field processing within conditional blocks
 #[derive(Debug)]
 struct FieldContext {
     in_switch: bool,
-    current_case_values: Option<Vec<String>>,
+    current_case_values: Option<Vec<i64>>, // Parsed numeric case values
     in_if_true: bool,
     in_if_false: bool,
     in_maskmap: bool,
@@ -62,14 +64,14 @@ impl GenerationContext {
 pub struct ReaderContext {
     /// Map from enum name to its parent type (e.g., "NetAuthType" -> "uint")
     enum_parent_map: std::collections::HashMap<String, String>,
-    /// Map from (enum_name, value) to variant name (e.g., ("NetAuthType", "0x00000002") -> "AccountPassword")
-    enum_value_map: std::collections::HashMap<(String, String), String>,
+    /// Map from (enum_name, value) to variant name (e.g., ("NetAuthType", 2) -> "AccountPassword")
+    enum_value_map: std::collections::HashMap<(String, i64), String>,
 }
 
 impl ReaderContext {
     pub fn new(
         enum_parent_map: std::collections::HashMap<String, String>,
-        enum_value_map: std::collections::HashMap<(String, String), String>,
+        enum_value_map: std::collections::HashMap<(String, i64), String>,
     ) -> Self {
         Self {
             enum_parent_map,
@@ -313,32 +315,25 @@ fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
         // Determine if we need serde rename (if the safe name differs from original)
         let needs_serde_rename = safe_variant.name != *original_name;
 
-        if enum_value.value.starts_with("0x") {
-            // Hex value
-            if needs_serde_rename {
-                out.push_str(&format!(
-                    "    #[serde(rename = \"{}\")]\n    {} = {},\n",
-                    original_name, safe_variant.name, enum_value.value
-                ));
-            } else {
-                out.push_str(&format!(
-                    "    {} = {},\n",
-                    safe_variant.name, enum_value.value
-                ));
-            }
+        // Format the value as hex literal for enum definition
+        let value_literal = if enum_value.value < 0 {
+            // Negative values use decimal
+            format!("{}", enum_value.value)
         } else {
-            // Decimal value
-            if needs_serde_rename {
-                out.push_str(&format!(
-                    "    #[serde(rename = \"{}\")]\n    {} = {},\n",
-                    original_name, safe_variant.name, enum_value.value
-                ));
-            } else {
-                out.push_str(&format!(
-                    "    {} = {},\n",
-                    safe_variant.name, enum_value.value
-                ));
-            }
+            // Positive values use hex literal (natural width, no padding)
+            format!("0x{:X}", enum_value.value)
+        };
+
+        if needs_serde_rename {
+            out.push_str(&format!(
+                "    #[serde(rename = \"{}\")]\n    {} = {},\n",
+                original_name, safe_variant.name, value_literal
+            ));
+        } else {
+            out.push_str(&format!(
+                "    {} = {},\n",
+                safe_variant.name, value_literal
+            ));
         }
     }
 
@@ -585,7 +580,7 @@ pub enum {type_name}{type_generics} {{\n"
 
         // Group case values by their field sets (to handle multi-value cases)
         // Map: field signature -> (primary_value, [all_values])
-        let mut field_groups: BTreeMap<String, (String, Vec<String>)> = BTreeMap::new();
+        let mut field_groups: BTreeMap<String, (i64, Vec<i64>)> = BTreeMap::new();
 
         for (case_value, case_fields) in variant_fields {
             // Create a signature for these fields to group identical field sets
@@ -597,9 +592,9 @@ pub enum {type_name}{type_generics} {{\n"
 
             field_groups
                 .entry(field_sig)
-                .or_insert_with(|| (case_value.clone(), Vec::new()))
+                .or_insert_with(|| (*case_value, Vec::new()))
                 .1
-                .push(case_value.clone());
+                .push(*case_value);
         }
 
         // Sort by primary value for consistent output
@@ -611,26 +606,27 @@ pub enum {type_name}{type_generics} {{\n"
             all_values.sort();
 
             // Use the first sorted value for both rename and variant name
-            let first_value = &all_values[0];
+            let first_value = all_values[0];
+            let first_value_str = format_hex_value(first_value);
 
             // Generate variant name from first sorted case value
-            let variant_name = if first_value.starts_with("0x") || first_value.starts_with("0X") {
-                // Hex value: "0x4" -> "Type4", "0xAB" -> "TypeAB"
-                format!("Type{}", &first_value[2..].to_uppercase())
-            } else if let Some(stripped) = first_value.strip_prefix('-') {
-                // Negative value: "-1" -> "TypeNeg1"
-                format!("TypeNeg{stripped}")
+            let variant_name = if first_value < 0 {
+                // Negative value: -1 -> "TypeNeg1"
+                format!("TypeNeg{}", first_value.abs())
             } else {
-                // Decimal value: "4" -> "Type4"
-                format!("Type{first_value}")
+                // Positive value: format as hex and extract hex digits
+                // 0x04 -> "04", 0xAB -> "AB"
+                let hex_str = format!("{:X}", first_value);
+                format!("Type{}", hex_str)
             };
 
             // Primary serde rename
-            out.push_str(&format!("    #[serde(rename = \"{first_value}\")]\n"));
+            out.push_str(&format!("    #[serde(rename = \"{first_value_str}\")]\n"));
 
             // Add aliases for additional values (if multi-value case)
             for alias_value in &all_values[1..] {
-                out.push_str(&format!("    #[serde(alias = \"{alias_value}\")]\n"));
+                let alias_str = format_hex_value(*alias_value);
+                out.push_str(&format!("    #[serde(alias = \"{alias_str}\")]\n"));
             }
 
             out.push_str(&format!("    {variant_name} {{\n"));
@@ -644,7 +640,7 @@ pub enum {type_name}{type_generics} {{\n"
             }
 
             // Add variant-specific fields (get from variant_fields using first_value)
-            if let Some(case_fields) = variant_fields.get(first_value) {
+            if let Some(case_fields) = variant_fields.get(&first_value) {
                 for field in case_fields {
                     out.push_str(&generate_field_line(field, true)); // true = is enum variant
                     out.push_str(",\n");
@@ -711,7 +707,7 @@ fn process_switch_tag(
     }
 }
 
-fn process_case_tag(e: &quick_xml::events::BytesStart) -> Option<Vec<String>> {
+fn process_case_tag(e: &quick_xml::events::BytesStart) -> Option<Vec<i64>> {
     let mut value = None;
 
     for attr in e.attributes().flatten() {
@@ -720,12 +716,20 @@ fn process_case_tag(e: &quick_xml::events::BytesStart) -> Option<Vec<String>> {
         }
     }
 
-    // Parse multi-value cases (e.g., "0x01 | 0x08 | 0x0A") into individual values
+    // Parse multi-value cases (e.g., "0x01 | 0x08 | 0x0A") into individual parsed i64 values
     let values = value.map(|v| {
         v.split('|')
-            .map(|s| s.trim().to_string())
+            .map(|s| s.trim())
             .filter(|s| !s.is_empty())
-            .collect::<Vec<String>>()
+            .filter_map(|s| {
+                parse_hex_string(s)
+                    .map_err(|e| {
+                        eprintln!("Warning: {}", e);
+                        e
+                    })
+                    .ok()
+            })
+            .collect::<Vec<i64>>()
     });
 
     debug!("current_case_value is now {values:?}");
@@ -782,17 +786,24 @@ fn process_enum_value_tag(
         }
     }
 
-    if let (Some(name), Some(value), Some(current_enum)) = (name, value, current_enum) {
+    if let (Some(name), Some(value_str), Some(current_enum)) = (name, value, current_enum) {
         // Handle multiple values in a single attribute (e.g., "0x0C | 0x0D")
-        let values: Vec<&str> = value.split('|').collect();
+        let values: Vec<&str> = value_str.split('|').collect();
         for val in values {
             let trimmed_val = val.trim();
             if !trimmed_val.is_empty() {
-                let enum_value = EnumValue {
-                    name: name.clone(),
-                    value: trimmed_val.to_string(),
-                };
-                current_enum.values.push(enum_value);
+                match parse_hex_string(trimmed_val) {
+                    Ok(parsed_value) => {
+                        let enum_value = EnumValue {
+                            name: name.clone(),
+                            value: parsed_value,
+                        };
+                        current_enum.values.push(enum_value);
+                    }
+                    Err(e) => {
+                        eprintln!("Warning: {}", e);
+                    }
+                }
             }
         }
     }
@@ -1201,7 +1212,7 @@ fn generate_readers_for_types(
         .collect();
 
     // Build a map of (enum_name, value) -> variant_name for switch pattern matching
-    let mut enum_value_map: std::collections::HashMap<(String, String), String> =
+    let mut enum_value_map: std::collections::HashMap<(String, i64), String> =
         std::collections::HashMap::new();
     for protocol_enum in enums {
         for enum_value in &protocol_enum.values {
@@ -1209,8 +1220,9 @@ fn generate_readers_for_types(
             // i.e., EmoteType::RefuseEmoteCategory instead of EmoteType::Refuse_EmoteCategory
             let safe_variant = safe_enum_variant_name(&enum_value.name);
 
+            // Values are already parsed as i64, no normalization needed
             enum_value_map.insert(
-                (protocol_enum.name.clone(), enum_value.value.clone()),
+                (protocol_enum.name.clone(), enum_value.value),
                 safe_variant.name,
             );
         }
@@ -1741,30 +1753,71 @@ fn generate_variant_reader_impl(
         .find(|f| f.name == *switch_field)
         .map(|f| &f.field_type);
 
-    // Generate each variant case
+    // Group case values by field signature (same as type generator)
+    // Map: field signature -> (primary_value, [all_values])
+    let mut field_groups: BTreeMap<String, (i64, Vec<i64>)> = BTreeMap::new();
+
     for (case_value, case_fields) in variant_fields {
-        // Convert case value to enum variant pattern if switch field is an enum
-        let case_pattern = if let Some(switch_type) = switch_field_type {
-            if ctx.enum_parent_map.contains_key(switch_type) {
-                // It's an enum - look up the enum variant name from the value
-                if let Some(variant_name) = ctx
-                    .enum_value_map
-                    .get(&(switch_type.clone(), case_value.clone()))
-                {
-                    // Use the enum variant: EnumType::VariantName
-                    format!("{}::{}", switch_type, variant_name)
+        // Create a signature for these fields to group identical field sets
+        let field_sig = case_fields
+            .iter()
+            .map(|f| format!("{}:{}", f.name, f.field_type))
+            .collect::<Vec<_>>()
+            .join(";");
+
+        field_groups
+            .entry(field_sig)
+            .or_insert_with(|| (*case_value, Vec::new()))
+            .1
+            .push(*case_value);
+    }
+
+    // Sort by primary value for consistent output
+    let mut sorted_groups: Vec<_> = field_groups.into_iter().collect();
+    sorted_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
+
+    // Generate each variant case (now grouped)
+    for (_field_sig, (_primary_value, mut all_values)) in sorted_groups {
+        // Sort values for consistent output
+        all_values.sort();
+
+        // Use the first sorted value to determine the variant name
+        let first_value = all_values[0];
+        let case_fields = variant_fields
+            .get(&first_value)
+            .expect("Field group must have fields");
+
+        // Generate match patterns for ALL values in this group
+        let mut case_patterns = Vec::new();
+        for case_value in &all_values {
+            // Convert case value to enum variant pattern if switch field is an enum
+            let case_pattern = if let Some(switch_type) = switch_field_type {
+                if ctx.enum_parent_map.contains_key(switch_type) {
+                    // It's an enum - look up the enum variant name from the value
+                    if let Some(variant_name) = ctx
+                        .enum_value_map
+                        .get(&(switch_type.clone(), *case_value))
+                    {
+                        // Use the enum variant: EnumType::VariantName
+                        format!("{}::{}", switch_type, variant_name)
+                    } else {
+                        // Fallback to formatted hex value if variant not found
+                        format_hex_value(*case_value)
+                    }
                 } else {
-                    // Fallback to raw value if variant not found
-                    case_value.clone()
+                    format_hex_value(*case_value)
                 }
             } else {
-                case_value.clone()
-            }
-        } else {
-            case_value.clone()
-        };
+                format_hex_value(*case_value)
+            };
+            case_patterns.push(case_pattern);
+        }
 
-        out.push_str(&format!("            {} => {{\n", case_pattern));
+        // Join all patterns with |
+        out.push_str(&format!(
+            "            {} => {{\n",
+            case_patterns.join(" | ")
+        ));
 
         // Read variant-specific fields
         for field in case_fields {
@@ -1780,13 +1833,15 @@ fn generate_variant_reader_impl(
         }
 
         // Construct the variant
-        // Generate variant name from case value
-        let variant_name = if case_value.starts_with("0x") || case_value.starts_with("0X") {
-            format!("Type{}", &case_value[2..].to_uppercase())
-        } else if let Some(stripped) = case_value.strip_prefix('-') {
-            format!("TypeNeg{}", stripped)
+        // Generate variant name from first case value (must match type generator)
+        let variant_name = if first_value < 0 {
+            // Negative value: -1 -> "TypeNeg1"
+            format!("TypeNeg{}", first_value.abs())
         } else {
-            format!("Type{}", case_value)
+            // Positive value: format as hex and extract hex digits
+            // 0x04 -> "04", 0xAB -> "AB"
+            let hex_str = format!("{:X}", first_value);
+            format!("Type{}", hex_str)
         };
 
         out.push('\n');
