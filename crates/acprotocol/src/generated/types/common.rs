@@ -578,16 +578,6 @@ pub struct EmoteSetList {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteSetType1 {
-    #[serde(rename = "Probability")]
-    pub probability: f32,
-    #[serde(rename = "Emotes")]
-    pub emotes: PackableList<Emote>,
-    #[serde(rename = "ClassId")]
-    pub class_id: u32,
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmoteSetType2 {
     #[serde(rename = "Probability")]
     pub probability: f32,
@@ -610,15 +600,13 @@ pub struct EmoteSetType5 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteSetTypeF {
+pub struct EmoteSetType1 {
     #[serde(rename = "Probability")]
     pub probability: f32,
     #[serde(rename = "Emotes")]
     pub emotes: PackableList<Emote>,
-    #[serde(rename = "MinHealth")]
-    pub min_health: f32,
-    #[serde(rename = "MaxHealth")]
-    pub max_health: f32,
+    #[serde(rename = "ClassId")]
+    pub class_id: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -632,17 +620,27 @@ pub struct EmoteSetTypeC {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct EmoteSetTypeF {
+    #[serde(rename = "Probability")]
+    pub probability: f32,
+    #[serde(rename = "Emotes")]
+    pub emotes: PackableList<Emote>,
+    #[serde(rename = "MinHealth")]
+    pub min_health: f32,
+    #[serde(rename = "MaxHealth")]
+    pub max_health: f32,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Category")]
 pub enum EmoteSet {
-    #[serde(rename = "0x01")]
-    #[serde(alias = "0x06")]
-    Type1(EmoteSetType1),
     #[serde(rename = "0x02")]
     Type2(EmoteSetType2),
     #[serde(rename = "0x05")]
     Type5(EmoteSetType5),
-    #[serde(rename = "0x0F")]
-    TypeF(EmoteSetTypeF),
+    #[serde(rename = "0x01")]
+    #[serde(alias = "0x06")]
+    Type1(EmoteSetType1),
     #[serde(rename = "0x0C")]
     #[serde(alias = "0x0D")]
     #[serde(alias = "0x16")]
@@ -660,18 +658,38 @@ pub enum EmoteSet {
     #[serde(alias = "0x25")]
     #[serde(alias = "0x26")]
     TypeC(EmoteSetTypeC),
+    #[serde(rename = "0x0F")]
+    TypeF(EmoteSetTypeF),
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteType2 {
+pub struct EmoteType3 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
     pub extent: f32,
-    #[serde(rename = "Amount64")]
-    pub amount64: u64,
-    #[serde(rename = "HeroXP64")]
-    pub hero_xp64: u64,
+    #[serde(rename = "CProfile")]
+    pub c_profile: CreationProfile,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct EmoteType4 {
+    #[serde(rename = "Delay")]
+    pub delay: f32,
+    #[serde(rename = "Extent")]
+    pub extent: f32,
+    #[serde(rename = "Frame")]
+    pub frame: Frame,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct EmoteType5 {
+    #[serde(rename = "Delay")]
+    pub delay: f32,
+    #[serde(rename = "Extent")]
+    pub extent: f32,
+    #[serde(rename = "Motion")]
+    pub motion: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -692,16 +710,6 @@ pub struct EmoteType9 {
     pub extent: f32,
     #[serde(rename = "Sound")]
     pub sound: u32,
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteTypeE {
-    #[serde(rename = "Delay")]
-    pub delay: f32,
-    #[serde(rename = "Extent")]
-    pub extent: f32,
-    #[serde(rename = "SpellId")]
-    pub spell_id: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -807,16 +815,6 @@ pub struct EmoteType32 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteType5 {
-    #[serde(rename = "Delay")]
-    pub delay: f32,
-    #[serde(rename = "Extent")]
-    pub extent: f32,
-    #[serde(rename = "Motion")]
-    pub motion: u32,
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmoteType35 {
     #[serde(rename = "Delay")]
     pub delay: f32,
@@ -857,6 +855,18 @@ pub struct EmoteType1E {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct EmoteType2 {
+    #[serde(rename = "Delay")]
+    pub delay: f32,
+    #[serde(rename = "Extent")]
+    pub extent: f32,
+    #[serde(rename = "Amount64")]
+    pub amount64: u64,
+    #[serde(rename = "HeroXP64")]
+    pub hero_xp64: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmoteType3F {
     #[serde(rename = "Delay")]
     pub delay: f32,
@@ -867,13 +877,13 @@ pub struct EmoteType3F {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteType3 {
+pub struct EmoteTypeE {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
     pub extent: f32,
-    #[serde(rename = "CProfile")]
-    pub c_profile: CreationProfile,
+    #[serde(rename = "SpellId")]
+    pub spell_id: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -898,26 +908,6 @@ pub struct EmoteType1 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteType4 {
-    #[serde(rename = "Delay")]
-    pub delay: f32,
-    #[serde(rename = "Extent")]
-    pub extent: f32,
-    #[serde(rename = "Frame")]
-    pub frame: Frame,
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteType22 {
-    #[serde(rename = "Delay")]
-    pub delay: f32,
-    #[serde(rename = "Extent")]
-    pub extent: f32,
-    #[serde(rename = "Amount")]
-    pub amount: u32,
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmoteType20 {
     #[serde(rename = "Delay")]
     pub delay: f32,
@@ -930,13 +920,13 @@ pub struct EmoteType20 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct EmoteType6E {
+pub struct EmoteType22 {
     #[serde(rename = "Delay")]
     pub delay: f32,
     #[serde(rename = "Extent")]
     pub extent: f32,
-    #[serde(rename = "Stat")]
-    pub stat: u32,
+    #[serde(rename = "Amount")]
+    pub amount: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -966,6 +956,16 @@ pub struct EmoteType72 {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct EmoteType6E {
+    #[serde(rename = "Delay")]
+    pub delay: f32,
+    #[serde(rename = "Extent")]
+    pub extent: f32,
+    #[serde(rename = "Stat")]
+    pub stat: u32,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmoteType76 {
     #[serde(rename = "Delay")]
     pub delay: f32,
@@ -980,18 +980,21 @@ pub struct EmoteType76 {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "Type")]
 pub enum Emote {
-    #[serde(rename = "0x02")]
-    #[serde(alias = "0x3E")]
-    Type2(EmoteType2),
+    #[serde(rename = "0x03")]
+    #[serde(alias = "0x4A")]
+    Type3(EmoteType3),
+    #[serde(rename = "0x04")]
+    #[serde(alias = "0x06")]
+    #[serde(alias = "0x0B")]
+    #[serde(alias = "0x57")]
+    Type4(EmoteType4),
+    #[serde(rename = "0x05")]
+    #[serde(alias = "0x34")]
+    Type5(EmoteType5),
     #[serde(rename = "0x07")]
     Type7(EmoteType7),
     #[serde(rename = "0x09")]
     Type9(EmoteType9),
-    #[serde(rename = "0x0E")]
-    #[serde(alias = "0x13")]
-    #[serde(alias = "0x1B")]
-    #[serde(alias = "0x49")]
-    TypeE(EmoteTypeE),
     #[serde(rename = "0x1C")]
     #[serde(alias = "0x1D")]
     Type1C(EmoteType1C),
@@ -1016,9 +1019,6 @@ pub enum Emote {
     Type31(EmoteType31),
     #[serde(rename = "0x32")]
     Type32(EmoteType32),
-    #[serde(rename = "0x05")]
-    #[serde(alias = "0x34")]
-    Type5(EmoteType5),
     #[serde(rename = "0x35")]
     #[serde(alias = "0x36")]
     #[serde(alias = "0x37")]
@@ -1031,13 +1031,18 @@ pub enum Emote {
     #[serde(alias = "0x47")]
     #[serde(alias = "0x52")]
     Type1E(EmoteType1E),
+    #[serde(rename = "0x02")]
+    #[serde(alias = "0x3E")]
+    Type2(EmoteType2),
     #[serde(rename = "0x3F")]
     #[serde(alias = "0x63")]
     #[serde(alias = "0x64")]
     Type3F(EmoteType3F),
-    #[serde(rename = "0x03")]
-    #[serde(alias = "0x4A")]
-    Type3(EmoteType3),
+    #[serde(rename = "0x0E")]
+    #[serde(alias = "0x13")]
+    #[serde(alias = "0x1B")]
+    #[serde(alias = "0x49")]
+    TypeE(EmoteTypeE),
     #[serde(rename = "0x4C")]
     Type4C(EmoteType4C),
     #[serde(rename = "0x01")]
@@ -1070,19 +1075,6 @@ pub enum Emote {
     #[serde(alias = "0x58")]
     #[serde(alias = "0x79")]
     Type1(EmoteType1),
-    #[serde(rename = "0x04")]
-    #[serde(alias = "0x06")]
-    #[serde(alias = "0x0B")]
-    #[serde(alias = "0x57")]
-    Type4(EmoteType4),
-    #[serde(rename = "0x22")]
-    #[serde(alias = "0x2F")]
-    #[serde(alias = "0x30")]
-    #[serde(alias = "0x5A")]
-    #[serde(alias = "0x6F")]
-    #[serde(alias = "0x77")]
-    #[serde(alias = "0x78")]
-    Type22(EmoteType22),
     #[serde(rename = "0x20")]
     #[serde(alias = "0x21")]
     #[serde(alias = "0x46")]
@@ -1099,14 +1091,22 @@ pub enum Emote {
     #[serde(alias = "0x6C")]
     #[serde(alias = "0x6D")]
     Type20(EmoteType20),
-    #[serde(rename = "0x6E")]
-    #[serde(alias = "0x73")]
-    Type6E(EmoteType6E),
+    #[serde(rename = "0x22")]
+    #[serde(alias = "0x2F")]
+    #[serde(alias = "0x30")]
+    #[serde(alias = "0x5A")]
+    #[serde(alias = "0x6F")]
+    #[serde(alias = "0x77")]
+    #[serde(alias = "0x78")]
+    Type22(EmoteType22),
     #[serde(rename = "0x70")]
     #[serde(alias = "0x71")]
     Type70(EmoteType70),
     #[serde(rename = "0x72")]
     Type72(EmoteType72),
+    #[serde(rename = "0x6E")]
+    #[serde(alias = "0x73")]
+    Type6E(EmoteType6E),
     #[serde(rename = "0x76")]
     Type76(EmoteType76),
 }
@@ -3825,18 +3825,6 @@ impl crate::readers::ACDataType for EmoteSetList {
     }
 }
 
-impl EmoteSetType1 {
-    pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
-        let class_id = read_u32(reader)?;
-
-        Ok(Self {
-            probability,
-            emotes,
-            class_id,
-        })
-    }
-}
-
 impl EmoteSetType2 {
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let vendor_type = read_u32(reader)?;
@@ -3859,6 +3847,18 @@ impl EmoteSetType5 {
             emotes,
             style,
             substyle,
+        })
+    }
+}
+
+impl EmoteSetType1 {
+    pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+        let class_id = read_u32(reader)?;
+
+        Ok(Self {
+            probability,
+            emotes,
+            class_id,
         })
     }
 }
@@ -3896,10 +3896,6 @@ impl EmoteSet {
         let emotes = read_packable_list::<Emote>(reader)?;
 
         match category {
-            EmoteCategory::RefuseEmoteCategory | EmoteCategory::GiveEmoteCategory => {
-                let variant_struct = EmoteSetType1::read(reader, probability, emotes)?;
-                Ok(Self::Type1(variant_struct))
-            },
             EmoteCategory::VendorEmoteCategory => {
                 let variant_struct = EmoteSetType2::read(reader, probability, emotes)?;
                 Ok(Self::Type2(variant_struct))
@@ -3908,13 +3904,17 @@ impl EmoteSet {
                 let variant_struct = EmoteSetType5::read(reader, probability, emotes)?;
                 Ok(Self::Type5(variant_struct))
             },
-            EmoteCategory::WoundedTauntEmoteCategory => {
-                let variant_struct = EmoteSetTypeF::read(reader, probability, emotes)?;
-                Ok(Self::TypeF(variant_struct))
+            EmoteCategory::RefuseEmoteCategory | EmoteCategory::GiveEmoteCategory => {
+                let variant_struct = EmoteSetType1::read(reader, probability, emotes)?;
+                Ok(Self::Type1(variant_struct))
             },
             EmoteCategory::QuestSuccessEmoteCategory | EmoteCategory::QuestFailureEmoteCategory | EmoteCategory::TestSuccessEmoteCategory | EmoteCategory::TestFailureEmoteCategory | EmoteCategory::EventSuccessEmoteCategory | EmoteCategory::EventFailureEmoteCategory | EmoteCategory::TestNoQualityEmoteCategory | EmoteCategory::QuestNoFellowEmoteCategory | EmoteCategory::TestNoFellowEmoteCategory | EmoteCategory::GotoSetEmoteCategory | EmoteCategory::NumFellowsSuccessEmoteCategory | EmoteCategory::NumFellowsFailureEmoteCategory | EmoteCategory::NumCharacterTitlesSuccessEmoteCategory | EmoteCategory::NumCharacterTitlesFailureEmoteCategory | EmoteCategory::ReceiveLocalSignalEmoteCategory | EmoteCategory::ReceiveTalkDirectEmoteCategory => {
                 let variant_struct = EmoteSetTypeC::read(reader, probability, emotes)?;
                 Ok(Self::TypeC(variant_struct))
+            },
+            EmoteCategory::WoundedTauntEmoteCategory => {
+                let variant_struct = EmoteSetTypeF::read(reader, probability, emotes)?;
+                Ok(Self::TypeF(variant_struct))
             },
             _ => Err(format!("Unknown {} value: {:?}", "category", category).into()),
         }
@@ -3927,6 +3927,20 @@ impl crate::readers::ACDataType for EmoteSet {
     }
 }
 
+impl EmoteType2 {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        let amount64 = read_u64(reader)?;
+        let hero_xp64 = read_u64(reader)?;
+
+        Ok(Self {
+            delay,
+            extent,
+            amount64,
+            hero_xp64,
+        })
+    }
+}
+
 impl EmoteType3 {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let c_profile = CreationProfile::read(reader)?;
@@ -3935,6 +3949,18 @@ impl EmoteType3 {
             delay,
             extent,
             c_profile,
+        })
+    }
+}
+
+impl EmoteType4 {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        let frame = Frame::read(reader)?;
+
+        Ok(Self {
+            delay,
+            extent,
+            frame,
         })
     }
 }
@@ -3963,30 +3989,6 @@ impl EmoteType9 {
     }
 }
 
-impl EmoteType1 {
-    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let message = read_string(reader)?;
-
-        Ok(Self {
-            delay,
-            extent,
-            message,
-        })
-    }
-}
-
-impl EmoteTypeE {
-    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let spell_id = read_u32(reader)?;
-
-        Ok(Self {
-            delay,
-            extent,
-            spell_id,
-        })
-    }
-}
-
 impl EmoteType1C {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount = read_u32(reader)?;
@@ -4001,16 +4003,14 @@ impl EmoteType1C {
     }
 }
 
-impl EmoteType23 {
+impl EmoteType22 {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let message = read_string(reader)?;
-        let stat = read_u32(reader)?;
+        let amount = read_u32(reader)?;
 
         Ok(Self {
             delay,
             extent,
-            message,
-            stat,
+            amount,
         })
     }
 }
@@ -4033,6 +4033,22 @@ impl EmoteType25 {
     }
 }
 
+impl EmoteType26 {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+        let test_string = read_string(reader)?;
+        let stat = read_u32(reader)?;
+
+        Ok(Self {
+            delay,
+            extent,
+            message,
+            test_string,
+            stat,
+        })
+    }
+}
+
 impl EmoteType24 {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
@@ -4046,6 +4062,20 @@ impl EmoteType24 {
             message,
             min,
             max,
+            stat,
+        })
+    }
+}
+
+impl EmoteType23 {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+        let stat = read_u32(reader)?;
+
+        Ok(Self {
+            delay,
+            extent,
+            message,
             stat,
         })
     }
@@ -4083,6 +4113,18 @@ impl EmoteType32 {
             min,
             max,
             display,
+        })
+    }
+}
+
+impl EmoteType1 {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        let message = read_string(reader)?;
+
+        Ok(Self {
+            delay,
+            extent,
+            message,
         })
     }
 }
@@ -4129,48 +4171,26 @@ impl EmoteType38 {
     }
 }
 
-impl EmoteType1E {
+impl EmoteType3F {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let message = read_string(reader)?;
-        let min = read_u32(reader)?;
-        let max = read_u32(reader)?;
+        let position = Position::read(reader)?;
 
         Ok(Self {
             delay,
             extent,
-            message,
-            min,
-            max,
+            position,
         })
     }
 }
 
-impl EmoteType2 {
+impl EmoteTypeE {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let amount64 = read_u64(reader)?;
-        let hero_xp64 = read_u64(reader)?;
+        let spell_id = read_u32(reader)?;
 
         Ok(Self {
             delay,
             extent,
-            amount64,
-            hero_xp64,
-        })
-    }
-}
-
-impl EmoteType26 {
-    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let message = read_string(reader)?;
-        let test_string = read_string(reader)?;
-        let stat = read_u32(reader)?;
-
-        Ok(Self {
-            delay,
-            extent,
-            message,
-            test_string,
-            stat,
+            spell_id,
         })
     }
 }
@@ -4189,26 +4209,18 @@ impl EmoteType4C {
     }
 }
 
-impl EmoteType4 {
+impl EmoteType1E {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let frame = Frame::read(reader)?;
+        let message = read_string(reader)?;
+        let min = read_u32(reader)?;
+        let max = read_u32(reader)?;
 
         Ok(Self {
             delay,
             extent,
-            frame,
-        })
-    }
-}
-
-impl EmoteType3F {
-    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let position = Position::read(reader)?;
-
-        Ok(Self {
-            delay,
-            extent,
-            position,
+            message,
+            min,
+            max,
         })
     }
 }
@@ -4222,30 +4234,6 @@ impl EmoteType20 {
             delay,
             extent,
             message,
-            amount,
-        })
-    }
-}
-
-impl EmoteType6E {
-    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let stat = read_u32(reader)?;
-
-        Ok(Self {
-            delay,
-            extent,
-            stat,
-        })
-    }
-}
-
-impl EmoteType22 {
-    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
-        let amount = read_u32(reader)?;
-
-        Ok(Self {
-            delay,
-            extent,
             amount,
         })
     }
@@ -4281,6 +4269,18 @@ impl EmoteType72 {
     }
 }
 
+impl EmoteType6E {
+    pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        let stat = read_u32(reader)?;
+
+        Ok(Self {
+            delay,
+            extent,
+            stat,
+        })
+    }
+}
+
 impl EmoteType76 {
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
@@ -4306,21 +4306,17 @@ impl Emote {
                 let variant_struct = EmoteType2::read(reader, delay, extent)?;
                 Ok(Self::Type2(variant_struct))
             },
-            EmoteType::GiveEmoteType | EmoteType::TakeItemsEmoteType => {
-                let variant_struct = EmoteType3::read(reader, delay, extent)?;
-                Ok(Self::Type3(variant_struct))
-            },
             EmoteType::MoveHomeEmoteType | EmoteType::MoveEmoteType | EmoteType::TurnEmoteType | EmoteType::MoveToPosEmoteType => {
                 let variant_struct = EmoteType4::read(reader, delay, extent)?;
                 Ok(Self::Type4(variant_struct))
             },
-            EmoteType::MotionEmoteType | EmoteType::ForceMotionEmoteType => {
-                let variant_struct = EmoteType5::read(reader, delay, extent)?;
-                Ok(Self::Type5(variant_struct))
-            },
             EmoteType::PhysScriptEmoteType => {
                 let variant_struct = EmoteType7::read(reader, delay, extent)?;
                 Ok(Self::Type7(variant_struct))
+            },
+            EmoteType::ActEmoteType | EmoteType::SayEmoteType | EmoteType::TellEmoteType | EmoteType::TextDirectEmoteType | EmoteType::WorldBroadcastEmoteType | EmoteType::LocalBroadcastEmoteType | EmoteType::DirectBroadcastEmoteType | EmoteType::UpdateQuestEmoteType | EmoteType::InqQuestEmoteType | EmoteType::StampQuestEmoteType | EmoteType::StartEventEmoteType | EmoteType::StopEventEmoteType | EmoteType::BLogEmoteType | EmoteType::AdminSpamEmoteType | EmoteType::EraseQuestEmoteType | EmoteType::InqEventEmoteType | EmoteType::InqFellowQuestEmoteType | EmoteType::UpdateFellowQuestEmoteType | EmoteType::StampFellowQuestEmoteType | EmoteType::TellFellowEmoteType | EmoteType::FellowBroadcastEmoteType | EmoteType::GotoEmoteType | EmoteType::PopUpEmoteType | EmoteType::UpdateMyQuestEmoteType | EmoteType::InqMyQuestEmoteType | EmoteType::StampMyQuestEmoteType | EmoteType::EraseMyQuestEmoteType | EmoteType::LocalSignalEmoteType | EmoteType::InqContractsFullEmoteType => {
+                let variant_struct = EmoteType1::read(reader, delay, extent)?;
+                Ok(Self::Type1(variant_struct))
             },
             EmoteType::SoundEmoteType => {
                 let variant_struct = EmoteType9::read(reader, delay, extent)?;
@@ -4334,14 +4330,6 @@ impl Emote {
                 let variant_struct = EmoteType20::read(reader, delay, extent)?;
                 Ok(Self::Type20(variant_struct))
             },
-            EmoteType::InqBoolStatEmoteType | EmoteType::InqSkillTrainedEmoteType | EmoteType::InqSkillSpecializedEmoteType => {
-                let variant_struct = EmoteType23::read(reader, delay, extent)?;
-                Ok(Self::Type23(variant_struct))
-            },
-            EmoteType::InqIntStatEmoteType | EmoteType::InqAttributeStatEmoteType | EmoteType::InqRawAttributeStatEmoteType | EmoteType::InqSecondaryAttributeStatEmoteType | EmoteType::InqRawSecondaryAttributeStatEmoteType | EmoteType::InqSkillStatEmoteType | EmoteType::InqRawSkillStatEmoteType => {
-                let variant_struct = EmoteType24::read(reader, delay, extent)?;
-                Ok(Self::Type24(variant_struct))
-            },
             EmoteType::InqFloatStatEmoteType => {
                 let variant_struct = EmoteType25::read(reader, delay, extent)?;
                 Ok(Self::Type25(variant_struct))
@@ -4349,6 +4337,18 @@ impl Emote {
             EmoteType::InqStringStatEmoteType | EmoteType::InqYesNoEmoteType => {
                 let variant_struct = EmoteType26::read(reader, delay, extent)?;
                 Ok(Self::Type26(variant_struct))
+            },
+            EmoteType::InqIntStatEmoteType | EmoteType::InqAttributeStatEmoteType | EmoteType::InqRawAttributeStatEmoteType | EmoteType::InqSecondaryAttributeStatEmoteType | EmoteType::InqRawSecondaryAttributeStatEmoteType | EmoteType::InqSkillStatEmoteType | EmoteType::InqRawSkillStatEmoteType => {
+                let variant_struct = EmoteType24::read(reader, delay, extent)?;
+                Ok(Self::Type24(variant_struct))
+            },
+            EmoteType::InqBoolStatEmoteType | EmoteType::InqSkillTrainedEmoteType | EmoteType::InqSkillSpecializedEmoteType => {
+                let variant_struct = EmoteType23::read(reader, delay, extent)?;
+                Ok(Self::Type23(variant_struct))
+            },
+            EmoteType::AddCharacterTitleEmoteType | EmoteType::AwardTrainingCreditsEmoteType | EmoteType::InflictVitaePenaltyEmoteType | EmoteType::RemoveVitaePenaltyEmoteType | EmoteType::SetAltRacialSkillsEmoteType | EmoteType::AddContractEmoteType | EmoteType::RemoveContractEmoteType => {
+                let variant_struct = EmoteType22::read(reader, delay, extent)?;
+                Ok(Self::Type22(variant_struct))
             },
             EmoteType::AwardLevelProportionalXPEmoteType => {
                 let variant_struct = EmoteType31::read(reader, delay, extent)?;
@@ -4358,6 +4358,10 @@ impl Emote {
                 let variant_struct = EmoteType32::read(reader, delay, extent)?;
                 Ok(Self::Type32(variant_struct))
             },
+            EmoteType::MotionEmoteType | EmoteType::ForceMotionEmoteType => {
+                let variant_struct = EmoteType5::read(reader, delay, extent)?;
+                Ok(Self::Type5(variant_struct))
+            },
             EmoteType::SetIntStatEmoteType | EmoteType::IncrementIntStatEmoteType | EmoteType::DecrementIntStatEmoteType | EmoteType::SetBoolStatEmoteType => {
                 let variant_struct = EmoteType35::read(reader, delay, extent)?;
                 Ok(Self::Type35(variant_struct))
@@ -4365,10 +4369,6 @@ impl Emote {
             EmoteType::CreateTreasureEmoteType => {
                 let variant_struct = EmoteType38::read(reader, delay, extent)?;
                 Ok(Self::Type38(variant_struct))
-            },
-            EmoteType::ActEmoteType | EmoteType::SayEmoteType | EmoteType::TellEmoteType | EmoteType::TextDirectEmoteType | EmoteType::WorldBroadcastEmoteType | EmoteType::LocalBroadcastEmoteType | EmoteType::DirectBroadcastEmoteType | EmoteType::UpdateQuestEmoteType | EmoteType::InqQuestEmoteType | EmoteType::StampQuestEmoteType | EmoteType::StartEventEmoteType | EmoteType::StopEventEmoteType | EmoteType::BLogEmoteType | EmoteType::AdminSpamEmoteType | EmoteType::EraseQuestEmoteType | EmoteType::InqEventEmoteType | EmoteType::InqFellowQuestEmoteType | EmoteType::UpdateFellowQuestEmoteType | EmoteType::StampFellowQuestEmoteType | EmoteType::TellFellowEmoteType | EmoteType::FellowBroadcastEmoteType | EmoteType::GotoEmoteType | EmoteType::PopUpEmoteType | EmoteType::UpdateMyQuestEmoteType | EmoteType::InqMyQuestEmoteType | EmoteType::StampMyQuestEmoteType | EmoteType::EraseMyQuestEmoteType | EmoteType::LocalSignalEmoteType | EmoteType::InqContractsFullEmoteType => {
-                let variant_struct = EmoteType1::read(reader, delay, extent)?;
-                Ok(Self::Type1(variant_struct))
             },
             EmoteType::InqQuestSolvesEmoteType | EmoteType::InqFellowNumEmoteType | EmoteType::InqNumCharacterTitlesEmoteType | EmoteType::InqMyQuestSolvesEmoteType => {
                 let variant_struct = EmoteType1E::read(reader, delay, extent)?;
@@ -4378,6 +4378,10 @@ impl Emote {
                 let variant_struct = EmoteTypeE::read(reader, delay, extent)?;
                 Ok(Self::TypeE(variant_struct))
             },
+            EmoteType::GiveEmoteType | EmoteType::TakeItemsEmoteType => {
+                let variant_struct = EmoteType3::read(reader, delay, extent)?;
+                Ok(Self::Type3(variant_struct))
+            },
             EmoteType::InqOwnsItemsEmoteType => {
                 let variant_struct = EmoteType4C::read(reader, delay, extent)?;
                 Ok(Self::Type4C(variant_struct))
@@ -4385,6 +4389,10 @@ impl Emote {
             EmoteType::SetSanctuaryPositionEmoteType | EmoteType::TeleportTargetEmoteType | EmoteType::TeleportSelfEmoteType => {
                 let variant_struct = EmoteType3F::read(reader, delay, extent)?;
                 Ok(Self::Type3F(variant_struct))
+            },
+            EmoteType::UntrainSkillEmoteType | EmoteType::SetInt64StatEmoteType => {
+                let variant_struct = EmoteType6E::read(reader, delay, extent)?;
+                Ok(Self::Type6E(variant_struct))
             },
             EmoteType::SpendLuminanceEmoteType | EmoteType::AwardLuminanceEmoteType => {
                 let variant_struct = EmoteType70::read(reader, delay, extent)?;
@@ -4394,17 +4402,9 @@ impl Emote {
                 let variant_struct = EmoteType72::read(reader, delay, extent)?;
                 Ok(Self::Type72(variant_struct))
             },
-            EmoteType::UntrainSkillEmoteType | EmoteType::SetInt64StatEmoteType => {
-                let variant_struct = EmoteType6E::read(reader, delay, extent)?;
-                Ok(Self::Type6E(variant_struct))
-            },
             EmoteType::SetFloatStatEmoteType => {
                 let variant_struct = EmoteType76::read(reader, delay, extent)?;
                 Ok(Self::Type76(variant_struct))
-            },
-            EmoteType::AddCharacterTitleEmoteType | EmoteType::AwardTrainingCreditsEmoteType | EmoteType::InflictVitaePenaltyEmoteType | EmoteType::RemoveVitaePenaltyEmoteType | EmoteType::SetAltRacialSkillsEmoteType | EmoteType::AddContractEmoteType | EmoteType::RemoveContractEmoteType => {
-                let variant_struct = EmoteType22::read(reader, delay, extent)?;
-                Ok(Self::Type22(variant_struct))
             },
             _ => Err(format!("Unknown {} value: {:?}", "type_", type_).into()),
         }

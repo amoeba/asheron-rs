@@ -5,7 +5,7 @@ use log::debug;
 use quick_xml::{Reader, events::Event};
 
 use crate::{
-    identifiers::{IdentifierType, safe_enum_variant_name, safe_identifier},
+    identifiers::{IdentifierType, safe_enum_variant_name, safe_identifier, to_snake_case},
     types::{
         EnumValue, Field, FieldSet, IfBranch, NestedSwitch, ProtocolEnum, ProtocolType, Subfield,
     },
@@ -3633,10 +3633,11 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     for protocol_type in &rectified_c2s_types {
         if !protocol_type.is_primitive {
             let type_name = &protocol_type.name;
-            c2s_modules.push(type_name.clone());
+            let module_name = to_snake_case(type_name);
+            c2s_modules.push(module_name.clone());
             let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
             files.push(GeneratedFile {
-                path: format!("messages/c2s/{}.rs", type_name),
+                path: format!("messages/c2s/{}.rs", module_name),
                 content,
             });
         }
@@ -3646,10 +3647,11 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     for protocol_type in &rectified_s2c_types {
         if !protocol_type.is_primitive {
             let type_name = &protocol_type.name;
-            s2c_modules.push(type_name.clone());
+            let module_name = to_snake_case(type_name);
+            s2c_modules.push(module_name.clone());
             let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
             files.push(GeneratedFile {
-                path: format!("messages/s2c/{}.rs", type_name),
+                path: format!("messages/s2c/{}.rs", module_name),
                 content,
             });
         }
