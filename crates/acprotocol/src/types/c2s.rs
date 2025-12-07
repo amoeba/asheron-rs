@@ -2,7 +2,8 @@ use serde::{Serialize, Deserialize};
 
 // Set a single character option.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_PlayerOptionChangedEvent {
+#[serde(rename = "Character_PlayerOptionChangedEvent")]
+pub struct CharacterPlayerOptionChangedEvent {
         #[serde(rename = "Option")]
         option: CharacterOptions1,
         #[serde(rename = "Value")]
@@ -11,7 +12,8 @@ pub struct Character_PlayerOptionChangedEvent {
 
 // Starts a melee attack against a target
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Combat_TargetedMeleeAttack {
+#[serde(rename = "Combat_TargetedMeleeAttack")]
+pub struct CombatTargetedMeleeAttack {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Height")]
@@ -22,7 +24,8 @@ pub struct Combat_TargetedMeleeAttack {
 
 // Starts a missle attack against a target
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Combat_TargetedMissileAttack {
+#[serde(rename = "Combat_TargetedMissileAttack")]
+pub struct CombatTargetedMissileAttack {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Height")]
@@ -33,42 +36,48 @@ pub struct Combat_TargetedMissileAttack {
 
 // Set AFK mode.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_SetAFKMode {
+#[serde(rename = "Communication_SetAFKMode")]
+pub struct CommunicationSetAFKMode {
         #[serde(rename = "AFK")]
         afk: bool
 }
 
 // Set AFK message.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_SetAFKMessage {
+#[serde(rename = "Communication_SetAFKMessage")]
+pub struct CommunicationSetAFKMessage {
         #[serde(rename = "Message")]
         message: String
 }
 
 // Talking
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_Talk {
+#[serde(rename = "Communication_Talk")]
+pub struct CommunicationTalk {
         #[serde(rename = "Message")]
         message: String
 }
 
 // Removes a friend
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Social_RemoveFriend {
+#[serde(rename = "Social_RemoveFriend")]
+pub struct SocialRemoveFriend {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Adds a friend
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Social_AddFriend {
+#[serde(rename = "Social_AddFriend")]
+pub struct SocialAddFriend {
         #[serde(rename = "CharacterName")]
         character_name: String
 }
 
 // Store an item in a container.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_PutItemInContainer {
+#[serde(rename = "Inventory_PutItemInContainer")]
+pub struct InventoryPutItemInContainer {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "ContainerId")]
@@ -79,7 +88,8 @@ pub struct Inventory_PutItemInContainer {
 
 // Gets and weilds an item.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_GetAndWieldItem {
+#[serde(rename = "Inventory_GetAndWieldItem")]
+pub struct InventoryGetAndWieldItem {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Slot")]
@@ -88,62 +98,73 @@ pub struct Inventory_GetAndWieldItem {
 
 // Drop an item.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_DropItem {
+#[serde(rename = "Inventory_DropItem")]
+pub struct InventoryDropItem {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Swear allegiance
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_SwearAllegiance {
+#[serde(rename = "Allegiance_SwearAllegiance")]
+pub struct AllegianceSwearAllegiance {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Break allegiance
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_BreakAllegiance {
+#[serde(rename = "Allegiance_BreakAllegiance")]
+pub struct AllegianceBreakAllegiance {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Allegiance update request
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_UpdateRequest {
+#[serde(rename = "Allegiance_UpdateRequest")]
+pub struct AllegianceUpdateRequest {
         #[serde(rename = "On")]
         on: bool
 }
 
 // Clears friend list
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Social_ClearFriends {}
+#[serde(rename = "Social_ClearFriends")]
+pub struct SocialClearFriends {}
 
 // Teleport to the PKLite Arena
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_TeleToPKLArena {}
+#[serde(rename = "Character_TeleToPKLArena")]
+pub struct CharacterTeleToPKLArena {}
 
 // Teleport to the PK Arena
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_TeleToPKArena {}
+#[serde(rename = "Character_TeleToPKArena")]
+pub struct CharacterTeleToPKArena {}
 
 // Sets a character's display title
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Social_SetDisplayCharacterTitle {
+#[serde(rename = "Social_SetDisplayCharacterTitle")]
+pub struct SocialSetDisplayCharacterTitle {
         #[serde(rename = "TitleId")]
         title_id: u32
 }
 
 // Query the allegiance name
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_QueryAllegianceName {}
+#[serde(rename = "Allegiance_QueryAllegianceName")]
+pub struct AllegianceQueryAllegianceName {}
 
 // Clears the allegiance name
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_ClearAllegianceName {}
+#[serde(rename = "Allegiance_ClearAllegianceName")]
+pub struct AllegianceClearAllegianceName {}
 
 // Direct message by Id
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_TalkDirect {
+#[serde(rename = "Communication_TalkDirect")]
+pub struct CommunicationTalkDirect {
         #[serde(rename = "Message")]
         message: String,
         #[serde(rename = "TargetId")]
@@ -152,14 +173,16 @@ pub struct Communication_TalkDirect {
 
 // Sets the allegiance name
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_SetAllegianceName {
+#[serde(rename = "Allegiance_SetAllegianceName")]
+pub struct AllegianceSetAllegianceName {
         #[serde(rename = "Name")]
         name: String
 }
 
 // Attempt to use an item with a target.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_UseWithTargetEvent {
+#[serde(rename = "Inventory_UseWithTargetEvent")]
+pub struct InventoryUseWithTargetEvent {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "TargetId")]
@@ -168,14 +191,16 @@ pub struct Inventory_UseWithTargetEvent {
 
 // Attempt to use an item.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_UseEvent {
+#[serde(rename = "Inventory_UseEvent")]
+pub struct InventoryUseEvent {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Sets an allegiance officer
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_SetAllegianceOfficer {
+#[serde(rename = "Allegiance_SetAllegianceOfficer")]
+pub struct AllegianceSetAllegianceOfficer {
         #[serde(rename = "CharacterName")]
         character_name: String,
         #[serde(rename = "Level")]
@@ -184,7 +209,8 @@ pub struct Allegiance_SetAllegianceOfficer {
 
 // Sets an allegiance officer title for a given level
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_SetAllegianceOfficerTitle {
+#[serde(rename = "Allegiance_SetAllegianceOfficerTitle")]
+pub struct AllegianceSetAllegianceOfficerTitle {
         #[serde(rename = "Level")]
         level: AllegianceOfficerLevel,
         #[serde(rename = "Title")]
@@ -193,29 +219,34 @@ pub struct Allegiance_SetAllegianceOfficerTitle {
 
 // List the allegiance officer titles
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_ListAllegianceOfficerTitles {}
+#[serde(rename = "Allegiance_ListAllegianceOfficerTitles")]
+pub struct AllegianceListAllegianceOfficerTitles {}
 
 // Clears the allegiance officer titles
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_ClearAllegianceOfficerTitles {}
+#[serde(rename = "Allegiance_ClearAllegianceOfficerTitles")]
+pub struct AllegianceClearAllegianceOfficerTitles {}
 
 // Perform the allegiance lock action
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_DoAllegianceLockAction {
+#[serde(rename = "Allegiance_DoAllegianceLockAction")]
+pub struct AllegianceDoAllegianceLockAction {
         #[serde(rename = "Action")]
         action: AllegianceLockAction
 }
 
 // Sets a person as an approved vassal
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_SetAllegianceApprovedVassal {
+#[serde(rename = "Allegiance_SetAllegianceApprovedVassal")]
+pub struct AllegianceSetAllegianceApprovedVassal {
         #[serde(rename = "CharacterName")]
         character_name: String
 }
 
 // Gags a person in allegiance chat
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_AllegianceChatGag {
+#[serde(rename = "Allegiance_AllegianceChatGag")]
+pub struct AllegianceAllegianceChatGag {
         #[serde(rename = "CharacterName")]
         character_name: String,
         #[serde(rename = "On")]
@@ -224,14 +255,16 @@ pub struct Allegiance_AllegianceChatGag {
 
 // Perform the allegiance house action
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_DoAllegianceHouseAction {
+#[serde(rename = "Allegiance_DoAllegianceHouseAction")]
+pub struct AllegianceDoAllegianceHouseAction {
         #[serde(rename = "Action")]
         action: AllegianceHouseAction
 }
 
 // Spend XP to raise a vital.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Train_TrainAttribute2nd {
+#[serde(rename = "Train_TrainAttribute2nd")]
+pub struct TrainTrainAttribute2nd {
         #[serde(rename = "Type")]
         type_: VitalId,
         #[serde(rename = "Experience")]
@@ -240,7 +273,8 @@ pub struct Train_TrainAttribute2nd {
 
 // Spend XP to raise an attribute.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Train_TrainAttribute {
+#[serde(rename = "Train_TrainAttribute")]
+pub struct TrainTrainAttribute {
         #[serde(rename = "Type")]
         type_: AttributeId,
         #[serde(rename = "Experience")]
@@ -249,7 +283,8 @@ pub struct Train_TrainAttribute {
 
 // Spend XP to raise a skill.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Train_TrainSkill {
+#[serde(rename = "Train_TrainSkill")]
+pub struct TrainTrainSkill {
         #[serde(rename = "Skill")]
         skill: SkillId,
         #[serde(rename = "Experience")]
@@ -258,7 +293,8 @@ pub struct Train_TrainSkill {
 
 // Spend skill credits to train a skill.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Train_TrainSkillAdvancementClass {
+#[serde(rename = "Train_TrainSkillAdvancementClass")]
+pub struct TrainTrainSkillAdvancementClass {
         #[serde(rename = "Skill")]
         skill: SkillId,
         #[serde(rename = "Credits")]
@@ -267,14 +303,16 @@ pub struct Train_TrainSkillAdvancementClass {
 
 // Cast a spell with no target.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Magic_CastUntargetedSpell {
+#[serde(rename = "Magic_CastUntargetedSpell")]
+pub struct MagicCastUntargetedSpell {
         #[serde(rename = "SpellId")]
         spell_id: LayeredSpellId
 }
 
 // Cast a spell on a target
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Magic_CastTargetedSpell {
+#[serde(rename = "Magic_CastTargetedSpell")]
+pub struct MagicCastTargetedSpell {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "SpellId")]
@@ -283,14 +321,16 @@ pub struct Magic_CastTargetedSpell {
 
 // Changes the combat mode
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Combat_ChangeCombatMode {
+#[serde(rename = "Combat_ChangeCombatMode")]
+pub struct CombatChangeCombatMode {
         #[serde(rename = "Mode")]
         mode: CombatMode
 }
 
 // Merges one stack with another
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_StackableMerge {
+#[serde(rename = "Inventory_StackableMerge")]
+pub struct InventoryStackableMerge {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "TargetId")]
@@ -301,7 +341,8 @@ pub struct Inventory_StackableMerge {
 
 // Split a stack and place it into a container
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_StackableSplitToContainer {
+#[serde(rename = "Inventory_StackableSplitToContainer")]
+pub struct InventoryStackableSplitToContainer {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "ContainerId")]
@@ -314,7 +355,8 @@ pub struct Inventory_StackableSplitToContainer {
 
 // Split a stack and place it into the world
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_StackableSplitTo3D {
+#[serde(rename = "Inventory_StackableSplitTo3D")]
+pub struct InventoryStackableSplitTo3D {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Amount")]
@@ -323,7 +365,8 @@ pub struct Inventory_StackableSplitTo3D {
 
 // Changes an account squelch
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_ModifyCharacterSquelch {
+#[serde(rename = "Communication_ModifyCharacterSquelch")]
+pub struct CommunicationModifyCharacterSquelch {
         #[serde(rename = "Add")]
         add: bool,
         #[serde(rename = "ObjectId")]
@@ -336,7 +379,8 @@ pub struct Communication_ModifyCharacterSquelch {
 
 // Changes an account squelch
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_ModifyAccountSquelch {
+#[serde(rename = "Communication_ModifyAccountSquelch")]
+pub struct CommunicationModifyAccountSquelch {
         #[serde(rename = "Add")]
         add: bool,
         #[serde(rename = "CharacterName")]
@@ -345,7 +389,8 @@ pub struct Communication_ModifyAccountSquelch {
 
 // Changes the global filters, /filter -type as well as /chat and /notell
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_ModifyGlobalSquelch {
+#[serde(rename = "Communication_ModifyGlobalSquelch")]
+pub struct CommunicationModifyGlobalSquelch {
         #[serde(rename = "Add")]
         add: bool,
         #[serde(rename = "Type")]
@@ -354,7 +399,8 @@ pub struct Communication_ModifyGlobalSquelch {
 
 // Direct message by name
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_TalkDirectByName {
+#[serde(rename = "Communication_TalkDirectByName")]
+pub struct CommunicationTalkDirectByName {
         #[serde(rename = "Message")]
         message: String,
         #[serde(rename = "TargetName")]
@@ -363,7 +409,8 @@ pub struct Communication_TalkDirectByName {
 
 // Buy from a vendor
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Vendor_Buy {
+#[serde(rename = "Vendor_Buy")]
+pub struct VendorBuy {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Items")]
@@ -374,7 +421,8 @@ pub struct Vendor_Buy {
 
 // Sell to a vendor
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Vendor_Sell {
+#[serde(rename = "Vendor_Sell")]
+pub struct VendorSell {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Items")]
@@ -383,15 +431,18 @@ pub struct Vendor_Sell {
 
 // Teleport to your lifestone. (/lifestone)
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_TeleToLifestone {}
+#[serde(rename = "Character_TeleToLifestone")]
+pub struct CharacterTeleToLifestone {}
 
 // The client is ready for the character to materialize after portalling or logging on.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_LoginCompleteNotification {}
+#[serde(rename = "Character_LoginCompleteNotification")]
+pub struct CharacterLoginCompleteNotification {}
 
 // Create a fellowship
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Fellowship_Create {
+#[serde(rename = "Fellowship_Create")]
+pub struct FellowshipCreate {
         #[serde(rename = "Name")]
         name: String,
         #[serde(rename = "ShareXP")]
@@ -400,42 +451,48 @@ pub struct Fellowship_Create {
 
 // Quit the fellowship
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Fellowship_Quit {
+#[serde(rename = "Fellowship_Quit")]
+pub struct FellowshipQuit {
         #[serde(rename = "Disband")]
         disband: bool
 }
 
 // Dismiss a player from the fellowship
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Fellowship_Dismiss {
+#[serde(rename = "Fellowship_Dismiss")]
+pub struct FellowshipDismiss {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Recruit a player to the fellowship
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Fellowship_Recruit {
+#[serde(rename = "Fellowship_Recruit")]
+pub struct FellowshipRecruit {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Update request
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Fellowship_UpdateRequest {
+#[serde(rename = "Fellowship_UpdateRequest")]
+pub struct FellowshipUpdateRequest {
         #[serde(rename = "On")]
         on: bool
 }
 
 // Request update to book data (seems to be sent after failed add page)
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Writing_BookAddPage {
+#[serde(rename = "Writing_BookAddPage")]
+pub struct WritingBookAddPage {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Updates a page in a book
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Writing_BookModifyPage {
+#[serde(rename = "Writing_BookModifyPage")]
+pub struct WritingBookModifyPage {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "PageNum")]
@@ -446,14 +503,16 @@ pub struct Writing_BookModifyPage {
 
 // Add a page to a book
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Writing_BookData {
+#[serde(rename = "Writing_BookData")]
+pub struct WritingBookData {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Removes a page from a book
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Writing_BookDeletePage {
+#[serde(rename = "Writing_BookDeletePage")]
+pub struct WritingBookDeletePage {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "PageNum")]
@@ -462,7 +521,8 @@ pub struct Writing_BookDeletePage {
 
 // Requests data for a page in a book
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Writing_BookPageData {
+#[serde(rename = "Writing_BookPageData")]
+pub struct WritingBookPageData {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "PageNum")]
@@ -471,7 +531,8 @@ pub struct Writing_BookPageData {
 
 // Sets the inscription on an object
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Writing_SetInscription {
+#[serde(rename = "Writing_SetInscription")]
+pub struct WritingSetInscription {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Inscription")]
@@ -480,14 +541,16 @@ pub struct Writing_SetInscription {
 
 // Appraise something
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Item_Appraise {
+#[serde(rename = "Item_Appraise")]
+pub struct ItemAppraise {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Give an item to someone.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_GiveObjectRequest {
+#[serde(rename = "Inventory_GiveObjectRequest")]
+pub struct InventoryGiveObjectRequest {
         #[serde(rename = "TargetId")]
         target_id: ObjectId,
         #[serde(rename = "ObjectId")]
@@ -498,7 +561,8 @@ pub struct Inventory_GiveObjectRequest {
 
 // Advocate Teleport
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Advocate_Teleport {
+#[serde(rename = "Advocate_Teleport")]
+pub struct AdvocateTeleport {
         #[serde(rename = "ObjectId")]
         object_id: String,
         #[serde(rename = "Destination")]
@@ -507,7 +571,8 @@ pub struct Advocate_Teleport {
 
 // Sends an abuse report.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_AbuseLogRequest {
+#[serde(rename = "Character_AbuseLogRequest")]
+pub struct CharacterAbuseLogRequest {
         #[serde(rename = "Character")]
         character: String,
         #[serde(rename = "Status")]
@@ -518,21 +583,24 @@ pub struct Character_AbuseLogRequest {
 
 // Joins a chat channel
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_AddToChannel {
+#[serde(rename = "Communication_AddToChannel")]
+pub struct CommunicationAddToChannel {
         #[serde(rename = "Channel")]
         channel: Channel
 }
 
 // Leaves a chat channel
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_RemoveFromChannel {
+#[serde(rename = "Communication_RemoveFromChannel")]
+pub struct CommunicationRemoveFromChannel {
         #[serde(rename = "Channel")]
         channel: Channel
 }
 
 // Sends a message to a chat channel
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_ChannelBroadcast {
+#[serde(rename = "Communication_ChannelBroadcast")]
+pub struct CommunicationChannelBroadcast {
         #[serde(rename = "Channel")]
         channel: Channel,
         #[serde(rename = "SenderName")]
@@ -542,25 +610,29 @@ pub struct Communication_ChannelBroadcast {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_ChannelList {
+#[serde(rename = "Communication_ChannelList")]
+pub struct CommunicationChannelList {
         #[serde(rename = "Channel")]
         channel: Channel
 }
 
 // Requests a channel index
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_ChannelIndex {}
+#[serde(rename = "Communication_ChannelIndex")]
+pub struct CommunicationChannelIndex {}
 
 // Stop viewing the contents of a container
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_NoLongerViewingContents {
+#[serde(rename = "Inventory_NoLongerViewingContents")]
+pub struct InventoryNoLongerViewingContents {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Splits an item to a wield location.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_StackableSplitToWield {
+#[serde(rename = "Inventory_StackableSplitToWield")]
+pub struct InventoryStackableSplitToWield {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Slot")]
@@ -571,74 +643,85 @@ pub struct Inventory_StackableSplitToWield {
 
 // Add an item to the shortcut bar.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_AddShortCut {
+#[serde(rename = "Character_AddShortCut")]
+pub struct CharacterAddShortCut {
         #[serde(rename = "Shortcut")]
         shortcut: ShortCutData
 }
 
 // Remove an item from the shortcut bar.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_RemoveShortCut {
+#[serde(rename = "Character_RemoveShortCut")]
+pub struct CharacterRemoveShortCut {
         #[serde(rename = "Index")]
         index: u32
 }
 
 // Set multiple character options.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_CharacterOptionsEvent {
+#[serde(rename = "Character_CharacterOptionsEvent")]
+pub struct CharacterCharacterOptionsEvent {
         #[serde(rename = "Options")]
         options: PlayerModule
 }
 
 // Removes a spell from the spell book
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Magic_RemoveSpell {
+#[serde(rename = "Magic_RemoveSpell")]
+pub struct MagicRemoveSpell {
         #[serde(rename = "SpellId")]
         spell_id: LayeredSpellId
 }
 
 // Cancels an attack
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Combat_CancelAttack {}
+#[serde(rename = "Combat_CancelAttack")]
+pub struct CombatCancelAttack {}
 
 // Query's a creatures health
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Combat_QueryHealth {
+#[serde(rename = "Combat_QueryHealth")]
+pub struct CombatQueryHealth {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Query a character's age
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_QueryAge {
+#[serde(rename = "Character_QueryAge")]
+pub struct CharacterQueryAge {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Query a character's birth day
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_QueryBirth {
+#[serde(rename = "Character_QueryBirth")]
+pub struct CharacterQueryBirth {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Emote message
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_Emote {
+#[serde(rename = "Communication_Emote")]
+pub struct CommunicationEmote {
         #[serde(rename = "Message")]
         message: String
 }
 
 // Soul emote message
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Communication_SoulEmote {
+#[serde(rename = "Communication_SoulEmote")]
+pub struct CommunicationSoulEmote {
         #[serde(rename = "Message")]
         message: String
 }
 
 // Add a spell to a spell bar.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_AddSpellFavorite {
+#[serde(rename = "Character_AddSpellFavorite")]
+pub struct CharacterAddSpellFavorite {
         #[serde(rename = "SpellId")]
         spell_id: LayeredSpellId,
         #[serde(rename = "Index")]
@@ -649,7 +732,8 @@ pub struct Character_AddSpellFavorite {
 
 // Remove a spell from a spell bar.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_RemoveSpellFavorite {
+#[serde(rename = "Character_RemoveSpellFavorite")]
+pub struct CharacterRemoveSpellFavorite {
         #[serde(rename = "SpellId")]
         spell_id: LayeredSpellId,
         #[serde(rename = "SpellBar")]
@@ -658,22 +742,26 @@ pub struct Character_RemoveSpellFavorite {
 
 // Request a ping
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_RequestPing {}
+#[serde(rename = "Character_RequestPing")]
+pub struct CharacterRequestPing {}
 
 // Starts trading with another player.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Trade_OpenTradeNegotiations {
+#[serde(rename = "Trade_OpenTradeNegotiations")]
+pub struct TradeOpenTradeNegotiations {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Ends trading, when trade window is closed?
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Trade_CloseTradeNegotiations {}
+#[serde(rename = "Trade_CloseTradeNegotiations")]
+pub struct TradeCloseTradeNegotiations {}
 
 // Adds an object to the trade.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Trade_AddToTrade {
+#[serde(rename = "Trade_AddToTrade")]
+pub struct TradeAddToTrade {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "SlotIndex")]
@@ -682,44 +770,52 @@ pub struct Trade_AddToTrade {
 
 // Accepts a trade.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Trade_AcceptTrade {
+#[serde(rename = "Trade_AcceptTrade")]
+pub struct TradeAcceptTrade {
         #[serde(rename = "Contents")]
         contents: Trade
 }
 
 // Declines a trade, when cancel is clicked?
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Trade_DeclineTrade {}
+#[serde(rename = "Trade_DeclineTrade")]
+pub struct TradeDeclineTrade {}
 
 // Resets the trade, when clear all is clicked?
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Trade_ResetTrade {}
+#[serde(rename = "Trade_ResetTrade")]
+pub struct TradeResetTrade {}
 
 // Clears the player's corpse looting consent list, /consent clear
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_ClearPlayerConsentList {}
+#[serde(rename = "Character_ClearPlayerConsentList")]
+pub struct CharacterClearPlayerConsentList {}
 
 // Display the player's corpse looting consent list, /consent who 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_DisplayPlayerConsentList {}
+#[serde(rename = "Character_DisplayPlayerConsentList")]
+pub struct CharacterDisplayPlayerConsentList {}
 
 // Remove your corpse looting permission for the given player, /consent remove 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_RemoveFromPlayerConsentList {
+#[serde(rename = "Character_RemoveFromPlayerConsentList")]
+pub struct CharacterRemoveFromPlayerConsentList {
         #[serde(rename = "TargetName")]
         target_name: String
 }
 
 // Grants a player corpse looting permission, /permit add
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_AddPlayerPermission {
+#[serde(rename = "Character_AddPlayerPermission")]
+pub struct CharacterAddPlayerPermission {
         #[serde(rename = "TargetName")]
         target_name: String
 }
 
 // Buy a house
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_BuyHouse {
+#[serde(rename = "House_BuyHouse")]
+pub struct HouseBuyHouse {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Items")]
@@ -728,22 +824,26 @@ pub struct House_BuyHouse {
 
 // Query your house info, during signin
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_QueryHouse {}
+#[serde(rename = "House_QueryHouse")]
+pub struct HouseQueryHouse {}
 
 // Abandons your house
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_AbandonHouse {}
+#[serde(rename = "House_AbandonHouse")]
+pub struct HouseAbandonHouse {}
 
 // Revokes a player's corpse looting permission, /permit remove
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_RemovePlayerPermission {
+#[serde(rename = "Character_RemovePlayerPermission")]
+pub struct CharacterRemovePlayerPermission {
         #[serde(rename = "TargetName")]
         target_name: String
 }
 
 // Pay rent for a house
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_RentHouse {
+#[serde(rename = "House_RentHouse")]
+pub struct HouseRentHouse {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "Items")]
@@ -752,7 +852,8 @@ pub struct House_RentHouse {
 
 // Sets a new fill complevel for a component
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_SetDesiredComponentLevel {
+#[serde(rename = "Character_SetDesiredComponentLevel")]
+pub struct CharacterSetDesiredComponentLevel {
         #[serde(rename = "Wcid")]
         wcid: u32,
         #[serde(rename = "Amount")]
@@ -761,28 +862,32 @@ pub struct Character_SetDesiredComponentLevel {
 
 // Adds a guest to your house guest list
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_AddPermanentGuest {
+#[serde(rename = "House_AddPermanentGuest")]
+pub struct HouseAddPermanentGuest {
         #[serde(rename = "GuestName")]
         guest_name: String
 }
 
 // Removes a specific player from your house guest list, /house guest remove
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_RemovePermanentGuest {
+#[serde(rename = "House_RemovePermanentGuest")]
+pub struct HouseRemovePermanentGuest {
         #[serde(rename = "GuestName")]
         guest_name: String
 }
 
 // Sets your house open status
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_SetOpenHouseStatus {
+#[serde(rename = "House_SetOpenHouseStatus")]
+pub struct HouseSetOpenHouseStatus {
         #[serde(rename = "OpenHouse")]
         open_house: bool
 }
 
 // Changes a specific players storage permission, /house storage add/remove
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_ChangeStoragePermission {
+#[serde(rename = "House_ChangeStoragePermission")]
+pub struct HouseChangeStoragePermission {
         #[serde(rename = "GuestName")]
         guest_name: String,
         #[serde(rename = "HasPermission")]
@@ -791,88 +896,104 @@ pub struct House_ChangeStoragePermission {
 
 // Boots a specific player from your house /house boot
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_BootSpecificHouseGuest {
+#[serde(rename = "House_BootSpecificHouseGuest")]
+pub struct HouseBootSpecificHouseGuest {
         #[serde(rename = "GuestName")]
         guest_name: String
 }
 
 // Removes all storage permissions, /house storage remove_all
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_RemoveAllStoragePermission {}
+#[serde(rename = "House_RemoveAllStoragePermission")]
+pub struct HouseRemoveAllStoragePermission {}
 
 // Requests your full guest list, /house guest list
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_RequestFullGuestList {}
+#[serde(rename = "House_RequestFullGuestList")]
+pub struct HouseRequestFullGuestList {}
 
 // Sets the allegiance message of the day, /allegiance motd set
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_SetMotd {
+#[serde(rename = "Allegiance_SetMotd")]
+pub struct AllegianceSetMotd {
         #[serde(rename = "Message")]
         message: String
 }
 
 // Query the motd, /allegiance motd
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_QueryMotd {}
+#[serde(rename = "Allegiance_QueryMotd")]
+pub struct AllegianceQueryMotd {}
 
 // Clear the motd, /allegiance motd clear
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_ClearMotd {}
+#[serde(rename = "Allegiance_ClearMotd")]
+pub struct AllegianceClearMotd {}
 
 // Gets SlumLord info, sent after getting a failed house transaction
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_QueryLord {
+#[serde(rename = "House_QueryLord")]
+pub struct HouseQueryLord {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Adds all to your storage permissions, /house storage add -all
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_AddAllStoragePermission {}
+#[serde(rename = "House_AddAllStoragePermission")]
+pub struct HouseAddAllStoragePermission {}
 
 // Removes all guests, /house guest remove_all
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_RemoveAllPermanentGuests {}
+#[serde(rename = "House_RemoveAllPermanentGuests")]
+pub struct HouseRemoveAllPermanentGuests {}
 
 // Boot everyone from your house, /house boot -all
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_BootEveryone {}
+#[serde(rename = "House_BootEveryone")]
+pub struct HouseBootEveryone {}
 
 // Teleports you to your house, /house recall
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_TeleToHouse {}
+#[serde(rename = "House_TeleToHouse")]
+pub struct HouseTeleToHouse {}
 
 // Queries an item's mana
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Item_QueryItemMana {
+#[serde(rename = "Item_QueryItemMana")]
+pub struct ItemQueryItemMana {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Modify whether house hooks are visibile or not, /house hooks on/off
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_SetHooksVisibility {
+#[serde(rename = "House_SetHooksVisibility")]
+pub struct HouseSetHooksVisibility {
         #[serde(rename = "Visible")]
         visible: bool
 }
 
 // Modify whether allegiance members are guests, /house guest add_allegiance/remove_allegiance
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_ModifyAllegianceGuestPermission {
+#[serde(rename = "House_ModifyAllegianceGuestPermission")]
+pub struct HouseModifyAllegianceGuestPermission {
         #[serde(rename = "Add")]
         add: bool
 }
 
 // Modify whether allegiance members can access storage, /house storage add_allegiance/remove_allegiance
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_ModifyAllegianceStoragePermission {
+#[serde(rename = "House_ModifyAllegianceStoragePermission")]
+pub struct HouseModifyAllegianceStoragePermission {
         #[serde(rename = "Add")]
         add: bool
 }
 
 // Joins a chess game
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Game_Join {
+#[serde(rename = "Game_Join")]
+pub struct GameJoin {
         #[serde(rename = "GameId")]
         game_id: u32,
         #[serde(rename = "Team")]
@@ -881,11 +1002,13 @@ pub struct Game_Join {
 
 // Quits a chess game
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Game_Quit {}
+#[serde(rename = "Game_Quit")]
+pub struct GameQuit {}
 
 // Makes a chess move
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Game_Move {
+#[serde(rename = "Game_Move")]
+pub struct GameMove {
         #[serde(rename = "XFrom")]
         x_from: i32,
         #[serde(rename = "YFrom")]
@@ -898,25 +1021,29 @@ pub struct Game_Move {
 
 // Skip a move?
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Game_MovePass {}
+#[serde(rename = "Game_MovePass")]
+pub struct GameMovePass {}
 
 // Offer or confirm stalemate
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Game_Stalemate {
+#[serde(rename = "Game_Stalemate")]
+pub struct GameStalemate {
         #[serde(rename = "On")]
         on: bool
 }
 
 // Lists available house /house available
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_ListAvailableHouses {
+#[serde(rename = "House_ListAvailableHouses")]
+pub struct HouseListAvailableHouses {
         #[serde(rename = "Type")]
         type_: HouseType
 }
 
 // Confirms a dialog
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_ConfirmationResponse {
+#[serde(rename = "Character_ConfirmationResponse")]
+pub struct CharacterConfirmationResponse {
         #[serde(rename = "Type")]
         type_: ConfirmationType,
         #[serde(rename = "Context")]
@@ -927,7 +1054,8 @@ pub struct Character_ConfirmationResponse {
 
 // Boots a player from the allegiance, optionally all characters on their account
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_BreakAllegianceBoot {
+#[serde(rename = "Allegiance_BreakAllegianceBoot")]
+pub struct AllegianceBreakAllegianceBoot {
         #[serde(rename = "BooteeName")]
         bootee_name: String,
         #[serde(rename = "AccountBoot")]
@@ -936,22 +1064,26 @@ pub struct Allegiance_BreakAllegianceBoot {
 
 // Teleports player to their allegiance housing, /house mansion_recall
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct House_TeleToMansion {}
+#[serde(rename = "House_TeleToMansion")]
+pub struct HouseTeleToMansion {}
 
 // Player is commiting suicide
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_Suicide {}
+#[serde(rename = "Character_Suicide")]
+pub struct CharacterSuicide {}
 
 // Request allegiance info for a player
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_AllegianceInfoRequest {
+#[serde(rename = "Allegiance_AllegianceInfoRequest")]
+pub struct AllegianceAllegianceInfoRequest {
         #[serde(rename = "TargetName")]
         target_name: String
 }
 
 // Salvages items
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Inventory_CreateTinkeringTool {
+#[serde(rename = "Inventory_CreateTinkeringTool")]
+pub struct InventoryCreateTinkeringTool {
         #[serde(rename = "ToolId")]
         tool_id: ObjectId,
         #[serde(rename = "Items")]
@@ -960,36 +1092,42 @@ pub struct Inventory_CreateTinkeringTool {
 
 // Changes the spell book filter
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_SpellbookFilterEvent {
+#[serde(rename = "Character_SpellbookFilterEvent")]
+pub struct CharacterSpellbookFilterEvent {
         #[serde(rename = "Options")]
         options: SpellBookFilterOptions
 }
 
 // Teleport to the marketplace
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_TeleToMarketplace {}
+#[serde(rename = "Character_TeleToMarketplace")]
+pub struct CharacterTeleToMarketplace {}
 
 // Enter PKLite mode
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_EnterPKLite {}
+#[serde(rename = "Character_EnterPKLite")]
+pub struct CharacterEnterPKLite {}
 
 // Fellowship Assign a new leader
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Fellowship_AssignNewLeader {
+#[serde(rename = "Fellowship_AssignNewLeader")]
+pub struct FellowshipAssignNewLeader {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // Fellowship Change openness
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Fellowship_ChangeFellowOpeness {
+#[serde(rename = "Fellowship_ChangeFellowOpeness")]
+pub struct FellowshipChangeFellowOpeness {
         #[serde(rename = "Open")]
         open: bool
 }
 
 // Boots a player from the allegiance chat
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_AllegianceChatBoot {
+#[serde(rename = "Allegiance_AllegianceChatBoot")]
+pub struct AllegianceAllegianceChatBoot {
         #[serde(rename = "CharacterName")]
         character_name: String,
         #[serde(rename = "Reason")]
@@ -998,44 +1136,52 @@ pub struct Allegiance_AllegianceChatBoot {
 
 // Bans a player from the allegiance
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_AddAllegianceBan {
+#[serde(rename = "Allegiance_AddAllegianceBan")]
+pub struct AllegianceAddAllegianceBan {
         #[serde(rename = "CharacterName")]
         character_name: String
 }
 
 // Removes a player ban from the allegiance
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_RemoveAllegianceBan {
+#[serde(rename = "Allegiance_RemoveAllegianceBan")]
+pub struct AllegianceRemoveAllegianceBan {
         #[serde(rename = "CharacterName")]
         character_name: String
 }
 
 // Display allegiance bans
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_ListAllegianceBans {}
+#[serde(rename = "Allegiance_ListAllegianceBans")]
+pub struct AllegianceListAllegianceBans {}
 
 // Removes an allegiance officer
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_RemoveAllegianceOfficer {
+#[serde(rename = "Allegiance_RemoveAllegianceOfficer")]
+pub struct AllegianceRemoveAllegianceOfficer {
         #[serde(rename = "CharacterName")]
         character_name: String
 }
 
 // List allegiance officers
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_ListAllegianceOfficers {}
+#[serde(rename = "Allegiance_ListAllegianceOfficers")]
+pub struct AllegianceListAllegianceOfficers {}
 
 // Clear allegiance officers
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_ClearAllegianceOfficers {}
+#[serde(rename = "Allegiance_ClearAllegianceOfficers")]
+pub struct AllegianceClearAllegianceOfficers {}
 
 // Recalls to players allegiance hometown
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Allegiance_RecallAllegianceHometown {}
+#[serde(rename = "Allegiance_RecallAllegianceHometown")]
+pub struct AllegianceRecallAllegianceHometown {}
 
 // Admin Returns a plugin list response
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Admin_QueryPluginListResponse {
+#[serde(rename = "Admin_QueryPluginListResponse")]
+pub struct AdminQueryPluginListResponse {
         #[serde(rename = "Context")]
         context: u32,
         #[serde(rename = "PluginList")]
@@ -1044,7 +1190,8 @@ pub struct Admin_QueryPluginListResponse {
 
 // Admin Returns plugin info
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Admin_QueryPluginResponse {
+#[serde(rename = "Admin_QueryPluginResponse")]
+pub struct AdminQueryPluginResponse {
         #[serde(rename = "Context")]
         context: u32,
         #[serde(rename = "Success")]
@@ -1061,7 +1208,8 @@ pub struct Admin_QueryPluginResponse {
 
 // Completes the barber interaction
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_FinishBarber {
+#[serde(rename = "Character_FinishBarber")]
+pub struct CharacterFinishBarber {
         #[serde(rename = "BasePalette")]
         base_palette: DataId,
         #[serde(rename = "HeadObject")]
@@ -1098,28 +1246,32 @@ pub struct Character_FinishBarber {
 
 // Abandons a contract
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Social_AbandonContract {
+#[serde(rename = "Social_AbandonContract")]
+pub struct SocialAbandonContract {
         #[serde(rename = "ContractId")]
         contract_id: ContractId
 }
 
 // Performs a jump
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Movement_Jump {
+#[serde(rename = "Movement_Jump")]
+pub struct MovementJump {
         #[serde(rename = "Jump")]
         jump: JumpPack
 }
 
 // Move to state data
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Movement_MoveToState {
+#[serde(rename = "Movement_MoveToState")]
+pub struct MovementMoveToState {
         #[serde(rename = "MoveToState")]
         move_to_state: MoveToStatePack
 }
 
 // Performs a movement based on input
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Movement_DoMovementCommand {
+#[serde(rename = "Movement_DoMovementCommand")]
+pub struct MovementDoMovementCommand {
         #[serde(rename = "Motion")]
         motion: u32,
         #[serde(rename = "Speed")]
@@ -1130,7 +1282,8 @@ pub struct Movement_DoMovementCommand {
 
 // Stops a movement
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Movement_StopMovementCommand {
+#[serde(rename = "Movement_StopMovementCommand")]
+pub struct MovementStopMovementCommand {
         #[serde(rename = "Motion")]
         motion: u32,
         #[serde(rename = "HoldKey")]
@@ -1139,32 +1292,37 @@ pub struct Movement_StopMovementCommand {
 
 // Sets an autonomy level
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Movement_AutonomyLevel {
+#[serde(rename = "Movement_AutonomyLevel")]
+pub struct MovementAutonomyLevel {
         #[serde(rename = "AutonomyLevel")]
         autonomy_level: u32
 }
 
 // Sends an autonomous position
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Movement_AutonomousPosition {
+#[serde(rename = "Movement_AutonomousPosition")]
+pub struct MovementAutonomousPosition {
         #[serde(rename = "Position")]
         position: AutonomousPositionPack
 }
 
 // Performs a non autonomous jump
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Movement_Jump_NonAutonomous {
+#[serde(rename = "Movement_Jump_NonAutonomous")]
+pub struct MovementJumpNonAutonomous {
         #[serde(rename = "Extent")]
         extent: f32
 }
 
 // Instructs the client to return to 2D mode - the character list.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Login_LogOffCharacter {}
+#[serde(rename = "Login_LogOffCharacter")]
+pub struct LoginLogOffCharacter {}
 
 // Mark a character for deletetion.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_CharacterDelete {
+#[serde(rename = "Character_CharacterDelete")]
+pub struct CharacterCharacterDelete {
         #[serde(rename = "Account")]
         account: String,
         #[serde(rename = "Slot")]
@@ -1173,7 +1331,8 @@ pub struct Character_CharacterDelete {
 
 // Character creation result
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Character_SendCharGenResult {
+#[serde(rename = "Character_SendCharGenResult")]
+pub struct CharacterSendCharGenResult {
         #[serde(rename = "Account")]
         account: String,
         #[serde(rename = "Result")]
@@ -1182,7 +1341,8 @@ pub struct Character_SendCharGenResult {
 
 // The character to log in.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Login_SendEnterWorld {
+#[serde(rename = "Login_SendEnterWorld")]
+pub struct LoginSendEnterWorld {
         #[serde(rename = "CharacterId")]
         character_id: ObjectId,
         #[serde(rename = "Account")]
@@ -1191,22 +1351,26 @@ pub struct Login_SendEnterWorld {
 
 // Asks server for a new object description
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Object_SendForceObjdesc {
+#[serde(rename = "Object_SendForceObjdesc")]
+pub struct ObjectSendForceObjdesc {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId
 }
 
 // The user has clicked 'Enter'. This message does not contain the Id of the character logging on; that comes later.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Login_SendEnterWorldRequest {}
+#[serde(rename = "Login_SendEnterWorldRequest")]
+pub struct LoginSendEnterWorldRequest {}
 
 // Sent if player is an PSR, I assume it displays the server version number
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Admin_SendAdminGetServerVersion {}
+#[serde(rename = "Admin_SendAdminGetServerVersion")]
+pub struct AdminSendAdminGetServerVersion {}
 
 // Seems to be a legacy friends command, /friends old, for when Jan 2006 event changed the friends list
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Social_SendFriendsCommand {
+#[serde(rename = "Social_SendFriendsCommand")]
+pub struct SocialSendFriendsCommand {
         #[serde(rename = "Command")]
         command: u32,
         #[serde(rename = "Player")]
@@ -1215,7 +1379,8 @@ pub struct Social_SendFriendsCommand {
 
 // Admin command to restore a character
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Admin_SendAdminRestoreCharacter {
+#[serde(rename = "Admin_SendAdminRestoreCharacter")]
+pub struct AdminSendAdminRestoreCharacter {
         #[serde(rename = "ObjectId")]
         object_id: ObjectId,
         #[serde(rename = "RestoredCharName")]
@@ -1226,8 +1391,9 @@ pub struct Admin_SendAdminRestoreCharacter {
 
 // Send or receive a message using Turbine Chat.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename = "Communication_TurbineChat")]
 #[serde(tag = "BlobDispatchType")]
-pub enum Communication_TurbineChat {
+pub enum CommunicationTurbineChat {
     #[serde(rename = "0x01")]
     #[serde(alias = "0x02")]
     Type01 {
@@ -1260,7 +1426,8 @@ pub enum Communication_TurbineChat {
 
 // DDD request for data
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DDD_RequestDataMessage {
+#[serde(rename = "DDD_RequestDataMessage")]
+pub struct DDDRequestDataMessage {
         #[serde(rename = "ResourceType")]
         resource_type: u32,
         #[serde(rename = "ResourceId")]
@@ -1269,7 +1436,8 @@ pub struct DDD_RequestDataMessage {
 
 // TODO
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DDD_InterrogationResponseMessage {
+#[serde(rename = "DDD_InterrogationResponseMessage")]
+pub struct DDDInterrogationResponseMessage {
         #[serde(rename = "Language")]
         language: u32,
         #[serde(rename = "Files")]
@@ -1278,9 +1446,11 @@ pub struct DDD_InterrogationResponseMessage {
 
 // Ends DDD message update
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DDD_EndDDDMessage {}
+#[serde(rename = "DDD_EndDDDMessage")]
+pub struct DDDEndDDDMessage {}
 
 // Ends DDD update
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct DDD_OnEndDDD {}
+#[serde(rename = "DDD_OnEndDDD")]
+pub struct DDDOnEndDDD {}
 

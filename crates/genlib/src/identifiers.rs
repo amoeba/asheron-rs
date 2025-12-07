@@ -91,11 +91,12 @@ pub fn safe_identifier(name: &str, identifier_type: IdentifierType) -> SafeIdent
             }
         }
         IdentifierType::Type => {
-            // For types, keep original name but check for reserved words
-            if is_reserved_word(name) {
-                format!("{name}_")
+            // Convert to PascalCase, removing underscores
+            let pascal_case = to_pascal_case(name);
+            if is_reserved_word(&pascal_case) {
+                format!("{pascal_case}_")
             } else {
-                name.to_string()
+                pascal_case
             }
         }
     };

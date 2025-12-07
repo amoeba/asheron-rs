@@ -120,8 +120,12 @@ pub struct {enum_name} {{\n        pub bits: {},\n}}\n\n",
 }
 
 fn generate_type(protocol_type: &ProtocolType) -> String {
-    let type_name = &protocol_type.name;
-    println!("generate_type: name = {type_name}");
+    let original_type_name = &protocol_type.name;
+    println!("generate_type: name = {original_type_name}");
+
+    // Convert type name to PascalCase
+    let safe_type_name = safe_identifier(original_type_name, IdentifierType::Type);
+    let type_name = &safe_type_name.name;
 
     let mut out = String::new();
 
@@ -134,7 +138,7 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
         let rust_type = get_rust_type(parent_type);
 
         // Only generate alias if the rust type differs from the XML type name
-        if rust_type != type_name {
+        if rust_type != *original_type_name {
             out.push_str(&format!(
                 "#[allow(non_camel_case_types)]\npub type {type_name} = {rust_type};\n\n"
             ));
@@ -144,10 +148,18 @@ fn generate_type(protocol_type: &ProtocolType) -> String {
 
     let Some(field_set) = &protocol_type.fields else {
         // No fields, generate empty struct
-        out.push_str(&format!(
-            "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+        if safe_type_name.needs_rename {
+            out.push_str(&format!(
+                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename = \"{original_type_name}\")]
 pub struct {type_name} {{}}\n\n"
-        ));
+            ));
+        } else {
+            out.push_str(&format!(
+                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct {type_name} {{}}\n\n"
+            ));
+        }
         return out;
     };
 
@@ -156,11 +168,20 @@ pub struct {type_name} {{}}\n\n"
         // Generate enum
         let switch_field = field_set.switch_field.as_ref().unwrap();
 
-        out.push_str(&format!(
-            "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+        if safe_type_name.needs_rename {
+            out.push_str(&format!(
+                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename = \"{original_type_name}\")]
 #[serde(tag = \"{switch_field}\")]
 pub enum {type_name} {{\n"
-        ));
+            ));
+        } else {
+            out.push_str(&format!(
+                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = \"{switch_field}\")]
+pub enum {type_name} {{\n"
+            ));
+        }
 
         // Group case values by their field sets (to handle multi-value cases)
         // Map: field signature -> (primary_value, [all_values])
@@ -244,12 +265,22 @@ pub enum {type_name} {{\n"
 
         let fields_out: String = field_out.join(",\n");
 
-        out.push_str(&format!(
-            "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+        if safe_type_name.needs_rename {
+            out.push_str(&format!(
+                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename = \"{original_type_name}\")]
 pub struct {type_name} {{
 {fields_out}
 }}\n\n"
-        ));
+            ));
+        } else {
+            out.push_str(&format!(
+                "#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct {type_name} {{
+{fields_out}
+}}\n\n"
+            ));
+        }
     }
 
     out
