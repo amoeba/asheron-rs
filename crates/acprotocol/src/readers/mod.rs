@@ -1,9 +1,9 @@
-use std::io::Read;
+use crate::types::{PHashTable, PackableHashTable, PackableList};
 use std::cmp::Eq;
-use std::hash::Hash;
 use std::collections::HashMap;
 use std::error::Error;
-use crate::types::{PackableList, PackableHashTable, PHashTable};
+use std::hash::Hash;
+use std::io::Read;
 
 pub mod common {
     include!("../generated/readers/common.rs");
@@ -191,9 +191,9 @@ pub fn read_string(reader: &mut dyn Read) -> Result<String, Box<dyn Error>> {
 
     // Calculate bytes read (including length prefix)
     let bytes_read = if len_i16 == -1 {
-        2 + 4 + len  // i16 + i32 + string bytes
+        2 + 4 + len // i16 + i32 + string bytes
     } else {
-        2 + len  // i16 + string bytes
+        2 + len // i16 + string bytes
     };
 
     // Read padding to align to 4 bytes
@@ -300,7 +300,8 @@ pub fn read_packed_word(reader: &mut dyn Read) -> Result<i16, Box<dyn Error>> {
 /// Format: 2 bytes if high bit not set, otherwise 4 bytes
 pub fn read_packed_dword(reader: &mut dyn Read) -> Result<u32, Box<dyn Error>> {
     let tmp = read_i16(reader)?;
-    if (tmp as i16) < 0 {  // Check if high bit is set (negative when interpreted as i16)
+    if (tmp as i16) < 0 {
+        // Check if high bit is set (negative when interpreted as i16)
         // High bit set: read another 2 bytes
         let high_part = ((tmp as u32) << 16) & 0x7FFF_FFFF;
         let low_part = read_u16(reader)? as u32;
@@ -381,18 +382,26 @@ pub fn read_packable_list_with<T>(
     for _ in 0..count {
         list.push(read_element(reader)?);
     }
-    Ok(PackableList { count: count as u32, list })
+    Ok(PackableList {
+        count: count as u32,
+        list,
+    })
 }
 
 /// Read a PackableList<T> where T implements ACDataType
 /// Format: u32 count followed by count items
-pub fn read_packable_list<T: ACDataType>(reader: &mut dyn Read) -> Result<PackableList<T>, Box<dyn Error>> {
+pub fn read_packable_list<T: ACDataType>(
+    reader: &mut dyn Read,
+) -> Result<PackableList<T>, Box<dyn Error>> {
     let count = read_u32(reader)? as usize;
     let mut list = Vec::with_capacity(count);
     for _ in 0..count {
         list.push(read_item::<T>(reader)?);
     }
-    Ok(PackableList { count: count as u32, list })
+    Ok(PackableList {
+        count: count as u32,
+        list,
+    })
 }
 
 /// Read a PackableHashTable<K, V> with custom key and value reader functions
@@ -408,18 +417,22 @@ where
     let mut count_buf = [0u8; 2];
     reader.read_exact(&mut count_buf)?;
     let count = u16::from_le_bytes(count_buf) as usize;
-    
+
     let mut max_size_buf = [0u8; 2];
     reader.read_exact(&mut max_size_buf)?;
     let max_size = u16::from_le_bytes(max_size_buf);
-    
+
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
         let key = read_key(reader)?;
         let value = read_value(reader)?;
         table.insert(key, value);
     }
-    Ok(PackableHashTable { count: count as u16, max_size, table })
+    Ok(PackableHashTable {
+        count: count as u16,
+        max_size,
+        table,
+    })
 }
 
 /// Read a PHashTable<K, V> with custom key and value reader functions
@@ -436,7 +449,7 @@ where
     reader.read_exact(&mut packed_size_buf)?;
     let packed_size = u32::from_le_bytes(packed_size_buf);
     let count = (packed_size & 0xFFFFFF) as usize;
-    
+
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
         let key = read_key(reader)?;
@@ -453,7 +466,7 @@ pub fn read_phash_table<K: ACDataType + Eq + Hash, V: ACDataType>(
 ) -> Result<PHashTable<K, V>, Box<dyn Error>> {
     let packed_size = read_u32(reader)?;
     let count = (packed_size & 0xFFFFFF) as usize;
-    
+
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
         let key = read_item::<K>(reader)?;
