@@ -1,2 +1,2 @@
 [env]
-FILTER_TYPES = "Vector3,Quaternion,LandcellId,Frame,ObjectId,Position,AllegianceData,AllegianceHierarchy,AllegianceRecord"
+FILTER_TYPES = "PackedDWORD,Subpalette,TextureMapChange,AnimPartChange,DataId,ObjDesc,Vector3,Quaternion,LandcellId,Frame,ObjectId,Position,AllegianceData,AllegianceRecord,AllegianceHierarchy"

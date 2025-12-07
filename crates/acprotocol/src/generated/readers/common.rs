@@ -9,6 +9,12 @@ use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
 
+impl PackedDWORD {
+    pub fn read(_reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {})
+    }
+}
+
 impl ObjectId {
     pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self(read_u32(reader)?))
@@ -157,7 +163,7 @@ impl AllegianceData {
         let loyalty = read_u16(reader)?;
         let leadership = read_u16(reader)?;
         let mut allegiance_age = None;
-        let mut time_online = None;
+        let time_online;
         if flags == 0x4 {
             time_online = Some(read_u64(reader)?);
         } else {
@@ -180,6 +186,94 @@ impl AllegianceData {
             allegiance_age,
             time_online,
             name,
+        })
+    }
+}
+
+impl ObjDesc {
+    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
+        let version = read_u8(reader)?;
+        let palette_count = read_u8(reader)?;
+        let texture_count = read_u8(reader)?;
+        let model_count = read_u8(reader)?;
+        let mut palette = None;
+        if palette_count > 0 {
+            palette = Some(DataId::read(reader)?);
+        }
+        let subpalettes = (|| -> Result<_, Box<dyn std::error::Error>> {
+            let length = palette_count as usize;
+            let mut vec = Vec::with_capacity(length);
+            for _ in 0..length {
+                vec.push(Subpalette::read(reader)?);
+            }
+            Ok(vec)
+        })()?;
+        let tm_changes = (|| -> Result<_, Box<dyn std::error::Error>> {
+            let length = texture_count as usize;
+            let mut vec = Vec::with_capacity(length);
+            for _ in 0..length {
+                vec.push(TextureMapChange::read(reader)?);
+            }
+            Ok(vec)
+        })()?;
+        let ap_changes = (|| -> Result<_, Box<dyn std::error::Error>> {
+            let length = model_count as usize;
+            let mut vec = Vec::with_capacity(length);
+            for _ in 0..length {
+                vec.push(AnimPartChange::read(reader)?);
+            }
+            Ok(vec)
+        })()?;
+
+        Ok(Self {
+            version,
+            palette_count,
+            texture_count,
+            model_count,
+            palette,
+            subpalettes,
+            tm_changes,
+            ap_changes,
+        })
+    }
+}
+
+impl Subpalette {
+    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
+        let palette = DataId::read(reader)?;
+        let offset = read_u8(reader)?;
+        let num_colors = read_u8(reader)?;
+
+        Ok(Self {
+            palette,
+            offset,
+            num_colors,
+        })
+    }
+}
+
+impl TextureMapChange {
+    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
+        let part_index = read_u8(reader)?;
+        let old_tex_id = DataId::read(reader)?;
+        let new_tex_id = DataId::read(reader)?;
+
+        Ok(Self {
+            part_index,
+            old_tex_id,
+            new_tex_id,
+        })
+    }
+}
+
+impl AnimPartChange {
+    pub fn read(reader: &mut impl Read) -> Result<Self, Box<dyn std::error::Error>> {
+        let part_index = read_u8(reader)?;
+        let part_id = DataId::read(reader)?;
+
+        Ok(Self {
+            part_index,
+            part_id,
         })
     }
 }

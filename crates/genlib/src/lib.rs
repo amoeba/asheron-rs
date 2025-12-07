@@ -182,11 +182,11 @@ fn get_larger_type(type1: &str, type2: &str) -> String {
 }
 
 /// Merge fields from <if test="..."> <true> and <false> branches
-/// 
+///
 /// This preserves branch information for code generation. The generated code will emit
 /// if-else blocks that read different fields in each branch, rather than making all
 /// fields optional.
-/// 
+///
 /// Logic:
 /// - Fields only in one branch: keep with IfBranch set (True or False)
 /// - Fields in both branches with same type: mark as IfBranch::Both, make optional
@@ -195,13 +195,18 @@ fn get_larger_type(type1: &str, type2: &str) -> String {
 fn merge_if_fields(mut true_fields: Vec<Field>, mut false_fields: Vec<Field>) -> Vec<Field> {
     use std::collections::HashMap;
 
-    let mut true_map: HashMap<String, Field> = true_fields.drain(..).map(|f| (f.name.clone(), f)).collect();
-    let mut false_map: HashMap<String, Field> = false_fields.drain(..).map(|f| (f.name.clone(), f)).collect();
+    let mut true_map: HashMap<String, Field> =
+        true_fields.drain(..).map(|f| (f.name.clone(), f)).collect();
+    let mut false_map: HashMap<String, Field> = false_fields
+        .drain(..)
+        .map(|f| (f.name.clone(), f))
+        .collect();
 
     let mut result = Vec::new();
 
     // Process all unique field names
-    let all_names: std::collections::HashSet<_> = true_map.keys().chain(false_map.keys()).cloned().collect();
+    let all_names: std::collections::HashSet<_> =
+        true_map.keys().chain(false_map.keys()).cloned().collect();
 
     for name in all_names {
         match (true_map.remove(&name), false_map.remove(&name)) {
@@ -209,7 +214,8 @@ fn merge_if_fields(mut true_fields: Vec<Field>, mut false_fields: Vec<Field>) ->
                 // Field exists in both branches
                 if true_field.field_type != false_field.field_type {
                     // Different types - use the larger one and store the false branch type
-                    let larger_type = get_larger_type(&true_field.field_type, &false_field.field_type);
+                    let larger_type =
+                        get_larger_type(&true_field.field_type, &false_field.field_type);
                     true_field.if_false_branch_type = Some(false_field.field_type.clone());
                     true_field.field_type = larger_type;
                 }
@@ -1281,7 +1287,13 @@ fn generate_struct_reader_impl(
 
     // Generate reads for each group
     for group in &field_groups {
-        generate_field_group_reads(ctx, &mut out, &group.condition, &group.fields, &field_set.common_fields);
+        generate_field_group_reads(
+            ctx,
+            &mut out,
+            &group.condition,
+            &group.fields,
+            &field_set.common_fields,
+        );
     }
 
     // Construct the struct
@@ -1357,7 +1369,8 @@ impl ConditionKey {
     fn from_field(field: &Field) -> Self {
         if let Some(condition) = &field.optional_condition {
             ConditionKey::IfTest(condition.clone())
-        } else if let (Some(mask_field), Some(mask_value)) = (&field.mask_field, &field.mask_value) {
+        } else if let (Some(mask_field), Some(mask_value)) = (&field.mask_field, &field.mask_value)
+        {
             ConditionKey::Mask {
                 field: mask_field.clone(),
                 value: mask_value.clone(),
@@ -1368,11 +1381,11 @@ impl ConditionKey {
     }
 }
 
-/// Generate a read for a field that appears in both true and false branches
-/// 
-/// When a field appears in both branches but with different types (e.g., true reads u64, false reads u32),
-/// we merge to the larger type and cast when reading from the false branch.
-fn generate_both_branch_field_read(
+/// Generate code to assign a field that appears in both branches
+///
+/// Since the variable is pre-declared with `let field;`, we just assign to it.
+/// This avoids the unused_assignments warning and is cleaner.
+fn generate_both_branch_field_read_no_let(
     ctx: &ReaderContext,
     field: &Field,
     all_fields: &[Field],
@@ -1395,13 +1408,19 @@ fn generate_both_branch_field_read(
             ));
         } else {
             // Types match - just read normally
-            let read_call = generate_base_read_call(ctx, field, all_fields);
-            out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+            out.push_str(&format!(
+                "            {} = Some({}?);\n",
+                field_name,
+                generate_base_read_call(ctx, field, all_fields)
+            ));
         }
     } else {
         // No type difference recorded, read the merged type normally
-        let read_call = generate_base_read_call(ctx, field, all_fields);
-        out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+        out.push_str(&format!(
+            "            {} = Some({}?);\n",
+            field_name,
+            generate_base_read_call(ctx, field, all_fields)
+        ));
     }
 }
 
@@ -1440,11 +1459,16 @@ fn generate_field_group_reads(
                 }
             }
 
-            // All conditional fields must be declared before the if block so they're available
-            // for struct construction after the if-else completes
-            for field in true_only.iter().chain(false_only.iter()).chain(both.iter()) {
+            // Declare fields that need to be available after the if-else block.
+            // - true_only and false_only: initialized to None, may or may not be assigned
+            // - both: will be assigned in both branches, declared with underscore init (never read)
+            for field in true_only.iter().chain(false_only.iter()) {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
                 out.push_str(&format!("        let mut {} = None;\n", field_name));
+            }
+            for field in &both {
+                let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                out.push_str(&format!("        let {};\n", field_name));
             }
 
             // Generate if-else block that assigns values to the variables
@@ -1453,13 +1477,19 @@ fn generate_field_group_reads(
             // TRUE branch: read all true-only and both-branch fields
             for field in &true_only {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                let read_call = generate_base_read_call(ctx, field, all_fields);
-                out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+                out.push_str(&format!(
+                    "            {} = Some({}?);\n",
+                    field_name,
+                    generate_base_read_call(ctx, field, all_fields)
+                ));
             }
             for field in &both {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                let read_call = generate_base_read_call(ctx, field, all_fields);
-                out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+                out.push_str(&format!(
+                    "            {} = Some({}?);\n",
+                    field_name,
+                    generate_base_read_call(ctx, field, all_fields)
+                ));
             }
 
             // FALSE branch: only emit if there are fields to read in the false branch
@@ -1469,14 +1499,23 @@ fn generate_field_group_reads(
                 // Read false-only fields
                 for field in &false_only {
                     let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                    let read_call = generate_base_read_call(ctx, field, all_fields);
-                    out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+                    out.push_str(&format!(
+                        "            {} = Some({}?);\n",
+                        field_name,
+                        generate_base_read_call(ctx, field, all_fields)
+                    ));
                 }
 
                 // Read both-branch fields, with type casting if needed
                 for field in &both {
                     let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
-                    generate_both_branch_field_read(ctx, field, all_fields, &field_name, &mut *out);
+                    generate_both_branch_field_read_no_let(
+                        ctx,
+                        field,
+                        all_fields,
+                        &field_name,
+                        &mut *out,
+                    );
                 }
 
                 out.push_str("        }\n");
@@ -1484,7 +1523,10 @@ fn generate_field_group_reads(
                 out.push_str("        }\n");
             }
         }
-        ConditionKey::Mask { field: mask_field, value: mask_value } => {
+        ConditionKey::Mask {
+            field: mask_field,
+            value: mask_value,
+        } => {
             // Generate a single if block for all fields with this mask
             let mask_field_safe = safe_identifier(mask_field, IdentifierType::Field).name;
             let mask_value_code = if mask_value.contains('.') {
@@ -1505,11 +1547,17 @@ fn generate_field_group_reads(
             }
 
             // Generate the if block
-            out.push_str(&format!("        if ({} & {}) != 0 {{\n", mask_field_safe, mask_value_code));
+            out.push_str(&format!(
+                "        if ({} & {}) != 0 {{\n",
+                mask_field_safe, mask_value_code
+            ));
             for field in fields {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
                 let read_call = generate_base_read_call(ctx, field, all_fields);
-                out.push_str(&format!("            {} = Some({}?);\n", field_name, read_call));
+                out.push_str(&format!(
+                    "            {} = Some({}?);\n",
+                    field_name, read_call
+                ));
             }
             out.push_str("        }\n");
         }
@@ -1569,10 +1617,14 @@ fn generate_base_read_call(ctx: &ReaderContext, field: &Field, all_fields: &[Fie
                         let length_code = convert_length_expression(length_expr, all_fields);
                         generate_hashmap_read_with_length(key_type, value_type, &length_code, ctx)
                     } else {
-                        format!("unimplemented!(\"HashMap reading without length not yet implemented\")")
+                        format!(
+                            "unimplemented!(\"HashMap reading without length not yet implemented\")"
+                        )
                     }
                 } else {
-                    format!("unimplemented!(\"HashMap reading with invalid type not yet implemented\")")
+                    format!(
+                        "unimplemented!(\"HashMap reading with invalid type not yet implemented\")"
+                    )
                 }
             } else if field_type.starts_with("PackableHashTable<") {
                 format!("unimplemented!(\"PackableHashTable reading not yet implemented\")")
