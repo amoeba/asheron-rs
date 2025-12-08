@@ -158,6 +158,19 @@ impl CommunicationTurbineChatType1 {
     pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
         let blob_dispatch_type = CommunicationTurbineChatType1BlobDispatchTypeVariant::read(reader)?;
 
+        Ok(Self {
+            mmessage_size,
+            target_type,
+            target_id,
+            transport_type,
+            transport_id,
+            cookie,
+            payload_size,
+            blob_dispatch_type,
+        })
+    }
+}
+
 impl CommunicationTurbineChatType1BlobDispatchTypeVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let blob_dispatch_type = read_u8(reader)?;
@@ -187,6 +200,9 @@ impl CommunicationTurbineChatType1BlobDispatchTypeVariant {
 }
 
 
+impl CommunicationTurbineChatType3 {
+    pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
+        let blob_dispatch_type = CommunicationTurbineChatType3BlobDispatchTypeVariant::read(reader)?;
 
         Ok(Self {
             mmessage_size,
@@ -200,10 +216,6 @@ impl CommunicationTurbineChatType1BlobDispatchTypeVariant {
         })
     }
 }
-
-impl CommunicationTurbineChatType3 {
-    pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
-        let blob_dispatch_type = CommunicationTurbineChatType3BlobDispatchTypeVariant::read(reader)?;
 
 impl CommunicationTurbineChatType3BlobDispatchTypeVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
@@ -238,6 +250,9 @@ impl CommunicationTurbineChatType3BlobDispatchTypeVariant {
 }
 
 
+impl CommunicationTurbineChatType5 {
+    pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
+        let blob_dispatch_type = CommunicationTurbineChatType5BlobDispatchTypeVariant::read(reader)?;
 
         Ok(Self {
             mmessage_size,
@@ -251,10 +266,6 @@ impl CommunicationTurbineChatType3BlobDispatchTypeVariant {
         })
     }
 }
-
-impl CommunicationTurbineChatType5 {
-    pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
-        let blob_dispatch_type = CommunicationTurbineChatType5BlobDispatchTypeVariant::read(reader)?;
 
 impl CommunicationTurbineChatType5BlobDispatchTypeVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
@@ -278,20 +289,6 @@ impl CommunicationTurbineChatType5BlobDispatchTypeVariant {
     }
 }
 
-
-
-        Ok(Self {
-            mmessage_size,
-            target_type,
-            target_id,
-            transport_type,
-            transport_id,
-            cookie,
-            payload_size,
-            blob_dispatch_type,
-        })
-    }
-}
 
 impl CommunicationTurbineChat {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {

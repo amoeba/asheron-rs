@@ -2160,16 +2160,6 @@ fn generate_variant_struct_reader_impl(
             out.push_str(allow_directive);
             out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
         }
-
-        // Generate nested enum reader
-        out.push('\n');
-        out.push_str(&generate_nested_switch_enum_reader(
-            ctx,
-            type_name,
-            &nested_enum_name,
-            nested_switch,
-        ));
-        out.push('\n');
     }
 
     // Construct the struct
@@ -2231,6 +2221,27 @@ fn generate_variant_struct_reader_impl(
 
     // Don't generate ACDataType for variant structs since they require common field parameters
     // They're only called directly from their parent enum reader
+
+    // Generate nested enum reader if this variant has a nested switch
+    if has_nested_switch {
+        let nested_switch = field_set
+            .nested_switches
+            .as_ref()
+            .unwrap()
+            .get(&case_value)
+            .unwrap();
+        let nested_enum_name_raw =
+            format!("{struct_name}{}{}", nested_switch.switch_field, "Variant");
+        let nested_enum_name = safe_identifier(&nested_enum_name_raw, IdentifierType::Type).name;
+
+        out.push_str(&generate_nested_switch_enum_reader(
+            ctx,
+            type_name,
+            &nested_enum_name,
+            nested_switch,
+        ));
+        out.push('\n');
+    }
 
     out
 }

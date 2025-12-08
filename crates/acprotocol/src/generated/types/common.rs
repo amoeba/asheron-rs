@@ -4742,6 +4742,13 @@ impl WindowPropertyType1000008D {
         let unknown_c = read_u32(reader)?;
         let title_source = WindowPropertyType1000008DTitleSourceVariant::read(reader)?;
 
+        Ok(Self {
+            unknown_c,
+            title_source,
+        })
+    }
+}
+
 impl WindowPropertyType1000008DTitleSourceVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let title_source = read_u8(reader)?;
@@ -4766,14 +4773,6 @@ impl WindowPropertyType1000008DTitleSourceVariant {
     }
 }
 
-
-
-        Ok(Self {
-            unknown_c,
-            title_source,
-        })
-    }
-}
 
 impl WindowProperty {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
