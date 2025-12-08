@@ -16,6 +16,31 @@ mod identifiers;
 mod types;
 mod util;
 
+/// Static configuration for fields that should be allowed to be dead code
+/// Format: (type_name, variable_name)
+const ALLOW_DEAD_CODE_VARIABLES: &[(&str, &str)] = &[
+    ("ItemProfile", "amount"),
+    ("PackedMotionCommand", "server_action_sequence"),
+    ("PackedMotionCommand", "autonomous"),
+    ("DataId", "dat_file_type"),
+];
+
+/// Check if a variable should be allowed to be dead code (unused)
+fn should_allow_dead_code(type_name: &str, variable_name: &str) -> bool {
+    ALLOW_DEAD_CODE_VARIABLES
+        .iter()
+        .any(|(t, v)| *t == type_name && *v == variable_name)
+}
+
+/// Get the allow directive if the variable should allow dead code
+fn get_allow_unused_directive(type_name: &str, variable_name: &str) -> &'static str {
+    if should_allow_dead_code(type_name, variable_name) {
+        "        #[allow(unused_variables)]\n"
+    } else {
+        ""
+    }
+}
+
 /// Context for field processing within conditional blocks
 #[derive(Debug)]
 struct FieldContext {
@@ -1818,9 +1843,11 @@ fn generate_enum_reader_impl(
         // Generate subfield computations if any
         for subfield in &field.subfields {
             let subfield_name = safe_identifier(&subfield.name, IdentifierType::Field).name;
+            let allow_directive = get_allow_unused_directive(type_name, &subfield_name);
             let subfield_expr =
                 convert_condition_expression(&subfield.value_expression, &field_set.common_fields);
             let subfield_rust_type = get_rust_type(&subfield.field_type);
+            out.push_str(allow_directive);
             out.push_str(&format!(
                 "        let {} = ({}) as {};\n",
                 subfield_name, subfield_expr, subfield_rust_type
@@ -2287,6 +2314,7 @@ fn generate_struct_reader_impl(
     for group in &field_groups {
         generate_field_group_reads(
             ctx,
+            type_name,
             &mut out,
             &group.condition,
             &group.fields,
@@ -2459,6 +2487,7 @@ fn generate_mask_field_expr(
 /// Generate reads for a group of fields with the same condition
 fn generate_field_group_reads(
     ctx: &ReaderContext,
+    type_name: &str,
     out: &mut String,
     condition_key: &ConditionKey,
     fields: &[&Field],
@@ -2475,9 +2504,11 @@ fn generate_field_group_reads(
                 // Generate subfield computations if any
                 for subfield in &field.subfields {
                     let subfield_name = safe_identifier(&subfield.name, IdentifierType::Field).name;
+                    let allow_directive = get_allow_unused_directive(type_name, &subfield_name);
                     let subfield_expr =
                         convert_condition_expression(&subfield.value_expression, all_fields);
                     let subfield_rust_type = get_rust_type(&subfield.field_type);
+                    out.push_str(allow_directive);
                     out.push_str(&format!(
                         "        let {} = ({}) as {};\n",
                         subfield_name, subfield_expr, subfield_rust_type

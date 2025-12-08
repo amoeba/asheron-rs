@@ -5298,6 +5298,7 @@ impl ItemProfileType1 {
 impl ItemProfile {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let packed_amount = read_u32(reader)?;
+        #[allow(unused_variables)]
         let amount = (packed_amount & 0x_ffffff) as i32;
         let pwd_type = (packed_amount >> 24) as i32;
         let object_id = ObjectId::read(reader)?;
@@ -5830,7 +5831,9 @@ impl PackedMotionCommand {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let command_id = Command::try_from(read_u16(reader)?)?;
         let packed_sequence = read_u16(reader)?;
+        #[allow(unused_variables)]
         let server_action_sequence = (packed_sequence & 0x7fff) as u16;
+        #[allow(unused_variables)]
         let autonomous = ((packed_sequence >> 15) & 0x1) as u16;
         let speed = read_f32(reader)?;
 
