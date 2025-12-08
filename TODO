@@ -15,4 +15,5 @@ TODOs
 - Handle `<align type="DWORD" />` in XML
 - Document that readers have two entrance points
 - Split up lib.rs into modular components
-- Figre out how to handle the summary-exclude="true" attribute
+- Figure out how to handle the summary-exclude="true" attribute
+- Handle mask=true
