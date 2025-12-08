@@ -2000,9 +2000,39 @@ fn generate_enum_reader_impl(
         out.push_str("            },\n");
     }
 
-    out.push_str(&format!(
-        "            _ => Err(format!(\"Unknown {{}} value: {{:?}}\", \"{switch_field_name}\", {switch_field_name}).into()),\n"
-    ));
+    // Check if we need a wildcard pattern
+    // If the switch field is an enum and all variants are covered, we don't need it
+    let need_wildcard = if let Some(switch_type) = switch_field_type {
+        if ctx.enum_parent_map.contains_key(switch_type) {
+            // It's an enum - check if all enum variants are covered
+            let enum_variants: std::collections::BTreeSet<i64> = ctx
+                .enum_value_map
+                .iter()
+                .filter_map(|((enum_name, value), _variant_name)| {
+                    if enum_name == switch_type {
+                        Some(*value)
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+
+            // If all enum variants are in our case values, we don't need wildcard
+            !enum_variants.is_subset(&all_case_values)
+        } else {
+            // Not an enum, need wildcard
+            true
+        }
+    } else {
+        // No type info, need wildcard
+        true
+    };
+
+    if need_wildcard {
+        out.push_str(&format!(
+            "            _ => Err(format!(\"Unknown {{}} value: {{:?}}\", \"{switch_field_name}\", {switch_field_name}).into()),\n"
+        ));
+    }
     out.push_str("        }\n");
     out.push_str("    }\n");
     out.push_str("}\n\n");

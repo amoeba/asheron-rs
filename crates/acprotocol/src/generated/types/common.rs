@@ -6129,7 +6129,6 @@ impl MovementData {
                 let variant_struct = MovementDataType9::read(reader, object_movement_sequence, object_server_control_sequence, autonomous, option_flags, stance)?;
                 Ok(Self::Type9(variant_struct))
             },
-            _ => Err(format!("Unknown {} value: {:?}", "movement_type", movement_type).into()),
         }
     }
 }

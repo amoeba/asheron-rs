@@ -319,7 +319,6 @@ impl CommunicationTurbineChat {
                 let variant_struct = CommunicationTurbineChatType5::read(reader, mmessage_size, target_type, target_id, transport_type, transport_id, cookie, payload_size)?;
                 Ok(Self::Type5(variant_struct))
             },
-            _ => Err(format!("Unknown {} value: {:?}", "type_", type_).into()),
         }
     }
 }

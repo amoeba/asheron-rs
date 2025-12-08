@@ -111,7 +111,6 @@ impl DDDDataMessage {
                 let variant_struct = DDDDataMessageType1::read(reader, dat_file, resource_type, resource_id, iteration, version, data_size)?;
                 Ok(Self::Type1(variant_struct))
             },
-            _ => Err(format!("Unknown {} value: {:?}", "compression", compression).into()),
         }
     }
 }
