@@ -24,7 +24,7 @@ impl ItemDeleteObject {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let object_id = ObjectId::read(reader)?;
         let object_instance_sequence = read_u16(reader)?;
-        let __alignment_marker_align_dword = align_dword(reader)?;
+        align_dword(reader)?;
 
         Ok(Self {
             object_id,

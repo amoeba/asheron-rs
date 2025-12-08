@@ -21,7 +21,7 @@ pub struct EffectsPlayerTeleport {
 impl EffectsPlayerTeleport {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let object_teleport_sequence = read_u16(reader)?;
-        let __alignment_marker_align_dword = align_dword(reader)?;
+        align_dword(reader)?;
 
         Ok(Self {
             object_teleport_sequence,

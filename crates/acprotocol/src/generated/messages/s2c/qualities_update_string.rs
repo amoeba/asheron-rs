@@ -29,7 +29,7 @@ impl QualitiesUpdateString {
         let sequence = read_u8(reader)?;
         let object_id = ObjectId::read(reader)?;
         let key = PropertyString::try_from(read_u32(reader)?)?;
-        let __alignment_marker_align_dword = align_dword(reader)?;
+        align_dword(reader)?;
         let value = read_string(reader)?;
 
         Ok(Self {

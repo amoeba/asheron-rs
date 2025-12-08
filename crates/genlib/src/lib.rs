@@ -2549,7 +2549,13 @@ fn generate_field_group_reads(
                 let read_call = generate_base_read_call(ctx, field, all_fields);
                 let allow_directive = get_allow_unused_directive(type_name, &field_name);
                 out.push_str(allow_directive);
-                out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+                
+                // Alignment fields don't need to be stored, just executed
+                if field.name.starts_with("__alignment_marker_") {
+                    out.push_str(&format!("        {}?;\n", read_call));
+                } else {
+                    out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
+                }
 
                 // Generate subfield computations if any
                 for subfield in &field.subfields {
