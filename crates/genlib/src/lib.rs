@@ -81,15 +81,15 @@ impl GenerationContext {
 /// Context for reader generation containing type information
 pub struct ReaderContext {
     /// Map from enum name to its parent type (e.g., "NetAuthType" -> "uint")
-    enum_parent_map: std::collections::HashMap<String, String>,
+    enum_parent_map: BTreeMap<String, String>,
     /// Map from (enum_name, value) to variant name (e.g., ("NetAuthType", 2) -> "AccountPassword")
-    enum_value_map: std::collections::HashMap<(String, i64), String>,
+    enum_value_map: BTreeMap<(String, i64), String>,
 }
 
 impl ReaderContext {
     pub fn new(
-        enum_parent_map: std::collections::HashMap<String, String>,
-        enum_value_map: std::collections::HashMap<(String, i64), String>,
+        enum_parent_map: BTreeMap<String, String>,
+        enum_value_map: BTreeMap<(String, i64), String>,
     ) -> Self {
         Self {
             enum_parent_map,
@@ -808,7 +808,7 @@ pub struct {type_name}{type_generics} {{}}\n\n"
         let switch_field = field_set.switch_field.as_ref().unwrap();
 
         // Collect all case values from both variant_fields and nested_switches
-        let mut all_case_values = std::collections::HashSet::new();
+        let mut all_case_values = std::collections::BTreeSet::new();
         for case_value in variant_fields.keys() {
             all_case_values.insert(*case_value);
         }
@@ -1690,7 +1690,7 @@ fn generate_variant_struct_readers(
     let mut out = String::new();
 
     // Collect all case values from both variant_fields and nested_switches
-    let mut all_case_values = std::collections::HashSet::new();
+    let mut all_case_values = std::collections::BTreeSet::new();
     for case_value in variant_fields.keys() {
         all_case_values.insert(*case_value);
     }
@@ -1818,7 +1818,7 @@ fn generate_enum_reader_impl(
         .map(|f| &f.field_type);
 
     // Collect all case values from both variant_fields and nested_switches
-    let mut all_case_values = std::collections::HashSet::new();
+    let mut all_case_values = std::collections::BTreeSet::new();
     for case_value in variant_fields.keys() {
         all_case_values.insert(*case_value);
     }
@@ -3583,14 +3583,14 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     }
 
     // Build a map of enum names to their parent types for reader generation
-    let enum_parent_map: std::collections::HashMap<String, String> = enums
+    let enum_parent_map: BTreeMap<String, String> = enums
         .iter()
         .map(|e| (e.name.clone(), e.parent.clone()))
         .collect();
 
     // Build a map of (enum_name, value) -> variant_name for switch pattern matching
-    let mut enum_value_map: std::collections::HashMap<(String, i64), String> =
-        std::collections::HashMap::new();
+    let mut enum_value_map: BTreeMap<(String, i64), String> =
+        BTreeMap::new();
     for protocol_enum in &enums {
         for enum_value in &protocol_enum.values {
             let safe_variant = safe_enum_variant_name(&enum_value.name);
