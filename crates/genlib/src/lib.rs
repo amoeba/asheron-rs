@@ -3716,7 +3716,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     });
 
     // Generate mod.rs for messages
-    let messages_mod = "pub mod c2s;\npub mod s2c;\n\npub use c2s::*;\npub use s2c::*;\n";
+    let messages_mod = "pub mod c2s;\npub mod s2c;\n";
     files.push(GeneratedFile {
         path: "messages/mod.rs".to_string(),
         content: messages_mod.to_string(),
