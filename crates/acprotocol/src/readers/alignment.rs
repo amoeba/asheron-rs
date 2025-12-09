@@ -7,9 +7,14 @@ use std::io::SeekFrom;
 /// compile-time optimization of the alignment calculation
 ///
 /// # Example
-/// ```
-/// align::<4>(reader)?;  // Align to 4-byte boundary
-/// align::<8>(reader)?;  // Align to 8-byte boundary
+/// ```ignore
+/// # use acprotocol::readers::align;
+/// # use std::io::Cursor;
+/// # let data = vec![1u8, 2, 3, 4, 5, 6, 7, 8];
+/// # let mut cursor = Cursor::new(data);
+/// align::<4>(&mut cursor)?;  // Align to 4-byte boundary
+/// align::<8>(&mut cursor)?;  // Align to 8-byte boundary
+/// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 #[inline]
 pub fn align<const N: usize>(reader: &mut dyn ACReader) -> Result<(), Box<dyn Error>> {
