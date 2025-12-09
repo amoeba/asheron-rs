@@ -146,7 +146,7 @@ fn process_file(filename: &str) -> Result<()> {
     // - OrderedSequence (4 bytes)
     // - EventType (4 bytes)
     // Non-ordered messages may have the opcode at the start
-    let mut wire_buffer = buffer.clone();
+    let wire_buffer = buffer.clone();
     let mut cursor = if packet_info.frame_opcode == 0xF7B0 || packet_info.frame_opcode == 0xF7B1 {
         println!(
             "Detected ordered message (frame_opcode: 0x{:04x}), skipping 12-byte header",
@@ -186,7 +186,6 @@ fn process_file(filename: &str) -> Result<()> {
 
     // These files contain just the message payload, no packet headers
     // Try to parse message based on enum type
-    let wire_buffer = buffer.clone();
     let result = match packet_info.direction {
         Direction::C2S => match packet_info.c2s_message {
             Some(C2SMessage::OrderedGameAction) => {

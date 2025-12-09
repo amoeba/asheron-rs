@@ -54,7 +54,6 @@ impl Fragment {
 
     /// Add a chunk of data at the specified index
     pub fn add_chunk(&mut self, data: &[u8], index: usize) {
-        let count = self.header.count as usize;
         let start = index * FRAGMENT_CHUNK_SIZE;
         let end = start + data.len();
         if end <= self.data.len() {
