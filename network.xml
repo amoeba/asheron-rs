@@ -8,5 +8,9 @@
             <field type="ushort" name="Index"
                 text="The zero-based index of this fragment within the group" />
         </type>
+        <type name="Fragment" text="A single fragment containing header and payload data">
+            <field type="FragmentHeader" name="Header" text="Fragment header information" />
+            <vector name="Data" length="*" type="byte" text="Fragment payload data" />
+        </type>
     </packets>
 </schema>

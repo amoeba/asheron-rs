@@ -1684,6 +1684,13 @@ pub struct GeneratedCode {
 
 /// Represents the top-level protocol section a type/enum comes from
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// Indicates the source of the XML being parsed (protocol.xml vs network.xml)
+pub enum GenerateSource {
+    Protocol,
+    Network,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ProtocolCategory {
     None,        // Not yet categorized (during parsing)
     Enums,       // <enums> section - shared enums
@@ -1692,7 +1699,8 @@ pub enum ProtocolCategory {
     GameEvents,  // <gameevents> section
     C2S,         // <messages><c2s> section
     S2C,         // <messages><s2c> section
-    Packets,     // <packets> section - network packet types
+    Packets,     // <packets> section - packet-level types (from protocol.xml)
+    Network,     // <packets> section in network.xml - additional network types
 }
 
 impl ProtocolCategory {
@@ -1713,6 +1721,7 @@ impl ProtocolCategory {
             ProtocolCategory::C2S => "C2S",
             ProtocolCategory::S2C => "S2C",
             ProtocolCategory::Packets => "Packets",
+            ProtocolCategory::Network => "Network",
         }
     }
 }
@@ -3430,6 +3439,11 @@ fn generate_hashmap_read_with_length(
 }
 
 pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
+    generate_with_source(xml, filter_types, GenerateSource::Protocol)
+}
+
+/// Generate code from protocol XML, with source indication for packets section
+pub fn generate_with_source(xml: &str, filter_types: &[String], source: GenerateSource) -> GeneratedCode {
     let ctx = GenerationContext::new(filter_types.to_vec());
     let mut reader = Reader::from_str(xml);
     let mut buf = Vec::new();
@@ -3500,8 +3514,11 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                     current_direction = ProtocolCategory::S2C;
                     debug!("Entered s2c section");
                 } else if tag_name == "packets" {
-                    current_direction = ProtocolCategory::Packets;
-                    debug!("Entered packets section");
+                    current_direction = match source {
+                        GenerateSource::Protocol => ProtocolCategory::Packets,
+                        GenerateSource::Network => ProtocolCategory::Network,
+                    };
+                    debug!("Entered packets section (source: {:?})", source);
                 } else if tag_name == "type" {
                     let types_vec = match current_direction {
                         ProtocolCategory::Types => &mut common_types,
@@ -3509,7 +3526,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                         ProtocolCategory::GameEvents => &mut game_event_types,
                         ProtocolCategory::C2S => &mut c2s_types,
                         ProtocolCategory::S2C => &mut s2c_types,
-                        ProtocolCategory::Packets => &mut packet_types,
+                        ProtocolCategory::Packets | ProtocolCategory::Network => &mut packet_types,
                         ProtocolCategory::Enums | ProtocolCategory::None => &mut common_types,
                     };
                     process_type_tag(
@@ -3640,7 +3657,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                         ProtocolCategory::GameEvents => &mut game_event_types,
                         ProtocolCategory::C2S => &mut c2s_types,
                         ProtocolCategory::S2C => &mut s2c_types,
-                        ProtocolCategory::Packets => &mut packet_types,
+                        ProtocolCategory::Packets | ProtocolCategory::Network => &mut packet_types,
                         ProtocolCategory::Enums | ProtocolCategory::None => &mut common_types,
                     };
                     process_type_tag(
@@ -3692,7 +3709,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                             ProtocolCategory::GameEvents => &mut game_event_types,
                             ProtocolCategory::C2S => &mut c2s_types,
                             ProtocolCategory::S2C => &mut s2c_types,
-                            ProtocolCategory::Packets => &mut packet_types,
+                            ProtocolCategory::Packets | ProtocolCategory::Network => &mut packet_types,
                             ProtocolCategory::Enums | ProtocolCategory::None => &mut common_types,
                         };
                         types_vec.push(ty);
@@ -4023,6 +4040,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     let mut game_action_modules = Vec::new();
     let mut game_event_modules = Vec::new();
     let mut packet_modules = Vec::new();
+    let mut network_modules = Vec::new();
 
     // Generate individual files for game actions
     for protocol_type in &rectified_game_action_types {
@@ -4054,13 +4072,30 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
         }
     }
 
-    // Generate individual files for packet types
+    // Generate individual files for packet types (from protocol.xml <packets>)
+    // Skip Network category types - they go to network/ folder instead
     for protocol_type in &rectified_packet_types {
-        if !protocol_type.is_primitive {
+        if !protocol_type.is_primitive && protocol_type.category != ProtocolCategory::Network {
             let type_name = &protocol_type.name;
             let type_name_no_underscores = type_name.replace('_', "");
             let module_name = to_snake_case(&type_name_no_underscores);
             packet_modules.push(module_name.clone());
+            let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
+            files.push(GeneratedFile {
+                path: format!("packets/{}.rs", module_name),
+                content,
+            });
+        }
+    }
+
+    // Generate individual files for network types (from network.xml <packets>)
+    // These are identified by having category = Network
+    for protocol_type in &rectified_packet_types {
+        if !protocol_type.is_primitive && protocol_type.category == ProtocolCategory::Network {
+            let type_name = &protocol_type.name;
+            let type_name_no_underscores = type_name.replace('_', "");
+            let module_name = to_snake_case(&type_name_no_underscores);
+            network_modules.push(module_name.clone());
             let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
             files.push(GeneratedFile {
                 path: format!("network/{}.rs", module_name),
@@ -4132,13 +4167,27 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
         content: gameevents_mod,
     });
 
-    // Generate mod.rs for network (packet types)
-    let mut network_mod = String::new();
+    // Generate mod.rs for packets (from protocol.xml <packets>)
+    let mut packets_mod = String::new();
     for module_name in &packet_modules {
+        packets_mod.push_str(&format!("pub mod {};\n", module_name));
+    }
+    packets_mod.push('\n');
+    for module_name in &packet_modules {
+        packets_mod.push_str(&format!("pub use {}::*;\n", module_name));
+    }
+    files.push(GeneratedFile {
+        path: "packets/mod.rs".to_string(),
+        content: packets_mod,
+    });
+
+    // Generate mod.rs for network (from network.xml <packets>)
+    let mut network_mod = String::new();
+    for module_name in &network_modules {
         network_mod.push_str(&format!("pub mod {};\n", module_name));
     }
     network_mod.push('\n');
-    for module_name in &packet_modules {
+    for module_name in &network_modules {
         network_mod.push_str(&format!("pub use {}::*;\n", module_name));
     }
     files.push(GeneratedFile {
@@ -4147,7 +4196,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     });
 
     // Generate root mod.rs for generated
-    let generated_mod = "pub mod enums;\npub mod types;\npub mod messages;\npub mod gameactions;\npub mod gameevents;\npub mod network;\n";
+    let generated_mod = "pub mod enums;\npub mod types;\npub mod messages;\npub mod gameactions;\npub mod gameevents;\npub mod packets;\npub mod network;\n";
     files.push(GeneratedFile {
         path: "mod.rs".to_string(),
         content: generated_mod.to_string(),

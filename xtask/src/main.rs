@@ -42,56 +42,38 @@ fn generate() {
 
     // Generate from protocol.xml
     let protocol_xml = fs::read_to_string(&protocol_path).unwrap();
-    let mut generated_code = genlib::generate(&protocol_xml, &filter_types);
+    let mut generated_code = genlib::generate_with_source(&protocol_xml, &filter_types, genlib::GenerateSource::Protocol);
 
     // Generate from network.xml if it exists and merge results
     if network_path.exists() {
         println!("Processing additional types from: {}", network_path.display());
         let network_xml = fs::read_to_string(&network_path).unwrap();
-        let network_code = genlib::generate(&network_xml, &filter_types);
+        let network_code = genlib::generate_with_source(&network_xml, &filter_types, genlib::GenerateSource::Network);
         
         // Merge files from network.xml into generated_code
-        // For mod.rs files, only merge if they have actual content (not just pub mod declarations)
         for network_file in network_code.files {
             if network_file.path.ends_with("mod.rs") {
-                // Skip empty or minimal mod.rs files from network.xml
-                let has_real_content = !network_file.content.trim().is_empty() 
-                    && !network_file.content.lines().all(|line| line.trim().is_empty() || line.trim().starts_with("pub mod") || line.trim().starts_with("pub use"));
-                
-                if has_real_content {
-                    // Find and merge with existing mod.rs file
-                    if let Some(existing) = generated_code.files.iter_mut().find(|f| f.path == network_file.path) {
-                        // Strip common imports/headers from network file before appending
-                        let mut network_content = network_file.content.clone();
-                        // Remove use statements and #[allow] attributes from the start
-                        while let Some(line) = network_content.lines().next() {
-                            let trimmed = line.trim();
-                            if trimmed.starts_with("use ") 
-                                || trimmed.starts_with("#[allow") 
-                                || trimmed.is_empty() {
-                                // Remove this line
-                                if let Some(newline_pos) = network_content.find('\n') {
-                                    network_content = network_content[newline_pos + 1..].to_string();
-                                } else {
-                                    network_content.clear();
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
+                // For mod.rs files, merge the pub mod and pub use declarations
+                if let Some(existing) = generated_code.files.iter_mut().find(|f| f.path == network_file.path) {
+                    // Merge module declarations from network.xml into existing mod.rs
+                    let mut merged_content = existing.content.clone();
+                    
+                    // Extract pub mod and pub use lines from network file
+                    for line in network_file.content.lines() {
+                        let trimmed = line.trim();
+                        if (trimmed.starts_with("pub mod ") || trimmed.starts_with("pub use ")) 
+                            && !merged_content.contains(trimmed) {
+                            // Add this line if it's not already present
+                            merged_content.push('\n');
+                            merged_content.push_str(line);
                         }
-                        
-                        // Append network content to existing content
-                        if !network_content.trim().is_empty() {
-                            existing.content.push('\n');
-                            existing.content.push_str(&network_content);
-                        }
-                    } else {
-                        // No existing mod.rs, just add it
-                        generated_code.files.push(network_file);
                     }
+                    
+                    existing.content = merged_content;
+                } else {
+                    // No existing mod.rs, add network's mod.rs
+                    generated_code.files.push(network_file);
                 }
-                // If no real content, skip it entirely (don't add or merge)
             } else {
                 // For non-mod.rs files, just add/replace them
                 if let Some(pos) = generated_code.files.iter().position(|f| f.path == network_file.path) {

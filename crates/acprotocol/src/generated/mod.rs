@@ -3,4 +3,5 @@ pub mod types;
 pub mod messages;
 pub mod gameactions;
 pub mod gameevents;
+pub mod packets;
 pub mod network;
