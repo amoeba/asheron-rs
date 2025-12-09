@@ -1,5 +1,3 @@
-use std::io::{Read, Seek, SeekFrom};
-
 /// Binary data reader for parsing network packets
 pub struct BinaryReader<'a> {
     data: &'a [u8],
