@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema text="Additional network protocol types not defined in protocol.xml">
+    <packets>
+        <type name="FragmentHeader" text="Header for packet fragments used in network communication">
+            <field type="uint" name="Sequence" text="Fragment sequence number" />
+            <field type="uint" name="Id" text="The unique identifier of this fragment group" />
+            <field type="ushort" name="Count" text="The total number of fragments in this group" />
+            <field type="ushort" name="Index"
+                text="The zero-based index of this fragment within the group" />
+        </type>
+    </packets>
+</schema>
