@@ -1,15 +1,9 @@
 use serde::{Serialize, Deserialize};
-#[allow(unused_imports)]
 use std::io::Read;
-#[allow(unused_imports)]
 use crate::readers::ACReader;
-#[allow(unused_imports)]
 use crate::readers::*;
-#[allow(unused_imports)]
 use crate::types::*;
-#[allow(unused_imports)]
 use crate::enums::*;
-#[allow(unused_imports)]
 use super::*;
 
 // A message to be displayed in the chat window, spoken by a nearby player, NPC or creature

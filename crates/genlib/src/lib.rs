@@ -1794,17 +1794,11 @@ fn generate_type_and_reader_file(
 
     // Add imports
     out.push_str("use serde::{Serialize, Deserialize};\n");
-    out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use std::io::Read;\n");
-    out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::readers::ACReader;\n");
-    out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::readers::*;\n");
-    out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::types::*;\n");
-    out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::enums::*;\n");
-    out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use super::*;\n\n");
 
     // Generate type definition
@@ -4001,13 +3995,9 @@ pub fn generate_with_source(xml: &str, filter_types: &[String], source: Generate
     // Generate common types - will add readers after building reader context
     let mut common_types_out = String::new();
     common_types_out.push_str("use serde::{Serialize, Deserialize};\n");
-    common_types_out.push_str("#[allow(unused_imports)]\n");
     common_types_out.push_str("use std::io::Read;\n");
-    common_types_out.push_str("#[allow(unused_imports)]\n");
     common_types_out.push_str("use crate::readers::ACReader;\n");
-    common_types_out.push_str("#[allow(unused_imports)]\n");
     common_types_out.push_str("use crate::readers::*;\n");
-    common_types_out.push_str("#[allow(unused_imports)]\n");
     common_types_out.push_str("use crate::enums::*;\n\n");
 
     for protocol_type in &rectified_common_types {
