@@ -30,3 +30,5 @@ TODOs
           const LOGIN_CHANGE = 0x4;
       }
   }
+- Factor long tuple returns into structs:
+  (enum_types, common_types, game_action_types, game_event_types, c2s_types, s2c_types, packet_types)
