@@ -4,6 +4,8 @@ mod generated {
 
 pub use generated::enums;
 pub use generated::messages;
+pub use generated::gameactions;
+pub use generated::gameevents;
 pub use generated::types;
 
 pub mod readers;

@@ -1,4 +1,4 @@
-use crate::types::common::{PHashTable, PackableHashTable, PackableList};
+use crate::types::{PHashTable, PackableHashTable, PackableList};
 use std::cmp::Eq;
 use std::collections::HashMap;
 use std::error::Error;

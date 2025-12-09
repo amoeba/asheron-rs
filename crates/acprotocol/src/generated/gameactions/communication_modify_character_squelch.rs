@@ -1,0 +1,48 @@
+use serde::{Serialize, Deserialize};
+#[allow(unused_imports)]
+use std::io::Read;
+#[allow(unused_imports)]
+use crate::readers::ACReader;
+#[allow(unused_imports)]
+use crate::readers::*;
+#[allow(unused_imports)]
+use crate::types::*;
+#[allow(unused_imports)]
+use crate::enums::*;
+
+// Changes an account squelch
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename = "Communication_ModifyCharacterSquelch")]
+pub struct CommunicationModifyCharacterSquelch {
+    #[serde(rename = "Add")]
+    pub add: bool,
+    #[serde(rename = "ObjectId")]
+    pub object_id: ObjectId,
+    #[serde(rename = "CharacterName")]
+    pub character_name: String,
+    #[serde(rename = "Type")]
+    pub type_: ChatFragmentType,
+}
+
+impl CommunicationModifyCharacterSquelch {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let add = read_bool(reader)?;
+        let object_id = ObjectId::read(reader)?;
+        let character_name = read_string(reader)?;
+        let type_ = ChatFragmentType::try_from(read_u32(reader)?)?;
+
+        Ok(Self {
+            add,
+            object_id,
+            character_name,
+            type_,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for CommunicationModifyCharacterSquelch {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        CommunicationModifyCharacterSquelch::read(reader)
+    }
+}
+

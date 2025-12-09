@@ -82,6 +82,9 @@ pub struct ProtocolEnum {
     pub(crate) values: Vec<EnumValue>,
     pub(crate) extra_derives: Vec<String>,
     pub(crate) is_mask: bool,
+    /// If true, this enum belongs to the network module
+    #[allow(dead_code)]
+    pub(crate) is_network: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -99,6 +102,8 @@ pub struct ProtocolType {
     pub(crate) hash_bounds: Vec<String>,
     /// Additional derives that this type needs (e.g., "Hash", "Eq", "PartialOrd")
     pub(crate) extra_derives: Vec<String>,
+    /// If true, this type belongs to the network module
+    pub(crate) is_network: bool,
 }
 
 impl ProtocolType {

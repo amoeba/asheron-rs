@@ -9,15 +9,15 @@ use std::path::Path;
 use acprotocol::enums::{C2SMessage, GameEvent, S2CMessage};
 
 // Import specific message types we want to support
-use acprotocol::messages::c2s::item_appraise::ItemAppraise;
+use acprotocol::gameactions::item_appraise::ItemAppraise;
 use acprotocol::messages::s2c::communication_textbox_string::CommunicationTextboxString;
 use acprotocol::messages::s2c::effects_play_script_type::EffectsPlayScriptType;
 use acprotocol::messages::s2c::effects_sound_event::EffectsSoundEvent;
 use acprotocol::messages::s2c::inventory_pickup_event::InventoryPickupEvent;
 use acprotocol::messages::s2c::item_obj_desc_event::ItemObjDescEvent;
-use acprotocol::messages::s2c::item_wear_item::ItemWearItem;
-use acprotocol::messages::s2c::magic_dispel_enchantment::MagicDispelEnchantment;
-use acprotocol::messages::s2c::magic_update_enchantment::MagicUpdateEnchantment;
+use acprotocol::gameevents::item_wear_item::ItemWearItem;
+use acprotocol::gameevents::magic_dispel_enchantment::MagicDispelEnchantment;
+use acprotocol::gameevents::magic_update_enchantment::MagicUpdateEnchantment;
 use acprotocol::messages::s2c::qualities_private_update_attribute2nd_level::QualitiesPrivateUpdateAttribute2ndLevel;
 use acprotocol::messages::s2c::qualities_update_instance_id::QualitiesUpdateInstanceId;
 

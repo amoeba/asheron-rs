@@ -1,0 +1,115 @@
+use serde::{Serialize, Deserialize};
+#[allow(unused_imports)]
+use std::io::Read;
+#[allow(unused_imports)]
+use crate::readers::ACReader;
+#[allow(unused_imports)]
+use crate::readers::*;
+#[allow(unused_imports)]
+use crate::types::*;
+#[allow(unused_imports)]
+use crate::enums::*;
+
+// Server to Client AC packet.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct S2CPacket {
+    #[serde(rename = "Sequence")]
+    pub sequence: u32,
+    #[serde(rename = "Flags")]
+    pub flags: PacketHeaderFlags,
+    #[serde(rename = "Checksum")]
+    pub checksum: u32,
+    #[serde(rename = "RecipientId")]
+    pub recipient_id: u16,
+    #[serde(rename = "TimeSinceLastPacket")]
+    pub time_since_last_packet: u16,
+    #[serde(rename = "Size")]
+    pub size: u16,
+    #[serde(rename = "Iteration")]
+    pub iteration: u16,
+    #[serde(rename = "AckSequence")]
+    pub ack_sequence: Option<u32>,
+    #[serde(rename = "LogonServerAddr")]
+    pub logon_server_addr: Option<SocketAddress>,
+    #[serde(rename = "Referral")]
+    pub referral: Option<ReferralHeader>,
+    #[serde(rename = "ConnectRequest")]
+    pub connect_request: Option<ConnectRequestHeader>,
+    #[serde(rename = "NetError")]
+    pub net_error: Option<NetError>,
+    #[serde(rename = "NetErrorDisconnect")]
+    pub net_error_disconnect: Option<NetError>,
+    #[serde(rename = "EchoResponse")]
+    pub echo_response: Option<EchoResponseHeader>,
+    #[serde(rename = "Fragments")]
+    pub fragments: Option<BlobFragments>,
+}
+
+impl S2CPacket {
+    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let sequence = read_u32(reader)?;
+        let flags = Ok::<_, Box<dyn std::error::Error>>(PacketHeaderFlags::from_bits_retain(read_u32(reader)?))?;
+        let checksum = read_u32(reader)?;
+        let recipient_id = read_u16(reader)?;
+        let time_since_last_packet = read_u16(reader)?;
+        let size = read_u16(reader)?;
+        let iteration = read_u16(reader)?;
+        let mut ack_sequence = None;
+        if (flags.bits() & PacketHeaderFlags::ACK_SEQUENCE.bits()) != 0 {
+            ack_sequence = Some(read_u32(reader)?);
+        }
+        let mut logon_server_addr = None;
+        if (flags.bits() & PacketHeaderFlags::LOGON_SERVER_ADDR.bits()) != 0 {
+            logon_server_addr = Some(SocketAddress::read(reader)?);
+        }
+        let mut referral = None;
+        if (flags.bits() & PacketHeaderFlags::REFERRAL.bits()) != 0 {
+            referral = Some(ReferralHeader::read(reader)?);
+        }
+        let mut connect_request = None;
+        if (flags.bits() & PacketHeaderFlags::CONNECT_REQUEST.bits()) != 0 {
+            connect_request = Some(ConnectRequestHeader::read(reader)?);
+        }
+        let mut net_error = None;
+        if (flags.bits() & PacketHeaderFlags::NET_ERROR.bits()) != 0 {
+            net_error = Some(NetError::read(reader)?);
+        }
+        let mut net_error_disconnect = None;
+        if (flags.bits() & PacketHeaderFlags::NET_ERROR_DISCONNECT.bits()) != 0 {
+            net_error_disconnect = Some(NetError::read(reader)?);
+        }
+        let mut echo_response = None;
+        if (flags.bits() & PacketHeaderFlags::ECHO_RESPONSE.bits()) != 0 {
+            echo_response = Some(EchoResponseHeader::read(reader)?);
+        }
+        let mut fragments = None;
+        if (flags.bits() & PacketHeaderFlags::BLOB_FRAGMENTS.bits()) != 0 {
+            fragments = Some(BlobFragments::read(reader)?);
+        }
+
+        Ok(Self {
+            sequence,
+            flags,
+            checksum,
+            recipient_id,
+            time_since_last_packet,
+            size,
+            iteration,
+            ack_sequence,
+            logon_server_addr,
+            referral,
+            connect_request,
+            net_error,
+            net_error_disconnect,
+            echo_response,
+            fragments,
+        })
+    }
+}
+
+impl crate::readers::ACDataType for S2CPacket {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        S2CPacket::read(reader)
+    }
+}
+

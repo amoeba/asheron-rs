@@ -1169,6 +1169,7 @@ fn process_enum_start_tag(
             values: Vec::new(),
             extra_derives: Vec::new(),
             is_mask,
+            is_network: false,
         };
         *current_enum = Some(new_enum);
     }
@@ -1651,6 +1652,7 @@ fn process_type_tag(
             templated,
             hash_bounds: Vec::new(),
             extra_derives: Vec::new(),
+            is_network: false,
         };
 
         // For self-closing tags, push immediately
@@ -1683,10 +1685,13 @@ pub struct GeneratedCode {
 #[derive(Debug, Clone, Copy, PartialEq)]
 enum MessageDirection {
     None,
-    C2S,         // <c2s> in messages section
-    S2C,         // <s2c> in messages section
-    GameActions, // <gameactions> section (C2S)
-    GameEvents,  // <gameevents> section (S2C)
+    Enums,       // <enums> section - shared enums
+    Types,       // <types> section - shared/common types
+    GameActions, // <gameactions> section (client-to-server game actions)
+    GameEvents,  // <gameevents> section (server-to-client game events)
+    C2S,         // <messages><c2s> section
+    S2C,         // <messages><s2c> section
+    Packets,     // <packets> section - packet-level types
 }
 
 /// Generate a single file containing both type definition and reader implementation
@@ -1706,7 +1711,7 @@ fn generate_type_and_reader_file(
     out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::readers::*;\n");
     out.push_str("#[allow(unused_imports)]\n");
-    out.push_str("use crate::types::common::*;\n");
+    out.push_str("use crate::types::*;\n");
     out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::enums::*;\n\n");
 
@@ -3400,10 +3405,15 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     let mut reader = Reader::from_str(xml);
     let mut buf = Vec::new();
 
+    // Collections for each XML section
+    let mut enum_types: Vec<ProtocolEnum> = Vec::new();
     let mut common_types: Vec<ProtocolType> = Vec::new();
+    let mut game_action_types: Vec<ProtocolType> = Vec::new();
+    let mut game_event_types: Vec<ProtocolType> = Vec::new();
     let mut c2s_types: Vec<ProtocolType> = Vec::new();
     let mut s2c_types: Vec<ProtocolType> = Vec::new();
-    let mut enums: Vec<ProtocolEnum> = Vec::new();
+    let mut packet_types: Vec<ProtocolType> = Vec::new();
+    
     let mut current_type: Option<ProtocolType> = None;
     let mut current_enum: Option<ProtocolEnum> = None;
     let mut current_field_set: Option<FieldSet> = None;
@@ -3442,23 +3452,36 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                 let tag_name =
                     std::str::from_utf8(e.name().0).expect("Failed to to decode tag name");
 
-                if tag_name == "c2s" {
-                    current_direction = MessageDirection::C2S;
-                    debug!("Entered c2s section");
-                } else if tag_name == "s2c" {
-                    current_direction = MessageDirection::S2C;
-                    debug!("Entered s2c section");
+                if tag_name == "enums" {
+                    current_direction = MessageDirection::Enums;
+                    debug!("Entered enums section");
+                } else if tag_name == "types" {
+                    current_direction = MessageDirection::Types;
+                    debug!("Entered types section");
                 } else if tag_name == "gameactions" {
                     current_direction = MessageDirection::GameActions;
                     debug!("Entered gameactions section");
                 } else if tag_name == "gameevents" {
                     current_direction = MessageDirection::GameEvents;
                     debug!("Entered gameevents section");
+                } else if tag_name == "c2s" {
+                    current_direction = MessageDirection::C2S;
+                    debug!("Entered c2s section");
+                } else if tag_name == "s2c" {
+                    current_direction = MessageDirection::S2C;
+                    debug!("Entered s2c section");
+                } else if tag_name == "packets" {
+                    current_direction = MessageDirection::Packets;
+                    debug!("Entered packets section");
                 } else if tag_name == "type" {
                     let types_vec = match current_direction {
-                        MessageDirection::C2S | MessageDirection::GameActions => &mut c2s_types,
-                        MessageDirection::S2C | MessageDirection::GameEvents => &mut s2c_types,
-                        MessageDirection::None => &mut common_types,
+                        MessageDirection::Types => &mut common_types,
+                        MessageDirection::GameActions => &mut game_action_types,
+                        MessageDirection::GameEvents => &mut game_event_types,
+                        MessageDirection::C2S => &mut c2s_types,
+                        MessageDirection::S2C => &mut s2c_types,
+                        MessageDirection::Packets => &mut packet_types,
+                        MessageDirection::Enums | MessageDirection::None => &mut common_types,
                     };
                     process_type_tag(
                         &e,
@@ -3583,9 +3606,13 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
 
                 if tag_name == "type" {
                     let types_vec = match current_direction {
-                        MessageDirection::C2S | MessageDirection::GameActions => &mut c2s_types,
-                        MessageDirection::S2C | MessageDirection::GameEvents => &mut s2c_types,
-                        MessageDirection::None => &mut common_types,
+                        MessageDirection::Types => &mut common_types,
+                        MessageDirection::GameActions => &mut game_action_types,
+                        MessageDirection::GameEvents => &mut game_event_types,
+                        MessageDirection::C2S => &mut c2s_types,
+                        MessageDirection::S2C => &mut s2c_types,
+                        MessageDirection::Packets => &mut packet_types,
+                        MessageDirection::Enums | MessageDirection::None => &mut common_types,
                     };
                     process_type_tag(
                         &e,
@@ -3630,9 +3657,13 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                             ty.extract_hash_bounds();
                         }
                         let types_vec = match current_direction {
-                            MessageDirection::C2S | MessageDirection::GameActions => &mut c2s_types,
-                            MessageDirection::S2C | MessageDirection::GameEvents => &mut s2c_types,
-                            MessageDirection::None => &mut common_types,
+                            MessageDirection::Types => &mut common_types,
+                            MessageDirection::GameActions => &mut game_action_types,
+                            MessageDirection::GameEvents => &mut game_event_types,
+                            MessageDirection::C2S => &mut c2s_types,
+                            MessageDirection::S2C => &mut s2c_types,
+                            MessageDirection::Packets => &mut packet_types,
+                            MessageDirection::Enums | MessageDirection::None => &mut common_types,
                         };
                         types_vec.push(ty);
                         debug!("DONE with type in {current_direction:?} section");
@@ -3642,20 +3673,29 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
                 } else if e.name().as_ref() == b"enum" {
                     // Close out enum
                     if let Some(en) = current_enum.take() {
-                        enums.push(en);
+                        enum_types.push(en);
                     }
-                } else if e.name().as_ref() == b"c2s" {
+                } else if e.name().as_ref() == b"enums" {
                     current_direction = MessageDirection::None;
-                    debug!("Exited c2s section");
-                } else if e.name().as_ref() == b"s2c" {
+                    debug!("Exited enums section");
+                } else if e.name().as_ref() == b"types" {
                     current_direction = MessageDirection::None;
-                    debug!("Exited s2c section");
+                    debug!("Exited types section");
                 } else if e.name().as_ref() == b"gameactions" {
                     current_direction = MessageDirection::None;
                     debug!("Exited gameactions section");
                 } else if e.name().as_ref() == b"gameevents" {
                     current_direction = MessageDirection::None;
                     debug!("Exited gameevents section");
+                } else if e.name().as_ref() == b"c2s" {
+                    current_direction = MessageDirection::None;
+                    debug!("Exited c2s section");
+                } else if e.name().as_ref() == b"s2c" {
+                    current_direction = MessageDirection::None;
+                    debug!("Exited s2c section");
+                } else if e.name().as_ref() == b"packets" {
+                    current_direction = MessageDirection::None;
+                    debug!("Exited packets section");
                 } else if e.name().as_ref() == b"field" {
                     // End of field tag - finalize and add the field
                     if field_ctx.in_field {
@@ -3801,6 +3841,11 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
         buf.clear();
     }
 
+    // Mark packet types as network types
+    for ty in &mut packet_types {
+        ty.is_network = true;
+    }
+
     // Rectify dependencies between types and enums
     let mut rectified_common_types = Vec::new();
     let mut rectified_c2s_types = Vec::new();
@@ -3809,11 +3854,16 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
         &common_types,
         &c2s_types,
         &s2c_types,
-        &mut enums,
+        &mut enum_types,
         &mut rectified_common_types,
         &mut rectified_c2s_types,
         &mut rectified_s2c_types,
     );
+    
+    // Other type collections (no rectification needed for now, just clone)
+    let rectified_game_action_types = game_action_types.clone();
+    let rectified_game_event_types = game_event_types.clone();
+    let rectified_packet_types = packet_types.clone();
 
     // Generate enums
     let mut enums_out = String::new();
@@ -3821,7 +3871,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     enums_out.push_str("use num_enum::TryFromPrimitive;\n");
     enums_out.push_str("use crate::readers::ACReader;\n\n");
 
-    for protocol_enum in &enums {
+    for protocol_enum in &enum_types {
         if protocol_enum.is_mask {
             enums_out.push_str(&generate_bitflags(protocol_enum));
         } else {
@@ -3859,14 +3909,14 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     }
 
     // Build a map of enum names to their parent types for reader generation
-    let enum_parent_map: BTreeMap<String, String> = enums
+    let enum_parent_map: BTreeMap<String, String> = enum_types
         .iter()
         .map(|e| (e.name.clone(), e.parent.clone()))
         .collect();
 
     // Build a map of (enum_name, value) -> variant_name for switch pattern matching
     let mut enum_value_map: BTreeMap<(String, i64), String> = BTreeMap::new();
-    for protocol_enum in &enums {
+    for protocol_enum in &enum_types {
         for enum_value in &protocol_enum.values {
             let safe_variant = safe_enum_variant_name(&enum_value.name);
             enum_value_map.insert(
@@ -3877,7 +3927,7 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
     }
 
     // Build a set of mask enum names (bitflags types)
-    let mask_enums: std::collections::HashSet<String> = enums
+    let mask_enums: std::collections::HashSet<String> = enum_types
         .iter()
         .filter(|e| e.is_mask)
         .map(|e| e.name.clone())
@@ -3901,9 +3951,9 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
         content: enums_out,
     });
 
-    // Generate common types (still as a single file since they're shared)
+    // Generate common types as types/mod.rs
     files.push(GeneratedFile {
-        path: "types/common.rs".to_string(),
+        path: "types/mod.rs".to_string(),
         content: common_types_out,
     });
 
@@ -3938,6 +3988,56 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
             let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
             files.push(GeneratedFile {
                 path: format!("messages/s2c/{}.rs", module_name),
+                content,
+            });
+        }
+    }
+
+    // Track module names for each section
+    let mut game_action_modules = Vec::new();
+    let mut game_event_modules = Vec::new();
+    let mut packet_modules = Vec::new();
+
+    // Generate individual files for game actions
+    for protocol_type in &rectified_game_action_types {
+        if !protocol_type.is_primitive {
+            let type_name = &protocol_type.name;
+            let type_name_no_underscores = type_name.replace('_', "");
+            let module_name = to_snake_case(&type_name_no_underscores);
+            game_action_modules.push(module_name.clone());
+            let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
+            files.push(GeneratedFile {
+                path: format!("gameactions/{}.rs", module_name),
+                content,
+            });
+        }
+    }
+
+    // Generate individual files for game events
+    for protocol_type in &rectified_game_event_types {
+        if !protocol_type.is_primitive {
+            let type_name = &protocol_type.name;
+            let type_name_no_underscores = type_name.replace('_', "");
+            let module_name = to_snake_case(&type_name_no_underscores);
+            game_event_modules.push(module_name.clone());
+            let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
+            files.push(GeneratedFile {
+                path: format!("gameevents/{}.rs", module_name),
+                content,
+            });
+        }
+    }
+
+    // Generate individual files for packet types
+    for protocol_type in &rectified_packet_types {
+        if !protocol_type.is_primitive {
+            let type_name = &protocol_type.name;
+            let type_name_no_underscores = type_name.replace('_', "");
+            let module_name = to_snake_case(&type_name_no_underscores);
+            packet_modules.push(module_name.clone());
+            let content = generate_type_and_reader_file(&ctx, &reader_ctx, protocol_type);
+            files.push(GeneratedFile {
+                path: format!("network/{}.rs", module_name),
                 content,
             });
         }
@@ -3978,15 +4078,50 @@ pub fn generate(xml: &str, filter_types: &[String]) -> GeneratedCode {
         content: messages_mod.to_string(),
     });
 
-    // Generate mod.rs for types
-    let types_mod = "pub mod common;\n";
+    // Generate mod.rs for gameactions
+    let mut gameactions_mod = String::new();
+    for module_name in &game_action_modules {
+        gameactions_mod.push_str(&format!("pub mod {};\n", module_name));
+    }
+    gameactions_mod.push('\n');
+    for module_name in &game_action_modules {
+        gameactions_mod.push_str(&format!("pub use {}::*;\n", module_name));
+    }
     files.push(GeneratedFile {
-        path: "types/mod.rs".to_string(),
-        content: types_mod.to_string(),
+        path: "gameactions/mod.rs".to_string(),
+        content: gameactions_mod,
+    });
+
+    // Generate mod.rs for gameevents
+    let mut gameevents_mod = String::new();
+    for module_name in &game_event_modules {
+        gameevents_mod.push_str(&format!("pub mod {};\n", module_name));
+    }
+    gameevents_mod.push('\n');
+    for module_name in &game_event_modules {
+        gameevents_mod.push_str(&format!("pub use {}::*;\n", module_name));
+    }
+    files.push(GeneratedFile {
+        path: "gameevents/mod.rs".to_string(),
+        content: gameevents_mod,
+    });
+
+    // Generate mod.rs for network (packet types)
+    let mut network_mod = String::new();
+    for module_name in &packet_modules {
+        network_mod.push_str(&format!("pub mod {};\n", module_name));
+    }
+    network_mod.push('\n');
+    for module_name in &packet_modules {
+        network_mod.push_str(&format!("pub use {}::*;\n", module_name));
+    }
+    files.push(GeneratedFile {
+        path: "network/mod.rs".to_string(),
+        content: network_mod,
     });
 
     // Generate root mod.rs for generated
-    let generated_mod = "pub mod enums;\npub mod types;\npub mod messages;\n";
+    let generated_mod = "pub mod enums;\npub mod types;\npub mod messages;\npub mod gameactions;\npub mod gameevents;\npub mod network;\n";
     files.push(GeneratedFile {
         path: "mod.rs".to_string(),
         content: generated_mod.to_string(),
