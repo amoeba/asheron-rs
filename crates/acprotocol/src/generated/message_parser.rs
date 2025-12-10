@@ -1,6 +1,6 @@
 // Generated message parser with 14 C2S and 91 S2C types
 use serde_json::json;
-use std::io::Cursor;
+use std::io::{Cursor, Seek};
 use crate::generated::enums::{C2SMessage, S2CMessage, GameEvent, GameAction};
 use crate::readers::ACReader;
 
@@ -489,10 +489,14 @@ fn parse_s2c_message(
 fn parse_game_event(
     cursor: &mut Cursor<&[u8]>,
 ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
-    let mut reader: Box<dyn ACReader> = Box::new(cursor.clone());
-    let object_id = crate::readers::read_u32(&mut reader)?;
-    let sequence = crate::readers::read_u32(&mut reader)?;
-    let event_type_value = crate::readers::read_u32(&mut reader)?;
+    // Store initial position before reading header
+    let _initial_pos = cursor.position();
+    
+    // Read header fields to determine the event type (as per Chorizite pattern)
+    let object_id = crate::readers::read_u32(&mut Box::new(cursor.clone()))?;
+    let sequence = crate::readers::read_u32(&mut Box::new(cursor.clone()))?;
+    let event_type_value = crate::readers::read_u32(&mut Box::new(cursor.clone()))?;
+    
     let event_type = match GameEvent::try_from(event_type_value) {
         Ok(et) => et,
         Err(_) => return Ok(json!({
@@ -503,16 +507,18 @@ fn parse_game_event(
         })),
     };
 
-    // Reset cursor position and parse the event
-    cursor.set_position(0);
-    let mut reader = cursor.clone();
+    // Backtrack to allow the specific struct to read the full payload (as per Chorizite pattern)
+    let pos = cursor.position();
+    if pos >= 12 {
+        cursor.seek(std::io::SeekFrom::Current(-12))?;  // Backtrack 3 u32s = 12 bytes
+    } else {
+        cursor.set_position(0);
+    }
     
-    // Skip the 12-byte header (objectId, sequence, eventType)
-    // The event struct reads only its payload, not the header
-    crate::readers::read_u32(&mut reader)?;  // skip objectId
-    crate::readers::read_u32(&mut reader)?;  // skip sequence
-    crate::readers::read_u32(&mut reader)?;  // skip eventType
-
+    // Create a reader from the current cursor position to parse the full payload
+    let mut reader: Box<dyn ACReader> = Box::new(cursor.clone());
+    
+    // Parse using the specific event struct (which will read header + payload)
     let event_data: Result<serde_json::Value, Box<dyn std::error::Error>> = match event_type {
         GameEvent::AllegianceAllegianceUpdateAborted => {
             use crate::generated::gameevents::allegiance_allegiance_update_aborted::AllegianceAllegianceUpdateAborted;
@@ -940,9 +946,13 @@ fn parse_game_event(
 fn parse_game_action(
     cursor: &mut Cursor<&[u8]>,
 ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
-    let mut reader: Box<dyn ACReader> = Box::new(cursor.clone());
-    let sequence = crate::readers::read_u32(&mut reader)?;
-    let action_type_value = crate::readers::read_u32(&mut reader)?;
+    // Store initial position before reading header
+    let _initial_pos = cursor.position();
+    
+    // Read header fields to determine the action type (as per Chorizite pattern)
+    let sequence = crate::readers::read_u32(&mut Box::new(cursor.clone()))?;
+    let action_type_value = crate::readers::read_u32(&mut Box::new(cursor.clone()))?;
+    
     let action_type = match GameAction::try_from(action_type_value) {
         Ok(at) => at,
         Err(_) => return Ok(json!({
@@ -952,15 +962,18 @@ fn parse_game_action(
         })),
     };
 
-    // Reset cursor position and parse the action
-    cursor.set_position(0);
-    let mut reader = cursor.clone();
+    // Backtrack to allow the specific struct to read the full payload (as per Chorizite pattern)
+    let pos = cursor.position();
+    if pos >= 8 {
+        cursor.seek(std::io::SeekFrom::Current(-8))?;  // Backtrack 2 u32s = 8 bytes
+    } else {
+        cursor.set_position(0);
+    }
     
-    // Skip the 8-byte header (sequence, actionType)
-    // The action struct reads only its payload, not the header
-    crate::readers::read_u32(&mut reader)?;  // skip sequence
-    crate::readers::read_u32(&mut reader)?;  // skip actionType
-
+    // Create a reader from the current cursor position to parse the full payload
+    let mut reader: Box<dyn ACReader> = Box::new(cursor.clone());
+    
+    // Parse using the specific action struct (which will read header + payload)
     let action_data: Result<serde_json::Value, Box<dyn std::error::Error>> = match action_type {
         GameAction::CharacterPlayerOptionChangedEvent => {
             use crate::generated::gameactions::character_player_option_changed_event::CharacterPlayerOptionChangedEvent;
