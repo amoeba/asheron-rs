@@ -99,34 +99,6 @@ pub struct {type_name}{type_generics} {{}}\n\n"
 
     // Check if this is a variant type (has switch) or simple type
     if let Some(ref variant_fields) = field_set.variant_fields {
-        if type_name.contains("TurbineChat") {
-            use std::fs::OpenOptions;
-            use std::io::Write;
-            let mut file = OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open("/tmp/turbine_debug.txt")
-                .unwrap();
-            writeln!(
-                file,
-                "DEBUG: Type {} has variant_fields with {} cases",
-                type_name,
-                variant_fields.len()
-            )
-            .unwrap();
-            for (case_val, fields) in variant_fields {
-                writeln!(file, "  Case {}: {} fields", case_val, fields.len()).unwrap();
-            }
-            writeln!(
-                file,
-                "DEBUG: Has nested_switches: {}",
-                field_set.nested_switches.is_some()
-            )
-            .unwrap();
-            if let Some(ref ns) = field_set.nested_switches {
-                writeln!(file, "  Nested switches for {} cases", ns.len()).unwrap();
-            }
-        }
         // First, generate all standalone variant structs
         let switch_field = field_set.switch_field.as_ref().unwrap();
 
