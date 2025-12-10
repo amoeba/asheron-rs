@@ -506,6 +506,12 @@ fn parse_game_event(
     // Reset cursor position and parse the event
     cursor.set_position(0);
     let mut reader = cursor.clone();
+    
+    // Skip the 12-byte header (objectId, sequence, eventType)
+    // The event struct reads only its payload, not the header
+    crate::readers::read_u32(&mut reader)?;  // skip objectId
+    crate::readers::read_u32(&mut reader)?;  // skip sequence
+    crate::readers::read_u32(&mut reader)?;  // skip eventType
 
     let event_data: Result<serde_json::Value, Box<dyn std::error::Error>> = match event_type {
         GameEvent::AllegianceAllegianceUpdateAborted => {
@@ -949,6 +955,11 @@ fn parse_game_action(
     // Reset cursor position and parse the action
     cursor.set_position(0);
     let mut reader = cursor.clone();
+    
+    // Skip the 8-byte header (sequence, actionType)
+    // The action struct reads only its payload, not the header
+    crate::readers::read_u32(&mut reader)?;  // skip sequence
+    crate::readers::read_u32(&mut reader)?;  // skip actionType
 
     let action_data: Result<serde_json::Value, Box<dyn std::error::Error>> = match action_type {
         GameAction::CharacterPlayerOptionChangedEvent => {

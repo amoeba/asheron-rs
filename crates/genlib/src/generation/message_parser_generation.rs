@@ -127,7 +127,13 @@ pub fn generate_message_parser(
     out.push_str("    };\n\n");
     out.push_str("    // Reset cursor position and parse the event\n");
     out.push_str("    cursor.set_position(0);\n");
-    out.push_str("    let mut reader = cursor.clone();\n\n");
+    out.push_str("    let mut reader = cursor.clone();\n");
+    out.push_str("    \n");
+    out.push_str("    // Skip the 12-byte header (objectId, sequence, eventType)\n");
+    out.push_str("    // The event struct reads only its payload, not the header\n");
+    out.push_str("    crate::readers::read_u32(&mut reader)?;  // skip objectId\n");
+    out.push_str("    crate::readers::read_u32(&mut reader)?;  // skip sequence\n");
+    out.push_str("    crate::readers::read_u32(&mut reader)?;  // skip eventType\n\n");
     out.push_str("    let event_data: Result<serde_json::Value, Box<dyn std::error::Error>> = match event_type {\n");
     generate_game_event_cases(&mut out, enums);
     out.push_str("    };\n\n");
@@ -166,7 +172,12 @@ pub fn generate_message_parser(
     out.push_str("    };\n\n");
     out.push_str("    // Reset cursor position and parse the action\n");
     out.push_str("    cursor.set_position(0);\n");
-    out.push_str("    let mut reader = cursor.clone();\n\n");
+    out.push_str("    let mut reader = cursor.clone();\n");
+    out.push_str("    \n");
+    out.push_str("    // Skip the 8-byte header (sequence, actionType)\n");
+    out.push_str("    // The action struct reads only its payload, not the header\n");
+    out.push_str("    crate::readers::read_u32(&mut reader)?;  // skip sequence\n");
+    out.push_str("    crate::readers::read_u32(&mut reader)?;  // skip actionType\n\n");
     out.push_str("    let action_data: Result<serde_json::Value, Box<dyn std::error::Error>> = match action_type {\n");
     generate_game_action_cases(&mut out, enums);
     out.push_str("    };\n\n");

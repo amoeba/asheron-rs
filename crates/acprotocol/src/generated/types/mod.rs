@@ -1746,19 +1746,19 @@ pub struct RawMotionState {
     #[serde(rename = "CurrentStyle")]
     pub current_style: Option<StanceMode>,
     #[serde(rename = "ForwardCommand")]
-    pub forward_command: Option<Command>,
+    pub forward_command: Option<MovementCommand>,
     #[serde(rename = "ForwardHoldkey")]
     pub forward_holdkey: Option<HoldKey>,
     #[serde(rename = "ForwardSpeed")]
     pub forward_speed: Option<f32>,
     #[serde(rename = "SidestepCommand")]
-    pub sidestep_command: Option<Command>,
+    pub sidestep_command: Option<MovementCommand>,
     #[serde(rename = "SidestepHoldkey")]
     pub sidestep_holdkey: Option<HoldKey>,
     #[serde(rename = "SidestepSpeed")]
     pub sidestep_speed: Option<f32>,
     #[serde(rename = "TurnCommand")]
-    pub turn_command: Option<Command>,
+    pub turn_command: Option<MovementCommand>,
     #[serde(rename = "TurnHoldkey")]
     pub turn_holdkey: Option<u32>,
     #[serde(rename = "TurnSpeed")]
@@ -1928,11 +1928,11 @@ pub struct InterpertedMotionState {
     #[serde(rename = "CurrentStyle")]
     pub current_style: Option<StanceMode>,
     #[serde(rename = "ForwardCommand")]
-    pub forward_command: Option<Command>,
+    pub forward_command: Option<MovementCommand>,
     #[serde(rename = "SidestepCommand")]
-    pub sidestep_command: Option<Command>,
+    pub sidestep_command: Option<MovementCommand>,
     #[serde(rename = "TurnCommand")]
-    pub turn_command: Option<Command>,
+    pub turn_command: Option<MovementCommand>,
     #[serde(rename = "ForwardSpeed")]
     pub forward_speed: Option<f32>,
     #[serde(rename = "SidestepSpeed")]
