@@ -11,11 +11,12 @@ mod read {
     use std::path::Path;
     use crate::PACKET_HEADER_SIZE;
 
-    pub fn run(path: &Path) -> Result<()> {
+    pub fn run(path: &Path, message_index: Option<usize>) -> Result<()> {
         use acprotocol::network::{FragmentAssembler, pcap};
 
         let mut pcap_iter = pcap::open(path.to_str().unwrap())?;
         let mut assembler = FragmentAssembler::new();
+        let mut message_count = 0;
 
         while let Some(packet_result) = pcap_iter.next() {
             let packet = packet_result?;
@@ -30,13 +31,25 @@ mod read {
             match assembler.parse_packet_payload(udp_payload) {
                 Ok(messages) => {
                     for msg in messages {
-                        println!("{}", serde_json::to_string(&msg)?);
+                        if let Some(target_index) = message_index {
+                            if message_count == target_index {
+                                println!("{}", serde_json::to_string_pretty(&msg)?);
+                                return Ok(());
+                            }
+                        } else {
+                            println!("{}", serde_json::to_string(&msg)?);
+                        }
+                        message_count += 1;
                     }
                 }
                 Err(_) => {
                     // Silently skip packets that can't be parsed
                 }
             }
+        }
+
+        if message_index.is_some() {
+            eprintln!("Message index out of range. Total messages: {}", message_count);
         }
 
         Ok(())
@@ -133,6 +146,7 @@ mod tui {
         sort_ascending: bool,
         selected_column: usize,  // Index of the column header being selected (0-10)
         column_rects: Vec<(u16, u16, SortColumn)>,  // (start, end, column)
+        list_pane_right: u16,  // Right boundary of list pane
     }
 
     enum FocusedPane {
@@ -169,6 +183,7 @@ mod tui {
                 sort_ascending: true,
                 selected_column: 0,
                 column_rects: Vec::new(),
+                list_pane_right: 0,
             }
         }
 
@@ -441,6 +456,11 @@ mod tui {
     }
 
     fn handle_mouse_click(mouse: MouseEvent, app: &mut App) {
+        // Only handle clicks in the left pane (list)
+        if mouse.column >= app.list_pane_right {
+            return;  // Click is in the details pane, ignore
+        }
+        
         // Check if click is in the header row (typically row 1 after title/border)
         if mouse.row == 1 {
             // Header row click - sort by column
@@ -501,6 +521,9 @@ mod tui {
                 Constraint::Percentage(34),
             ])
             .split(outer_chunks[0]);
+        
+        // Store the right boundary of the list pane for mouse click detection
+        app.list_pane_right = chunks[0].right();
 
         // Table header with sort indicators and column selection
         let arrow = if app.sort_ascending { "▲" } else { "▼" };
@@ -866,6 +889,9 @@ enum Commands {
     Read {
         /// Path to .pcap file
         path: PathBuf,
+        /// Optional message index to display (0-based)
+        #[arg(short, long)]
+        index: Option<usize>,
     },
     /// Interactive view for browsing pcap files
     View {
@@ -878,7 +904,7 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Read { path } => read::run(&path)?,
+        Commands::Read { path, index } => read::run(&path, index)?,
         Commands::View { path } => tui::run(&path)?,
     }
 
