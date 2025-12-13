@@ -144,6 +144,16 @@ pub fn generate_with_source(
         }
     }
 
+    // Generate MessageQueue enum (only for protocol.xml, not network.xml)
+    if source == GenerateSource::Protocol {
+        enums_out.push_str(&enum_generation::generate_message_queue_enum(
+            &rectified_c2s_types,
+            &rectified_s2c_types,
+            &game_action_types,
+            &game_event_types,
+        ));
+    }
+
     // Generate common types - will add readers after building reader context
     let mut common_types_out = String::new();
     common_types_out.push_str("use serde::{Serialize, Deserialize};\n");

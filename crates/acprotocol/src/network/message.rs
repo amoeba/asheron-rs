@@ -2,6 +2,7 @@ use super::reader::BinaryReader;
 use serde::Serialize;
 use std::io::{self, Cursor};
 use crate::unified::{Direction, MessageKind};
+use crate::enums::MessageQueue;
 use crate::readers::ACReader;
 
 /// A parsed message extracted from assembled fragments
@@ -15,11 +16,17 @@ pub struct ParsedMessage {
     pub message_type: String,
     /// Message direction (Send/Recv)
     pub direction: String,
+    /// Queue this message belongs to
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub queue: Option<MessageQueue>,
     /// Parsed message data as JSON, or raw hex if parsing fails
     #[serde(serialize_with = "serialize_parsed_data")]
     pub data: Vec<u8>,
     /// Position in the message stream
     pub sequence: u32,
+    /// Packet iteration counter (from AC packet header)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub iteration: Option<u16>,
 }
 
 fn serialize_parsed_data<S>(data: &[u8], serializer: S) -> Result<S::Ok, S::Error>
@@ -67,8 +74,30 @@ fn determine_direction(opcode: u32) -> Direction {
 }
 
 impl ParsedMessage {
+    /// Determine the direction enum for this message
+    fn determine_direction_enum(&self) -> Direction {
+        use crate::enums::{C2SMessage, S2CMessage};
+        if C2SMessage::try_from(self.opcode).is_ok() {
+            Direction::ClientToServer
+        } else if S2CMessage::try_from(self.opcode).is_ok() {
+            Direction::ServerToClient
+        } else {
+            Direction::ServerToClient
+        }
+    }
+
     /// Parse a message from assembled fragment data
     pub fn from_fragment(data: Vec<u8>, sequence: u32, id: u32) -> io::Result<Self> {
+        Self::from_fragment_with_iteration(data, sequence, id, None)
+    }
+
+    /// Parse a message from assembled fragment data with packet header info
+    pub fn from_fragment_with_iteration(
+        data: Vec<u8>,
+        sequence: u32,
+        id: u32,
+        iteration: Option<u16>,
+    ) -> io::Result<Self> {
         if data.len() < 4 {
             return Err(io::Error::new(
                 io::ErrorKind::InvalidData,
@@ -84,20 +113,30 @@ impl ParsedMessage {
             opcode,
             message_type: String::new(),
             direction: String::new(),
+            queue: None,
             data,
             sequence,
+            iteration,
         };
 
         let message_type = message.message_type_name();
         let direction = message.direction().to_string();
+        
+        // Try to parse and get queue from the actual message
+        let mut cursor = Cursor::new(&message.data);
+        let queue = MessageKind::read(&mut cursor, message.determine_direction_enum())
+            .ok()
+            .and_then(|msg| msg.queue());
 
         Ok(Self {
             id: message.id,
             opcode: message.opcode,
             message_type,
             direction,
+            queue,
             data: message.data,
             sequence: message.sequence,
+            iteration: message.iteration,
         })
     }
 

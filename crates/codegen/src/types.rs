@@ -142,6 +142,8 @@ pub struct ProtocolType {
     pub(crate) extra_derives: Vec<String>,
     /// The protocol section this type comes from (Types, C2S, S2C, Packets, etc.)
     pub(crate) category: ProtocolCategory,
+    /// The queue this message type belongs to (e.g., "UIQueue", "Weenie", "Control")
+    pub(crate) queue: Option<String>,
 }
 
 impl ProtocolType {

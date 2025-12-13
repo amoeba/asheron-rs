@@ -50,6 +50,12 @@ pub fn generate_unified_message_types(
     out.push_str("            Direction::ClientToServer => Ok(MessageKind::C2S(C2SMessage::read(reader)?)),\n");
     out.push_str("            Direction::ServerToClient => Ok(MessageKind::S2C(S2CMessage::read(reader)?)),\n");
     out.push_str("        }\n");
+    out.push_str("    }\n\n");
+    out.push_str("    pub fn queue(&self) -> Option<MessageQueue> {\n");
+    out.push_str("        match self {\n");
+    out.push_str("            MessageKind::C2S(msg) => msg.queue(),\n");
+    out.push_str("            MessageKind::S2C(msg) => msg.queue(),\n");
+    out.push_str("        }\n");
     out.push_str("    }\n");
     out.push_str("}\n\n");
 
@@ -140,11 +146,42 @@ fn generate_c2s_message_enum(
     }
 
     out.push_str("        }\n");
+    out.push_str("    }\n\n");
+    
+    // Generate queue method
+    out.push_str("    pub fn queue(&self) -> Option<MessageQueue> {\n");
+    out.push_str("        match self {\n");
+    
+    for t in message_types {
+        if let Some(ref queue) = t.queue {
+            let type_name = &t.name;
+            let type_name_no_underscores = type_name.replace('_', "");
+            let snake_case = to_snake_case(queue);
+            let pascal_case = snake_case
+                .split('_')
+                .map(|s| {
+                    let mut chars = s.chars();
+                    match chars.next() {
+                        None => String::new(),
+                        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+                    }
+                })
+                .collect::<String>();
+            out.push_str(&format!(
+                "            C2SMessage::{}(_) => Some(MessageQueue::{}),\n",
+                type_name_no_underscores, pascal_case
+            ));
+        }
+    }
+    
+    out.push_str("            C2SMessage::OrderedGameAction { action, .. } => action.queue(),\n");
+    out.push_str("        }\n");
     out.push_str("    }\n");
     out.push_str("}\n\n");
-
+    
     out
-}
+    }
+
 
 /// Generate S2CMessage enum with special handling for OrderedGameEvent
 fn generate_s2c_message_enum(
@@ -213,6 +250,36 @@ fn generate_s2c_message_enum(
         out.push_str("            other => Err(format!(\"Unhandled S2CMessage variant: {:?}\", other).into()),\n");
     }
 
+    out.push_str("        }\n");
+    out.push_str("    }\n\n");
+    
+    // Generate queue method
+    out.push_str("    pub fn queue(&self) -> Option<MessageQueue> {\n");
+    out.push_str("        match self {\n");
+    
+    for t in message_types {
+        if let Some(ref queue) = t.queue {
+            let type_name = &t.name;
+            let type_name_no_underscores = type_name.replace('_', "");
+            let snake_case = to_snake_case(queue);
+            let pascal_case = snake_case
+                .split('_')
+                .map(|s| {
+                    let mut chars = s.chars();
+                    match chars.next() {
+                        None => String::new(),
+                        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+                    }
+                })
+                .collect::<String>();
+            out.push_str(&format!(
+                "            S2CMessage::{}(_) => Some(MessageQueue::{}),\n",
+                type_name_no_underscores, pascal_case
+            ));
+        }
+    }
+    
+    out.push_str("            S2CMessage::OrderedGameEvent { event, .. } => event.queue(),\n");
     out.push_str("        }\n");
     out.push_str("    }\n");
     out.push_str("}\n\n");
@@ -300,6 +367,37 @@ fn generate_message_enum(
         ));
     }
 
+    out.push_str("        }\n");
+    out.push_str("    }\n\n");
+    
+    // Generate queue method
+    out.push_str(&format!("    pub fn queue(&self) -> Option<MessageQueue> {{\n"));
+    out.push_str("        match self {\n");
+    
+    for protocol_type in message_types {
+        if !protocol_type.is_primitive {
+            if let Some(ref queue) = protocol_type.queue {
+                let type_name = &protocol_type.name;
+                let type_name_no_underscores = type_name.replace('_', "");
+                let snake_case = to_snake_case(queue);
+                let pascal_case = snake_case
+                    .split('_')
+                    .map(|s| {
+                        let mut chars = s.chars();
+                        match chars.next() {
+                            None => String::new(),
+                            Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+                        }
+                    })
+                    .collect::<String>();
+                out.push_str(&format!(
+                    "            {}::{}(_) => Some(MessageQueue::{}),\n",
+                    enum_name, type_name_no_underscores, pascal_case
+                ));
+            }
+        }
+    }
+    
     out.push_str("        }\n");
     out.push_str("    }\n");
     out.push_str("}\n\n");

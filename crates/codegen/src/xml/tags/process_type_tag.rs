@@ -15,6 +15,7 @@ pub fn process_type_tag(
     let mut is_primitive = false;
     let mut parent = None;
     let mut templated = None;
+    let mut queue = None;
 
     for attr in e.attributes().flatten() {
         match attr.key.as_ref() {
@@ -31,6 +32,9 @@ pub fn process_type_tag(
             b"templated" => {
                 templated = Some(attr.unescape_value().unwrap().into_owned());
             }
+            b"queue" => {
+                queue = Some(attr.unescape_value().unwrap().into_owned());
+            }
             _ => {}
         }
     }
@@ -46,6 +50,7 @@ pub fn process_type_tag(
             hash_bounds: Vec::new(),
             extra_derives: Vec::new(),
             category: crate::types::ProtocolCategory::Types, // Will be set properly during parsing
+            queue,
         };
 
         // For self-closing tags, push immediately
