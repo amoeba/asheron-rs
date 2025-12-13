@@ -54,9 +54,10 @@ mod tui {
     };
     use ratatui::{
         backend::CrosstermBackend,
-        layout::{Alignment, Constraint, Direction, Layout},
+        layout::{Constraint, Direction, Layout},
         prelude::Stylize,
         style::{Color, Modifier, Style},
+        text::Span,
         widgets::{Block, Borders, Paragraph, Row, Table},
         Terminal,
     };
@@ -80,6 +81,9 @@ mod tui {
 
         // Create app state
         let mut app = App::new(packets);
+        
+        // Apply initial sort by Id ascending
+        app.apply_sort();
 
         // Run the TUI
         let res = run_app(&mut terminal, &mut app);
@@ -124,18 +128,31 @@ mod tui {
         tree_expanded: std::collections::HashSet<String>,
         tree_scroll_offset: usize,
         tree_focused_line: usize,
-        detail_mode: DetailMode,
         focused_pane: FocusedPane,
-    }
-
-    enum DetailMode {
-        JSON,
-        Tree,
+        sort_column: SortColumn,
+        sort_ascending: bool,
+        selected_column: usize,  // Index of the column header being selected (0-10)
+        column_rects: Vec<(u16, u16, SortColumn)>,  // (start, end, column)
     }
 
     enum FocusedPane {
         List,
         Details,
+    }
+
+    #[derive(Clone, Copy, PartialEq)]
+    enum SortColumn {
+        Id,
+        Direction,
+        Timestamp,
+        Flags,
+        MessageType,
+        Size,
+        OpCode,
+        Sequence,
+        Queue,
+        Iteration,
+        Port,
     }
 
     impl App {
@@ -147,8 +164,11 @@ mod tui {
                 tree_expanded: std::collections::HashSet::new(),
                 tree_scroll_offset: 0,
                 tree_focused_line: 0,
-                detail_mode: DetailMode::Tree,
                 focused_pane: FocusedPane::List,
+                sort_column: SortColumn::Id,
+                sort_ascending: true,
+                selected_column: 0,
+                column_rects: Vec::new(),
             }
         }
 
@@ -209,14 +229,6 @@ mod tui {
             }
         }
 
-        fn tree_scroll_up(&mut self) {
-            self.tree_scroll_offset = self.tree_scroll_offset.saturating_sub(1);
-        }
-
-        fn tree_scroll_down(&mut self) {
-            self.tree_scroll_offset = self.tree_scroll_offset.saturating_add(1);
-        }
-
         fn tree_line_down(&mut self, total_lines: usize, visible_rows: usize) {
             if self.tree_focused_line < total_lines.saturating_sub(1) {
                 self.tree_focused_line += 1;
@@ -234,6 +246,66 @@ mod tui {
                 if self.tree_focused_line < self.tree_scroll_offset {
                     self.tree_scroll_offset = self.tree_focused_line;
                 }
+            }
+        }
+
+        fn apply_sort(&mut self) {
+            self.packets.sort_by(|a, b| {
+                let cmp = match self.sort_column {
+                    SortColumn::Id => a.id.cmp(&b.id),
+                    SortColumn::Direction => a.direction.cmp(&b.direction),
+                    SortColumn::Timestamp => a.timestamp.cmp(&b.timestamp),
+                    SortColumn::Flags => a.flags.cmp(&b.flags),
+                    SortColumn::MessageType => a.packet_type.cmp(&b.packet_type),
+                    SortColumn::Size => a.size.cmp(&b.size),
+                    SortColumn::OpCode => a.opcode.cmp(&b.opcode),
+                    SortColumn::Sequence => a.sequence.cmp(&b.sequence),
+                    SortColumn::Queue => a.queue.cmp(&b.queue),
+                    SortColumn::Iteration => a.iteration.cmp(&b.iteration),
+                    SortColumn::Port => a.port.cmp(&b.port),
+                };
+                if self.sort_ascending { cmp } else { cmp.reverse() }
+            });
+        }
+
+        fn move_column_left(&mut self) {
+            if self.selected_column > 0 {
+                self.selected_column -= 1;
+            }
+        }
+
+        fn move_column_right(&mut self) {
+            if self.selected_column < 10 {  // 11 columns total (0-10)
+                self.selected_column += 1;
+            }
+        }
+
+        fn sort_by_selected_column(&mut self) {
+            let columns = [
+                SortColumn::Id,
+                SortColumn::Direction,
+                SortColumn::Timestamp,
+                SortColumn::Flags,
+                SortColumn::MessageType,
+                SortColumn::Size,
+                SortColumn::OpCode,
+                SortColumn::Sequence,
+                SortColumn::Queue,
+                SortColumn::Iteration,
+                SortColumn::Port,
+            ];
+            
+            if self.selected_column < columns.len() {
+                let col = columns[self.selected_column];
+                if self.sort_column == col {
+                    self.sort_ascending = !self.sort_ascending;
+                } else {
+                    self.sort_column = col;
+                    self.sort_ascending = false;
+                }
+                self.apply_sort();
+                self.scroll_offset = 0;
+                self.selected = 0;
             }
         }
     }
@@ -259,99 +331,145 @@ mod tui {
             terminal.draw(|f| ui(f, app))?;
 
             if crossterm::event::poll(std::time::Duration::from_millis(250))? {
-                if let Event::Key(key) = event::read()? {
-                    // Estimate visible rows (roughly 15-20 depending on screen)
-                    let visible_rows = 15;
-                    match key.code {
-                        KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
-                        KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => return Ok(()),
-                        KeyCode::Tab => {
-                            // Switch between panes
-                            app.focused_pane = match app.focused_pane {
-                                FocusedPane::List => FocusedPane::Details,
-                                FocusedPane::Details => FocusedPane::List,
-                            };
-                        }
-                        KeyCode::Char('j') | KeyCode::Down => {
-                            match app.focused_pane {
-                                FocusedPane::List => app.next(visible_rows),
-                                FocusedPane::Details => {
-                                    let total_lines = detail_lines.len();
-                                    app.tree_line_down(total_lines, visible_rows);
-                                }
+                match event::read()? {
+                    Event::Key(key) => {
+                        // Estimate visible rows (roughly 15-20 depending on screen)
+                        let visible_rows = 15;
+                        match key.code {
+                            KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
+                            KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => return Ok(()),
+                            KeyCode::Tab => {
+                                // Switch between panes
+                                app.focused_pane = match app.focused_pane {
+                                    FocusedPane::List => FocusedPane::Details,
+                                    FocusedPane::Details => FocusedPane::List,
+                                };
                             }
-                        }
-                        KeyCode::Char('k') | KeyCode::Up => {
-                            match app.focused_pane {
-                                FocusedPane::List => app.prev(visible_rows),
-                                FocusedPane::Details => app.tree_line_up(),
-                            }
-                        }
-                        KeyCode::PageDown => app.page_down(visible_rows),
-                        KeyCode::PageUp => app.page_up(visible_rows),
-                        KeyCode::Home => {
-                            app.selected = 0;
-                            app.scroll_offset = 0;
-                            app.tree_scroll_offset = 0;
-                            app.tree_focused_line = 0;
-                        }
-                        KeyCode::End => {
-                            if !app.packets.is_empty() {
-                                app.selected = app.packets.len() - 1;
-                                app.update_scroll(visible_rows);
-                            }
-                        }
-                        KeyCode::Enter => {
-                            // Only expand/collapse in details pane
-                            if matches!(app.focused_pane, FocusedPane::Details) {
-                                // Enter: toggle current node
-                                let focused_global_line = app.tree_scroll_offset + app.tree_focused_line;
-                                if focused_global_line < detail_lines.len() {
-                                    let (line, path) = &detail_lines[focused_global_line];
-                                    // Only toggle if line contains expand/collapse markers
-                                    if (line.contains("▶") || line.contains("▼")) && !path.is_empty() {
-                                        app.toggle_tree_node(path.clone());
-                                    }
-                                }
-                            }
-                        }
-                        KeyCode::Char('f') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                            // Ctrl+f: page down
-                            match app.focused_pane {
-                                FocusedPane::List => app.page_down(visible_rows),
-                                FocusedPane::Details => {
-                                    for _ in 0..visible_rows {
+                            KeyCode::Char('j') | KeyCode::Down => {
+                                match app.focused_pane {
+                                    FocusedPane::List => app.next(visible_rows),
+                                    FocusedPane::Details => {
                                         let total_lines = detail_lines.len();
                                         app.tree_line_down(total_lines, visible_rows);
                                     }
                                 }
                             }
-                        }
-                        KeyCode::Char('b') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                            // Ctrl+b: page up
-                            match app.focused_pane {
-                                FocusedPane::List => app.page_up(visible_rows),
-                                FocusedPane::Details => {
-                                    for _ in 0..visible_rows {
-                                        app.tree_line_up();
-                                    }
+                            KeyCode::Char('k') | KeyCode::Up => {
+                                match app.focused_pane {
+                                    FocusedPane::List => app.prev(visible_rows),
+                                    FocusedPane::Details => app.tree_line_up(),
                                 }
                             }
-                        }
-                        KeyCode::Char('a') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                            // Ctrl+a: expand all nodes (when Shift+Enter doesn't work)
-                            if matches!(app.focused_pane, FocusedPane::Details) {
+                            KeyCode::Left => app.move_column_left(),
+                            KeyCode::Right => app.move_column_right(),
+                            KeyCode::Char(' ') => app.sort_by_selected_column(),
+                            KeyCode::PageDown => app.page_down(visible_rows),
+                            KeyCode::PageUp => app.page_up(visible_rows),
+                            KeyCode::Home => {
+                                app.selected = 0;
+                                app.scroll_offset = 0;
+                                app.tree_scroll_offset = 0;
+                                app.tree_focused_line = 0;
+                            }
+                            KeyCode::End => {
                                 if !app.packets.is_empty() {
-                                    let packet = &app.packets[app.selected];
-                                    if let Ok(json_val) = serde_json::from_str::<Value>(&packet.raw_json) {
-                                        let root = TreeNode::from_json("root", &json_val);
-                                        collect_all_expandable_paths(&root, String::new(), &mut app.tree_expanded);
+                                    app.selected = app.packets.len() - 1;
+                                    app.update_scroll(visible_rows);
+                                }
+                            }
+                            KeyCode::Enter => {
+                                // Only expand/collapse in details pane
+                                if matches!(app.focused_pane, FocusedPane::Details) {
+                                    // Enter: toggle current node
+                                    let focused_global_line = app.tree_scroll_offset + app.tree_focused_line;
+                                    if focused_global_line < detail_lines.len() {
+                                        let (line, path) = &detail_lines[focused_global_line];
+                                        // Only toggle if line contains expand/collapse markers
+                                        if (line.contains("▶") || line.contains("▼")) && !path.is_empty() {
+                                            app.toggle_tree_node(path.clone());
+                                        }
                                     }
                                 }
                             }
+                            KeyCode::Char('f') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                                // Ctrl+f: page down
+                                match app.focused_pane {
+                                    FocusedPane::List => app.page_down(visible_rows),
+                                    FocusedPane::Details => {
+                                        for _ in 0..visible_rows {
+                                            let total_lines = detail_lines.len();
+                                            app.tree_line_down(total_lines, visible_rows);
+                                        }
+                                    }
+                                }
+                            }
+                            KeyCode::Char('b') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                                // Ctrl+b: page up
+                                match app.focused_pane {
+                                    FocusedPane::List => app.page_up(visible_rows),
+                                    FocusedPane::Details => {
+                                        for _ in 0..visible_rows {
+                                            app.tree_line_up();
+                                        }
+                                    }
+                                }
+                            }
+                            KeyCode::Char('a') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                                // Ctrl+a: expand all nodes (when Shift+Enter doesn't work)
+                                if matches!(app.focused_pane, FocusedPane::Details) {
+                                    if !app.packets.is_empty() {
+                                        let packet = &app.packets[app.selected];
+                                        if let Ok(json_val) = serde_json::from_str::<Value>(&packet.raw_json) {
+                                            let root = TreeNode::from_json("root", &json_val);
+                                            collect_all_expandable_paths(&root, String::new(), &mut app.tree_expanded);
+                                        }
+                                    }
+                                }
+                            }
+                            _ => {}
                         }
-                        _ => {}
                     }
+                    Event::Mouse(mouse) => {
+                        if mouse.kind == MouseEventKind::Up(crossterm::event::MouseButton::Left) {
+                            handle_mouse_click(mouse, app);
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    fn handle_mouse_click(mouse: MouseEvent, app: &mut App) {
+        // Check if click is in the header row (typically row 1 after title/border)
+        if mouse.row == 1 {
+            // Header row click - sort by column
+            for (start, end, col) in &app.column_rects {
+                if mouse.column >= *start && mouse.column < *end {
+                    // Toggle sort direction if same column, otherwise switch column
+                    if app.sort_column == *col {
+                        app.sort_ascending = !app.sort_ascending;
+                    } else {
+                        app.sort_column = *col;
+                        app.sort_ascending = false;
+                    }
+                    app.apply_sort();
+                    app.scroll_offset = 0;
+                    app.selected = 0;
+                    break;
+                }
+            }
+        } else if mouse.row > 1 {
+            // Data row click - select packet
+            // Row 2 onwards are data rows (row 0=top border, row 1=header)
+            let row_index = (mouse.row - 2) as usize;
+            if row_index < app.packets.len() {
+                let visible_rows = 15; // Estimate from render
+                let selected_in_view = row_index + app.scroll_offset;
+                if selected_in_view < app.packets.len() {
+                    app.selected = selected_in_view;
+                    // Auto-scroll to keep selected visible
+                    app.update_scroll(visible_rows);
                 }
             }
         }
@@ -367,7 +485,7 @@ mod tui {
         }
     }
 
-    fn ui(f: &mut ratatui::Frame, app: &App) {
+    fn ui(f: &mut ratatui::Frame, app: &mut App) {
         let outer_chunks = Layout::default()
             .direction(Direction::Vertical)
             .constraints([
@@ -384,12 +502,43 @@ mod tui {
             ])
             .split(outer_chunks[0]);
 
-        // Table
-        let header = Row::new(vec![
-            "#", "Dir", "Timestamp", "Flags", "Message Type", "Size", "OpCode", "Seq", "Queue", "Iter", "Port",
-        ])
-        .style(Style::default().bg(Color::DarkGray).bold())
-        .bottom_margin(0);
+        // Table header with sort indicators and column selection
+        let arrow = if app.sort_ascending { "▲" } else { "▼" };
+        let col_names = ["#", "Dir", "Timestamp", "Flags", "Message Type", "Size", "OpCode", "Seq", "Queue", "Iter", "Port"];
+        
+        let header_cells: Vec<Span> = col_names.iter().enumerate().map(|(idx, name)| {
+            let has_sort = match idx {
+                0 => app.sort_column == SortColumn::Id,
+                1 => app.sort_column == SortColumn::Direction,
+                2 => app.sort_column == SortColumn::Timestamp,
+                3 => app.sort_column == SortColumn::Flags,
+                4 => app.sort_column == SortColumn::MessageType,
+                5 => app.sort_column == SortColumn::Size,
+                6 => app.sort_column == SortColumn::OpCode,
+                7 => app.sort_column == SortColumn::Sequence,
+                8 => app.sort_column == SortColumn::Queue,
+                9 => app.sort_column == SortColumn::Iteration,
+                10 => app.sort_column == SortColumn::Port,
+                _ => false,
+            };
+            
+            let text = if has_sort { 
+                format!("{}{}", name, arrow) 
+            } else { 
+                name.to_string() 
+            };
+            
+            // Highlight selected column with black background and white text
+            if idx == app.selected_column {
+                Span::styled(text, Style::default().bg(Color::Black).fg(Color::White).add_modifier(Modifier::BOLD))
+            } else {
+                Span::raw(text)
+            }
+        }).collect();
+        
+        let header = Row::new(header_cells)
+            .style(Style::default().bg(Color::DarkGray).bold())
+            .bottom_margin(0);
 
         let visible_rows = chunks[1].height.saturating_sub(BORDER_HEIGHT as u16) as usize;
 
@@ -422,12 +571,37 @@ mod tui {
             })
             .collect();
 
+        // Calculate column positions for mouse click detection
+        // These should match the Constraint values below
+        let col_widths = [4, 4, 11, 8, 15, 5, 6, 4, 7, 3, 4];
+        let col_headers = [
+            SortColumn::Id,
+            SortColumn::Direction,
+            SortColumn::Timestamp,
+            SortColumn::Flags,
+            SortColumn::MessageType,
+            SortColumn::Size,
+            SortColumn::OpCode,
+            SortColumn::Sequence,
+            SortColumn::Queue,
+            SortColumn::Iteration,
+            SortColumn::Port,
+        ];
+        
+        app.column_rects.clear();
+        let mut col_start = 2; // Account for left border + padding
+        for (width, col) in col_widths.iter().zip(col_headers.iter()) {
+            let col_end = col_start + width;
+            app.column_rects.push((col_start as u16, col_end as u16, *col));
+            col_start = col_end + 1; // Add 1 for spacing between columns
+        }
+
         let table = Table::new(
             rows,
             [
                 Constraint::Length(4),           // #
                 Constraint::Length(4),           // Dir
-                Constraint::Length(8),           // Timestamp
+                Constraint::Length(11),          // Timestamp
                 Constraint::Length(8),           // Flags
                 Constraint::Min(15),             // Message Type (expandable)
                 Constraint::Length(5),           // Size
@@ -621,7 +795,6 @@ mod tui {
         timestamp: &str,
         port: u16,
     ) -> PacketInfo {
-        let id_from_json = json_val.get("id").and_then(|v| v.as_u64()).unwrap_or(0) as u32;
         let direction = json_val
             .get("direction")
             .and_then(|v| v.as_str())

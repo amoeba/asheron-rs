@@ -9,9 +9,10 @@
 | Detail lines computed twice | Medium | lines 321-334 vs 534-558 | Compute once, store in `App` | |
 | Magic numbers (42, 2, 15, etc.) | Medium | throughout | Named constants or calculate from layout | ✅ DONE |
 | Duplicate styling logic | Medium | lines 484-490, 564-576, 592-596 | Extract `get_style()` helper | ✅ DONE |
-| Unused `extra_info` field | Low | line 101 in `PacketInfo` | Remove or use | |
-| `TreeNode` generic tree | Low | lines 110-178 | Consider own module or dependency | |
+| Unused `extra_info` field | Low | line 101 in `PacketInfo` | Remove or use | ✅ DONE |
+| `TreeNode` generic tree | Low | lines 110-178 | Consider own module or dependency | ✅ DONE |
 | # column too narrow | Low | line 499 | Constraint::Length(4) | ✅ DONE |
+| Click-to-sort columns | Feature | pcap.rs | Implement mouse click sorting | ✅ DONE |
 
 ## Code Duplication Details
 
@@ -45,9 +46,18 @@ Protocol constants were hardcoded throughout the codebase.
 The focus/dim style pattern was repeated 2 times in the UI rendering.
 - **Locations**: lines 493-499, 576-582 (table rows and detail lines)
 - **Solution**:
-  - Created `get_focused_style(is_focused: bool, pane_focused: bool) -> Style` helper function
-  - Replaced 12 lines of duplicate conditional logic with 2 calls to helper
-  - Cleaner, more maintainable style application logic
+   - Created `get_focused_style(is_focused: bool, pane_focused: bool) -> Style` helper function
+   - Replaced 12 lines of duplicate conditional logic with 2 calls to helper
+   - Cleaner, more maintainable style application logic
+
+### 5. Click-to-Sort Columns ✅ COMPLETED
+- **Added**: Mouse event handling for clickable column headers
+- **Features**:
+   - Click any column header to sort by that column
+   - Click same column again to toggle sort direction (ascending/descending)
+   - Sort indicators (▲ for ascending, ▼ for descending) shown in header
+   - Default: sorted by Id ascending on load
+   - Packets list is cleared and reset to top after sort
 
 ### 3. Detail Line Computation
 Computed twice in the same render loop:
