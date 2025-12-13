@@ -32,4 +32,5 @@ codegen = { path = "../codegen" }
 env_logger = { workspace = true }
 
 [features]
+default = ["cli"]
 cli = ["clap"]
