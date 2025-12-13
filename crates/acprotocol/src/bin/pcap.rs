@@ -498,7 +498,7 @@ mod tui {
         let table = Table::new(
             rows,
             [
-                Constraint::Length(2),           // #
+                Constraint::Length(4),           // #
                 Constraint::Length(4),           // Dir
                 Constraint::Length(8),           // Timestamp
                 Constraint::Length(8),           // Flags
