@@ -119,7 +119,7 @@ fn generate_enum_reader_impl(
 
         // Alignment fields don't need to be stored, just executed
         if field.name.starts_with("__alignment_marker_") {
-            out.push_str(&format!("        let _ = {}?;\n", read_call));
+            out.push_str(&format!("        {}?;\n", read_call));
         } else {
             let allow_directive = get_allow_unused_directive(type_name, &field_name);
             out.push_str(allow_directive);

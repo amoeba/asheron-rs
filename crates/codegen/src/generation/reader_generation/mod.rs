@@ -9,7 +9,6 @@ use crate::{
 
 /// Generate a single file containing both type definition and reader implementation
 pub fn generate_type_and_reader_file(
-    gen_ctx: &super::context::GenerationContext,
     reader_ctx: &super::context::ReaderContext,
     protocol_type: &ProtocolType,
 ) -> String {
@@ -43,10 +42,7 @@ pub fn generate_type_and_reader_file(
         out.push_str(&super::type_generation::generate_type(protocol_type));
     }
 
-    // Generate reader implementation if requested
-    if gen_ctx.should_generate_reader(&protocol_type.name) {
-        out.push_str(&generate_reader_impl(reader_ctx, protocol_type));
-    }
+    out.push_str(&generate_reader_impl(reader_ctx, protocol_type));
 
     out
 }

@@ -1,11 +1,7 @@
 use std::{fs, path::Path};
 
 /// Execute the full code generation workflow: read files, generate, and write output
-pub fn generate_and_write(
-    workspace_root: &Path,
-    generated_dir: &Path,
-    filter_types: &[String],
-) -> std::io::Result<()> {
+pub fn generate_and_write(workspace_root: &Path, generated_dir: &Path) -> std::io::Result<()> {
     println!("workspace_root: {:?}", workspace_root);
     let protocol_path = workspace_root.join("ACProtocol/protocol.xml");
     let network_path = workspace_root.join("network.xml");
@@ -24,8 +20,7 @@ pub fn generate_and_write(
     };
 
     // Generate code
-    let generated_code =
-        crate::generate_and_merge(&protocol_xml, network_xml.as_deref(), filter_types);
+    let generated_code = crate::generate_and_merge(&protocol_xml, network_xml.as_deref());
 
     // Write all generated files
     for file in generated_code.files {

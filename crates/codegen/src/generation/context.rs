@@ -2,34 +2,6 @@ use std::collections::{BTreeMap, HashSet};
 
 use crate::types::{ProtocolEnum, ProtocolType};
 
-/// Context for code generation, controlling what gets generated
-#[derive(Debug, Clone)]
-pub struct GenerationContext {
-    /// List of type names to generate readers for
-    /// Empty list means no readers
-    /// ["*"] means all readers
-    filter_types: Vec<String>,
-}
-
-impl GenerationContext {
-    pub fn new(filter_types: Vec<String>) -> Self {
-        Self { filter_types }
-    }
-
-    /// Check if readers should be generated for the given type name
-    pub fn should_generate_reader(&self, type_name: &str) -> bool {
-        if self.filter_types.is_empty() {
-            return false;
-        }
-
-        if self.filter_types.contains(&"*".to_string()) {
-            return true;
-        }
-
-        self.filter_types.contains(&type_name.to_string())
-    }
-}
-
 /// Context for reader generation containing type information
 pub struct ReaderContext {
     /// Map from enum name to its parent type (e.g., "NetAuthType" -> "uint")

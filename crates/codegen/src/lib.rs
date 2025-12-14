@@ -9,7 +9,7 @@ mod type_utils;
 mod xml;
 mod xml_parser;
 
-pub use generation::context::{GenerationContext, ReaderContext};
+pub use generation::context::ReaderContext;
 pub use generation::{
     GenerateSource, GeneratedCode, GeneratedFile, generate, generate_and_merge,
     generate_with_source,
