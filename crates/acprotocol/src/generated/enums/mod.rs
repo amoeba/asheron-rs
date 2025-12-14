@@ -53,6 +53,17 @@ impl crate::readers::ACDataType for FragmentGroup {
     }
 }
 
+impl std::fmt::Display for FragmentGroup {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            FragmentGroup::Event => "Event",
+            FragmentGroup::Private => "Private",
+            FragmentGroup::Object => "Object",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The type of server to switch
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -65,6 +76,16 @@ impl crate::readers::ACDataType for ServerSwitchType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ServerSwitchType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for ServerSwitchType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ServerSwitchType::World => "World",
+            ServerSwitchType::Logon => "Logon",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -84,6 +105,18 @@ impl crate::readers::ACDataType for AuthFlags {
     }
 }
 
+impl std::fmt::Display for AuthFlags {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AuthFlags::None => "None",
+            AuthFlags::EnableCrypto => "EnableCrypto",
+            AuthFlags::AdminAccountOverride => "AdminAccountOverride",
+            AuthFlags::LastDefault => "LastDefault",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum NetAuthType {
@@ -97,6 +130,18 @@ impl crate::readers::ACDataType for NetAuthType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(NetAuthType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for NetAuthType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            NetAuthType::Undef => "Undef",
+            NetAuthType::Account => "Account",
+            NetAuthType::AccountPassword => "AccountPassword",
+            NetAuthType::GlsTicket => "GlsTicket",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -119,6 +164,24 @@ impl crate::readers::ACDataType for GameMessageGroup {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GameMessageGroup::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for GameMessageGroup {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            GameMessageGroup::Event => "Event",
+            GameMessageGroup::Control => "Control",
+            GameMessageGroup::Weenie => "Weenie",
+            GameMessageGroup::Logon => "Logon",
+            GameMessageGroup::Database => "Database",
+            GameMessageGroup::SecureControl => "SecureControl",
+            GameMessageGroup::SecureWeenie => "SecureWeenie",
+            GameMessageGroup::SecureLogin => "SecureLogin",
+            GameMessageGroup::UIQueue => "UIQueue",
+            GameMessageGroup::SmartBox => "SmartBox",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -162,6 +225,29 @@ impl crate::readers::ACDataType for C2SMessage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(C2SMessage::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for C2SMessage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            C2SMessage::LoginLogOffCharacter => "Login_LogOffCharacter",
+            C2SMessage::CharacterCharacterDelete => "Character_CharacterDelete",
+            C2SMessage::CharacterSendCharGenResult => "Character_SendCharGenResult",
+            C2SMessage::LoginSendEnterWorld => "Login_SendEnterWorld",
+            C2SMessage::ObjectSendForceObjdesc => "Object_SendForceObjdesc",
+            C2SMessage::LoginSendEnterWorldRequest => "Login_SendEnterWorldRequest",
+            C2SMessage::AdminSendAdminGetServerVersion => "Admin_SendAdminGetServerVersion",
+            C2SMessage::SocialSendFriendsCommand => "Social_SendFriendsCommand",
+            C2SMessage::AdminSendAdminRestoreCharacter => "Admin_SendAdminRestoreCharacter",
+            C2SMessage::CommunicationTurbineChat => "Communication_TurbineChat",
+            C2SMessage::DDDRequestDataMessage => "DDD_RequestDataMessage",
+            C2SMessage::DDDInterrogationResponseMessage => "DDD_InterrogationResponseMessage",
+            C2SMessage::DDDOnEndDDD => "DDD_OnEndDDD",
+            C2SMessage::DDDEndDDDMessage => "DDD_EndDDDMessage",
+            C2SMessage::OrderedGameAction => "Ordered_GameAction",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -359,6 +445,106 @@ impl crate::readers::ACDataType for S2CMessage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(S2CMessage::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for S2CMessage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            S2CMessage::ItemServerSaysRemove => "Item_ServerSaysRemove",
+            S2CMessage::CharacterServerSaysAttemptFailed => "Character_ServerSaysAttemptFailed",
+            S2CMessage::ItemUpdateStackSize => "Item_UpdateStackSize",
+            S2CMessage::CombatHandlePlayerDeathEvent => "Combat_HandlePlayerDeathEvent",
+            S2CMessage::QualitiesPrivateRemoveIntEvent => "Qualities_PrivateRemoveIntEvent",
+            S2CMessage::QualitiesRemoveIntEvent => "Qualities_RemoveIntEvent",
+            S2CMessage::QualitiesPrivateRemoveBoolEvent => "Qualities_PrivateRemoveBoolEvent",
+            S2CMessage::QualitiesRemoveBoolEvent => "Qualities_RemoveBoolEvent",
+            S2CMessage::QualitiesPrivateRemoveFloatEvent => "Qualities_PrivateRemoveFloatEvent",
+            S2CMessage::QualitiesRemoveFloatEvent => "Qualities_RemoveFloatEvent",
+            S2CMessage::QualitiesPrivateRemoveStringEvent => "Qualities_PrivateRemoveStringEvent",
+            S2CMessage::QualitiesRemoveStringEvent => "Qualities_RemoveStringEvent",
+            S2CMessage::QualitiesPrivateRemoveDataIdEvent => "Qualities_PrivateRemoveDataIdEvent",
+            S2CMessage::QualitiesRemoveDataIdEvent => "Qualities_RemoveDataIdEvent",
+            S2CMessage::QualitiesPrivateRemoveInstanceIdEvent => "Qualities_PrivateRemoveInstanceIdEvent",
+            S2CMessage::QualitiesRemoveInstanceIdEvent => "Qualities_RemoveInstanceIdEvent",
+            S2CMessage::QualitiesPrivateRemovePositionEvent => "Qualities_PrivateRemovePositionEvent",
+            S2CMessage::QualitiesRemovePositionEvent => "Qualities_RemovePositionEvent",
+            S2CMessage::CommunicationHearEmote => "Communication_HearEmote",
+            S2CMessage::CommunicationHearSoulEmote => "Communication_HearSoulEmote",
+            S2CMessage::QualitiesPrivateRemoveInt64Event => "Qualities_PrivateRemoveInt64Event",
+            S2CMessage::QualitiesRemoveInt64Event => "Qualities_RemoveInt64Event",
+            S2CMessage::CommunicationHearSpeech => "Communication_HearSpeech",
+            S2CMessage::CommunicationHearRangedSpeech => "Communication_HearRangedSpeech",
+            S2CMessage::QualitiesPrivateUpdateInt => "Qualities_PrivateUpdateInt",
+            S2CMessage::QualitiesUpdateInt => "Qualities_UpdateInt",
+            S2CMessage::QualitiesPrivateUpdateInt64 => "Qualities_PrivateUpdateInt64",
+            S2CMessage::QualitiesUpdateInt64 => "Qualities_UpdateInt64",
+            S2CMessage::QualitiesPrivateUpdateBool => "Qualities_PrivateUpdateBool",
+            S2CMessage::QualitiesUpdateBool => "Qualities_UpdateBool",
+            S2CMessage::QualitiesPrivateUpdateFloat => "Qualities_PrivateUpdateFloat",
+            S2CMessage::QualitiesUpdateFloat => "Qualities_UpdateFloat",
+            S2CMessage::QualitiesPrivateUpdateString => "Qualities_PrivateUpdateString",
+            S2CMessage::QualitiesUpdateString => "Qualities_UpdateString",
+            S2CMessage::QualitiesPrivateUpdateDataId => "Qualities_PrivateUpdateDataId",
+            S2CMessage::QualitiesUpdateDataId => "Qualities_UpdateDataId",
+            S2CMessage::QualitiesPrivateUpdateInstanceId => "Qualities_PrivateUpdateInstanceId",
+            S2CMessage::QualitiesUpdateInstanceId => "Qualities_UpdateInstanceId",
+            S2CMessage::QualitiesPrivateUpdatePosition => "Qualities_PrivateUpdatePosition",
+            S2CMessage::QualitiesUpdatePosition => "Qualities_UpdatePosition",
+            S2CMessage::QualitiesPrivateUpdateSkill => "Qualities_PrivateUpdateSkill",
+            S2CMessage::QualitiesUpdateSkill => "Qualities_UpdateSkill",
+            S2CMessage::QualitiesPrivateUpdateSkillLevel => "Qualities_PrivateUpdateSkillLevel",
+            S2CMessage::QualitiesUpdateSkillLevel => "Qualities_UpdateSkillLevel",
+            S2CMessage::QualitiesPrivateUpdateSkillAC => "Qualities_PrivateUpdateSkillAC",
+            S2CMessage::QualitiesUpdateSkillAC => "Qualities_UpdateSkillAC",
+            S2CMessage::QualitiesPrivateUpdateAttribute => "Qualities_PrivateUpdateAttribute",
+            S2CMessage::QualitiesUpdateAttribute => "Qualities_UpdateAttribute",
+            S2CMessage::QualitiesPrivateUpdateAttributeLevel => "Qualities_PrivateUpdateAttributeLevel",
+            S2CMessage::QualitiesUpdateAttributeLevel => "Qualities_UpdateAttributeLevel",
+            S2CMessage::QualitiesPrivateUpdateAttribute2nd => "Qualities_PrivateUpdateAttribute2nd",
+            S2CMessage::QualitiesUpdateAttribute2nd => "Qualities_UpdateAttribute2nd",
+            S2CMessage::QualitiesPrivateUpdateAttribute2ndLevel => "Qualities_PrivateUpdateAttribute2ndLevel",
+            S2CMessage::QualitiesUpdateAttribute2ndLevel => "Qualities_UpdateAttribute2ndLevel",
+            S2CMessage::AdminEnvirons => "Admin_Environs",
+            S2CMessage::MovementPositionAndMovementEvent => "Movement_PositionAndMovementEvent",
+            S2CMessage::ItemObjDescEvent => "Item_ObjDescEvent",
+            S2CMessage::CharacterSetPlayerVisualDesc => "Character_SetPlayerVisualDesc",
+            S2CMessage::CharacterCharGenVerificationResponse => "Character_CharGenVerificationResponse",
+            S2CMessage::LoginAwaitingSubscriptionExpiration => "Login_AwaitingSubscriptionExpiration",
+            S2CMessage::LoginLogOffCharacter => "Login_LogOffCharacter",
+            S2CMessage::CharacterCharacterDelete => "Character_CharacterDelete",
+            S2CMessage::LoginLoginCharacterSet => "Login_LoginCharacterSet",
+            S2CMessage::CharacterCharacterError => "Character_CharacterError",
+            S2CMessage::ItemCreateObject => "Item_CreateObject",
+            S2CMessage::LoginCreatePlayer => "Login_CreatePlayer",
+            S2CMessage::ItemDeleteObject => "Item_DeleteObject",
+            S2CMessage::MovementPositionEvent => "Movement_PositionEvent",
+            S2CMessage::ItemParentEvent => "Item_ParentEvent",
+            S2CMessage::InventoryPickupEvent => "Inventory_PickupEvent",
+            S2CMessage::ItemSetState => "Item_SetState",
+            S2CMessage::MovementSetObjectMovement => "Movement_SetObjectMovement",
+            S2CMessage::MovementVectorUpdate => "Movement_VectorUpdate",
+            S2CMessage::EffectsSoundEvent => "Effects_SoundEvent",
+            S2CMessage::EffectsPlayerTeleport => "Effects_PlayerTeleport",
+            S2CMessage::EffectsPlayScriptId => "Effects_PlayScriptId",
+            S2CMessage::EffectsPlayScriptType => "Effects_PlayScriptType",
+            S2CMessage::LoginAccountBanned => "Login_AccountBanned",
+            S2CMessage::AdminReceiveAccountData => "Admin_ReceiveAccountData",
+            S2CMessage::AdminReceivePlayerData => "Admin_ReceivePlayerData",
+            S2CMessage::ItemUpdateObject => "Item_UpdateObject",
+            S2CMessage::LoginAccountBooted => "Login_AccountBooted",
+            S2CMessage::CommunicationTurbineChat => "Communication_TurbineChat",
+            S2CMessage::LoginEnterGameServerReady => "Login_EnterGame_ServerReady",
+            S2CMessage::CommunicationTextboxString => "Communication_TextboxString",
+            S2CMessage::LoginWorldInfo => "Login_WorldInfo",
+            S2CMessage::DDDDataMessage => "DDD_DataMessage",
+            S2CMessage::DDDErrorMessage => "DDD_ErrorMessage",
+            S2CMessage::DDDInterrogationMessage => "DDD_InterrogationMessage",
+            S2CMessage::DDDBeginDDDMessage => "DDD_BeginDDDMessage",
+            S2CMessage::DDDOnEndDDD => "DDD_OnEndDDD",
+            S2CMessage::OrderedGameEvent => "Ordered_GameEvent",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -572,6 +758,114 @@ impl crate::readers::ACDataType for GameEvent {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GameEvent::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for GameEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            GameEvent::AllegianceAllegianceUpdateAborted => "Allegiance_AllegianceUpdateAborted",
+            GameEvent::CommunicationPopUpString => "Communication_PopUpString",
+            GameEvent::LoginPlayerDescription => "Login_PlayerDescription",
+            GameEvent::AllegianceAllegianceUpdate => "Allegiance_AllegianceUpdate",
+            GameEvent::SocialFriendsUpdate => "Social_FriendsUpdate",
+            GameEvent::ItemServerSaysContainId => "Item_ServerSaysContainId",
+            GameEvent::ItemWearItem => "Item_WearItem",
+            GameEvent::SocialCharacterTitleTable => "Social_CharacterTitleTable",
+            GameEvent::SocialAddOrSetCharacterTitle => "Social_AddOrSetCharacterTitle",
+            GameEvent::ItemStopViewingObjectContents => "Item_StopViewingObjectContents",
+            GameEvent::VendorVendorInfo => "Vendor_VendorInfo",
+            GameEvent::CharacterStartBarber => "Character_StartBarber",
+            GameEvent::FellowshipQuit => "Fellowship_Quit",
+            GameEvent::FellowshipDismiss => "Fellowship_Dismiss",
+            GameEvent::WritingBookOpen => "Writing_BookOpen",
+            GameEvent::WritingBookAddPageResponse => "Writing_BookAddPageResponse",
+            GameEvent::WritingBookDeletePageResponse => "Writing_BookDeletePageResponse",
+            GameEvent::WritingBookPageDataResponse => "Writing_BookPageDataResponse",
+            GameEvent::ItemGetInscriptionResponse => "Item_GetInscriptionResponse",
+            GameEvent::ItemSetAppraiseInfo => "Item_SetAppraiseInfo",
+            GameEvent::CommunicationChannelBroadcast => "Communication_ChannelBroadcast",
+            GameEvent::CommunicationChannelList => "Communication_ChannelList",
+            GameEvent::CommunicationChannelIndex => "Communication_ChannelIndex",
+            GameEvent::ItemOnViewContents => "Item_OnViewContents",
+            GameEvent::ItemServerSaysMoveItem => "Item_ServerSaysMoveItem",
+            GameEvent::CombatHandleAttackDoneEvent => "Combat_HandleAttackDoneEvent",
+            GameEvent::MagicRemoveSpell => "Magic_RemoveSpell",
+            GameEvent::CombatHandleVictimNotificationEventSelf => "Combat_HandleVictimNotificationEventSelf",
+            GameEvent::CombatHandleVictimNotificationEventOther => "Combat_HandleVictimNotificationEventOther",
+            GameEvent::CombatHandleAttackerNotificationEvent => "Combat_HandleAttackerNotificationEvent",
+            GameEvent::CombatHandleDefenderNotificationEvent => "Combat_HandleDefenderNotificationEvent",
+            GameEvent::CombatHandleEvasionAttackerNotificationEvent => "Combat_HandleEvasionAttackerNotificationEvent",
+            GameEvent::CombatHandleEvasionDefenderNotificationEvent => "Combat_HandleEvasionDefenderNotificationEvent",
+            GameEvent::CombatHandleCommenceAttackEvent => "Combat_HandleCommenceAttackEvent",
+            GameEvent::CombatQueryHealthResponse => "Combat_QueryHealthResponse",
+            GameEvent::CharacterQueryAgeResponse => "Character_QueryAgeResponse",
+            GameEvent::ItemUseDone => "Item_UseDone",
+            GameEvent::AllegianceAllegianceUpdateDone => "Allegiance_AllegianceUpdateDone",
+            GameEvent::FellowshipFellowUpdateDone => "Fellowship_FellowUpdateDone",
+            GameEvent::FellowshipFellowStatsDone => "Fellowship_FellowStatsDone",
+            GameEvent::ItemAppraiseDone => "Item_AppraiseDone",
+            GameEvent::CharacterReturnPing => "Character_ReturnPing",
+            GameEvent::CommunicationSetSquelchDB => "Communication_SetSquelchDB",
+            GameEvent::TradeRegisterTrade => "Trade_RegisterTrade",
+            GameEvent::TradeOpenTrade => "Trade_OpenTrade",
+            GameEvent::TradeCloseTrade => "Trade_CloseTrade",
+            GameEvent::TradeAddToTrade => "Trade_AddToTrade",
+            GameEvent::TradeRemoveFromTrade => "Trade_RemoveFromTrade",
+            GameEvent::TradeAcceptTrade => "Trade_AcceptTrade",
+            GameEvent::TradeDeclineTrade => "Trade_DeclineTrade",
+            GameEvent::TradeResetTrade => "Trade_ResetTrade",
+            GameEvent::TradeTradeFailure => "Trade_TradeFailure",
+            GameEvent::TradeClearTradeAcceptance => "Trade_ClearTradeAcceptance",
+            GameEvent::HouseHouseProfile => "House_HouseProfile",
+            GameEvent::HouseHouseData => "House_HouseData",
+            GameEvent::HouseHouseStatus => "House_HouseStatus",
+            GameEvent::HouseUpdateRentTime => "House_UpdateRentTime",
+            GameEvent::HouseUpdateRentPayment => "House_UpdateRentPayment",
+            GameEvent::HouseUpdateRestrictions => "House_UpdateRestrictions",
+            GameEvent::HouseUpdateHAR => "House_UpdateHAR",
+            GameEvent::HouseHouseTransaction => "House_HouseTransaction",
+            GameEvent::ItemQueryItemManaResponse => "Item_QueryItemManaResponse",
+            GameEvent::HouseAvailableHouses => "House_AvailableHouses",
+            GameEvent::CharacterConfirmationRequest => "Character_ConfirmationRequest",
+            GameEvent::CharacterConfirmationDone => "Character_ConfirmationDone",
+            GameEvent::AllegianceAllegianceLoginNotificationEvent => "Allegiance_AllegianceLoginNotificationEvent",
+            GameEvent::AllegianceAllegianceInfoResponseEvent => "Allegiance_AllegianceInfoResponseEvent",
+            GameEvent::GameJoinGameResponse => "Game_JoinGameResponse",
+            GameEvent::GameStartGame => "Game_StartGame",
+            GameEvent::GameMoveResponse => "Game_MoveResponse",
+            GameEvent::GameOpponentTurn => "Game_OpponentTurn",
+            GameEvent::GameOpponentStalemateState => "Game_OpponentStalemateState",
+            GameEvent::CommunicationWeenieError => "Communication_WeenieError",
+            GameEvent::CommunicationWeenieErrorWithString => "Communication_WeenieErrorWithString",
+            GameEvent::GameGameOver => "Game_GameOver",
+            GameEvent::CommunicationChatRoomTracker => "Communication_ChatRoomTracker",
+            GameEvent::AdminQueryPluginList => "Admin_QueryPluginList",
+            GameEvent::AdminQueryPlugin => "Admin_QueryPlugin",
+            GameEvent::AdminQueryPluginResponse2 => "Admin_QueryPluginResponse2",
+            GameEvent::InventorySalvageOperationsResultData => "Inventory_SalvageOperationsResultData",
+            GameEvent::CommunicationHearDirectSpeech => "Communication_HearDirectSpeech",
+            GameEvent::FellowshipFullUpdate => "Fellowship_FullUpdate",
+            GameEvent::FellowshipDisband => "Fellowship_Disband",
+            GameEvent::FellowshipUpdateFellow => "Fellowship_UpdateFellow",
+            GameEvent::MagicUpdateSpell => "Magic_UpdateSpell",
+            GameEvent::MagicUpdateEnchantment => "Magic_UpdateEnchantment",
+            GameEvent::MagicRemoveEnchantment => "Magic_RemoveEnchantment",
+            GameEvent::MagicUpdateMultipleEnchantments => "Magic_UpdateMultipleEnchantments",
+            GameEvent::MagicRemoveMultipleEnchantments => "Magic_RemoveMultipleEnchantments",
+            GameEvent::MagicPurgeEnchantments => "Magic_PurgeEnchantments",
+            GameEvent::MagicDispelEnchantment => "Magic_DispelEnchantment",
+            GameEvent::MagicDispelMultipleEnchantments => "Magic_DispelMultipleEnchantments",
+            GameEvent::MiscPortalStormBrewing => "Misc_PortalStormBrewing",
+            GameEvent::MiscPortalStormImminent => "Misc_PortalStormImminent",
+            GameEvent::MiscPortalStorm => "Misc_PortalStorm",
+            GameEvent::MiscPortalStormSubsided => "Misc_PortalStormSubsided",
+            GameEvent::CommunicationTransientString => "Communication_TransientString",
+            GameEvent::MagicPurgeBadEnchantments => "Magic_PurgeBadEnchantments",
+            GameEvent::SocialSendClientContractTrackerTable => "Social_SendClientContractTrackerTable",
+            GameEvent::SocialSendClientContractTracker => "Social_SendClientContractTracker",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -900,6 +1194,170 @@ impl crate::readers::ACDataType for GameAction {
     }
 }
 
+impl std::fmt::Display for GameAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            GameAction::CharacterPlayerOptionChangedEvent => "Character_PlayerOptionChangedEvent",
+            GameAction::CombatTargetedMeleeAttack => "Combat_TargetedMeleeAttack",
+            GameAction::CombatTargetedMissileAttack => "Combat_TargetedMissileAttack",
+            GameAction::CommunicationSetAFKMode => "Communication_SetAFKMode",
+            GameAction::CommunicationSetAFKMessage => "Communication_SetAFKMessage",
+            GameAction::CommunicationTalk => "Communication_Talk",
+            GameAction::SocialRemoveFriend => "Social_RemoveFriend",
+            GameAction::SocialAddFriend => "Social_AddFriend",
+            GameAction::InventoryPutItemInContainer => "Inventory_PutItemInContainer",
+            GameAction::InventoryGetAndWieldItem => "Inventory_GetAndWieldItem",
+            GameAction::InventoryDropItem => "Inventory_DropItem",
+            GameAction::AllegianceSwearAllegiance => "Allegiance_SwearAllegiance",
+            GameAction::AllegianceBreakAllegiance => "Allegiance_BreakAllegiance",
+            GameAction::AllegianceUpdateRequest => "Allegiance_UpdateRequest",
+            GameAction::SocialClearFriends => "Social_ClearFriends",
+            GameAction::CharacterTeleToPKLArena => "Character_TeleToPKLArena",
+            GameAction::CharacterTeleToPKArena => "Character_TeleToPKArena",
+            GameAction::SocialSetDisplayCharacterTitle => "Social_SetDisplayCharacterTitle",
+            GameAction::AllegianceQueryAllegianceName => "Allegiance_QueryAllegianceName",
+            GameAction::AllegianceClearAllegianceName => "Allegiance_ClearAllegianceName",
+            GameAction::CommunicationTalkDirect => "Communication_TalkDirect",
+            GameAction::AllegianceSetAllegianceName => "Allegiance_SetAllegianceName",
+            GameAction::InventoryUseWithTargetEvent => "Inventory_UseWithTargetEvent",
+            GameAction::InventoryUseEvent => "Inventory_UseEvent",
+            GameAction::AllegianceSetAllegianceOfficer => "Allegiance_SetAllegianceOfficer",
+            GameAction::AllegianceSetAllegianceOfficerTitle => "Allegiance_SetAllegianceOfficerTitle",
+            GameAction::AllegianceListAllegianceOfficerTitles => "Allegiance_ListAllegianceOfficerTitles",
+            GameAction::AllegianceClearAllegianceOfficerTitles => "Allegiance_ClearAllegianceOfficerTitles",
+            GameAction::AllegianceDoAllegianceLockAction => "Allegiance_DoAllegianceLockAction",
+            GameAction::AllegianceSetAllegianceApprovedVassal => "Allegiance_SetAllegianceApprovedVassal",
+            GameAction::AllegianceAllegianceChatGag => "Allegiance_AllegianceChatGag",
+            GameAction::AllegianceDoAllegianceHouseAction => "Allegiance_DoAllegianceHouseAction",
+            GameAction::TrainTrainAttribute2nd => "Train_TrainAttribute2nd",
+            GameAction::TrainTrainAttribute => "Train_TrainAttribute",
+            GameAction::TrainTrainSkill => "Train_TrainSkill",
+            GameAction::TrainTrainSkillAdvancementClass => "Train_TrainSkillAdvancementClass",
+            GameAction::MagicCastUntargetedSpell => "Magic_CastUntargetedSpell",
+            GameAction::MagicCastTargetedSpell => "Magic_CastTargetedSpell",
+            GameAction::CombatChangeCombatMode => "Combat_ChangeCombatMode",
+            GameAction::InventoryStackableMerge => "Inventory_StackableMerge",
+            GameAction::InventoryStackableSplitToContainer => "Inventory_StackableSplitToContainer",
+            GameAction::InventoryStackableSplitTo3D => "Inventory_StackableSplitTo3D",
+            GameAction::CommunicationModifyCharacterSquelch => "Communication_ModifyCharacterSquelch",
+            GameAction::CommunicationModifyAccountSquelch => "Communication_ModifyAccountSquelch",
+            GameAction::CommunicationModifyGlobalSquelch => "Communication_ModifyGlobalSquelch",
+            GameAction::CommunicationTalkDirectByName => "Communication_TalkDirectByName",
+            GameAction::VendorBuy => "Vendor_Buy",
+            GameAction::VendorSell => "Vendor_Sell",
+            GameAction::CharacterTeleToLifestone => "Character_TeleToLifestone",
+            GameAction::CharacterLoginCompleteNotification => "Character_LoginCompleteNotification",
+            GameAction::FellowshipCreate => "Fellowship_Create",
+            GameAction::FellowshipQuit => "Fellowship_Quit",
+            GameAction::FellowshipDismiss => "Fellowship_Dismiss",
+            GameAction::FellowshipRecruit => "Fellowship_Recruit",
+            GameAction::FellowshipUpdateRequest => "Fellowship_UpdateRequest",
+            GameAction::WritingBookAddPage => "Writing_BookAddPage",
+            GameAction::WritingBookModifyPage => "Writing_BookModifyPage",
+            GameAction::WritingBookData => "Writing_BookData",
+            GameAction::WritingBookDeletePage => "Writing_BookDeletePage",
+            GameAction::WritingBookPageData => "Writing_BookPageData",
+            GameAction::WritingSetInscription => "Writing_SetInscription",
+            GameAction::ItemAppraise => "Item_Appraise",
+            GameAction::InventoryGiveObjectRequest => "Inventory_GiveObjectRequest",
+            GameAction::AdvocateTeleport => "Advocate_Teleport",
+            GameAction::CharacterAbuseLogRequest => "Character_AbuseLogRequest",
+            GameAction::CommunicationAddToChannel => "Communication_AddToChannel",
+            GameAction::CommunicationRemoveFromChannel => "Communication_RemoveFromChannel",
+            GameAction::CommunicationChannelBroadcast => "Communication_ChannelBroadcast",
+            GameAction::CommunicationChannelList => "Communication_ChannelList",
+            GameAction::CommunicationChannelIndex => "Communication_ChannelIndex",
+            GameAction::InventoryNoLongerViewingContents => "Inventory_NoLongerViewingContents",
+            GameAction::InventoryStackableSplitToWield => "Inventory_StackableSplitToWield",
+            GameAction::CharacterAddShortCut => "Character_AddShortCut",
+            GameAction::CharacterRemoveShortCut => "Character_RemoveShortCut",
+            GameAction::CharacterCharacterOptionsEvent => "Character_CharacterOptionsEvent",
+            GameAction::MagicRemoveSpell => "Magic_RemoveSpell",
+            GameAction::CombatCancelAttack => "Combat_CancelAttack",
+            GameAction::CombatQueryHealth => "Combat_QueryHealth",
+            GameAction::CharacterQueryAge => "Character_QueryAge",
+            GameAction::CharacterQueryBirth => "Character_QueryBirth",
+            GameAction::CommunicationEmote => "Communication_Emote",
+            GameAction::CommunicationSoulEmote => "Communication_SoulEmote",
+            GameAction::CharacterAddSpellFavorite => "Character_AddSpellFavorite",
+            GameAction::CharacterRemoveSpellFavorite => "Character_RemoveSpellFavorite",
+            GameAction::CharacterRequestPing => "Character_RequestPing",
+            GameAction::TradeOpenTradeNegotiations => "Trade_OpenTradeNegotiations",
+            GameAction::TradeCloseTradeNegotiations => "Trade_CloseTradeNegotiations",
+            GameAction::TradeAddToTrade => "Trade_AddToTrade",
+            GameAction::TradeAcceptTrade => "Trade_AcceptTrade",
+            GameAction::TradeDeclineTrade => "Trade_DeclineTrade",
+            GameAction::TradeResetTrade => "Trade_ResetTrade",
+            GameAction::CharacterClearPlayerConsentList => "Character_ClearPlayerConsentList",
+            GameAction::CharacterDisplayPlayerConsentList => "Character_DisplayPlayerConsentList",
+            GameAction::CharacterRemoveFromPlayerConsentList => "Character_RemoveFromPlayerConsentList",
+            GameAction::CharacterAddPlayerPermission => "Character_AddPlayerPermission",
+            GameAction::HouseBuyHouse => "House_BuyHouse",
+            GameAction::HouseQueryHouse => "House_QueryHouse",
+            GameAction::HouseAbandonHouse => "House_AbandonHouse",
+            GameAction::CharacterRemovePlayerPermission => "Character_RemovePlayerPermission",
+            GameAction::HouseRentHouse => "House_RentHouse",
+            GameAction::CharacterSetDesiredComponentLevel => "Character_SetDesiredComponentLevel",
+            GameAction::HouseAddPermanentGuest => "House_AddPermanentGuest",
+            GameAction::HouseRemovePermanentGuest => "House_RemovePermanentGuest",
+            GameAction::HouseSetOpenHouseStatus => "House_SetOpenHouseStatus",
+            GameAction::HouseChangeStoragePermission => "House_ChangeStoragePermission",
+            GameAction::HouseBootSpecificHouseGuest => "House_BootSpecificHouseGuest",
+            GameAction::HouseRemoveAllStoragePermission => "House_RemoveAllStoragePermission",
+            GameAction::HouseRequestFullGuestList => "House_RequestFullGuestList",
+            GameAction::AllegianceSetMotd => "Allegiance_SetMotd",
+            GameAction::AllegianceQueryMotd => "Allegiance_QueryMotd",
+            GameAction::AllegianceClearMotd => "Allegiance_ClearMotd",
+            GameAction::HouseQueryLord => "House_QueryLord",
+            GameAction::HouseAddAllStoragePermission => "House_AddAllStoragePermission",
+            GameAction::HouseRemoveAllPermanentGuests => "House_RemoveAllPermanentGuests",
+            GameAction::HouseBootEveryone => "House_BootEveryone",
+            GameAction::HouseTeleToHouse => "House_TeleToHouse",
+            GameAction::ItemQueryItemMana => "Item_QueryItemMana",
+            GameAction::HouseSetHooksVisibility => "House_SetHooksVisibility",
+            GameAction::HouseModifyAllegianceGuestPermission => "House_ModifyAllegianceGuestPermission",
+            GameAction::HouseModifyAllegianceStoragePermission => "House_ModifyAllegianceStoragePermission",
+            GameAction::GameJoin => "Game_Join",
+            GameAction::GameQuit => "Game_Quit",
+            GameAction::GameMove => "Game_Move",
+            GameAction::GameMovePass => "Game_MovePass",
+            GameAction::GameStalemate => "Game_Stalemate",
+            GameAction::HouseListAvailableHouses => "House_ListAvailableHouses",
+            GameAction::CharacterConfirmationResponse => "Character_ConfirmationResponse",
+            GameAction::AllegianceBreakAllegianceBoot => "Allegiance_BreakAllegianceBoot",
+            GameAction::HouseTeleToMansion => "House_TeleToMansion",
+            GameAction::CharacterSuicide => "Character_Suicide",
+            GameAction::AllegianceAllegianceInfoRequest => "Allegiance_AllegianceInfoRequest",
+            GameAction::InventoryCreateTinkeringTool => "Inventory_CreateTinkeringTool",
+            GameAction::CharacterSpellbookFilterEvent => "Character_SpellbookFilterEvent",
+            GameAction::CharacterTeleToMarketplace => "Character_TeleToMarketplace",
+            GameAction::CharacterEnterPKLite => "Character_EnterPKLite",
+            GameAction::FellowshipAssignNewLeader => "Fellowship_AssignNewLeader",
+            GameAction::FellowshipChangeFellowOpeness => "Fellowship_ChangeFellowOpeness",
+            GameAction::AllegianceAllegianceChatBoot => "Allegiance_AllegianceChatBoot",
+            GameAction::AllegianceAddAllegianceBan => "Allegiance_AddAllegianceBan",
+            GameAction::AllegianceRemoveAllegianceBan => "Allegiance_RemoveAllegianceBan",
+            GameAction::AllegianceListAllegianceBans => "Allegiance_ListAllegianceBans",
+            GameAction::AllegianceRemoveAllegianceOfficer => "Allegiance_RemoveAllegianceOfficer",
+            GameAction::AllegianceListAllegianceOfficers => "Allegiance_ListAllegianceOfficers",
+            GameAction::AllegianceClearAllegianceOfficers => "Allegiance_ClearAllegianceOfficers",
+            GameAction::AllegianceRecallAllegianceHometown => "Allegiance_RecallAllegianceHometown",
+            GameAction::AdminQueryPluginListResponse => "Admin_QueryPluginListResponse",
+            GameAction::AdminQueryPluginResponse => "Admin_QueryPluginResponse",
+            GameAction::CharacterFinishBarber => "Character_FinishBarber",
+            GameAction::SocialAbandonContract => "Social_AbandonContract",
+            GameAction::MovementJump => "Movement_Jump",
+            GameAction::MovementMoveToState => "Movement_MoveToState",
+            GameAction::MovementDoMovementCommand => "Movement_DoMovementCommand",
+            GameAction::MovementStopMovementCommand => "Movement_StopMovementCommand",
+            GameAction::MovementAutonomyLevel => "Movement_AutonomyLevel",
+            GameAction::MovementAutonomousPosition => "Movement_AutonomousPosition",
+            GameAction::MovementJumpNonAutonomous => "Movement_Jump_NonAutonomous",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WeenieType {
@@ -982,6 +1440,86 @@ impl crate::readers::ACDataType for WeenieType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeenieType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for WeenieType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            WeenieType::Undef => "Undef",
+            WeenieType::Generic => "Generic",
+            WeenieType::Clothing => "Clothing",
+            WeenieType::MissileLauncher => "MissileLauncher",
+            WeenieType::Missile => "Missile",
+            WeenieType::Ammunition => "Ammunition",
+            WeenieType::MeleeWeapon => "MeleeWeapon",
+            WeenieType::Portal => "Portal",
+            WeenieType::Book => "Book",
+            WeenieType::Coin => "Coin",
+            WeenieType::Creature => "Creature",
+            WeenieType::Admin => "Admin",
+            WeenieType::Vendor => "Vendor",
+            WeenieType::HotSpot => "HotSpot",
+            WeenieType::Corpse => "Corpse",
+            WeenieType::Cow => "Cow",
+            WeenieType::AI => "AI",
+            WeenieType::Machine => "Machine",
+            WeenieType::Food => "Food",
+            WeenieType::Door => "Door",
+            WeenieType::Chest => "Chest",
+            WeenieType::Container => "Container",
+            WeenieType::Key => "Key",
+            WeenieType::Lockpick => "Lockpick",
+            WeenieType::PressurePlate => "PressurePlate",
+            WeenieType::LifeStone => "LifeStone",
+            WeenieType::Switch => "Switch",
+            WeenieType::PKModifier => "PKModifier",
+            WeenieType::Healer => "Healer",
+            WeenieType::LightSource => "LightSource",
+            WeenieType::Allegiance => "Allegiance",
+            WeenieType::UNKNOWNGUESSEDNAME32 => "UNKNOWN__GUESSEDNAME32",
+            WeenieType::SpellComponent => "SpellComponent",
+            WeenieType::ProjectileSpell => "ProjectileSpell",
+            WeenieType::Scroll => "Scroll",
+            WeenieType::Caster => "Caster",
+            WeenieType::Channel => "Channel",
+            WeenieType::ManaStone => "ManaStone",
+            WeenieType::Gem => "Gem",
+            WeenieType::AdvocateFane => "AdvocateFane",
+            WeenieType::AdvocateItem => "AdvocateItem",
+            WeenieType::Sentinel => "Sentinel",
+            WeenieType::GSpellEconomy => "GSpellEconomy",
+            WeenieType::LSpellEconomy => "LSpellEconomy",
+            WeenieType::CraftTool => "CraftTool",
+            WeenieType::LScoreKeeper => "LScoreKeeper",
+            WeenieType::GScoreKeeper => "GScoreKeeper",
+            WeenieType::GScoreGatherer => "GScoreGatherer",
+            WeenieType::ScoreBook => "ScoreBook",
+            WeenieType::EventCoordinator => "EventCoordinator",
+            WeenieType::Entity => "Entity",
+            WeenieType::Stackable => "Stackable",
+            WeenieType::HUD => "HUD",
+            WeenieType::House => "House",
+            WeenieType::Deed => "Deed",
+            WeenieType::SlumLord => "SlumLord",
+            WeenieType::Hook => "Hook",
+            WeenieType::Storage => "Storage",
+            WeenieType::BootSpot => "BootSpot",
+            WeenieType::HousePortal => "HousePortal",
+            WeenieType::Game => "Game",
+            WeenieType::GamePiece => "GamePiece",
+            WeenieType::SkillAlterationDevice => "SkillAlterationDevice",
+            WeenieType::AttributeTransferDevice => "AttributeTransferDevice",
+            WeenieType::Hooker => "Hooker",
+            WeenieType::AllegianceBindstone => "AllegianceBindstone",
+            WeenieType::InGameStatKeeper => "InGameStatKeeper",
+            WeenieType::AugmentationDevice => "AugmentationDevice",
+            WeenieType::SocialManager => "SocialManager",
+            WeenieType::Pet => "Pet",
+            WeenieType::PetDevice => "PetDevice",
+            WeenieType::CombatPet => "CombatPet",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -1194,6 +1732,127 @@ impl crate::readers::ACDataType for WeenieErrorWithString {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeenieErrorWithString::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for WeenieErrorWithString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            WeenieErrorWithString::IsTooBusyToAcceptGifts => "IsTooBusyToAcceptGifts",
+            WeenieErrorWithString::CannotCarryAnymore => "CannotCarryAnymore",
+            WeenieErrorWithString::YouFailToAffectYouCannotAffectAnyone => "YouFailToAffect_YouCannotAffectAnyone",
+            WeenieErrorWithString::YouFailToAffectTheyCannotBeHarmed => "YouFailToAffect_TheyCannotBeHarmed",
+            WeenieErrorWithString::YouFailToAffectWithBeneficialSpells => "YouFailToAffect_WithBeneficialSpells",
+            WeenieErrorWithString::YouFailToAffectYouAreNotPK => "YouFailToAffect_YouAreNotPK",
+            WeenieErrorWithString::YouFailToAffectTheyAreNotPK => "YouFailToAffect_TheyAreNotPK",
+            WeenieErrorWithString::YouFailToAffectNotSamePKType => "YouFailToAffect_NotSamePKType",
+            WeenieErrorWithString::YouFailToAffectAcrossHouseBoundary => "YouFailToAffect_AcrossHouseBoundary",
+            WeenieErrorWithString::IsNotAcceptingGiftsRightNow => "IsNotAcceptingGiftsRightNow",
+            WeenieErrorWithString::IsAlreadyOneOfYourFollowers => "IsAlreadyOneOfYourFollowers",
+            WeenieErrorWithString::CannotHaveAnyMoreVassals => "CannotHaveAnyMoreVassals",
+            WeenieErrorWithString::DoesntKnowWhatToDoWithThat => "DoesntKnowWhatToDoWithThat",
+            WeenieErrorWithString::YouMustBeAboveLevelToBuyHouse => "YouMustBeAboveLevel_ToBuyHouse",
+            WeenieErrorWithString::YouMustBeAtOrBelowLevelToBuyHouse => "YouMustBeAtOrBelowLevel_ToBuyHouse",
+            WeenieErrorWithString::YouMustBeAboveAllegianceRankToBuyHouse => "YouMustBeAboveAllegianceRank_ToBuyHouse",
+            WeenieErrorWithString::YouMustBeAtOrBelowAllegianceRankToBuyHouse => "YouMustBeAtOrBelowAllegianceRank_ToBuyHouse",
+            WeenieErrorWithString::TheWasNotSuitableForSalvaging => "The_WasNotSuitableForSalvaging",
+            WeenieErrorWithString::TheContainseTheWrongMaterial => "The_ContainseTheWrongMaterial",
+            WeenieErrorWithString::YouMustBeToUseItemMagic => "YouMustBe_ToUseItemMagic",
+            WeenieErrorWithString::YourIsTooLowToUseItemMagic => "Your_IsTooLowToUseItemMagic",
+            WeenieErrorWithString::OnlyMayUseItemMagic => "Only_MayUseItemMagic",
+            WeenieErrorWithString::YouMustSpecializeToUseItemMagic => "YouMustSpecialize_ToUseItemMagic",
+            WeenieErrorWithString::AiRefuseItemDuringEmote => "AiRefuseItemDuringEmote",
+            WeenieErrorWithString::CannotAcceptStackedItems => "CannotAcceptStackedItems",
+            WeenieErrorWithString::YourSkillMustBeTrained => "Your_SkillMustBeTrained",
+            WeenieErrorWithString::NotEnoughSkillCreditsToSpecialize => "NotEnoughSkillCreditsToSpecialize",
+            WeenieErrorWithString::TooMuchXPToRecoverFromSkill => "TooMuchXPToRecoverFromSkill",
+            WeenieErrorWithString::YourSkillIsAlreadyUntrained => "Your_SkillIsAlreadyUntrained",
+            WeenieErrorWithString::CannotLowerSkillWhileWieldingItem => "CannotLowerSkillWhileWieldingItem",
+            WeenieErrorWithString::YouHaveSucceededSpecializingSkill => "YouHaveSucceededSpecializing_Skill",
+            WeenieErrorWithString::YouHaveSucceededUnspecializingSkill => "YouHaveSucceededUnspecializing_Skill",
+            WeenieErrorWithString::YouHaveSucceededUntrainingSkill => "YouHaveSucceededUntraining_Skill",
+            WeenieErrorWithString::CannotUntrainSkillButRecoveredXP => "CannotUntrain_SkillButRecoveredXP",
+            WeenieErrorWithString::TooManyCreditsInSpecializedSkills => "TooManyCreditsInSpecializedSkills",
+            WeenieErrorWithString::AttributeTransferFromTooLow => "AttributeTransferFromTooLow",
+            WeenieErrorWithString::AttributeTransferToTooHigh => "AttributeTransferToTooHigh",
+            WeenieErrorWithString::ItemUnusableOnHookCannotOpen => "ItemUnusableOnHook_CannotOpen",
+            WeenieErrorWithString::ItemUnusableOnHookCanOpen => "ItemUnusableOnHook_CanOpen",
+            WeenieErrorWithString::ItemOnlyUsableOnHook => "ItemOnlyUsableOnHook",
+            WeenieErrorWithString::FailsToAffectYouTheyCannotAffectAnyone => "FailsToAffectYou_TheyCannotAffectAnyone",
+            WeenieErrorWithString::FailsToAffectYouYouCannotBeHarmed => "FailsToAffectYou_YouCannotBeHarmed",
+            WeenieErrorWithString::FailsToAffectYouTheyAreNotPK => "FailsToAffectYou_TheyAreNotPK",
+            WeenieErrorWithString::FailsToAffectYouYouAreNotPK => "FailsToAffectYou_YouAreNotPK",
+            WeenieErrorWithString::FailsToAffectYouNotSamePKType => "FailsToAffectYou_NotSamePKType",
+            WeenieErrorWithString::FailsToAffectYouAcrossHouseBoundary => "FailsToAffectYouAcrossHouseBoundary",
+            WeenieErrorWithString::IsAnInvalidTarget => "IsAnInvalidTarget",
+            WeenieErrorWithString::YouAreInvalidTargetForSpellOf => "YouAreInvalidTargetForSpellOf_",
+            WeenieErrorWithString::IsAtFullHealth => "IsAtFullHealth",
+            WeenieErrorWithString::HasNoSpellTargets => "HasNoSpellTargets",
+            WeenieErrorWithString::YouHaveNoTargetsForSpellOf => "YouHaveNoTargetsForSpellOf_",
+            WeenieErrorWithString::IsNowOpenFellowship => "IsNowOpenFellowship",
+            WeenieErrorWithString::IsNowClosedFellowship => "IsNowClosedFellowship",
+            WeenieErrorWithString::IsNowLeaderOfFellowship => "IsNowLeaderOfFellowship",
+            WeenieErrorWithString::YouHavePassedFellowshipLeadershipTo => "YouHavePassedFellowshipLeadershipTo_",
+            WeenieErrorWithString::MaxNumberOfHooked => "MaxNumberOf_Hooked",
+            WeenieErrorWithString::MaxNumberOfHookedUntilOneIsRemoved => "MaxNumberOf_HookedUntilOneIsRemoved",
+            WeenieErrorWithString::NoLongerMaxNumberOfHooked => "NoLongerMaxNumberOf_Hooked",
+            WeenieErrorWithString::IsNotCloseEnoughToYourLevel => "IsNotCloseEnoughToYourLevel",
+            WeenieErrorWithString::LockedFellowshipCannotRecruit => "LockedFellowshipCannotRecruit_",
+            WeenieErrorWithString::YouHaveEnteredTheChannel => "YouHaveEnteredThe_Channel",
+            WeenieErrorWithString::YouHaveLeftTheChannel => "YouHaveLeftThe_Channel",
+            WeenieErrorWithString::WillNotReceiveMessage => "WillNotReceiveMessage",
+            WeenieErrorWithString::MessageBlocked => "MessageBlocked_",
+            WeenieErrorWithString::HasBeenAddedToHearList => "HasBeenAddedToHearList",
+            WeenieErrorWithString::HasBeenRemovedFromHearList => "HasBeenRemovedFromHearList",
+            WeenieErrorWithString::FailToRemoveFromLoudList => "FailToRemove_FromLoudList",
+            WeenieErrorWithString::YouCannotOpenLockedFellowship => "YouCannotOpenLockedFellowship",
+            WeenieErrorWithString::YouAreNowSnoopingOn => "YouAreNowSnoopingOn_",
+            WeenieErrorWithString::YouAreNoLongerSnoopingOn => "YouAreNoLongerSnoopingOn_",
+            WeenieErrorWithString::YouFailToSnoopOn => "YouFailToSnoopOn_",
+            WeenieErrorWithString::AttemptedToSnoopOnYou => "AttemptedToSnoopOnYou",
+            WeenieErrorWithString::IsAlreadyBeingSnoopedOn => "IsAlreadyBeingSnoopedOn",
+            WeenieErrorWithString::IsInLimbo => "IsInLimbo",
+            WeenieErrorWithString::YouHaveBeenBootedFromAllegianceChat => "YouHaveBeenBootedFromAllegianceChat",
+            WeenieErrorWithString::HasBeenBootedFromAllegianceChat => "HasBeenBootedFromAllegianceChat",
+            WeenieErrorWithString::AccountOfIsAlreadyBannedFromAllegiance => "AccountOf_IsAlreadyBannedFromAllegiance",
+            WeenieErrorWithString::AccountOfIsNotBannedFromAllegiance => "AccountOf_IsNotBannedFromAllegiance",
+            WeenieErrorWithString::AccountOfWasNotUnbannedFromAllegiance => "AccountOf_WasNotUnbannedFromAllegiance",
+            WeenieErrorWithString::AccountOfIsBannedFromAllegiance => "AccountOf_IsBannedFromAllegiance",
+            WeenieErrorWithString::AccountOfIsUnbannedFromAllegiance => "AccountOf_IsUnbannedFromAllegiance",
+            WeenieErrorWithString::ListOfBannedCharacters => "ListOfBannedCharacters",
+            WeenieErrorWithString::IsBannedFromAllegiance => "IsBannedFromAllegiance",
+            WeenieErrorWithString::YouAreBannedFromAllegiance => "YouAreBannedFromAllegiance",
+            WeenieErrorWithString::IsNowAllegianceOfficer => "IsNowAllegianceOfficer",
+            WeenieErrorWithString::ErrorSettingAsAllegianceOfficer => "ErrorSetting_AsAllegianceOfficer",
+            WeenieErrorWithString::IsNoLongerAllegianceOfficer => "IsNoLongerAllegianceOfficer",
+            WeenieErrorWithString::ErrorRemovingAsAllegianceOFficer => "ErrorRemoving_AsAllegianceOFficer",
+            WeenieErrorWithString::YouMustWaitBeforeCommunicating => "YouMustWait_BeforeCommunicating",
+            WeenieErrorWithString::YourAllegianceOfficerStatusChanged => "YourAllegianceOfficerStatusChanged",
+            WeenieErrorWithString::IsAlreadyAllegianceOfficerOfThatLevel => "IsAlreadyAllegianceOfficerOfThatLevel",
+            WeenieErrorWithString::TheIsCurrentlyInUse => "The_IsCurrentlyInUse",
+            WeenieErrorWithString::YouAreNotListeningToChannel => "YouAreNotListeningTo_Channel",
+            WeenieErrorWithString::AugmentationSkillNotTrained => "AugmentationSkillNotTrained",
+            WeenieErrorWithString::YouSuccededAcquiringAugmentation => "YouSuccededAcquiringAugmentation",
+            WeenieErrorWithString::YouSucceededRecoveringXPFromSkillAugmentationNotUntrainable => "YouSucceededRecoveringXPFromSkill_AugmentationNotUntrainable",
+            WeenieErrorWithString::AFK => "AFK",
+            WeenieErrorWithString::IsAlreadyOnYourFriendsList => "IsAlreadyOnYourFriendsList",
+            WeenieErrorWithString::YouMayOnlyChangeAllegianceNameOnceEvery24Hours => "YouMayOnlyChangeAllegianceNameOnceEvery24Hours",
+            WeenieErrorWithString::IsTheMonarchAndCannotBePromotedOrDemoted => "IsTheMonarchAndCannotBePromotedOrDemoted",
+            WeenieErrorWithString::ThatLevelOfAllegianceOfficerIsNowKnownAs => "ThatLevelOfAllegianceOfficerIsNowKnownAs_",
+            WeenieErrorWithString::YourAllegianceIsCurrently => "YourAllegianceIsCurrently_",
+            WeenieErrorWithString::YourAllegianceIsNow => "YourAllegianceIsNow_",
+            WeenieErrorWithString::YouCannotAcceptAllegianceYourAllegianceIsLocked => "YouCannotAcceptAllegiance_YourAllegianceIsLocked",
+            WeenieErrorWithString::YouCannotSwearAllegianceAllegianceOfIsLocked => "YouCannotSwearAllegiance_AllegianceOf_IsLocked",
+            WeenieErrorWithString::YouHavePreApprovedToJoinAllegiance => "YouHavePreApproved_ToJoinAllegiance",
+            WeenieErrorWithString::IsAlreadyMemberOfYourAllegiance => "IsAlreadyMemberOfYourAllegiance",
+            WeenieErrorWithString::HasBeenPreApprovedToJoinYourAllegiance => "HasBeenPreApprovedToJoinYourAllegiance",
+            WeenieErrorWithString::YourAllegianceChatPrivilegesRemoved => "YourAllegianceChatPrivilegesRemoved",
+            WeenieErrorWithString::IsTemporarilyGaggedInAllegianceChat => "IsTemporarilyGaggedInAllegianceChat",
+            WeenieErrorWithString::YourAllegianceChatPrivilegesRestoredBy => "YourAllegianceChatPrivilegesRestoredBy_",
+            WeenieErrorWithString::YouRestoreAllegianceChatPrivilegesTo => "YouRestoreAllegianceChatPrivilegesTo_",
+            WeenieErrorWithString::CowersFromYou => "CowersFromYou",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -1582,6 +2241,383 @@ impl crate::readers::ACDataType for WeenieError {
     }
 }
 
+impl std::fmt::Display for WeenieError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            WeenieError::None => "None",
+            WeenieError::NoMem => "NoMem",
+            WeenieError::BadParam => "BadParam",
+            WeenieError::DivZero => "DivZero",
+            WeenieError::SegV => "SegV",
+            WeenieError::Unimplemented => "Unimplemented",
+            WeenieError::UnknownMessageType => "UnknownMessageType",
+            WeenieError::NoAnimationTable => "NoAnimationTable",
+            WeenieError::NoPhysicsObject => "NoPhysicsObject",
+            WeenieError::NoBookieObject => "NoBookieObject",
+            WeenieError::NoWslObject => "NoWslObject",
+            WeenieError::NoMotionInterpreter => "NoMotionInterpreter",
+            WeenieError::UnhandledSwitch => "UnhandledSwitch",
+            WeenieError::DefaultConstructorCalled => "DefaultConstructorCalled",
+            WeenieError::InvalidCombatManeuver => "InvalidCombatManeuver",
+            WeenieError::BadCast => "BadCast",
+            WeenieError::MissingQuality => "MissingQuality",
+            WeenieError::MissingDatabaseObject => "MissingDatabaseObject",
+            WeenieError::NoCallbackSet => "NoCallbackSet",
+            WeenieError::CorruptQuality => "CorruptQuality",
+            WeenieError::BadContext => "BadContext",
+            WeenieError::NoEphseqManager => "NoEphseqManager",
+            WeenieError::BadMovementEvent => "BadMovementEvent",
+            WeenieError::CannotCreateNewObject => "CannotCreateNewObject",
+            WeenieError::NoControllerObject => "NoControllerObject",
+            WeenieError::CannotSendEvent => "CannotSendEvent",
+            WeenieError::PhysicsCantTransition => "PhysicsCantTransition",
+            WeenieError::PhysicsMaxDistanceExceeded => "PhysicsMaxDistanceExceeded",
+            WeenieError::YoureTooBusy => "YoureTooBusy",
+            WeenieError::CannotSendMessage => "CannotSendMessage",
+            WeenieError::IllegalInventoryTransaction => "IllegalInventoryTransaction",
+            WeenieError::ExternalWeenieObject => "ExternalWeenieObject",
+            WeenieError::InternalWeenieObject => "InternalWeenieObject",
+            WeenieError::MotionFailure => "MotionFailure",
+            WeenieError::YouCantJumpWhileInTheAir => "YouCantJumpWhileInTheAir",
+            WeenieError::InqCylSphereFailure => "InqCylSphereFailure",
+            WeenieError::ThatIsNotAValidCommand => "ThatIsNotAValidCommand",
+            WeenieError::CarryingItem => "CarryingItem",
+            WeenieError::Frozen => "Frozen",
+            WeenieError::Stuck => "Stuck",
+            WeenieError::YouAreTooEncumbered => "YouAreTooEncumbered",
+            WeenieError::BadContain => "BadContain",
+            WeenieError::BadParent => "BadParent",
+            WeenieError::BadDrop => "BadDrop",
+            WeenieError::BadRelease => "BadRelease",
+            WeenieError::MsgBadMsg => "MsgBadMsg",
+            WeenieError::MsgUnpackFailed => "MsgUnpackFailed",
+            WeenieError::MsgNoMsg => "MsgNoMsg",
+            WeenieError::MsgUnderflow => "MsgUnderflow",
+            WeenieError::MsgOverflow => "MsgOverflow",
+            WeenieError::MsgCallbackFailed => "MsgCallbackFailed",
+            WeenieError::ActionCancelled => "ActionCancelled",
+            WeenieError::ObjectGone => "ObjectGone",
+            WeenieError::NoObject => "NoObject",
+            WeenieError::CantGetThere => "CantGetThere",
+            WeenieError::Dead => "Dead",
+            WeenieError::ILeftTheWorld => "ILeftTheWorld",
+            WeenieError::ITeleported => "ITeleported",
+            WeenieError::YouChargedTooFar => "YouChargedTooFar",
+            WeenieError::YouAreTooTiredToDoThat => "YouAreTooTiredToDoThat",
+            WeenieError::CantCrouchInCombat => "CantCrouchInCombat",
+            WeenieError::CantSitInCombat => "CantSitInCombat",
+            WeenieError::CantLieDownInCombat => "CantLieDownInCombat",
+            WeenieError::CantChatEmoteInCombat => "CantChatEmoteInCombat",
+            WeenieError::NoMtableData => "NoMtableData",
+            WeenieError::CantChatEmoteNotStanding => "CantChatEmoteNotStanding",
+            WeenieError::TooManyActions => "TooManyActions",
+            WeenieError::Hidden => "Hidden",
+            WeenieError::GeneralMovementFailure => "GeneralMovementFailure",
+            WeenieError::YouCantJumpFromThisPosition => "YouCantJumpFromThisPosition",
+            WeenieError::CantJumpLoadedDown => "CantJumpLoadedDown",
+            WeenieError::YouKilledYourself => "YouKilledYourself",
+            WeenieError::MsgResponseFailure => "MsgResponseFailure",
+            WeenieError::ObjectIsStatic => "ObjectIsStatic",
+            WeenieError::InvalidPkStatus => "InvalidPkStatus",
+            WeenieError::InvalidXpAmount => "InvalidXpAmount",
+            WeenieError::InvalidPpCalculation => "InvalidPpCalculation",
+            WeenieError::InvalidCpCalculation => "InvalidCpCalculation",
+            WeenieError::UnhandledStatAnswer => "UnhandledStatAnswer",
+            WeenieError::HeartAttack => "HeartAttack",
+            WeenieError::TheContainerIsClosed => "TheContainerIsClosed",
+            WeenieError::InvalidInventoryLocation => "InvalidInventoryLocation",
+            WeenieError::ChangeCombatModeFailure => "ChangeCombatModeFailure",
+            WeenieError::FullInventoryLocation => "FullInventoryLocation",
+            WeenieError::ConflictingInventoryLocation => "ConflictingInventoryLocation",
+            WeenieError::ItemNotPending => "ItemNotPending",
+            WeenieError::BeWieldedFailure => "BeWieldedFailure",
+            WeenieError::BeDroppedFailure => "BeDroppedFailure",
+            WeenieError::YouAreTooFatiguedToAttack => "YouAreTooFatiguedToAttack",
+            WeenieError::YouAreOutOfAmmunition => "YouAreOutOfAmmunition",
+            WeenieError::YourAttackMisfired => "YourAttackMisfired",
+            WeenieError::YouveAttemptedAnImpossibleSpellPath => "YouveAttemptedAnImpossibleSpellPath",
+            WeenieError::MagicIncompleteAnimList => "MagicIncompleteAnimList",
+            WeenieError::MagicInvalidSpellType => "MagicInvalidSpellType",
+            WeenieError::MagicInqPositionAndVelocityFailure => "MagicInqPositionAndVelocityFailure",
+            WeenieError::YouDontKnowThatSpell => "YouDontKnowThatSpell",
+            WeenieError::IncorrectTargetType => "IncorrectTargetType",
+            WeenieError::YouDontHaveAllTheComponents => "YouDontHaveAllTheComponents",
+            WeenieError::YouDontHaveEnoughManaToCast => "YouDontHaveEnoughManaToCast",
+            WeenieError::YourSpellFizzled => "YourSpellFizzled",
+            WeenieError::YourSpellTargetIsMissing => "YourSpellTargetIsMissing",
+            WeenieError::YourProjectileSpellMislaunched => "YourProjectileSpellMislaunched",
+            WeenieError::MagicSpellbookAddSpellFailure => "MagicSpellbookAddSpellFailure",
+            WeenieError::MagicTargetOutOfRange => "MagicTargetOutOfRange",
+            WeenieError::YourSpellCannotBeCastOutside => "YourSpellCannotBeCastOutside",
+            WeenieError::YourSpellCannotBeCastInside => "YourSpellCannotBeCastInside",
+            WeenieError::MagicGeneralFailure => "MagicGeneralFailure",
+            WeenieError::YouAreUnpreparedToCastASpell => "YouAreUnpreparedToCastASpell",
+            WeenieError::YouveAlreadySwornAllegiance => "YouveAlreadySwornAllegiance",
+            WeenieError::CantSwearAllegianceInsufficientXp => "CantSwearAllegianceInsufficientXp",
+            WeenieError::AllegianceIgnoringRequests => "AllegianceIgnoringRequests",
+            WeenieError::AllegianceSquelched => "AllegianceSquelched",
+            WeenieError::AllegianceMaxDistanceExceeded => "AllegianceMaxDistanceExceeded",
+            WeenieError::AllegianceIllegalLevel => "AllegianceIllegalLevel",
+            WeenieError::AllegianceBadCreation => "AllegianceBadCreation",
+            WeenieError::AllegiancePatronBusy => "AllegiancePatronBusy",
+            WeenieError::YouAreNotInAllegiance => "YouAreNotInAllegiance",
+            WeenieError::AllegianceRemoveHierarchyFailure => "AllegianceRemoveHierarchyFailure",
+            WeenieError::FellowshipIgnoringRequests => "FellowshipIgnoringRequests",
+            WeenieError::FellowshipSquelched => "FellowshipSquelched",
+            WeenieError::FellowshipMaxDistanceExceeded => "FellowshipMaxDistanceExceeded",
+            WeenieError::FellowshipMember => "FellowshipMember",
+            WeenieError::FellowshipIllegalLevel => "FellowshipIllegalLevel",
+            WeenieError::FellowshipRecruitBusy => "FellowshipRecruitBusy",
+            WeenieError::YouMustBeLeaderOfFellowship => "YouMustBeLeaderOfFellowship",
+            WeenieError::YourFellowshipIsFull => "YourFellowshipIsFull",
+            WeenieError::FellowshipNameIsNotPermitted => "FellowshipNameIsNotPermitted",
+            WeenieError::LevelTooLow => "LevelTooLow",
+            WeenieError::LevelTooHigh => "LevelTooHigh",
+            WeenieError::ThatChannelDoesntExist => "ThatChannelDoesntExist",
+            WeenieError::YouCantUseThatChannel => "YouCantUseThatChannel",
+            WeenieError::YouAreAlreadyOnThatChannel => "YouAreAlreadyOnThatChannel",
+            WeenieError::YouAreNotOnThatChannel => "YouAreNotOnThatChannel",
+            WeenieError::AttunedItem => "AttunedItem",
+            WeenieError::YouCannotMergeDifferentStacks => "YouCannotMergeDifferentStacks",
+            WeenieError::YouCannotMergeEnchantedItems => "YouCannotMergeEnchantedItems",
+            WeenieError::YouMustControlAtLeastOneStack => "YouMustControlAtLeastOneStack",
+            WeenieError::CurrentlyAttacking => "CurrentlyAttacking",
+            WeenieError::MissileAttackNotOk => "MissileAttackNotOk",
+            WeenieError::TargetNotAcquired => "TargetNotAcquired",
+            WeenieError::ImpossibleShot => "ImpossibleShot",
+            WeenieError::BadWeaponSkill => "BadWeaponSkill",
+            WeenieError::UnwieldFailure => "UnwieldFailure",
+            WeenieError::LaunchFailure => "LaunchFailure",
+            WeenieError::ReloadFailure => "ReloadFailure",
+            WeenieError::UnableToMakeCraftReq => "UnableToMakeCraftReq",
+            WeenieError::CraftAnimationFailed => "CraftAnimationFailed",
+            WeenieError::YouCantCraftWithThatNumberOfItems => "YouCantCraftWithThatNumberOfItems",
+            WeenieError::CraftGeneralErrorUiMsg => "CraftGeneralErrorUiMsg",
+            WeenieError::CraftGeneralErrorNoUiMsg => "CraftGeneralErrorNoUiMsg",
+            WeenieError::YouDoNotPassCraftingRequirements => "YouDoNotPassCraftingRequirements",
+            WeenieError::YouDoNotHaveAllTheNecessaryItems => "YouDoNotHaveAllTheNecessaryItems",
+            WeenieError::NotAllTheItemsAreAvailable => "NotAllTheItemsAreAvailable",
+            WeenieError::YouMustBeInPeaceModeToTrade => "YouMustBeInPeaceModeToTrade",
+            WeenieError::YouAreNotTrainedInThatTradeSkill => "YouAreNotTrainedInThatTradeSkill",
+            WeenieError::YourHandsMustBeFree => "YourHandsMustBeFree",
+            WeenieError::YouCannotLinkToThatPortal => "YouCannotLinkToThatPortal",
+            WeenieError::YouHaveSolvedThisQuestTooRecently => "YouHaveSolvedThisQuestTooRecently",
+            WeenieError::YouHaveSolvedThisQuestTooManyTimes => "YouHaveSolvedThisQuestTooManyTimes",
+            WeenieError::QuestUnknown => "QuestUnknown",
+            WeenieError::QuestTableCorrupt => "QuestTableCorrupt",
+            WeenieError::QuestBad => "QuestBad",
+            WeenieError::QuestDuplicate => "QuestDuplicate",
+            WeenieError::QuestUnsolved => "QuestUnsolved",
+            WeenieError::ItemRequiresQuestToBePickedUp => "ItemRequiresQuestToBePickedUp",
+            WeenieError::QuestSolvedTooLongAgo => "QuestSolvedTooLongAgo",
+            WeenieError::TradeIgnoringRequests => "TradeIgnoringRequests",
+            WeenieError::TradeSquelched => "TradeSquelched",
+            WeenieError::TradeMaxDistanceExceeded => "TradeMaxDistanceExceeded",
+            WeenieError::TradeAlreadyTrading => "TradeAlreadyTrading",
+            WeenieError::TradeBusy => "TradeBusy",
+            WeenieError::TradeClosed => "TradeClosed",
+            WeenieError::TradeExpired => "TradeExpired",
+            WeenieError::TradeItemBeingTraded => "TradeItemBeingTraded",
+            WeenieError::TradeNonEmptyContainer => "TradeNonEmptyContainer",
+            WeenieError::TradeNonCombatMode => "TradeNonCombatMode",
+            WeenieError::TradeIncomplete => "TradeIncomplete",
+            WeenieError::TradeStampMismatch => "TradeStampMismatch",
+            WeenieError::TradeUnopened => "TradeUnopened",
+            WeenieError::TradeEmpty => "TradeEmpty",
+            WeenieError::TradeAlreadyAccepted => "TradeAlreadyAccepted",
+            WeenieError::TradeOutOfSync => "TradeOutOfSync",
+            WeenieError::PKsMayNotUsePortal => "PKsMayNotUsePortal",
+            WeenieError::NonPKsMayNotUsePortal => "NonPKsMayNotUsePortal",
+            WeenieError::HouseAbandoned => "HouseAbandoned",
+            WeenieError::HouseEvicted => "HouseEvicted",
+            WeenieError::HouseAlreadyOwned => "HouseAlreadyOwned",
+            WeenieError::HouseBuyFailed => "HouseBuyFailed",
+            WeenieError::HouseRentFailed => "HouseRentFailed",
+            WeenieError::Hooked => "Hooked",
+            WeenieError::MagicInvalidPosition => "MagicInvalidPosition",
+            WeenieError::YouMustHaveDarkMajestyToUsePortal => "YouMustHaveDarkMajestyToUsePortal",
+            WeenieError::InvalidAmmoType => "InvalidAmmoType",
+            WeenieError::SkillTooLow => "SkillTooLow",
+            WeenieError::YouHaveUsedAllTheHooks => "YouHaveUsedAllTheHooks",
+            WeenieError::TradeAiDoesntWant => "TradeAiDoesntWant",
+            WeenieError::HookHouseNotOwned => "HookHouseNotOwned",
+            WeenieError::YouMustCompleteQuestToUsePortal => "YouMustCompleteQuestToUsePortal",
+            WeenieError::HouseNoAllegiance => "HouseNoAllegiance",
+            WeenieError::YouMustOwnHouseToUseCommand => "YouMustOwnHouseToUseCommand",
+            WeenieError::YourMonarchDoesNotOwnAMansionOrVilla => "YourMonarchDoesNotOwnAMansionOrVilla",
+            WeenieError::YourMonarchsHouseIsNotAMansionOrVilla => "YourMonarchsHouseIsNotAMansionOrVilla",
+            WeenieError::YourMonarchHasClosedTheMansion => "YourMonarchHasClosedTheMansion",
+            WeenieError::YouMustBeMonarchToPurchaseDwelling => "YouMustBeMonarchToPurchaseDwelling",
+            WeenieError::AllegianceTimeout => "AllegianceTimeout",
+            WeenieError::YourOfferOfAllegianceWasIgnored => "YourOfferOfAllegianceWasIgnored",
+            WeenieError::ConfirmationInProgress => "ConfirmationInProgress",
+            WeenieError::YouMustBeAMonarchToUseCommand => "YouMustBeAMonarchToUseCommand",
+            WeenieError::YouMustSpecifyCharacterToBoot => "YouMustSpecifyCharacterToBoot",
+            WeenieError::YouCantBootYourself => "YouCantBootYourself",
+            WeenieError::ThatCharacterDoesNotExist => "ThatCharacterDoesNotExist",
+            WeenieError::ThatPersonIsNotInYourAllegiance => "ThatPersonIsNotInYourAllegiance",
+            WeenieError::CantBreakFromPatronNotInAllegiance => "CantBreakFromPatronNotInAllegiance",
+            WeenieError::YourAllegianceHasBeenDissolved => "YourAllegianceHasBeenDissolved",
+            WeenieError::YourPatronsAllegianceHasBeenBroken => "YourPatronsAllegianceHasBeenBroken",
+            WeenieError::YouHaveMovedTooFar => "YouHaveMovedTooFar",
+            WeenieError::TeleToInvalidPosition => "TeleToInvalidPosition",
+            WeenieError::MustHaveDarkMajestyToUse => "MustHaveDarkMajestyToUse",
+            WeenieError::YouFailToLinkWithLifestone => "YouFailToLinkWithLifestone",
+            WeenieError::YouWanderedTooFarToLinkWithLifestone => "YouWanderedTooFarToLinkWithLifestone",
+            WeenieError::YouSuccessfullyLinkWithLifestone => "YouSuccessfullyLinkWithLifestone",
+            WeenieError::YouMustLinkToLifestoneToRecall => "YouMustLinkToLifestoneToRecall",
+            WeenieError::YouFailToRecallToLifestone => "YouFailToRecallToLifestone",
+            WeenieError::YouFailToLinkWithPortal => "YouFailToLinkWithPortal",
+            WeenieError::YouSuccessfullyLinkWithPortal => "YouSuccessfullyLinkWithPortal",
+            WeenieError::YouFailToRecallToPortal => "YouFailToRecallToPortal",
+            WeenieError::YouMustLinkToPortalToRecall => "YouMustLinkToPortalToRecall",
+            WeenieError::YouFailToSummonPortal => "YouFailToSummonPortal",
+            WeenieError::YouMustLinkToPortalToSummonIt => "YouMustLinkToPortalToSummonIt",
+            WeenieError::YouFailToTeleport => "YouFailToTeleport",
+            WeenieError::YouHaveBeenTeleportedTooRecently => "YouHaveBeenTeleportedTooRecently",
+            WeenieError::YouMustBeAnAdvocateToUsePortal => "YouMustBeAnAdvocateToUsePortal",
+            WeenieError::PortalAisNotAllowed => "PortalAisNotAllowed",
+            WeenieError::PlayersMayNotUsePortal => "PlayersMayNotUsePortal",
+            WeenieError::YouAreNotPowerfulEnoughToUsePortal => "YouAreNotPowerfulEnoughToUsePortal",
+            WeenieError::YouAreTooPowerfulToUsePortal => "YouAreTooPowerfulToUsePortal",
+            WeenieError::YouCannotRecallPortal => "YouCannotRecallPortal",
+            WeenieError::YouCannotSummonPortal => "YouCannotSummonPortal",
+            WeenieError::LockAlreadyUnlocked => "LockAlreadyUnlocked",
+            WeenieError::YouCannotLockOrUnlockThat => "YouCannotLockOrUnlockThat",
+            WeenieError::YouCannotLockWhatIsOpen => "YouCannotLockWhatIsOpen",
+            WeenieError::KeyDoesntFitThisLock => "KeyDoesntFitThisLock",
+            WeenieError::LockUsedTooRecently => "LockUsedTooRecently",
+            WeenieError::YouArentTrainedInLockpicking => "YouArentTrainedInLockpicking",
+            WeenieError::AllegianceInfoEmptyName => "AllegianceInfoEmptyName",
+            WeenieError::AllegianceInfoSelf => "AllegianceInfoSelf",
+            WeenieError::AllegianceInfoTooRecent => "AllegianceInfoTooRecent",
+            WeenieError::AbuseNoSuchCharacter => "AbuseNoSuchCharacter",
+            WeenieError::AbuseReportedSelf => "AbuseReportedSelf",
+            WeenieError::AbuseComplaintHandled => "AbuseComplaintHandled",
+            WeenieError::YouDoNotOwnThatSalvageTool => "YouDoNotOwnThatSalvageTool",
+            WeenieError::YouDoNotOwnThatItem => "YouDoNotOwnThatItem",
+            WeenieError::MaterialCannotBeCreated => "MaterialCannotBeCreated",
+            WeenieError::ItemsAttemptingToSalvageIsInvalid => "ItemsAttemptingToSalvageIsInvalid",
+            WeenieError::YouCannotSalvageItemsInTrading => "YouCannotSalvageItemsInTrading",
+            WeenieError::YouMustBeHouseGuestToUsePortal => "YouMustBeHouseGuestToUsePortal",
+            WeenieError::YourAllegianceRankIsTooLowToUseMagic => "YourAllegianceRankIsTooLowToUseMagic",
+            WeenieError::YourArcaneLoreIsTooLowToUseMagic => "YourArcaneLoreIsTooLowToUseMagic",
+            WeenieError::ItemDoesntHaveEnoughMana => "ItemDoesntHaveEnoughMana",
+            WeenieError::YouHaveBeenInPKBattleTooRecently => "YouHaveBeenInPKBattleTooRecently",
+            WeenieError::TradeAiRefuseEmote => "TradeAiRefuseEmote",
+            WeenieError::YouFailToAlterSkill => "YouFailToAlterSkill",
+            WeenieError::FellowshipDeclined => "FellowshipDeclined",
+            WeenieError::FellowshipTimeout => "FellowshipTimeout",
+            WeenieError::YouHaveFailedToAlterAttributes => "YouHaveFailedToAlterAttributes",
+            WeenieError::CannotTransferAttributesWhileWieldingItem => "CannotTransferAttributesWhileWieldingItem",
+            WeenieError::YouHaveSucceededTransferringAttributes => "YouHaveSucceededTransferringAttributes",
+            WeenieError::HookIsDuplicated => "HookIsDuplicated",
+            WeenieError::ItemIsWrongTypeForHook => "ItemIsWrongTypeForHook",
+            WeenieError::HousingChestIsDuplicated => "HousingChestIsDuplicated",
+            WeenieError::HookWillBeDeleted => "HookWillBeDeleted",
+            WeenieError::HousingChestWillBeDeleted => "HousingChestWillBeDeleted",
+            WeenieError::CannotSwearAllegianceWhileOwningMansion => "CannotSwearAllegianceWhileOwningMansion",
+            WeenieError::YouCantDoThatWhileInTheAir => "YouCantDoThatWhileInTheAir",
+            WeenieError::CannotChangePKStatusWhileRecovering => "CannotChangePKStatusWhileRecovering",
+            WeenieError::AdvocatesCannotChangePKStatus => "AdvocatesCannotChangePKStatus",
+            WeenieError::LevelTooLowToChangePKStatusWithObject => "LevelTooLowToChangePKStatusWithObject",
+            WeenieError::LevelTooHighToChangePKStatusWithObject => "LevelTooHighToChangePKStatusWithObject",
+            WeenieError::YouFeelAHarshDissonance => "YouFeelAHarshDissonance",
+            WeenieError::YouArePKAgain => "YouArePKAgain",
+            WeenieError::YouAreTemporarilyNoLongerPK => "YouAreTemporarilyNoLongerPK",
+            WeenieError::PKLiteMayNotUsePortal => "PKLiteMayNotUsePortal",
+            WeenieError::YouArentTrainedInHealing => "YouArentTrainedInHealing",
+            WeenieError::YouDontOwnThatHealingKit => "YouDontOwnThatHealingKit",
+            WeenieError::YouCantHealThat => "YouCantHealThat",
+            WeenieError::YouArentReadyToHeal => "YouArentReadyToHeal",
+            WeenieError::YouCanOnlyHealPlayers => "YouCanOnlyHealPlayers",
+            WeenieError::LifestoneMagicProtectsYou => "LifestoneMagicProtectsYou",
+            WeenieError::PortalEnergyProtectsYou => "PortalEnergyProtectsYou",
+            WeenieError::YouAreNonPKAgain => "YouAreNonPKAgain",
+            WeenieError::YoureTooCloseToYourSanctuary => "YoureTooCloseToYourSanctuary",
+            WeenieError::CantDoThatTradeInProgress => "CantDoThatTradeInProgress",
+            WeenieError::OnlyNonPKsMayEnterPKLite => "OnlyNonPKsMayEnterPKLite",
+            WeenieError::YouAreNowPKLite => "YouAreNowPKLite",
+            WeenieError::YouDoNotBelongToAFellowship => "YouDoNotBelongToAFellowship",
+            WeenieError::UsingMaxHooksSilent => "UsingMaxHooksSilent",
+            WeenieError::YouAreNowUsingMaxHooks => "YouAreNowUsingMaxHooks",
+            WeenieError::YouAreNoLongerUsingMaxHooks => "YouAreNoLongerUsingMaxHooks",
+            WeenieError::YouAreNotPermittedToUseThatHook => "YouAreNotPermittedToUseThatHook",
+            WeenieError::LockedFellowshipCannotRecruitYou => "LockedFellowshipCannotRecruitYou",
+            WeenieError::ActivationNotAllowedNotOwner => "ActivationNotAllowedNotOwner",
+            WeenieError::TurbineChatIsEnabled => "TurbineChatIsEnabled",
+            WeenieError::YouCannotAddPeopleToHearList => "YouCannotAddPeopleToHearList",
+            WeenieError::YouAreNowDeafToScreams => "YouAreNowDeafTo_Screams",
+            WeenieError::YouCanHearAllPlayersOnceAgain => "YouCanHearAllPlayersOnceAgain",
+            WeenieError::YouChickenOut => "YouChickenOut",
+            WeenieError::YouCanPossiblySucceed => "YouCanPossiblySucceed",
+            WeenieError::FellowshipIsLocked => "FellowshipIsLocked",
+            WeenieError::TradeComplete => "TradeComplete",
+            WeenieError::NotASalvageTool => "NotASalvageTool",
+            WeenieError::CharacterNotAvailable => "CharacterNotAvailable",
+            WeenieError::YouMustWaitToPurchaseHouse => "YouMustWaitToPurchaseHouse",
+            WeenieError::YouDoNotHaveAuthorityInAllegiance => "YouDoNotHaveAuthorityInAllegiance",
+            WeenieError::YouHaveMaxAccountsBanned => "YouHaveMaxAccountsBanned",
+            WeenieError::YouHaveMaxAllegianceOfficers => "YouHaveMaxAllegianceOfficers",
+            WeenieError::YourAllegianceOfficersHaveBeenCleared => "YourAllegianceOfficersHaveBeenCleared",
+            WeenieError::YouCannotJoinChannelsWhileGagged => "YouCannotJoinChannelsWhileGagged",
+            WeenieError::YouAreNoLongerAllegianceOfficer => "YouAreNoLongerAllegianceOfficer",
+            WeenieError::YourAllegianceDoesNotHaveHometown => "YourAllegianceDoesNotHaveHometown",
+            WeenieError::HookItemNotUsableCannotOpen => "HookItemNotUsable_CannotOpen",
+            WeenieError::HookItemNotUsableCanOpen => "HookItemNotUsable_CanOpen",
+            WeenieError::MissileOutOfRange => "MissileOutOfRange",
+            WeenieError::MustPurchaseThroneOfDestinyToUseFunction => "MustPurchaseThroneOfDestinyToUseFunction",
+            WeenieError::MustPurchaseThroneOfDestinyToUseItem => "MustPurchaseThroneOfDestinyToUseItem",
+            WeenieError::MustPurchaseThroneOfDestinyToUsePortal => "MustPurchaseThroneOfDestinyToUsePortal",
+            WeenieError::MustPurchaseThroneOfDestinyToAccessQuest => "MustPurchaseThroneOfDestinyToAccessQuest",
+            WeenieError::YouFailedToCompleteAugmentation => "YouFailedToCompleteAugmentation",
+            WeenieError::AugmentationUsedTooManyTimes => "AugmentationUsedTooManyTimes",
+            WeenieError::AugmentationTypeUsedTooManyTimes => "AugmentationTypeUsedTooManyTimes",
+            WeenieError::AugmentationNotEnoughExperience => "AugmentationNotEnoughExperience",
+            WeenieError::ExitTrainingAcademyToUseCommand => "ExitTrainingAcademyToUseCommand",
+            WeenieError::OnlyPKsMayUseCommand => "OnlyPKsMayUseCommand",
+            WeenieError::OnlyPKLiteMayUseCommand => "OnlyPKLiteMayUseCommand",
+            WeenieError::MaxFriendsExceeded => "MaxFriendsExceeded",
+            WeenieError::ThatCharacterNotOnYourFriendsList => "ThatCharacterNotOnYourFriendsList",
+            WeenieError::OnlyHouseOwnerCanUseCommand => "OnlyHouseOwnerCanUseCommand",
+            WeenieError::InvalidAllegianceNameCantBeEmpty => "InvalidAllegianceNameCantBeEmpty",
+            WeenieError::InvalidAllegianceNameTooLong => "InvalidAllegianceNameTooLong",
+            WeenieError::InvalidAllegianceNameBadCharacters => "InvalidAllegianceNameBadCharacters",
+            WeenieError::InvalidAllegianceNameInappropriate => "InvalidAllegianceNameInappropriate",
+            WeenieError::InvalidAllegianceNameAlreadyInUse => "InvalidAllegianceNameAlreadyInUse",
+            WeenieError::AllegianceNameCleared => "AllegianceNameCleared",
+            WeenieError::InvalidAllegianceNameSameName => "InvalidAllegianceNameSameName",
+            WeenieError::InvalidOfficerLevel => "InvalidOfficerLevel",
+            WeenieError::AllegianceOfficerTitleIsNotAppropriate => "AllegianceOfficerTitleIsNotAppropriate",
+            WeenieError::AllegianceNameIsTooLong => "AllegianceNameIsTooLong",
+            WeenieError::AllegianceOfficerTitlesCleared => "AllegianceOfficerTitlesCleared",
+            WeenieError::AllegianceTitleHasIllegalChars => "AllegianceTitleHasIllegalChars",
+            WeenieError::YouHaveNotPreApprovedVassals => "YouHaveNotPreApprovedVassals",
+            WeenieError::YouHaveClearedPreApprovedVassal => "YouHaveClearedPreApprovedVassal",
+            WeenieError::CharIsAlreadyGagged => "CharIsAlreadyGagged",
+            WeenieError::CharIsNotCurrentlyGagged => "CharIsNotCurrentlyGagged",
+            WeenieError::YourAllegianceChatPrivilegesRestored => "YourAllegianceChatPrivilegesRestored",
+            WeenieError::TooManyUniqueItems => "TooManyUniqueItems",
+            WeenieError::HeritageRequiresSpecificArmor => "HeritageRequiresSpecificArmor",
+            WeenieError::ArmorRequiresSpecificHeritage => "ArmorRequiresSpecificHeritage",
+            WeenieError::OlthoiCannotInteractWithThat => "OlthoiCannotInteractWithThat",
+            WeenieError::OlthoiCannotUseLifestones => "OlthoiCannotUseLifestones",
+            WeenieError::OlthoiVendorLooksInHorror => "OlthoiVendorLooksInHorror",
+            WeenieError::OlthoiCannotJoinFellowship => "OlthoiCannotJoinFellowship",
+            WeenieError::OlthoiCannotJoinAllegiance => "OlthoiCannotJoinAllegiance",
+            WeenieError::YouCannotUseThatItem => "YouCannotUseThatItem",
+            WeenieError::ThisPersonWillNotInteractWithYou => "ThisPersonWillNotInteractWithYou",
+            WeenieError::OnlyOlthoiMayUsePortal => "OnlyOlthoiMayUsePortal",
+            WeenieError::OlthoiMayNotUsePortal => "OlthoiMayNotUsePortal",
+            WeenieError::YouMayNotUsePortalWithVitae => "YouMayNotUsePortalWithVitae",
+            WeenieError::YouMustBeTwoWeeksOldToUsePortal => "YouMustBeTwoWeeksOldToUsePortal",
+            WeenieError::OlthoiCanOnlyRecallToLifestone => "OlthoiCanOnlyRecallToLifestone",
+            WeenieError::ContractError => "ContractError",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The PositionFlags value defines the fields present in the Position structure.
 bitflags::bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -1619,6 +2655,17 @@ impl crate::readers::ACDataType for AttackHeight {
     }
 }
 
+impl std::fmt::Display for AttackHeight {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AttackHeight::High => "High",
+            AttackHeight::Medium => "Medium",
+            AttackHeight::Low => "Low",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Container properties of an item
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -1632,6 +2679,17 @@ impl crate::readers::ACDataType for ContainerProperties {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ContainerProperties::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for ContainerProperties {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ContainerProperties::None => "None",
+            ContainerProperties::Container => "Container",
+            ContainerProperties::Foci => "Foci",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -1660,6 +2718,30 @@ impl crate::readers::ACDataType for AttackType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttackType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for AttackType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AttackType::Undef => "Undef",
+            AttackType::Punch => "Punch",
+            AttackType::Thrust => "Thrust",
+            AttackType::Slash => "Slash",
+            AttackType::Kick => "Kick",
+            AttackType::OffhandPunch => "OffhandPunch",
+            AttackType::DoubleSlash => "DoubleSlash",
+            AttackType::TripleSlash => "TripleSlash",
+            AttackType::DoubleThrust => "DoubleThrust",
+            AttackType::TripleThrust => "TripleThrust",
+            AttackType::OffhandThrust => "OffhandThrust",
+            AttackType::OffhandSlash => "OffhandSlash",
+            AttackType::OffhandDoubleSlash => "OffhandDoubleSlash",
+            AttackType::OffhandTripleSlash => "OffhandTripleSlash",
+            AttackType::OffhandDoubleThrust => "OffhandDoubleThrust",
+            AttackType::OffhandTripleThrust => "OffhandTripleThrust",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -1774,6 +2856,67 @@ impl crate::readers::ACDataType for SkillId {
     }
 }
 
+impl std::fmt::Display for SkillId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            SkillId::Axe => "Axe",
+            SkillId::Bow => "Bow",
+            SkillId::Crossbow => "Crossbow",
+            SkillId::Dagger => "Dagger",
+            SkillId::Mace => "Mace",
+            SkillId::MeleeDefense => "MeleeDefense",
+            SkillId::MissileDefense => "MissileDefense",
+            SkillId::Sling => "Sling",
+            SkillId::Spear => "Spear",
+            SkillId::Staff => "Staff",
+            SkillId::Sword => "Sword",
+            SkillId::ThrownWeapons => "ThrownWeapons",
+            SkillId::UnarmedCombat => "UnarmedCombat",
+            SkillId::ArcaneLore => "ArcaneLore",
+            SkillId::MagicDefense => "MagicDefense",
+            SkillId::ManaConversion => "ManaConversion",
+            SkillId::Spellcraft => "Spellcraft",
+            SkillId::ItemTinkering => "ItemTinkering",
+            SkillId::AssessPerson => "AssessPerson",
+            SkillId::Deception => "Deception",
+            SkillId::Healing => "Healing",
+            SkillId::Jump => "Jump",
+            SkillId::Lockpick => "Lockpick",
+            SkillId::Run => "Run",
+            SkillId::Awareness => "Awareness",
+            SkillId::ArmorRepair => "ArmorRepair",
+            SkillId::AssessCreature => "AssessCreature",
+            SkillId::WeaponTinkering => "WeaponTinkering",
+            SkillId::ArmorTinkering => "ArmorTinkering",
+            SkillId::MagicItemTinkering => "MagicItemTinkering",
+            SkillId::CreatureEnchantment => "CreatureEnchantment",
+            SkillId::ItemEnchantment => "ItemEnchantment",
+            SkillId::LifeMagic => "LifeMagic",
+            SkillId::WarMagic => "WarMagic",
+            SkillId::Leadership => "Leadership",
+            SkillId::Loyalty => "Loyalty",
+            SkillId::Fletching => "Fletching",
+            SkillId::Alchemy => "Alchemy",
+            SkillId::Cooking => "Cooking",
+            SkillId::Salvaging => "Salvaging",
+            SkillId::TwoHandedCombat => "TwoHandedCombat",
+            SkillId::Gearcraft => "Gearcraft",
+            SkillId::VoidMagic => "VoidMagic",
+            SkillId::HeavyWeapons => "HeavyWeapons",
+            SkillId::LightWeapons => "LightWeapons",
+            SkillId::FinesseWeapons => "FinesseWeapons",
+            SkillId::MissleWeapons => "MissleWeapons",
+            SkillId::DualWield => "DualWield",
+            SkillId::Recklessness => "Recklessness",
+            SkillId::SneakAttack => "SneakAttack",
+            SkillId::DirtyFighting => "DirtyFighting",
+            SkillId::Challenge => "Challenge",
+            SkillId::Summoning => "Summoning",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The SkillAdvancementClass identifies whether a skill is untrained, trained or specialized.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -1787,6 +2930,17 @@ impl crate::readers::ACDataType for SkillAdvancementClass {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(SkillAdvancementClass::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for SkillAdvancementClass {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            SkillAdvancementClass::Untrained => "Untrained",
+            SkillAdvancementClass::Trained => "Trained",
+            SkillAdvancementClass::Specialized => "Specialized",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -1806,6 +2960,21 @@ impl crate::readers::ACDataType for PropertyAttribute2nd {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(PropertyAttribute2nd::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for PropertyAttribute2nd {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyAttribute2nd::Undef => "Undef",
+            PropertyAttribute2nd::MaxHealth => "MaxHealth",
+            PropertyAttribute2nd::Health => "Health",
+            PropertyAttribute2nd::MaxStamina => "MaxStamina",
+            PropertyAttribute2nd::Stamina => "Stamina",
+            PropertyAttribute2nd::MaxMana => "MaxMana",
+            PropertyAttribute2nd::Mana => "Mana",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -2066,6 +3235,136 @@ impl crate::readers::ACDataType for EmoteType {
     }
 }
 
+impl std::fmt::Display for EmoteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            EmoteType::InvalidEmoteType => "Invalid_EmoteType",
+            EmoteType::ActEmoteType => "Act_EmoteType",
+            EmoteType::AwardXPEmoteType => "AwardXP_EmoteType",
+            EmoteType::GiveEmoteType => "Give_EmoteType",
+            EmoteType::MoveHomeEmoteType => "MoveHome_EmoteType",
+            EmoteType::MotionEmoteType => "Motion_EmoteType",
+            EmoteType::MoveEmoteType => "Move_EmoteType",
+            EmoteType::PhysScriptEmoteType => "PhysScript_EmoteType",
+            EmoteType::SayEmoteType => "Say_EmoteType",
+            EmoteType::SoundEmoteType => "Sound_EmoteType",
+            EmoteType::TellEmoteType => "Tell_EmoteType",
+            EmoteType::TurnEmoteType => "Turn_EmoteType",
+            EmoteType::TurnToTargetEmoteType => "TurnToTarget_EmoteType",
+            EmoteType::TextDirectEmoteType => "TextDirect_EmoteType",
+            EmoteType::CastSpellEmoteType => "CastSpell_EmoteType",
+            EmoteType::ActivateEmoteType => "Activate_EmoteType",
+            EmoteType::WorldBroadcastEmoteType => "WorldBroadcast_EmoteType",
+            EmoteType::LocalBroadcastEmoteType => "LocalBroadcast_EmoteType",
+            EmoteType::DirectBroadcastEmoteType => "DirectBroadcast_EmoteType",
+            EmoteType::CastSpellInstantEmoteType => "CastSpellInstant_EmoteType",
+            EmoteType::UpdateQuestEmoteType => "UpdateQuest_EmoteType",
+            EmoteType::InqQuestEmoteType => "InqQuest_EmoteType",
+            EmoteType::StampQuestEmoteType => "StampQuest_EmoteType",
+            EmoteType::StartEventEmoteType => "StartEvent_EmoteType",
+            EmoteType::StopEventEmoteType => "StopEvent_EmoteType",
+            EmoteType::BLogEmoteType => "BLog_EmoteType",
+            EmoteType::AdminSpamEmoteType => "AdminSpam_EmoteType",
+            EmoteType::TeachSpellEmoteType => "TeachSpell_EmoteType",
+            EmoteType::AwardSkillXPEmoteType => "AwardSkillXP_EmoteType",
+            EmoteType::AwardSkillPointsEmoteType => "AwardSkillPoints_EmoteType",
+            EmoteType::InqQuestSolvesEmoteType => "InqQuestSolves_EmoteType",
+            EmoteType::EraseQuestEmoteType => "EraseQuest_EmoteType",
+            EmoteType::DecrementQuestEmoteType => "DecrementQuest_EmoteType",
+            EmoteType::IncrementQuestEmoteType => "IncrementQuest_EmoteType",
+            EmoteType::AddCharacterTitleEmoteType => "AddCharacterTitle_EmoteType",
+            EmoteType::InqBoolStatEmoteType => "InqBoolStat_EmoteType",
+            EmoteType::InqIntStatEmoteType => "InqIntStat_EmoteType",
+            EmoteType::InqFloatStatEmoteType => "InqFloatStat_EmoteType",
+            EmoteType::InqStringStatEmoteType => "InqStringStat_EmoteType",
+            EmoteType::InqAttributeStatEmoteType => "InqAttributeStat_EmoteType",
+            EmoteType::InqRawAttributeStatEmoteType => "InqRawAttributeStat_EmoteType",
+            EmoteType::InqSecondaryAttributeStatEmoteType => "InqSecondaryAttributeStat_EmoteType",
+            EmoteType::InqRawSecondaryAttributeStatEmoteType => "InqRawSecondaryAttributeStat_EmoteType",
+            EmoteType::InqSkillStatEmoteType => "InqSkillStat_EmoteType",
+            EmoteType::InqRawSkillStatEmoteType => "InqRawSkillStat_EmoteType",
+            EmoteType::InqSkillTrainedEmoteType => "InqSkillTrained_EmoteType",
+            EmoteType::InqSkillSpecializedEmoteType => "InqSkillSpecialized_EmoteType",
+            EmoteType::AwardTrainingCreditsEmoteType => "AwardTrainingCredits_EmoteType",
+            EmoteType::InflictVitaePenaltyEmoteType => "InflictVitaePenalty_EmoteType",
+            EmoteType::AwardLevelProportionalXPEmoteType => "AwardLevelProportionalXP_EmoteType",
+            EmoteType::AwardLevelProportionalSkillXPEmoteType => "AwardLevelProportionalSkillXP_EmoteType",
+            EmoteType::InqEventEmoteType => "InqEvent_EmoteType",
+            EmoteType::ForceMotionEmoteType => "ForceMotion_EmoteType",
+            EmoteType::SetIntStatEmoteType => "SetIntStat_EmoteType",
+            EmoteType::IncrementIntStatEmoteType => "IncrementIntStat_EmoteType",
+            EmoteType::DecrementIntStatEmoteType => "DecrementIntStat_EmoteType",
+            EmoteType::CreateTreasureEmoteType => "CreateTreasure_EmoteType",
+            EmoteType::ResetHomePositionEmoteType => "ResetHomePosition_EmoteType",
+            EmoteType::InqFellowQuestEmoteType => "InqFellowQuest_EmoteType",
+            EmoteType::InqFellowNumEmoteType => "InqFellowNum_EmoteType",
+            EmoteType::UpdateFellowQuestEmoteType => "UpdateFellowQuest_EmoteType",
+            EmoteType::StampFellowQuestEmoteType => "StampFellowQuest_EmoteType",
+            EmoteType::AwardNoShareXPEmoteType => "AwardNoShareXP_EmoteType",
+            EmoteType::SetSanctuaryPositionEmoteType => "SetSanctuaryPosition_EmoteType",
+            EmoteType::TellFellowEmoteType => "TellFellow_EmoteType",
+            EmoteType::FellowBroadcastEmoteType => "FellowBroadcast_EmoteType",
+            EmoteType::LockFellowEmoteType => "LockFellow_EmoteType",
+            EmoteType::GotoEmoteType => "Goto_EmoteType",
+            EmoteType::PopUpEmoteType => "PopUp_EmoteType",
+            EmoteType::SetBoolStatEmoteType => "SetBoolStat_EmoteType",
+            EmoteType::SetQuestCompletionsEmoteType => "SetQuestCompletions_EmoteType",
+            EmoteType::InqNumCharacterTitlesEmoteType => "InqNumCharacterTitles_EmoteType",
+            EmoteType::GenerateEmoteType => "Generate_EmoteType",
+            EmoteType::PetCastSpellOnOwnerEmoteType => "PetCastSpellOnOwner_EmoteType",
+            EmoteType::TakeItemsEmoteType => "TakeItems_EmoteType",
+            EmoteType::InqYesNoEmoteType => "InqYesNo_EmoteType",
+            EmoteType::InqOwnsItemsEmoteType => "InqOwnsItems_EmoteType",
+            EmoteType::DeleteSelfEmoteType => "DeleteSelf_EmoteType",
+            EmoteType::KillSelfEmoteType => "KillSelf_EmoteType",
+            EmoteType::UpdateMyQuestEmoteType => "UpdateMyQuest_EmoteType",
+            EmoteType::InqMyQuestEmoteType => "InqMyQuest_EmoteType",
+            EmoteType::StampMyQuestEmoteType => "StampMyQuest_EmoteType",
+            EmoteType::InqMyQuestSolvesEmoteType => "InqMyQuestSolves_EmoteType",
+            EmoteType::EraseMyQuestEmoteType => "EraseMyQuest_EmoteType",
+            EmoteType::DecrementMyQuestEmoteType => "DecrementMyQuest_EmoteType",
+            EmoteType::IncrementMyQuestEmoteType => "IncrementMyQuest_EmoteType",
+            EmoteType::SetMyQuestCompletionsEmoteType => "SetMyQuestCompletions_EmoteType",
+            EmoteType::MoveToPosEmoteType => "MoveToPos_EmoteType",
+            EmoteType::LocalSignalEmoteType => "LocalSignal_EmoteType",
+            EmoteType::InqPackSpaceEmoteType => "InqPackSpace_EmoteType",
+            EmoteType::RemoveVitaePenaltyEmoteType => "RemoveVitaePenalty_EmoteType",
+            EmoteType::SetEyeTextureEmoteType => "SetEyeTexture_EmoteType",
+            EmoteType::SetEyePaletteEmoteType => "SetEyePalette_EmoteType",
+            EmoteType::SetNoseTextureEmoteType => "SetNoseTexture_EmoteType",
+            EmoteType::SetNosePaletteEmoteType => "SetNosePalette_EmoteType",
+            EmoteType::SetMouthTextureEmoteType => "SetMouthTexture_EmoteType",
+            EmoteType::SetMouthPaletteEmoteType => "SetMouthPalette_EmoteType",
+            EmoteType::SetHeadObjectEmoteType => "SetHeadObject_EmoteType",
+            EmoteType::SetHeadPaletteEmoteType => "SetHeadPalette_EmoteType",
+            EmoteType::TeleportTargetEmoteType => "TeleportTarget_EmoteType",
+            EmoteType::TeleportSelfEmoteType => "TeleportSelf_EmoteType",
+            EmoteType::StartBarberEmoteType => "StartBarber_EmoteType",
+            EmoteType::InqQuestBitsOnEmoteType => "InqQuestBitsOn_EmoteType",
+            EmoteType::InqQuestBitsOffEmoteType => "InqQuestBitsOff_EmoteType",
+            EmoteType::InqMyQuestBitsOnEmoteType => "InqMyQuestBitsOn_EmoteType",
+            EmoteType::InqMyQuestBitsOffEmoteType => "InqMyQuestBitsOff_EmoteType",
+            EmoteType::SetQuestBitsOnEmoteType => "SetQuestBitsOn_EmoteType",
+            EmoteType::SetQuestBitsOffEmoteType => "SetQuestBitsOff_EmoteType",
+            EmoteType::SetMyQuestBitsOnEmoteType => "SetMyQuestBitsOn_EmoteType",
+            EmoteType::SetMyQuestBitsOffEmoteType => "SetMyQuestBitsOff_EmoteType",
+            EmoteType::UntrainSkillEmoteType => "UntrainSkill_EmoteType",
+            EmoteType::SetAltRacialSkillsEmoteType => "SetAltRacialSkills_EmoteType",
+            EmoteType::SpendLuminanceEmoteType => "SpendLuminance_EmoteType",
+            EmoteType::AwardLuminanceEmoteType => "AwardLuminance_EmoteType",
+            EmoteType::InqInt64StatEmoteType => "InqInt64Stat_EmoteType",
+            EmoteType::SetInt64StatEmoteType => "SetInt64Stat_EmoteType",
+            EmoteType::OpenMeEmoteType => "OpenMe_EmoteType",
+            EmoteType::CloseMeEmoteType => "CloseMe_EmoteType",
+            EmoteType::SetFloatStatEmoteType => "SetFloatStat_EmoteType",
+            EmoteType::AddContractEmoteType => "AddContract_EmoteType",
+            EmoteType::RemoveContractEmoteType => "RemoveContract_EmoteType",
+            EmoteType::InqContractsFullEmoteType => "InqContractsFull_EmoteType",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The EmoteCategory identifies the category of an emote.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
@@ -2154,6 +3453,53 @@ impl crate::readers::ACDataType for EmoteCategory {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EmoteCategory::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for EmoteCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            EmoteCategory::InvalidEmoteCategory => "Invalid_EmoteCategory",
+            EmoteCategory::RefuseEmoteCategory => "Refuse_EmoteCategory",
+            EmoteCategory::VendorEmoteCategory => "Vendor_EmoteCategory",
+            EmoteCategory::DeathEmoteCategory => "Death_EmoteCategory",
+            EmoteCategory::PortalEmoteCategory => "Portal_EmoteCategory",
+            EmoteCategory::HeartBeatEmoteCategory => "HeartBeat_EmoteCategory",
+            EmoteCategory::GiveEmoteCategory => "Give_EmoteCategory",
+            EmoteCategory::UseEmoteCategory => "Use_EmoteCategory",
+            EmoteCategory::ActivationEmoteCategory => "Activation_EmoteCategory",
+            EmoteCategory::GenerationEmoteCategory => "Generation_EmoteCategory",
+            EmoteCategory::PickUpEmoteCategory => "PickUp_EmoteCategory",
+            EmoteCategory::DropEmoteCategory => "Drop_EmoteCategory",
+            EmoteCategory::QuestSuccessEmoteCategory => "QuestSuccess_EmoteCategory",
+            EmoteCategory::QuestFailureEmoteCategory => "QuestFailure_EmoteCategory",
+            EmoteCategory::TauntEmoteCategory => "Taunt_EmoteCategory",
+            EmoteCategory::WoundedTauntEmoteCategory => "WoundedTaunt_EmoteCategory",
+            EmoteCategory::KillTauntEmoteCategory => "KillTaunt_EmoteCategory",
+            EmoteCategory::NewEnemyEmoteCategory => "NewEnemy_EmoteCategory",
+            EmoteCategory::ScreamEmoteCategory => "Scream_EmoteCategory",
+            EmoteCategory::HomesickEmoteCategory => "Homesick_EmoteCategory",
+            EmoteCategory::ReceiveCriticalEmoteCategory => "ReceiveCritical_EmoteCategory",
+            EmoteCategory::ResistSpellEmoteCategory => "ResistSpell_EmoteCategory",
+            EmoteCategory::TestSuccessEmoteCategory => "TestSuccess_EmoteCategory",
+            EmoteCategory::TestFailureEmoteCategory => "TestFailure_EmoteCategory",
+            EmoteCategory::HearChatEmoteCategory => "HearChat_EmoteCategory",
+            EmoteCategory::WieldEmoteCategory => "Wield_EmoteCategory",
+            EmoteCategory::UnWieldEmoteCategory => "UnWield_EmoteCategory",
+            EmoteCategory::EventSuccessEmoteCategory => "EventSuccess_EmoteCategory",
+            EmoteCategory::EventFailureEmoteCategory => "EventFailure_EmoteCategory",
+            EmoteCategory::TestNoQualityEmoteCategory => "TestNoQuality_EmoteCategory",
+            EmoteCategory::QuestNoFellowEmoteCategory => "QuestNoFellow_EmoteCategory",
+            EmoteCategory::TestNoFellowEmoteCategory => "TestNoFellow_EmoteCategory",
+            EmoteCategory::GotoSetEmoteCategory => "GotoSet_EmoteCategory",
+            EmoteCategory::NumFellowsSuccessEmoteCategory => "NumFellowsSuccess_EmoteCategory",
+            EmoteCategory::NumFellowsFailureEmoteCategory => "NumFellowsFailure_EmoteCategory",
+            EmoteCategory::NumCharacterTitlesSuccessEmoteCategory => "NumCharacterTitlesSuccess_EmoteCategory",
+            EmoteCategory::NumCharacterTitlesFailureEmoteCategory => "NumCharacterTitlesFailure_EmoteCategory",
+            EmoteCategory::ReceiveLocalSignalEmoteCategory => "ReceiveLocalSignal_EmoteCategory",
+            EmoteCategory::ReceiveTalkDirectEmoteCategory => "ReceiveTalkDirect_EmoteCategory",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -2344,6 +3690,17 @@ impl crate::readers::ACDataType for AllegianceOfficerLevel {
     }
 }
 
+impl std::fmt::Display for AllegianceOfficerLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AllegianceOfficerLevel::Speaker => "Speaker",
+            AllegianceOfficerLevel::Seneschal => "Seneschal",
+            AllegianceOfficerLevel::Castellan => "Castellan",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Actions related to /allegiance lock
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -2363,6 +3720,20 @@ impl crate::readers::ACDataType for AllegianceLockAction {
     }
 }
 
+impl std::fmt::Display for AllegianceLockAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AllegianceLockAction::LockedOff => "LockedOff",
+            AllegianceLockAction::LockedOn => "LockedOn",
+            AllegianceLockAction::ToggleLocked => "ToggleLocked",
+            AllegianceLockAction::CheckLocked => "CheckLocked",
+            AllegianceLockAction::DisplayBypass => "DisplayBypass",
+            AllegianceLockAction::ClearBypass => "ClearBypass",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Actions related to /allegiance house
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -2378,6 +3749,19 @@ impl crate::readers::ACDataType for AllegianceHouseAction {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AllegianceHouseAction::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for AllegianceHouseAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AllegianceHouseAction::Help => "Help",
+            AllegianceHouseAction::GuestOpen => "GuestOpen",
+            AllegianceHouseAction::GuestClosed => "GuestClosed",
+            AllegianceHouseAction::StorageOpen => "StorageOpen",
+            AllegianceHouseAction::StorageClosed => "StorageClosed",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -2401,6 +3785,20 @@ impl crate::readers::ACDataType for AttributeId {
     }
 }
 
+impl std::fmt::Display for AttributeId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AttributeId::Strength => "Strength",
+            AttributeId::Endurance => "Endurance",
+            AttributeId::Quickness => "Quickness",
+            AttributeId::Coordination => "Coordination",
+            AttributeId::Focus => "Focus",
+            AttributeId::Self_ => "Self",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The VitalId identifies a specific Character vital (secondary attribute).
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -2417,6 +3815,17 @@ impl crate::readers::ACDataType for VitalId {
     }
 }
 
+impl std::fmt::Display for VitalId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            VitalId::MaximumHealth => "MaximumHealth",
+            VitalId::MaximumStamina => "MaximumStamina",
+            VitalId::MaximumMana => "MaximumMana",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The CurVitalId identifies a specific Character vital (secondary attribute).
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -2430,6 +3839,17 @@ impl crate::readers::ACDataType for CurVitalId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CurVitalId::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for CurVitalId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            CurVitalId::CurrentHealth => "CurrentHealth",
+            CurVitalId::CurrentStamina => "CurrentStamina",
+            CurVitalId::CurrentMana => "CurrentMana",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -2701,6 +4121,219 @@ impl crate::readers::ACDataType for Sound {
     }
 }
 
+impl std::fmt::Display for Sound {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Sound::Invalid => "Invalid",
+            Sound::Speak1 => "Speak1",
+            Sound::Random => "Random",
+            Sound::Attack1 => "Attack1",
+            Sound::Attack2 => "Attack2",
+            Sound::Attack3 => "Attack3",
+            Sound::SpecialAttack1 => "SpecialAttack1",
+            Sound::SpecialAttack2 => "SpecialAttack2",
+            Sound::SpecialAttack3 => "SpecialAttack3",
+            Sound::Damage1 => "Damage1",
+            Sound::Damage2 => "Damage2",
+            Sound::Damage3 => "Damage3",
+            Sound::Wound1 => "Wound1",
+            Sound::Wound2 => "Wound2",
+            Sound::Wound3 => "Wound3",
+            Sound::Death1 => "Death1",
+            Sound::Death2 => "Death2",
+            Sound::Death3 => "Death3",
+            Sound::Grunt1 => "Grunt1",
+            Sound::Grunt2 => "Grunt2",
+            Sound::Grunt3 => "Grunt3",
+            Sound::Oh1 => "Oh1",
+            Sound::Oh2 => "Oh2",
+            Sound::Oh3 => "Oh3",
+            Sound::Heave1 => "Heave1",
+            Sound::Heave2 => "Heave2",
+            Sound::Heave3 => "Heave3",
+            Sound::Knockdown1 => "Knockdown1",
+            Sound::Knockdown2 => "Knockdown2",
+            Sound::Knockdown3 => "Knockdown3",
+            Sound::Swoosh1 => "Swoosh1",
+            Sound::Swoosh2 => "Swoosh2",
+            Sound::Swoosh3 => "Swoosh3",
+            Sound::Thump1 => "Thump1",
+            Sound::Smash1 => "Smash1",
+            Sound::Scratch1 => "Scratch1",
+            Sound::Spear => "Spear",
+            Sound::Sling => "Sling",
+            Sound::Dagger => "Dagger",
+            Sound::ArrowWhiz1 => "ArrowWhiz1",
+            Sound::ArrowWhiz2 => "ArrowWhiz2",
+            Sound::CrossbowPull => "CrossbowPull",
+            Sound::CrossbowRelease => "CrossbowRelease",
+            Sound::BowPull => "BowPull",
+            Sound::BowRelease => "BowRelease",
+            Sound::ThrownWeaponRelease1 => "ThrownWeaponRelease1",
+            Sound::ArrowLand => "ArrowLand",
+            Sound::Collision => "Collision",
+            Sound::HitFlesh1 => "HitFlesh1",
+            Sound::HitLeather1 => "HitLeather1",
+            Sound::HitChain1 => "HitChain1",
+            Sound::HitPlate1 => "HitPlate1",
+            Sound::HitMissile1 => "HitMissile1",
+            Sound::HitMissile2 => "HitMissile2",
+            Sound::HitMissile3 => "HitMissile3",
+            Sound::Footstep1 => "Footstep1",
+            Sound::Footstep2 => "Footstep2",
+            Sound::Walk1 => "Walk1",
+            Sound::Dance1 => "Dance1",
+            Sound::Dance2 => "Dance2",
+            Sound::Dance3 => "Dance3",
+            Sound::Hidden1 => "Hidden1",
+            Sound::Hidden2 => "Hidden2",
+            Sound::Hidden3 => "Hidden3",
+            Sound::Eat1 => "Eat1",
+            Sound::Drink1 => "Drink1",
+            Sound::Open => "Open",
+            Sound::Close => "Close",
+            Sound::OpenSlam => "OpenSlam",
+            Sound::CloseSlam => "CloseSlam",
+            Sound::Ambient1 => "Ambient1",
+            Sound::Ambient2 => "Ambient2",
+            Sound::Ambient3 => "Ambient3",
+            Sound::Ambient4 => "Ambient4",
+            Sound::Ambient5 => "Ambient5",
+            Sound::Ambient6 => "Ambient6",
+            Sound::Ambient7 => "Ambient7",
+            Sound::Ambient8 => "Ambient8",
+            Sound::Waterfall => "Waterfall",
+            Sound::LogOut => "LogOut",
+            Sound::LogIn => "LogIn",
+            Sound::LifestoneOn => "LifestoneOn",
+            Sound::AttribUp => "AttribUp",
+            Sound::AttribDown => "AttribDown",
+            Sound::SkillUp => "SkillUp",
+            Sound::SkillDown => "SkillDown",
+            Sound::HealthUp => "HealthUp",
+            Sound::HealthDown => "HealthDown",
+            Sound::ShieldUp => "ShieldUp",
+            Sound::ShieldDown => "ShieldDown",
+            Sound::EnchantUp => "EnchantUp",
+            Sound::EnchantDown => "EnchantDown",
+            Sound::VisionUp => "VisionUp",
+            Sound::VisionDown => "VisionDown",
+            Sound::Fizzle => "Fizzle",
+            Sound::Launch => "Launch",
+            Sound::Explode => "Explode",
+            Sound::TransUp => "TransUp",
+            Sound::TransDown => "TransDown",
+            Sound::BreatheFlaem => "BreatheFlaem",
+            Sound::BreatheAcid => "BreatheAcid",
+            Sound::BreatheFrost => "BreatheFrost",
+            Sound::BreatheLightning => "BreatheLightning",
+            Sound::Create => "Create",
+            Sound::Destroy => "Destroy",
+            Sound::Lockpicking => "Lockpicking",
+            Sound::UIEnterPortal => "UI_EnterPortal",
+            Sound::UIExitPortal => "UI_ExitPortal",
+            Sound::UIGeneralQuery => "UI_GeneralQuery",
+            Sound::UIGeneralError => "UI_GeneralError",
+            Sound::UITransientMessage => "UI_TransientMessage",
+            Sound::UIIconPickUp => "UI_IconPickUp",
+            Sound::UIIconSuccessfulDrop => "UI_IconSuccessfulDrop",
+            Sound::UIIconInvalidDrop => "UI_IconInvalid_Drop",
+            Sound::UIButtonPress => "UI_ButtonPress",
+            Sound::UIGrabSlider => "UI_GrabSlider",
+            Sound::UIReleaseSlider => "UI_ReleaseSlider",
+            Sound::UINewTargetSelected => "UI_NewTargetSelected",
+            Sound::UIRoar => "UI_Roar",
+            Sound::UIBell => "UI_Bell",
+            Sound::UIChant1 => "UI_Chant1",
+            Sound::UIChant2 => "UI_Chant2",
+            Sound::UIDarkWhispers1 => "UI_DarkWhispers1",
+            Sound::UIDarkWhispers2 => "UI_DarkWhispers2",
+            Sound::UIDarkLaugh => "UI_DarkLaugh",
+            Sound::UIDarkWind => "UI_DarkWind",
+            Sound::UIDarkSpeech => "UI_DarkSpeech",
+            Sound::UIDrums => "UI_Drums",
+            Sound::UIGhostSpeak => "UI_GhostSpeak",
+            Sound::UIBreathing => "UI_Breathing",
+            Sound::UIHowl => "UI_Howl",
+            Sound::UILostSouls => "UI_LostSouls",
+            Sound::UISqueal => "UI_Squeal",
+            Sound::UIThunder1 => "UI_Thunder1",
+            Sound::UIThunder2 => "UI_Thunder2",
+            Sound::UIThunder3 => "UI_Thunder3",
+            Sound::UIThunder4 => "UI_Thunder4",
+            Sound::UIThunder5 => "UI_Thunder5",
+            Sound::UIThunder6 => "UI_Thunder6",
+            Sound::RaiseTrait => "RaiseTrait",
+            Sound::WieldObject => "WieldObject",
+            Sound::UnwieldObject => "UnwieldObject",
+            Sound::ReceiveItem => "ReceiveItem",
+            Sound::PickUpItem => "PickUpItem",
+            Sound::DropItem => "DropItem",
+            Sound::ResistSpell => "ResistSpell",
+            Sound::PicklockFail => "PicklockFail",
+            Sound::LockSuccess => "LockSuccess",
+            Sound::OpenFailDueToLock => "OpenFailDueToLock",
+            Sound::TriggerActivated => "TriggerActivated",
+            Sound::SpellExpire => "SpellExpire",
+            Sound::ItemManaDepleted => "ItemManaDepleted",
+            Sound::TriggerActivated1 => "TriggerActivated1",
+            Sound::TriggerActivated2 => "TriggerActivated2",
+            Sound::TriggerActivated3 => "TriggerActivated3",
+            Sound::TriggerActivated4 => "TriggerActivated4",
+            Sound::TriggerActivated5 => "TriggerActivated5",
+            Sound::TriggerActivated6 => "TriggerActivated6",
+            Sound::TriggerActivated7 => "TriggerActivated7",
+            Sound::TriggerActivated8 => "TriggerActivated8",
+            Sound::TriggerActivated9 => "TriggerActivated9",
+            Sound::TriggerActivated10 => "TriggerActivated10",
+            Sound::TriggerActivated11 => "TriggerActivated11",
+            Sound::TriggerActivated12 => "TriggerActivated12",
+            Sound::TriggerActivated13 => "TriggerActivated13",
+            Sound::TriggerActivated14 => "TriggerActivated14",
+            Sound::TriggerActivated15 => "TriggerActivated15",
+            Sound::TriggerActivated16 => "TriggerActivated16",
+            Sound::TriggerActivated17 => "TriggerActivated17",
+            Sound::TriggerActivated18 => "TriggerActivated18",
+            Sound::TriggerActivated19 => "TriggerActivated19",
+            Sound::TriggerActivated20 => "TriggerActivated20",
+            Sound::TriggerActivated21 => "TriggerActivated21",
+            Sound::TriggerActivated22 => "TriggerActivated22",
+            Sound::TriggerActivated23 => "TriggerActivated23",
+            Sound::TriggerActivated24 => "TriggerActivated24",
+            Sound::TriggerActivated25 => "TriggerActivated25",
+            Sound::TriggerActivated26 => "TriggerActivated26",
+            Sound::TriggerActivated27 => "TriggerActivated27",
+            Sound::TriggerActivated28 => "TriggerActivated28",
+            Sound::TriggerActivated29 => "TriggerActivated29",
+            Sound::TriggerActivated30 => "TriggerActivated30",
+            Sound::TriggerActivated31 => "TriggerActivated31",
+            Sound::TriggerActivated32 => "TriggerActivated32",
+            Sound::TriggerActivated33 => "TriggerActivated33",
+            Sound::TriggerActivated34 => "TriggerActivated34",
+            Sound::TriggerActivated35 => "TriggerActivated35",
+            Sound::TriggerActivated36 => "TriggerActivated36",
+            Sound::TriggerActivated37 => "TriggerActivated37",
+            Sound::TriggerActivated38 => "TriggerActivated38",
+            Sound::TriggerActivated39 => "TriggerActivated39",
+            Sound::TriggerActivated40 => "TriggerActivated40",
+            Sound::TriggerActivated41 => "TriggerActivated41",
+            Sound::TriggerActivated42 => "TriggerActivated42",
+            Sound::TriggerActivated43 => "TriggerActivated43",
+            Sound::TriggerActivated44 => "TriggerActivated44",
+            Sound::TriggerActivated45 => "TriggerActivated45",
+            Sound::TriggerActivated46 => "TriggerActivated46",
+            Sound::TriggerActivated47 => "TriggerActivated47",
+            Sound::TriggerActivated48 => "TriggerActivated48",
+            Sound::TriggerActivated49 => "TriggerActivated49",
+            Sound::TriggerActivated50 => "TriggerActivated50",
+            Sound::HealthDownVoid => "HealthDownVoid",
+            Sound::RegenDownVoid => "RegenDownVoid",
+            Sound::SkillDownVoid => "SkillDownVoid",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The ChatFragmentType categorizes chat window messages to control color and filtering.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -2737,6 +4370,40 @@ impl crate::readers::ACDataType for ChatFragmentType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ChatFragmentType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for ChatFragmentType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ChatFragmentType::Default => "Default",
+            ChatFragmentType::Speech => "Speech",
+            ChatFragmentType::Tell => "Tell",
+            ChatFragmentType::OutgoingTell => "OutgoingTell",
+            ChatFragmentType::System => "System",
+            ChatFragmentType::Combat => "Combat",
+            ChatFragmentType::Magic => "Magic",
+            ChatFragmentType::Channels => "Channels",
+            ChatFragmentType::OutgoingChannel => "OutgoingChannel",
+            ChatFragmentType::Social => "Social",
+            ChatFragmentType::OutgoingSocial => "OutgoingSocial",
+            ChatFragmentType::Emote => "Emote",
+            ChatFragmentType::Advancement => "Advancement",
+            ChatFragmentType::Abuse => "Abuse",
+            ChatFragmentType::Help => "Help",
+            ChatFragmentType::Appraisal => "Appraisal",
+            ChatFragmentType::Spellcasting => "Spellcasting",
+            ChatFragmentType::Allegiance => "Allegiance",
+            ChatFragmentType::Fellowship => "Fellowship",
+            ChatFragmentType::WorldBroadcast => "WorldBroadcast",
+            ChatFragmentType::CombatEnemy => "CombatEnemy",
+            ChatFragmentType::CombatSelf => "CombatSelf",
+            ChatFragmentType::Recall => "Recall",
+            ChatFragmentType::Craft => "Craft",
+            ChatFragmentType::Salvaging => "Salvaging",
+            ChatFragmentType::AdminTell => "AdminTell",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -2965,6 +4632,86 @@ impl crate::readers::ACDataType for MaterialType {
     }
 }
 
+impl std::fmt::Display for MaterialType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            MaterialType::Ceramic => "Ceramic",
+            MaterialType::Porcelain => "Porcelain",
+            MaterialType::Linen => "Linen",
+            MaterialType::Satin => "Satin",
+            MaterialType::Silk => "Silk",
+            MaterialType::Velvet => "Velvet",
+            MaterialType::Wool => "Wool",
+            MaterialType::Agate => "Agate",
+            MaterialType::Amber => "Amber",
+            MaterialType::Amethyst => "Amethyst",
+            MaterialType::Aquamarine => "Aquamarine",
+            MaterialType::Azurite => "Azurite",
+            MaterialType::BlackGarnet => "BlackGarnet",
+            MaterialType::BlackOpal => "BlackOpal",
+            MaterialType::Bloodstone => "Bloodstone",
+            MaterialType::Carnelian => "Carnelian",
+            MaterialType::Citrine => "Citrine",
+            MaterialType::Diamond => "Diamond",
+            MaterialType::Emerald => "Emerald",
+            MaterialType::FireOpal => "FireOpal",
+            MaterialType::GreenGarnet => "GreenGarnet",
+            MaterialType::GreenJade => "GreenJade",
+            MaterialType::Hematite => "Hematite",
+            MaterialType::ImperialTopaz => "ImperialTopaz",
+            MaterialType::Jet => "Jet",
+            MaterialType::LapisLazuli => "LapisLazuli",
+            MaterialType::LavenderJade => "LavenderJade",
+            MaterialType::Malachite => "Malachite",
+            MaterialType::Moonstone => "Moonstone",
+            MaterialType::Onyx => "Onyx",
+            MaterialType::Opal => "Opal",
+            MaterialType::Peridot => "Peridot",
+            MaterialType::RedGarnet => "RedGarnet",
+            MaterialType::RedJade => "RedJade",
+            MaterialType::RoseQuartz => "RoseQuartz",
+            MaterialType::Ruby => "Ruby",
+            MaterialType::Sapphire => "Sapphire",
+            MaterialType::SmokeyQuartz => "SmokeyQuartz",
+            MaterialType::Sunstone => "Sunstone",
+            MaterialType::TigerEye => "TigerEye",
+            MaterialType::Tourmaline => "Tourmaline",
+            MaterialType::Turquoise => "Turquoise",
+            MaterialType::WhiteJade => "WhiteJade",
+            MaterialType::WhiteQuartz => "WhiteQuartz",
+            MaterialType::WhiteSapphire => "WhiteSapphire",
+            MaterialType::YellowGarnet => "YellowGarnet",
+            MaterialType::YellowTopaz => "YellowTopaz",
+            MaterialType::Zircon => "Zircon",
+            MaterialType::Ivory => "Ivory",
+            MaterialType::Leather => "Leather",
+            MaterialType::ArmoredilloHide => "ArmoredilloHide",
+            MaterialType::GromnieHide => "GromnieHide",
+            MaterialType::ReedSharkHide => "ReedSharkHide",
+            MaterialType::Brass => "Brass",
+            MaterialType::Bronze => "Bronze",
+            MaterialType::Copper => "Copper",
+            MaterialType::Gold => "Gold",
+            MaterialType::Iron => "Iron",
+            MaterialType::Pyreal => "Pyreal",
+            MaterialType::Silver => "Silver",
+            MaterialType::Steel => "Steel",
+            MaterialType::Alabaster => "Alabaster",
+            MaterialType::Granite => "Granite",
+            MaterialType::Marble => "Marble",
+            MaterialType::Obsidian => "Obsidian",
+            MaterialType::Sandstone => "Sandstone",
+            MaterialType::Serpentine => "Serpentine",
+            MaterialType::Ebony => "Ebony",
+            MaterialType::Mahogany => "Mahogany",
+            MaterialType::Oak => "Oak",
+            MaterialType::Pine => "Pine",
+            MaterialType::Teak => "Teak",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The ConfirmationType identifies the specific confirmation panel to be displayed.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -2982,6 +4729,21 @@ impl crate::readers::ACDataType for ConfirmationType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ConfirmationType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for ConfirmationType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ConfirmationType::SwearAllegiance => "SwearAllegiance",
+            ConfirmationType::AlterSkill => "AlterSkill",
+            ConfirmationType::AlterAttribute => "AlterAttribute",
+            ConfirmationType::Fellowship => "Fellowship",
+            ConfirmationType::Craft => "Craft",
+            ConfirmationType::Augmentation => "Augmentation",
+            ConfirmationType::YesNo => "YesNo",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3026,6 +4788,42 @@ impl crate::readers::ACDataType for EnvrionChangeType {
     }
 }
 
+impl std::fmt::Display for EnvrionChangeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            EnvrionChangeType::Clear => "Clear",
+            EnvrionChangeType::RedFog => "RedFog",
+            EnvrionChangeType::BlueFog => "BlueFog",
+            EnvrionChangeType::WhiteFog => "WhiteFog",
+            EnvrionChangeType::GreenFog => "GreenFog",
+            EnvrionChangeType::BlackFog => "BlackFog",
+            EnvrionChangeType::BlackFog2 => "BlackFog2",
+            EnvrionChangeType::RoarSound => "RoarSound",
+            EnvrionChangeType::BellSound => "BellSound",
+            EnvrionChangeType::Chant1Sound => "Chant1Sound",
+            EnvrionChangeType::Chant2Sound => "Chant2Sound",
+            EnvrionChangeType::DarkWhispers1Sound => "DarkWhispers1Sound",
+            EnvrionChangeType::DarkWhispers2Sound => "DarkWhispers2Sound",
+            EnvrionChangeType::DarkLaughSound => "DarkLaughSound",
+            EnvrionChangeType::DarkWindSound => "DarkWindSound",
+            EnvrionChangeType::DarkSpeechSound => "DarkSpeechSound",
+            EnvrionChangeType::DrumsSound => "DrumsSound",
+            EnvrionChangeType::GhostSpeakSound => "GhostSpeakSound",
+            EnvrionChangeType::BreathingSound => "BreathingSound",
+            EnvrionChangeType::HowlSound => "HowlSound",
+            EnvrionChangeType::LostSoulsSound => "LostSoulsSound",
+            EnvrionChangeType::SquealSound => "SquealSound",
+            EnvrionChangeType::Thunder1Sound => "Thunder1Sound",
+            EnvrionChangeType::Thunder2Sound => "Thunder2Sound",
+            EnvrionChangeType::Thunder3Sound => "Thunder3Sound",
+            EnvrionChangeType::Thunder4Sound => "Thunder4Sound",
+            EnvrionChangeType::Thunder5Sound => "Thunder5Sound",
+            EnvrionChangeType::Thunder6Sound => "Thunder6Sound",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The movement type defines the fields for the rest of the message
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3044,6 +4842,19 @@ impl crate::readers::ACDataType for MovementType {
     }
 }
 
+impl std::fmt::Display for MovementType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            MovementType::InterpretedMotionState => "InterpretedMotionState",
+            MovementType::MoveToObject => "MoveToObject",
+            MovementType::MoveToPosition => "MoveToPosition",
+            MovementType::TurnToObject => "TurnToObject",
+            MovementType::TurnToPosition => "TurnToPosition",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Additional movement options
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3057,6 +4868,17 @@ impl crate::readers::ACDataType for MovementOption {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(MovementOption::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for MovementOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            MovementOption::None => "None",
+            MovementOption::StickToObject => "StickToObject",
+            MovementOption::StandingLongJump => "StandingLongJump",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3482,6 +5304,422 @@ impl crate::readers::ACDataType for Command {
     }
 }
 
+impl std::fmt::Display for Command {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Command::Invalid => "Invalid",
+            Command::HoldRun => "HoldRun",
+            Command::HoldSidestep => "HoldSidestep",
+            Command::Ready => "Ready",
+            Command::Stop => "Stop",
+            Command::WalkForward => "WalkForward",
+            Command::WalkBackwards => "WalkBackwards",
+            Command::RunForward => "RunForward",
+            Command::Fallen => "Fallen",
+            Command::Interpolating => "Interpolating",
+            Command::Hover => "Hover",
+            Command::On => "On",
+            Command::Off => "Off",
+            Command::TurnRight => "TurnRight",
+            Command::TurnLeft => "TurnLeft",
+            Command::SideStepRight => "SideStepRight",
+            Command::SideStepLeft => "SideStepLeft",
+            Command::Dead => "Dead",
+            Command::Crouch => "Crouch",
+            Command::Sitting => "Sitting",
+            Command::Sleeping => "Sleeping",
+            Command::Falling => "Falling",
+            Command::Reload => "Reload",
+            Command::Unload => "Unload",
+            Command::Pickup => "Pickup",
+            Command::StoreInBackpack => "StoreInBackpack",
+            Command::Eat => "Eat",
+            Command::Drink => "Drink",
+            Command::Reading => "Reading",
+            Command::JumpCharging => "JumpCharging",
+            Command::AimLevel => "AimLevel",
+            Command::AimHigh15 => "AimHigh15",
+            Command::AimHigh30 => "AimHigh30",
+            Command::AimHigh45 => "AimHigh45",
+            Command::AimHigh60 => "AimHigh60",
+            Command::AimHigh75 => "AimHigh75",
+            Command::AimHigh90 => "AimHigh90",
+            Command::AimLow15 => "AimLow15",
+            Command::AimLow30 => "AimLow30",
+            Command::AimLow45 => "AimLow45",
+            Command::AimLow60 => "AimLow60",
+            Command::AimLow75 => "AimLow75",
+            Command::AimLow90 => "AimLow90",
+            Command::MagicBlast => "MagicBlast",
+            Command::MagicSelfHead => "MagicSelfHead",
+            Command::MagicSelfHeart => "MagicSelfHeart",
+            Command::MagicBonus => "MagicBonus",
+            Command::MagicClap => "MagicClap",
+            Command::MagicHarm => "MagicHarm",
+            Command::MagicHeal => "MagicHeal",
+            Command::MagicThrowMissile => "MagicThrowMissile",
+            Command::MagicRecoilMissile => "MagicRecoilMissile",
+            Command::MagicPenalty => "MagicPenalty",
+            Command::MagicTransfer => "MagicTransfer",
+            Command::MagicVision => "MagicVision",
+            Command::MagicEnchantItem => "MagicEnchantItem",
+            Command::MagicPortal => "MagicPortal",
+            Command::MagicPray => "MagicPray",
+            Command::StopTurning => "StopTurning",
+            Command::Jump => "Jump",
+            Command::HandCombat => "HandCombat",
+            Command::NonCombat => "NonCombat",
+            Command::SwordCombat => "SwordCombat",
+            Command::BowCombat => "BowCombat",
+            Command::SwordShieldCombat => "SwordShieldCombat",
+            Command::CrossbowCombat => "CrossbowCombat",
+            Command::UnusedCombat => "UnusedCombat",
+            Command::SlingCombat => "SlingCombat",
+            Command::TwoHandedSwordCombat => "TwoHandedSwordCombat",
+            Command::TwoHandedStaffCombat => "TwoHandedStaffCombat",
+            Command::DualWieldCombat => "DualWieldCombat",
+            Command::ThrownWeaponCombat => "ThrownWeaponCombat",
+            Command::Graze => "Graze",
+            Command::Magi => "Magi",
+            Command::Hop => "Hop",
+            Command::Jumpup => "Jumpup",
+            Command::Cheer => "Cheer",
+            Command::ChestBeat => "ChestBeat",
+            Command::TippedLeft => "TippedLeft",
+            Command::TippedRight => "TippedRight",
+            Command::FallDown => "FallDown",
+            Command::Twitch1 => "Twitch1",
+            Command::Twitch2 => "Twitch2",
+            Command::Twitch3 => "Twitch3",
+            Command::Twitch4 => "Twitch4",
+            Command::StaggerBackward => "StaggerBackward",
+            Command::StaggerForward => "StaggerForward",
+            Command::Sanctuary => "Sanctuary",
+            Command::ThrustMed => "ThrustMed",
+            Command::ThrustLow => "ThrustLow",
+            Command::ThrustHigh => "ThrustHigh",
+            Command::SlashHigh => "SlashHigh",
+            Command::SlashMed => "SlashMed",
+            Command::SlashLow => "SlashLow",
+            Command::BackhandHigh => "BackhandHigh",
+            Command::BackhandMed => "BackhandMed",
+            Command::BackhandLow => "BackhandLow",
+            Command::Shoot => "Shoot",
+            Command::AttackHigh1 => "AttackHigh1",
+            Command::AttackMed1 => "AttackMed1",
+            Command::AttackLow1 => "AttackLow1",
+            Command::AttackHigh2 => "AttackHigh2",
+            Command::AttackMed2 => "AttackMed2",
+            Command::AttackLow2 => "AttackLow2",
+            Command::AttackHigh3 => "AttackHigh3",
+            Command::AttackMed3 => "AttackMed3",
+            Command::AttackLow3 => "AttackLow3",
+            Command::HeadThrow => "HeadThrow",
+            Command::FistSlam => "FistSlam",
+            Command::BreatheFlame => "BreatheFlame_",
+            Command::SpinAttack => "SpinAttack",
+            Command::MagicPowerUp01 => "MagicPowerUp01",
+            Command::MagicPowerUp02 => "MagicPowerUp02",
+            Command::MagicPowerUp03 => "MagicPowerUp03",
+            Command::MagicPowerUp04 => "MagicPowerUp04",
+            Command::MagicPowerUp05 => "MagicPowerUp05",
+            Command::MagicPowerUp06 => "MagicPowerUp06",
+            Command::MagicPowerUp07 => "MagicPowerUp07",
+            Command::MagicPowerUp08 => "MagicPowerUp08",
+            Command::MagicPowerUp09 => "MagicPowerUp09",
+            Command::MagicPowerUp10 => "MagicPowerUp10",
+            Command::ShakeFist => "ShakeFist",
+            Command::Beckon => "Beckon",
+            Command::BeSeeingYou => "BeSeeingYou",
+            Command::BlowKiss => "BlowKiss",
+            Command::BowDeep => "BowDeep",
+            Command::ClapHands => "ClapHands",
+            Command::Cry => "Cry",
+            Command::Laugh => "Laugh",
+            Command::MimeEat => "MimeEat",
+            Command::MimeDrink => "MimeDrink",
+            Command::Nod => "Nod",
+            Command::Point => "Point",
+            Command::ShakeHead => "ShakeHead",
+            Command::Shrug => "Shrug",
+            Command::Wave => "Wave",
+            Command::Akimbo => "Akimbo",
+            Command::HeartyLaugh => "HeartyLaugh",
+            Command::Salute => "Salute",
+            Command::ScratchHead => "ScratchHead",
+            Command::SmackHead => "SmackHead",
+            Command::TapFoot => "TapFoot",
+            Command::WaveHigh => "WaveHigh",
+            Command::WaveLow => "WaveLow",
+            Command::YawnStretch => "YawnStretch",
+            Command::Cringe => "Cringe",
+            Command::Kneel => "Kneel",
+            Command::Plead => "Plead",
+            Command::Shiver => "Shiver",
+            Command::Shoo => "Shoo",
+            Command::Slouch => "Slouch",
+            Command::Spit => "Spit",
+            Command::Surrender => "Surrender",
+            Command::Woah => "Woah",
+            Command::Winded => "Winded",
+            Command::YMCA => "YMCA",
+            Command::EnterGame => "EnterGame",
+            Command::ExitGame => "ExitGame",
+            Command::OnCreation => "OnCreation",
+            Command::OnDestruction => "OnDestruction",
+            Command::EnterPortal => "EnterPortal",
+            Command::ExitPortal => "ExitPortal",
+            Command::Cancel => "Cancel",
+            Command::UseSelected => "UseSelected",
+            Command::AutosortSelected => "AutosortSelected",
+            Command::DropSelected => "DropSelected",
+            Command::GiveSelected => "GiveSelected",
+            Command::SplitSelected => "SplitSelected",
+            Command::ExamineSelected => "ExamineSelected",
+            Command::CreateShortcutToSelected => "CreateShortcutToSelected",
+            Command::PreviousCompassItem => "PreviousCompassItem",
+            Command::NextCompassItem => "NextCompassItem",
+            Command::ClosestCompassItem => "ClosestCompassItem",
+            Command::PreviousSelection => "PreviousSelection",
+            Command::LastAttacker => "LastAttacker",
+            Command::PreviousFellow => "PreviousFellow",
+            Command::NextFellow => "NextFellow",
+            Command::ToggleCombat => "ToggleCombat",
+            Command::HighAttack => "HighAttack",
+            Command::MediumAttack => "MediumAttack",
+            Command::LowAttack => "LowAttack",
+            Command::EnterChat => "EnterChat",
+            Command::ToggleChat => "ToggleChat",
+            Command::SavePosition => "SavePosition",
+            Command::OptionsPanel => "OptionsPanel",
+            Command::ResetView => "ResetView",
+            Command::CameraLeftRotate => "CameraLeftRotate",
+            Command::CameraRightRotate => "CameraRightRotate",
+            Command::CameraRaise => "CameraRaise",
+            Command::CameraLower => "CameraLower",
+            Command::CameraCloser => "CameraCloser",
+            Command::CameraFarther => "CameraFarther",
+            Command::FloorView => "FloorView",
+            Command::MouseLook => "MouseLook",
+            Command::PreviousItem => "PreviousItem",
+            Command::NextItem => "NextItem",
+            Command::ClosestItem => "ClosestItem",
+            Command::ShiftView => "ShiftView",
+            Command::MapView => "MapView",
+            Command::AutoRun => "AutoRun",
+            Command::DecreasePowerSetting => "DecreasePowerSetting",
+            Command::IncreasePowerSetting => "IncreasePowerSetting",
+            Command::Pray => "Pray",
+            Command::Mock => "Mock",
+            Command::Teapot => "Teapot",
+            Command::SpecialAttack1 => "SpecialAttack1",
+            Command::SpecialAttack2 => "SpecialAttack2",
+            Command::SpecialAttack3 => "SpecialAttack3",
+            Command::MissileAttack1 => "MissileAttack1",
+            Command::MissileAttack2 => "MissileAttack2",
+            Command::MissileAttack3 => "MissileAttack3",
+            Command::CastSpell => "CastSpell",
+            Command::Flatulence => "Flatulence",
+            Command::FirstPersonView => "FirstPersonView",
+            Command::AllegiancePanel => "AllegiancePanel",
+            Command::FellowshipPanel => "FellowshipPanel",
+            Command::SpellbookPanel => "SpellbookPanel",
+            Command::SpellComponentsPanel => "SpellComponentsPanel",
+            Command::HousePanel => "HousePanel",
+            Command::AttributesPanel => "AttributesPanel",
+            Command::SkillsPanel => "SkillsPanel",
+            Command::MapPanel => "MapPanel",
+            Command::InventoryPanel => "InventoryPanel",
+            Command::Demonet => "Demonet",
+            Command::UseMagicStaff => "UseMagicStaff",
+            Command::UseMagicWand => "UseMagicWand",
+            Command::Blink => "Blink",
+            Command::Bite => "Bite",
+            Command::TwitchSubstate1 => "TwitchSubstate1",
+            Command::TwitchSubstate2 => "TwitchSubstate2",
+            Command::TwitchSubstate3 => "TwitchSubstate3",
+            Command::CaptureScreenshotToFile => "CaptureScreenshotToFile",
+            Command::BowNoAmmo => "BowNoAmmo",
+            Command::CrossBowNoAmmo => "CrossBowNoAmmo",
+            Command::ShakeFistState => "ShakeFistState",
+            Command::PrayState => "PrayState",
+            Command::BowDeepState => "BowDeepState",
+            Command::ClapHandsState => "ClapHandsState",
+            Command::CrossArmsState => "CrossArmsState",
+            Command::ShiverState => "ShiverState",
+            Command::PointState => "PointState",
+            Command::WaveState => "WaveState",
+            Command::AkimboState => "AkimboState",
+            Command::SaluteState => "SaluteState",
+            Command::ScratchHeadState => "ScratchHeadState",
+            Command::TapFootState => "TapFootState",
+            Command::LeanState => "LeanState",
+            Command::KneelState => "KneelState",
+            Command::PleadState => "PleadState",
+            Command::ATOYOT => "ATOYOT",
+            Command::SlouchState => "SlouchState",
+            Command::SurrenderState => "SurrenderState",
+            Command::WoahState => "WoahState",
+            Command::WindedState => "WindedState",
+            Command::AutoCreateShortcuts => "AutoCreateShortcuts",
+            Command::AutoRepeatAttacks => "AutoRepeatAttacks",
+            Command::AutoTarget => "AutoTarget",
+            Command::AdvancedCombatInterface => "AdvancedCombatInterface",
+            Command::IgnoreAllegianceRequests => "IgnoreAllegianceRequests",
+            Command::IgnoreFellowshipRequests => "IgnoreFellowshipRequests",
+            Command::InvertMouseLook => "InvertMouseLook",
+            Command::LetPlayersGiveYouItems => "LetPlayersGiveYouItems",
+            Command::AutoTrackCombatTargets => "AutoTrackCombatTargets",
+            Command::DisplayTooltips => "DisplayTooltips",
+            Command::AttemptToDeceivePlayers => "AttemptToDeceivePlayers",
+            Command::RunAsDefaultMovement => "RunAsDefaultMovement",
+            Command::StayInChatModeAfterSend => "StayInChatModeAfterSend",
+            Command::RightClickToMouseLook => "RightClickToMouseLook",
+            Command::VividTargetIndicator => "VividTargetIndicator",
+            Command::SelectSelf => "SelectSelf",
+            Command::SkillHealSelf => "SkillHealSelf",
+            Command::NextMonster => "NextMonster",
+            Command::PreviousMonster => "PreviousMonster",
+            Command::ClosestMonster => "ClosestMonster",
+            Command::NextPlayer => "NextPlayer",
+            Command::PreviousPlayer => "PreviousPlayer",
+            Command::ClosestPlayer => "ClosestPlayer",
+            Command::SnowAngelState => "SnowAngelState",
+            Command::WarmHands => "WarmHands",
+            Command::CurtseyState => "CurtseyState",
+            Command::AFKState => "AFKState",
+            Command::MeditateState => "MeditateState",
+            Command::TradePanel => "TradePanel",
+            Command::LogOut => "LogOut",
+            Command::DoubleSlashLow => "DoubleSlashLow",
+            Command::DoubleSlashMed => "DoubleSlashMed",
+            Command::DoubleSlashHigh => "DoubleSlashHigh",
+            Command::TripleSlashLow => "TripleSlashLow",
+            Command::TripleSlashMed => "TripleSlashMed",
+            Command::TripleSlashHigh => "TripleSlashHigh",
+            Command::DoubleThrustLow => "DoubleThrustLow",
+            Command::DoubleThrustMed => "DoubleThrustMed",
+            Command::DoubleThrustHigh => "DoubleThrustHigh",
+            Command::TripleThrustLow => "TripleThrustLow",
+            Command::TripleThrustMed => "TripleThrustMed",
+            Command::TripleThrustHigh => "TripleThrustHigh",
+            Command::MagicPowerUp01Purple => "MagicPowerUp01Purple",
+            Command::MagicPowerUp02Purple => "MagicPowerUp02Purple",
+            Command::MagicPowerUp03Purple => "MagicPowerUp03Purple",
+            Command::MagicPowerUp04Purple => "MagicPowerUp04Purple",
+            Command::MagicPowerUp05Purple => "MagicPowerUp05Purple",
+            Command::MagicPowerUp06Purple => "MagicPowerUp06Purple",
+            Command::MagicPowerUp07Purple => "MagicPowerUp07Purple",
+            Command::MagicPowerUp08Purple => "MagicPowerUp08Purple",
+            Command::MagicPowerUp09Purple => "MagicPowerUp09Purple",
+            Command::MagicPowerUp10Purple => "MagicPowerUp10Purple",
+            Command::Helper => "Helper",
+            Command::Pickup5 => "Pickup5",
+            Command::Pickup10 => "Pickup10",
+            Command::Pickup15 => "Pickup15",
+            Command::Pickup20 => "Pickup20",
+            Command::HouseRecall => "HouseRecall",
+            Command::AtlatlCombat => "AtlatlCombat",
+            Command::ThrownShieldCombat => "ThrownShieldCombat",
+            Command::SitState => "SitState",
+            Command::SitCrossleggedState => "SitCrossleggedState",
+            Command::SitBackState => "SitBackState",
+            Command::PointLeftState => "PointLeftState",
+            Command::PointRightState => "PointRightState",
+            Command::TalktotheHandState => "TalktotheHandState",
+            Command::PointDownState => "PointDownState",
+            Command::DrudgeDanceState => "DrudgeDanceState",
+            Command::PossumState => "PossumState",
+            Command::ReadState => "ReadState",
+            Command::ThinkerState => "ThinkerState",
+            Command::HaveASeatState => "HaveASeatState",
+            Command::AtEaseState => "AtEaseState",
+            Command::NudgeLeft => "NudgeLeft",
+            Command::NudgeRight => "NudgeRight",
+            Command::PointLeft => "PointLeft",
+            Command::PointRight => "PointRight",
+            Command::PointDown => "PointDown",
+            Command::Knock => "Knock",
+            Command::ScanHorizon => "ScanHorizon",
+            Command::DrudgeDance => "DrudgeDance",
+            Command::HaveASeat => "HaveASeat",
+            Command::LifestoneRecall => "LifestoneRecall",
+            Command::CharacterOptionsPanel => "CharacterOptionsPanel",
+            Command::SoundAndGraphicsPanel => "SoundAndGraphicsPanel",
+            Command::HelpfulSpellsPanel => "HelpfulSpellsPanel",
+            Command::HarmfulSpellsPanel => "HarmfulSpellsPanel",
+            Command::CharacterInformationPanel => "CharacterInformationPanel",
+            Command::LinkStatusPanel => "LinkStatusPanel",
+            Command::VitaePanel => "VitaePanel",
+            Command::ShareFellowshipXP => "ShareFellowshipXP",
+            Command::ShareFellowshipLoot => "ShareFellowshipLoot",
+            Command::AcceptCorpseLooting => "AcceptCorpseLooting",
+            Command::IgnoreTradeRequests => "IgnoreTradeRequests",
+            Command::DisableWeather => "DisableWeather",
+            Command::DisableHouseEffect => "DisableHouseEffect",
+            Command::SideBySideVitals => "SideBySideVitals",
+            Command::ShowRadarCoordinates => "ShowRadarCoordinates",
+            Command::ShowSpellDurations => "ShowSpellDurations",
+            Command::MuteOnLosingFocus => "MuteOnLosingFocus",
+            Command::Fishing => "Fishing",
+            Command::MarketplaceRecall => "MarketplaceRecall",
+            Command::EnterPKLite => "EnterPKLite",
+            Command::AllegianceChat => "AllegianceChat",
+            Command::AutomaticallyAcceptFellowshipRequests => "AutomaticallyAcceptFellowshipRequests",
+            Command::Reply => "Reply",
+            Command::MonarchReply => "MonarchReply",
+            Command::PatronReply => "PatronReply",
+            Command::ToggleCraftingChanceOfSuccessDialog => "ToggleCraftingChanceOfSuccessDialog",
+            Command::UseClosestUnopenedCorpse => "UseClosestUnopenedCorpse",
+            Command::UseNextUnopenedCorpse => "UseNextUnopenedCorpse",
+            Command::IssueSlashCommand => "IssueSlashCommand",
+            Command::AllegianceHometownRecall => "AllegianceHometownRecall",
+            Command::PKArenaRecall => "PKArenaRecall",
+            Command::OffhandSlashHigh => "OffhandSlashHigh",
+            Command::OffhandSlashMed => "OffhandSlashMed",
+            Command::OffhandSlashLow => "OffhandSlashLow",
+            Command::OffhandThrustHigh => "OffhandThrustHigh",
+            Command::OffhandThrustMed => "OffhandThrustMed",
+            Command::OffhandThrustLow => "OffhandThrustLow",
+            Command::OffhandDoubleSlashLow => "OffhandDoubleSlashLow",
+            Command::OffhandDoubleSlashMed => "OffhandDoubleSlashMed",
+            Command::OffhandDoubleSlashHigh => "OffhandDoubleSlashHigh",
+            Command::OffhandTripleSlashLow => "OffhandTripleSlashLow",
+            Command::OffhandTripleSlashMed => "OffhandTripleSlashMed",
+            Command::OffhandTripleSlashHigh => "OffhandTripleSlashHigh",
+            Command::OffhandDoubleThrustLow => "OffhandDoubleThrustLow",
+            Command::OffhandDoubleThrustMed => "OffhandDoubleThrustMed",
+            Command::OffhandDoubleThrustHigh => "OffhandDoubleThrustHigh",
+            Command::OffhandTripleThrustLow => "OffhandTripleThrustLow",
+            Command::OffhandTripleThrustMed => "OffhandTripleThrustMed",
+            Command::OffhandTripleThrustHigh => "OffhandTripleThrustHigh",
+            Command::OffhandKick => "OffhandKick",
+            Command::AttackHigh4 => "AttackHigh4",
+            Command::AttackMed4 => "AttackMed4",
+            Command::AttackLow4 => "AttackLow4",
+            Command::AttackHigh5 => "AttackHigh5",
+            Command::AttackMed5 => "AttackMed5",
+            Command::AttackLow5 => "AttackLow5",
+            Command::AttackHigh6 => "AttackHigh6",
+            Command::AttackMed6 => "AttackMed6",
+            Command::AttackLow6 => "AttackLow6",
+            Command::PunchFastHigh => "PunchFastHigh",
+            Command::PunchFastMed => "PunchFastMed",
+            Command::PunchFastLow => "PunchFastLow",
+            Command::PunchSlowHigh => "PunchSlowHigh",
+            Command::PunchSlowMed => "PunchSlowMed",
+            Command::PunchSlowLow => "PunchSlowLow",
+            Command::OffhandPunchFastHigh => "OffhandPunchFastHigh",
+            Command::OffhandPunchFastMed => "OffhandPunchFastMed",
+            Command::OffhandPunchFastLow => "OffhandPunchFastLow",
+            Command::OffhandPunchSlowHigh => "OffhandPunchSlowHigh",
+            Command::OffhandPunchSlowMed => "OffhandPunchSlowMed",
+            Command::OffhandPunchSlowLow => "OffhandPunchSlowLow",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The stance for a character or monster.
 #[repr(u16)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3511,6 +5749,30 @@ impl crate::readers::ACDataType for StanceMode {
     }
 }
 
+impl std::fmt::Display for StanceMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            StanceMode::HandCombat => "HandCombat",
+            StanceMode::NonCombat => "NonCombat",
+            StanceMode::SwordCombat => "SwordCombat",
+            StanceMode::BowCombat => "BowCombat",
+            StanceMode::SwordShieldCombat => "SwordShieldCombat",
+            StanceMode::CrossbowCombat => "CrossbowCombat",
+            StanceMode::UnusedCombat => "UnusedCombat",
+            StanceMode::SlingCombat => "SlingCombat",
+            StanceMode::TwoHandedSwordCombat => "TwoHandedSwordCombat",
+            StanceMode::TwoHandedStaffCombat => "TwoHandedStaffCombat",
+            StanceMode::DualWieldCombat => "DualWieldCombat",
+            StanceMode::ThrownWeaponCombat => "ThrownWeaponCombat",
+            StanceMode::BowNoAmmo => "BowNoAmmo",
+            StanceMode::CrossBowNoAmmo => "CrossBowNoAmmo",
+            StanceMode::AtlatlCombat => "AtlatlCombat",
+            StanceMode::ThrownShieldCombat => "ThrownShieldCombat",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The movement (forward, side, turn) for a character or monster.
 #[repr(u16)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3533,6 +5795,23 @@ impl crate::readers::ACDataType for MovementCommand {
     }
 }
 
+impl std::fmt::Display for MovementCommand {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            MovementCommand::HoldRun => "HoldRun",
+            MovementCommand::HoldSidestep => "HoldSidestep",
+            MovementCommand::WalkForward => "WalkForward",
+            MovementCommand::WalkBackwards => "WalkBackwards",
+            MovementCommand::RunForward => "RunForward",
+            MovementCommand::TurnRight => "TurnRight",
+            MovementCommand::TurnLeft => "TurnLeft",
+            MovementCommand::SideStepRight => "SideStepRight",
+            MovementCommand::SideStepLeft => "SideStepLeft",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// House flags
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3546,6 +5825,17 @@ impl crate::readers::ACDataType for HouseBitfield {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HouseBitfield::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for HouseBitfield {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            HouseBitfield::Undef => "Undef",
+            HouseBitfield::Active => "Active",
+            HouseBitfield::RequiresMonarch => "RequiresMonarch",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3566,6 +5856,20 @@ impl crate::readers::ACDataType for CharGenResponseType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharGenResponseType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for CharGenResponseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            CharGenResponseType::OK => "OK",
+            CharGenResponseType::NameInUse => "NameInUse",
+            CharGenResponseType::NameBanned => "NameBanned",
+            CharGenResponseType::Corrupt => "Corrupt",
+            CharGenResponseType::Corrupt0x0006 => "Corrupt_0x0006",
+            CharGenResponseType::AdminPrivilegeDenied => "AdminPrivilegeDenied",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3600,6 +5904,35 @@ impl crate::readers::ACDataType for CharacterErrorType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharacterErrorType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for CharacterErrorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            CharacterErrorType::Logon => "Logon",
+            CharacterErrorType::AccountLogin => "AccountLogin",
+            CharacterErrorType::ServerCrash => "ServerCrash",
+            CharacterErrorType::Logoff => "Logoff",
+            CharacterErrorType::Delete => "Delete",
+            CharacterErrorType::ServerCrash2 => "ServerCrash2",
+            CharacterErrorType::AccountInvalid => "AccountInvalid",
+            CharacterErrorType::AccountDoesntExist => "AccountDoesntExist",
+            CharacterErrorType::EnterGameGeneric => "EnterGameGeneric",
+            CharacterErrorType::EnterGameStressAccount => "EnterGameStressAccount",
+            CharacterErrorType::EnterGameCharacterInWorld => "EnterGameCharacterInWorld",
+            CharacterErrorType::EnterGamePlayerAccountMissing => "EnterGamePlayerAccountMissing",
+            CharacterErrorType::EnterGameCharacterNotOwned => "EnterGameCharacterNotOwned",
+            CharacterErrorType::EnterGameCharacterInWorldServer => "EnterGameCharacterInWorldServer",
+            CharacterErrorType::EnterGameOldCharacter => "EnterGameOldCharacter",
+            CharacterErrorType::EnterGameCorruptCharacter => "EnterGameCorruptCharacter",
+            CharacterErrorType::EnterGameStartServerDown => "EnterGameStartServerDown",
+            CharacterErrorType::EnterGameCouldntPlaceCharacter => "EnterGameCouldntPlaceCharacter",
+            CharacterErrorType::LogonServerFull => "LogonServerFull",
+            CharacterErrorType::EnterGameCharacterLocked => "EnterGameCharacterLocked",
+            CharacterErrorType::SubscriptionExpired => "SubscriptionExpired",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3657,6 +5990,17 @@ impl crate::readers::ACDataType for TurbineChatType {
     }
 }
 
+impl std::fmt::Display for TurbineChatType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            TurbineChatType::ServerToClientMessage => "ServerToClientMessage",
+            TurbineChatType::ClientToServerMessage => "ClientToServerMessage",
+            TurbineChatType::AckClientToServerMessage => "AckClientToServerMessage",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The DatFileType identifies the dat file to be used.
 #[repr(i64)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3676,6 +6020,17 @@ impl crate::readers::ACDataType for DatFileType {
     }
 }
 
+impl std::fmt::Display for DatFileType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            DatFileType::ClientPortal => "client_portal",
+            DatFileType::ClientCell1 => "client_cell_1",
+            DatFileType::ClientLocalEnglish => "client_local_English",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The CompressionType identifies the type of data compression used.
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3688,6 +6043,16 @@ impl crate::readers::ACDataType for CompressionType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(CompressionType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for CompressionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            CompressionType::None => "None",
+            CompressionType::ZLib => "ZLib",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3862,6 +6227,23 @@ impl crate::readers::ACDataType for DamageLocation {
     }
 }
 
+impl std::fmt::Display for DamageLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            DamageLocation::Head => "Head",
+            DamageLocation::Chest => "Chest",
+            DamageLocation::Abdomen => "Abdomen",
+            DamageLocation::UpperArm => "UpperArm",
+            DamageLocation::LowerArm => "LowerArm",
+            DamageLocation::Hand => "Hand",
+            DamageLocation::UpperLeg => "UpperLeg",
+            DamageLocation::LowerLeg => "LowerLeg",
+            DamageLocation::Foot => "Foot",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The LogTextType indicates the kind of text going to the chat area.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3901,6 +6283,40 @@ impl crate::readers::ACDataType for LogTextType {
     }
 }
 
+impl std::fmt::Display for LogTextType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            LogTextType::Default => "Default",
+            LogTextType::Speech => "Speech",
+            LogTextType::Tell => "Tell",
+            LogTextType::SpeechDirectSend => "SpeechDirectSend",
+            LogTextType::System => "System",
+            LogTextType::Combat => "Combat",
+            LogTextType::Magic => "Magic",
+            LogTextType::Channel => "Channel",
+            LogTextType::ChannelSend => "ChannelSend",
+            LogTextType::Social => "Social",
+            LogTextType::SocialSend => "SocialSend",
+            LogTextType::Emote => "Emote",
+            LogTextType::Advancement => "Advancement",
+            LogTextType::Abuse => "Abuse",
+            LogTextType::Help => "Help",
+            LogTextType::Appraisal => "Appraisal",
+            LogTextType::Spellcasting => "Spellcasting",
+            LogTextType::Allegiance => "Allegiance",
+            LogTextType::Fellowship => "Fellowship",
+            LogTextType::WorldBroadcast => "WorldBroadcast",
+            LogTextType::CombatEnemy => "CombatEnemy",
+            LogTextType::CombatSelf => "CombatSelf",
+            LogTextType::Recall => "Recall",
+            LogTextType::Craft => "Craft",
+            LogTextType::Salvaging => "Salvaging",
+            LogTextType::AdminTell => "AdminTell",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The EndTradeReason identifies the reason trading was ended.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3914,6 +6330,17 @@ impl crate::readers::ACDataType for EndTradeReason {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EndTradeReason::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for EndTradeReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            EndTradeReason::Normal => "Normal",
+            EndTradeReason::EnteredCombat => "EnteredCombat",
+            EndTradeReason::Cancelled => "Cancelled",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3933,6 +6360,16 @@ impl crate::readers::ACDataType for TradeSide {
     }
 }
 
+impl std::fmt::Display for TradeSide {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            TradeSide::Self_ => "Self",
+            TradeSide::Partner => "Partner",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The HouseType identifies the type of house.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3947,6 +6384,18 @@ impl crate::readers::ACDataType for HouseType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HouseType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for HouseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            HouseType::Cottage => "Cottage",
+            HouseType::Villa => "Villa",
+            HouseType::Mansion => "Mansion",
+            HouseType::Apartment => "Apartment",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -3979,6 +6428,30 @@ impl crate::readers::ACDataType for ChessMoveResult {
     }
 }
 
+impl std::fmt::Display for ChessMoveResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ChessMoveResult::FailureNotYourTurn => "FailureNotYourTurn",
+            ChessMoveResult::FailureInvalidDirection => "FailureInvalidDirection",
+            ChessMoveResult::FailureInvalidDistance => "FailureInvalidDistance",
+            ChessMoveResult::FailureMovingEmptySquare => "FailureMovingEmptySquare",
+            ChessMoveResult::FailureMovingOpponentPiece => "FailureMovingOpponentPiece",
+            ChessMoveResult::FailureMovedPieceOffBoard => "FailureMovedPieceOffBoard",
+            ChessMoveResult::FailureAttackingOwnPiece => "FailureAttackingOwnPiece",
+            ChessMoveResult::FailureCannotMoveIntoCheck => "FailureCannotMoveIntoCheck",
+            ChessMoveResult::FailurePathBlocked => "FailurePathBlocked",
+            ChessMoveResult::FailureCastleOutOfCheck => "FailureCastleOutOfCheck",
+            ChessMoveResult::FailureCastleThroughCheck => "FailureCastleThroughCheck",
+            ChessMoveResult::FailureCastlePieceMoved => "FailureCastlePieceMoved",
+            ChessMoveResult::FailureInvalidMove => "FailureInvalidMove",
+            ChessMoveResult::Success => "Success",
+            ChessMoveResult::OpponentInCheck => "OpponentInCheck",
+            ChessMoveResult::CheckMatedOpponent => "CheckMatedOpponent",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Type of fellow update
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3992,6 +6465,17 @@ impl crate::readers::ACDataType for FellowUpdateType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(FellowUpdateType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for FellowUpdateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            FellowUpdateType::FullUpdate => "FullUpdate",
+            FellowUpdateType::UpdateStats => "UpdateStats",
+            FellowUpdateType::UpdateVitals => "UpdateVitals",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4011,6 +6495,17 @@ impl crate::readers::ACDataType for ContractStage {
     }
 }
 
+impl std::fmt::Display for ContractStage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ContractStage::New => "New",
+            ContractStage::InProgress => "InProgress",
+            ContractStage::DoneOrPendingRepeat => "DoneOrPendingRepeat",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Movement hold key
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -4024,6 +6519,17 @@ impl crate::readers::ACDataType for HoldKey {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HoldKey::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for HoldKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            HoldKey::Invalid => "Invalid",
+            HoldKey::None => "None",
+            HoldKey::Run => "Run",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4045,6 +6551,19 @@ impl crate::readers::ACDataType for RadarBehavior {
     }
 }
 
+impl std::fmt::Display for RadarBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            RadarBehavior::Undefined => "Undefined",
+            RadarBehavior::ShowNever => "ShowNever",
+            RadarBehavior::ShowMovement => "ShowMovement",
+            RadarBehavior::ShowAttacking => "ShowAttacking",
+            RadarBehavior::ShowAlways => "ShowAlways",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Gender of a player
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -4058,6 +6577,17 @@ impl crate::readers::ACDataType for Gender {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(Gender::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for Gender {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Gender::Invalid => "Invalid",
+            Gender::Male => "Male",
+            Gender::Female => "Female",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4192,6 +6722,115 @@ impl crate::readers::ACDataType for CreatureType {
     }
 }
 
+impl std::fmt::Display for CreatureType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            CreatureType::Olthoi => "Olthoi",
+            CreatureType::Banderling => "Banderling",
+            CreatureType::Drudge => "Drudge",
+            CreatureType::Mosswart => "Mosswart",
+            CreatureType::Lugian => "Lugian",
+            CreatureType::Tumerok => "Tumerok",
+            CreatureType::Mite => "Mite",
+            CreatureType::Tusker => "Tusker",
+            CreatureType::PhyntosWasp => "PhyntosWasp",
+            CreatureType::Rat => "Rat",
+            CreatureType::Auroch => "Auroch",
+            CreatureType::Cow => "Cow",
+            CreatureType::Golem => "Golem",
+            CreatureType::Undead => "Undead",
+            CreatureType::Gromnie => "Gromnie",
+            CreatureType::Reedshark => "Reedshark",
+            CreatureType::Armoredillo => "Armoredillo",
+            CreatureType::Fae => "Fae",
+            CreatureType::Virindi => "Virindi",
+            CreatureType::Wisp => "Wisp",
+            CreatureType::Knathtead => "Knathtead",
+            CreatureType::Shadow => "Shadow",
+            CreatureType::Mattekar => "Mattekar",
+            CreatureType::Mumiyah => "Mumiyah",
+            CreatureType::Rabbit => "Rabbit",
+            CreatureType::Sclavus => "Sclavus",
+            CreatureType::ShallowsShark => "ShallowsShark",
+            CreatureType::Monouga => "Monouga",
+            CreatureType::Zefir => "Zefir",
+            CreatureType::Skeleton => "Skeleton",
+            CreatureType::Human => "Human",
+            CreatureType::Shreth => "Shreth",
+            CreatureType::Chittick => "Chittick",
+            CreatureType::Moarsman => "Moarsman",
+            CreatureType::OlthoiLarvae => "OlthoiLarvae",
+            CreatureType::Slithis => "Slithis",
+            CreatureType::Deru => "Deru",
+            CreatureType::FireElemental => "FireElemental",
+            CreatureType::Snowman => "Snowman",
+            CreatureType::Unknown => "Unknown",
+            CreatureType::Bunny => "Bunny",
+            CreatureType::LightningElemental => "LightningElemental",
+            CreatureType::Rockslide => "Rockslide",
+            CreatureType::Grievver => "Grievver",
+            CreatureType::Niffis => "Niffis",
+            CreatureType::Ursuin => "Ursuin",
+            CreatureType::Crystal => "Crystal",
+            CreatureType::HollowMinion => "HollowMinion",
+            CreatureType::Scarecrow => "Scarecrow",
+            CreatureType::Idol => "Idol",
+            CreatureType::Empyrean => "Empyrean",
+            CreatureType::Hopeslayer => "Hopeslayer",
+            CreatureType::Doll => "Doll",
+            CreatureType::Marionette => "Marionette",
+            CreatureType::Carenzi => "Carenzi",
+            CreatureType::Siraluun => "Siraluun",
+            CreatureType::AunTumerok => "AunTumerok",
+            CreatureType::HeaTumerok => "HeaTumerok",
+            CreatureType::Simulacrum => "Simulacrum",
+            CreatureType::AcidElemental => "AcidElemental",
+            CreatureType::FrostElemental => "FrostElemental",
+            CreatureType::Elemental => "Elemental",
+            CreatureType::Statue => "Statue",
+            CreatureType::Wall => "Wall",
+            CreatureType::AlteredHuman => "AlteredHuman",
+            CreatureType::Device => "Device",
+            CreatureType::Harbinger => "Harbinger",
+            CreatureType::DarkSarcophagus => "DarkSarcophagus",
+            CreatureType::Chicken => "Chicken",
+            CreatureType::GotrokLugian => "GotrokLugian",
+            CreatureType::Margul => "Margul",
+            CreatureType::BleachedRabbit => "BleachedRabbit",
+            CreatureType::NastyRabbit => "NastyRabbit",
+            CreatureType::GrimacingRabbit => "GrimacingRabbit",
+            CreatureType::Burun => "Burun",
+            CreatureType::Target => "Target",
+            CreatureType::Ghost => "Ghost",
+            CreatureType::Fiun => "Fiun",
+            CreatureType::Eater => "Eater",
+            CreatureType::Penguin => "Penguin",
+            CreatureType::Ruschk => "Ruschk",
+            CreatureType::Thrungus => "Thrungus",
+            CreatureType::ViamontianKnight => "ViamontianKnight",
+            CreatureType::Remoran => "Remoran",
+            CreatureType::Swarm => "Swarm",
+            CreatureType::Moar => "Moar",
+            CreatureType::EnchantedArms => "EnchantedArms",
+            CreatureType::Sleech => "Sleech",
+            CreatureType::Mukkir => "Mukkir",
+            CreatureType::Merwart => "Merwart",
+            CreatureType::Food => "Food",
+            CreatureType::ParadoxOlthoi => "ParadoxOlthoi",
+            CreatureType::Harvest => "Harvest",
+            CreatureType::Energy => "Energy",
+            CreatureType::Apparition => "Apparition",
+            CreatureType::Aerbax => "Aerbax",
+            CreatureType::Touched => "Touched",
+            CreatureType::BlightedMoarsman => "BlightedMoarsman",
+            CreatureType::GearKnight => "GearKnight",
+            CreatureType::Gurog => "Gurog",
+            CreatureType::Anekshay => "Anekshay",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 bitflags::bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
     pub struct CombatStyle: u32 {
@@ -4268,6 +6907,18 @@ impl crate::readers::ACDataType for GeneratorDestruct {
     }
 }
 
+impl std::fmt::Display for GeneratorDestruct {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            GeneratorDestruct::Undef => "Undef",
+            GeneratorDestruct::Nothing => "Nothing",
+            GeneratorDestruct::Destroy => "Destroy",
+            GeneratorDestruct::Kill => "Kill",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GeneratorTimeType {
@@ -4286,6 +6937,20 @@ impl crate::readers::ACDataType for GeneratorTimeType {
     }
 }
 
+impl std::fmt::Display for GeneratorTimeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            GeneratorTimeType::Undef => "Undef",
+            GeneratorTimeType::RealTime => "RealTime",
+            GeneratorTimeType::Defined => "Defined",
+            GeneratorTimeType::Event => "Event",
+            GeneratorTimeType::Night => "Night",
+            GeneratorTimeType::Day => "Day",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GeneratorType {
@@ -4298,6 +6963,17 @@ impl crate::readers::ACDataType for GeneratorType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GeneratorType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for GeneratorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            GeneratorType::Undef => "Undef",
+            GeneratorType::Relative => "Relative",
+            GeneratorType::Absolute => "Absolute",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4332,6 +7008,33 @@ impl crate::readers::ACDataType for ImbuedEffectType {
     }
 }
 
+impl std::fmt::Display for ImbuedEffectType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ImbuedEffectType::Undef => "Undef",
+            ImbuedEffectType::CriticalStrike => "CriticalStrike",
+            ImbuedEffectType::CripplingBlow => "CripplingBlow",
+            ImbuedEffectType::ArmorRending => "ArmorRending",
+            ImbuedEffectType::SlashRending => "SlashRending",
+            ImbuedEffectType::PierceRending => "PierceRending",
+            ImbuedEffectType::BludgeonRending => "BludgeonRending",
+            ImbuedEffectType::AcidRending => "AcidRending",
+            ImbuedEffectType::ColdRending => "ColdRending",
+            ImbuedEffectType::ElectricRending => "ElectricRending",
+            ImbuedEffectType::FireRending => "FireRending",
+            ImbuedEffectType::MeleeDefense => "MeleeDefense",
+            ImbuedEffectType::MissileDefense => "MissileDefense",
+            ImbuedEffectType::MagicDefense => "MagicDefense",
+            ImbuedEffectType::Spellbook => "Spellbook",
+            ImbuedEffectType::NetherRending => "NetherRending",
+            ImbuedEffectType::IgnoreSomeMagicProjectileDamage => "IgnoreSomeMagicProjectileDamage",
+            ImbuedEffectType::AlwaysCritical => "AlwaysCritical",
+            ImbuedEffectType::IgnoreAllArmor => "IgnoreAllArmor",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ItemXpStyle {
@@ -4345,6 +7048,18 @@ impl crate::readers::ACDataType for ItemXpStyle {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ItemXpStyle::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for ItemXpStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ItemXpStyle::Undef => "Undef",
+            ItemXpStyle::Fixed => "Fixed",
+            ItemXpStyle::ScalesWithLevel => "ScalesWithLevel",
+            ItemXpStyle::FixedPlusBase => "FixedPlusBase",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4367,6 +7082,19 @@ impl crate::readers::ACDataType for SubscriptionStatus {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(SubscriptionStatus::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for SubscriptionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            SubscriptionStatus::NoSubscription => "No_Subscription",
+            SubscriptionStatus::AsheronsCallSubscription => "AsheronsCall_Subscription",
+            SubscriptionStatus::DarkMajestySubscription => "DarkMajesty_Subscription",
+            SubscriptionStatus::ThroneOfDestinySubscription => "ThroneOfDestiny_Subscription",
+            SubscriptionStatus::ThroneOfDestinyPreordered => "ThroneOfDestiny_Preordered",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4395,6 +7123,27 @@ impl crate::readers::ACDataType for WeaponType {
     }
 }
 
+impl std::fmt::Display for WeaponType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            WeaponType::Undef => "Undef",
+            WeaponType::Unarmed => "Unarmed",
+            WeaponType::Sword => "Sword",
+            WeaponType::Axe => "Axe",
+            WeaponType::Mace => "Mace",
+            WeaponType::Spear => "Spear",
+            WeaponType::Dagger => "Dagger",
+            WeaponType::Staff => "Staff",
+            WeaponType::Bow => "Bow",
+            WeaponType::Crossbow => "Crossbow",
+            WeaponType::Thrown => "Thrown",
+            WeaponType::TwoHanded => "TwoHanded",
+            WeaponType::Magic => "Magic",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ActivationResponse {
@@ -4414,6 +7163,21 @@ impl crate::readers::ACDataType for ActivationResponse {
     }
 }
 
+impl std::fmt::Display for ActivationResponse {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ActivationResponse::Undef => "Undef",
+            ActivationResponse::Use => "Use",
+            ActivationResponse::Animate => "Animate",
+            ActivationResponse::Talk => "Talk",
+            ActivationResponse::Emote => "Emote",
+            ActivationResponse::CastSpell => "CastSpell",
+            ActivationResponse::Generate => "Generate",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AetheriaBitfield {
@@ -4427,6 +7191,18 @@ impl crate::readers::ACDataType for AetheriaBitfield {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AetheriaBitfield::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for AetheriaBitfield {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AetheriaBitfield::None => "None",
+            AetheriaBitfield::Blue => "Blue",
+            AetheriaBitfield::Yellow => "Yellow",
+            AetheriaBitfield::Red => "Red",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4449,6 +7225,21 @@ impl crate::readers::ACDataType for HookGroupType {
     }
 }
 
+impl std::fmt::Display for HookGroupType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            HookGroupType::Undef => "Undef",
+            HookGroupType::NoisemakingItems => "NoisemakingItems",
+            HookGroupType::TestItems => "TestItems",
+            HookGroupType::PortalItems => "PortalItems",
+            HookGroupType::WritableItems => "WritableItems",
+            HookGroupType::SpellCastingItems => "SpellCastingItems",
+            HookGroupType::SpellTeachingItems => "SpellTeachingItems",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ArmorType {
@@ -4468,6 +7259,21 @@ impl crate::readers::ACDataType for ArmorType {
     }
 }
 
+impl std::fmt::Display for ArmorType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ArmorType::None => "None",
+            ArmorType::Cloth => "Cloth",
+            ArmorType::Leather => "Leather",
+            ArmorType::StuddedLeather => "StuddedLeather",
+            ArmorType::Scalemail => "Scalemail",
+            ArmorType::Chainmail => "Chainmail",
+            ArmorType::Metal => "Metal",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum AttunedStatus {
@@ -4480,6 +7286,17 @@ impl crate::readers::ACDataType for AttunedStatus {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttunedStatus::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for AttunedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            AttunedStatus::Normal => "Normal",
+            AttunedStatus::Attuned => "Attuned",
+            AttunedStatus::Sticky => "Sticky",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4500,6 +7317,19 @@ impl crate::readers::ACDataType for BondedStatus {
     }
 }
 
+impl std::fmt::Display for BondedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            BondedStatus::Destroy => "Destroy",
+            BondedStatus::Slippery => "Slippery",
+            BondedStatus::Normal => "Normal",
+            BondedStatus::Bonded => "Bonded",
+            BondedStatus::Sticky => "Sticky",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(i32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum HouseStatus {
@@ -4512,6 +7342,17 @@ impl crate::readers::ACDataType for HouseStatus {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(HouseStatus::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for HouseStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            HouseStatus::Disabled => "Disabled",
+            HouseStatus::InActive => "InActive",
+            HouseStatus::Active => "Active",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4565,6 +7406,25 @@ impl crate::readers::ACDataType for PortalBitmask {
     }
 }
 
+impl std::fmt::Display for PortalBitmask {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PortalBitmask::NotPassable => "NotPassable",
+            PortalBitmask::Unrestricted => "Unrestricted",
+            PortalBitmask::NoPk => "NoPk",
+            PortalBitmask::NoPKLite => "NoPKLite",
+            PortalBitmask::NoNPK => "NoNPK",
+            PortalBitmask::NoSummon => "NoSummon",
+            PortalBitmask::NoRecall => "NoRecall",
+            PortalBitmask::OnlyOlthoiPCs => "OnlyOlthoiPCs",
+            PortalBitmask::NoOlthoiPCs => "NoOlthoiPCs",
+            PortalBitmask::NoVitae => "NoVitae",
+            PortalBitmask::NoNewAccounts => "NoNewAccounts",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(i32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum WieldRequirement {
@@ -4587,6 +7447,27 @@ impl crate::readers::ACDataType for WieldRequirement {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(WieldRequirement::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for WieldRequirement {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            WieldRequirement::Undef => "Undef",
+            WieldRequirement::Skill => "Skill",
+            WieldRequirement::RawSkill => "RawSkill",
+            WieldRequirement::Attrib => "Attrib",
+            WieldRequirement::RawAttrib => "RawAttrib",
+            WieldRequirement::SecondaryAttrib => "SecondaryAttrib",
+            WieldRequirement::RawSecondaryAttrib => "RawSecondaryAttrib",
+            WieldRequirement::Level => "Level",
+            WieldRequirement::Training => "Training",
+            WieldRequirement::IntStat => "IntStat",
+            WieldRequirement::BoolStat => "BoolStat",
+            WieldRequirement::CreatureType => "CreatureType",
+            WieldRequirement::HeritageType => "HeritageType",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -4696,6 +7577,108 @@ impl crate::readers::ACDataType for PaletteTemplate {
     }
 }
 
+impl std::fmt::Display for PaletteTemplate {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PaletteTemplate::Undef => "Undef",
+            PaletteTemplate::AquaBlue => "AquaBlue",
+            PaletteTemplate::Blue => "Blue",
+            PaletteTemplate::BluePurple => "BluePurple",
+            PaletteTemplate::Brown => "Brown",
+            PaletteTemplate::DarkBlue => "DarkBlue",
+            PaletteTemplate::DeepBrown => "DeepBrown",
+            PaletteTemplate::DeepGreen => "DeepGreen",
+            PaletteTemplate::Green => "Green",
+            PaletteTemplate::Grey => "Grey",
+            PaletteTemplate::LightBlue => "LightBlue",
+            PaletteTemplate::Maroon => "Maroon",
+            PaletteTemplate::Navy => "Navy",
+            PaletteTemplate::Purple => "Purple",
+            PaletteTemplate::Red => "Red",
+            PaletteTemplate::RedPurple => "RedPurple",
+            PaletteTemplate::Rose => "Rose",
+            PaletteTemplate::Yellow => "Yellow",
+            PaletteTemplate::YellowBrown => "YellowBrown",
+            PaletteTemplate::Copper => "Copper",
+            PaletteTemplate::Silver => "Silver",
+            PaletteTemplate::Gold => "Gold",
+            PaletteTemplate::Aqua => "Aqua",
+            PaletteTemplate::DarkAquaMetal => "DarkAquaMetal",
+            PaletteTemplate::DarkBlueMetal => "DarkBlueMetal",
+            PaletteTemplate::DarkCopperMetal => "DarkCopperMetal",
+            PaletteTemplate::DarkGoldMetal => "DarkGoldMetal",
+            PaletteTemplate::DarkGreenMetal => "DarkGreenMetal",
+            PaletteTemplate::DarkPurpleMetal => "DarkPurpleMetal",
+            PaletteTemplate::DarkRedMetal => "DarkRedMetal",
+            PaletteTemplate::DarkSilverMetal => "DarkSilverMetal",
+            PaletteTemplate::LightAquaMetal => "LightAquaMetal",
+            PaletteTemplate::LightBlueMetal => "LightBlueMetal",
+            PaletteTemplate::LightCopperMetal => "LightCopperMetal",
+            PaletteTemplate::LightGoldMetal => "LightGoldMetal",
+            PaletteTemplate::LightGreenMetal => "LightGreenMetal",
+            PaletteTemplate::LightPurpleMetal => "LightPurpleMetal",
+            PaletteTemplate::LightRedMetal => "LightRedMetal",
+            PaletteTemplate::LightSilverMetal => "LightSilverMetal",
+            PaletteTemplate::Black => "Black",
+            PaletteTemplate::Bronze => "Bronze",
+            PaletteTemplate::SandyYellow => "SandyYellow",
+            PaletteTemplate::DarkBrown => "DarkBrown",
+            PaletteTemplate::LightBrown => "LightBrown",
+            PaletteTemplate::TanRed => "TanRed",
+            PaletteTemplate::PaleGreen => "PaleGreen",
+            PaletteTemplate::Tan => "Tan",
+            PaletteTemplate::PastyYellow => "PastyYellow",
+            PaletteTemplate::SnowyWhite => "SnowyWhite",
+            PaletteTemplate::RuddyYellow => "RuddyYellow",
+            PaletteTemplate::RuddierYellow => "RuddierYellow",
+            PaletteTemplate::MidGrey => "MidGrey",
+            PaletteTemplate::DarkGrey => "DarkGrey",
+            PaletteTemplate::BlueDullSilver => "BlueDullSilver",
+            PaletteTemplate::YellowPaleSilver => "YellowPaleSilver",
+            PaletteTemplate::BrownBlueDark => "BrownBlueDark",
+            PaletteTemplate::BrownBlueMed => "BrownBlueMed",
+            PaletteTemplate::GreenSilver => "GreenSilver",
+            PaletteTemplate::BrownGreen => "BrownGreen",
+            PaletteTemplate::YellowGreen => "YellowGreen",
+            PaletteTemplate::PalePurple => "PalePurple",
+            PaletteTemplate::White => "White",
+            PaletteTemplate::RedBrown => "RedBrown",
+            PaletteTemplate::GreenBrown => "GreenBrown",
+            PaletteTemplate::OrangeBrown => "OrangeBrown",
+            PaletteTemplate::PaleGreenBrown => "PaleGreenBrown",
+            PaletteTemplate::PaleOrange => "PaleOrange",
+            PaletteTemplate::GreenSlime => "GreenSlime",
+            PaletteTemplate::BlueSlime => "BlueSlime",
+            PaletteTemplate::YellowSlime => "YellowSlime",
+            PaletteTemplate::PurpleSlime => "PurpleSlime",
+            PaletteTemplate::DullRed => "DullRed",
+            PaletteTemplate::GreyWhite => "GreyWhite",
+            PaletteTemplate::MediumGrey => "MediumGrey",
+            PaletteTemplate::DullGreen => "DullGreen",
+            PaletteTemplate::OliveGreen => "OliveGreen",
+            PaletteTemplate::Orange => "Orange",
+            PaletteTemplate::BlueGreen => "BlueGreen",
+            PaletteTemplate::Olive => "Olive",
+            PaletteTemplate::Lead => "Lead",
+            PaletteTemplate::Iron => "Iron",
+            PaletteTemplate::LiteGreen => "LiteGreen",
+            PaletteTemplate::PinkPurple => "PinkPurple",
+            PaletteTemplate::Amber => "Amber",
+            PaletteTemplate::DyeDarkGreen => "DyeDarkGreen",
+            PaletteTemplate::DyeDarkRed => "DyeDarkRed",
+            PaletteTemplate::DyeDarkYellow => "DyeDarkYellow",
+            PaletteTemplate::DyeBotched => "DyeBotched",
+            PaletteTemplate::DyeWinterBlue => "DyeWinterBlue",
+            PaletteTemplate::DyeWinterGreen => "DyeWinterGreen",
+            PaletteTemplate::DyeWinterSilver => "DyeWinterSilver",
+            PaletteTemplate::DyeSpringBlue => "DyeSpringBlue",
+            PaletteTemplate::DyeSpringPurple => "DyeSpringPurple",
+            PaletteTemplate::DyeSpringBlack => "DyeSpringBlack",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(i32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum SummoningMastery {
@@ -4709,6 +7692,18 @@ impl crate::readers::ACDataType for SummoningMastery {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(SummoningMastery::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for SummoningMastery {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            SummoningMastery::Undef => "Undef",
+            SummoningMastery::Primalist => "Primalist",
+            SummoningMastery::Necromancer => "Necromancer",
+            SummoningMastery::Naturalist => "Naturalist",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -5369,6 +8364,337 @@ impl crate::readers::ACDataType for ContractId {
     }
 }
 
+impl std::fmt::Display for ContractId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ContractId::Undef => "Undef",
+            ContractId::Contract1TheShadowsOfBitterWinter => "Contract_1_The_Shadows_of_Bitter_Winter",
+            ContractId::Contract2TestQuestStamping => "Contract_2_Test_Quest_Stamping",
+            ContractId::Contract3TestContract3 => "Contract_3_Test_Contract_3",
+            ContractId::Contract4TestContract4 => "Contract_4_Test_Contract_4",
+            ContractId::Contract5ReignOfTerror => "Contract_5_Reign_of_Terror",
+            ContractId::Contract6GlendenWoodInvasionLow => "Contract_6_Glenden_Wood_Invasion_Low",
+            ContractId::Contract7GlendenWoodInvasionMid => "Contract_7_Glenden_Wood_Invasion_Mid",
+            ContractId::Contract8GlendenWoodInvasionHigh => "Contract_8_Glenden_Wood_Invasion_High",
+            ContractId::Contract9FrozenFury => "Contract_9_Frozen_Fury",
+            ContractId::Contract10DefenseOfZaikhalCopper => "Contract_10_Defense_of_Zaikhal_Copper",
+            ContractId::Contract11DefenseOfZaikhalSilver => "Contract_11_Defense_of_Zaikhal_Silver",
+            ContractId::Contract12DefenseOfZaikhalGold => "Contract_12_Defense_of_Zaikhal_Gold",
+            ContractId::Contract13DefenseOfZaikhalPlatinum => "Contract_13_Defense_of_Zaikhal_Platinum",
+            ContractId::Contract14TheCaliginousBethel => "Contract_14_The_Caliginous_Bethel",
+            ContractId::Contract15TheLegendOfTheTuskerPaw => "Contract_15_The_Legend_of_the_Tusker_Paw",
+            ContractId::Contract16OswaldsLair => "Contract_16_Oswalds_Lair",
+            ContractId::Contract17TheDecrepitTower => "Contract_17_The_Decrepit_Tower",
+            ContractId::Contract18BanderlingHaunt => "Contract_18_Banderling_Haunt",
+            ContractId::Contract19Reconnaissance => "Contract_19_Reconnaissance",
+            ContractId::Contract20AssaultLow => "Contract_20_Assault_Low",
+            ContractId::Contract21AssaultMid => "Contract_21_Assault_Mid",
+            ContractId::Contract22AssaultHigh => "Contract_22_Assault_High",
+            ContractId::Contract23AssaultExpert => "Contract_23_Assault_Expert",
+            ContractId::Contract24Infiltration => "Contract_24_Infiltration",
+            ContractId::Contract25OfTrustAndBetrayal => "Contract_25_Of_Trust_and_Betrayal",
+            ContractId::Contract26IshaqsLostKey => "Contract_26_Ishaqs_Lost_Key",
+            ContractId::Contract27TheShadowsOfBitterWinter => "Contract_27_The_Shadows_of_Bitter_Winter",
+            ContractId::Contract28SuzuharaBaijinsDelivery => "Contract_28_Suzuhara_Baijins_Delivery",
+            ContractId::Contract29HaleatanBeachCamps => "Contract_29_Haleatan_Beach_Camps",
+            ContractId::Contract30RicardosBloodGem => "Contract_30_Ricardos_Blood_Gem",
+            ContractId::Contract31SawatoExtortion => "Contract_31_Sawato_Extortion",
+            ContractId::Contract32FirstContact => "Contract_32_First_Contact",
+            ContractId::Contract33CraftingForgesLow => "Contract_33_Crafting_Forges_Low",
+            ContractId::Contract34CraftingForgesMid => "Contract_34_Crafting_Forges_Mid",
+            ContractId::Contract35CraftingForgesHigh => "Contract_35_Crafting_Forges_High",
+            ContractId::Contract36NorthernShroudCabal => "Contract_36_Northern_Shroud_Cabal",
+            ContractId::Contract37SouthernShroudCabal => "Contract_37_Southern_Shroud_Cabal",
+            ContractId::Contract38FacesOfTheMukkirLow => "Contract_38_Faces_of_the_Mukkir_Low",
+            ContractId::Contract39FacesOfTheMukkirMid => "Contract_39_Faces_of_the_Mukkir_Mid",
+            ContractId::Contract40FacesOfTheMukkirHigh => "Contract_40_Faces_of_the_Mukkir_High",
+            ContractId::Contract41FacesOfTheMukkirExpert => "Contract_41_Faces_of_the_Mukkir_Expert",
+            ContractId::Contract42FiunHealingMachine => "Contract_42_Fiun_Healing_Machine",
+            ContractId::Contract43HamudsDemise => "Contract_43_Hamuds_Demise",
+            ContractId::Contract44RaisingGraelsIsland => "Contract_44_Raising_Graels_Island",
+            ContractId::Contract45EnricosBetrayal => "Contract_45_Enricos_Betrayal",
+            ContractId::Contract46LostPet => "Contract_46_Lost_Pet",
+            ContractId::Contract47HisMastersVoice => "Contract_47_His_Masters_Voice",
+            ContractId::Contract48TentaclesOfTthuun => "Contract_48_Tentacles_of_Tthuun",
+            ContractId::Contract49ReignOfTerror => "Contract_49_Reign_of_Terror",
+            ContractId::Contract50TheCrystalStaffOfTheAnekshay => "Contract_50_The_Crystal_Staff_of_the_Anekshay",
+            ContractId::Contract51TheCrystalSwordOfTheAnekshay => "Contract_51_The_Crystal_Sword_of_the_Anekshay",
+            ContractId::Contract52TheCrystalAmuletOfTheAnekshay => "Contract_52_The_Crystal_Amulet_of_the_Anekshay",
+            ContractId::Contract53TheCrystalIdolOfTheAnekshay => "Contract_53_The_Crystal_Idol_of_the_Anekshay",
+            ContractId::Contract54ArmoredilloHuntingLostCityOfNeftet => "Contract_54_Armoredillo_Hunting__Lost_City_of_Neftet",
+            ContractId::Contract55GolemHuntingLostCityOfNeftet => "Contract_55_Golem_Hunting__Lost_City_of_Neftet",
+            ContractId::Contract56MuMiyahHuntingLostCityOfNeftet => "Contract_56_Mu_miyah_Hunting__Lost_City_of_Neftet",
+            ContractId::Contract57ReedsharkHuntingLostCityOfNeftet => "Contract_57_Reedshark_Hunting__Lost_City_of_Neftet",
+            ContractId::Contract58AnekshayBracerCollectingLostCityOfNeftet => "Contract_58_Anekshay_Bracer_Collecting__Lost_City_of_Neftet",
+            ContractId::Contract59StoneTabletCollectingLostCityOfNeftet => "Contract_59_Stone_Tablet_Collecting__Lost_City_of_Neftet",
+            ContractId::Contract60PricklyPearCollectingLostCityOfNeftet => "Contract_60_Prickly_Pear_Collecting__Lost_City_of_Neftet",
+            ContractId::Contract61ContractsBrokers => "Contract_61_Contracts__Brokers",
+            ContractId::Contract62AugSirBellas => "Contract_62_Aug__Sir_Bellas",
+            ContractId::Contract63AugSociety => "Contract_63_Aug__Society",
+            ContractId::Contract64AugDiemos => "Contract_64_Aug__Diemos",
+            ContractId::Contract65AugLuminance => "Contract_65_Aug__Luminance",
+            ContractId::Contract66Colosseum => "Contract_66_Colosseum",
+            ContractId::Contract67AerbaxsDefeat => "Contract_67_Aerbaxs_Defeat",
+            ContractId::Contract68SummoningTthuun => "Contract_68_Summoning_Tthuun",
+            ContractId::Contract69EmpyreanRescue => "Contract_69_Empyrean_Rescue",
+            ContractId::Contract70UncoveringTheRenegades => "Contract_70_Uncovering_the_Renegades",
+            ContractId::Contract71TumerokSaltedMeat => "Contract_71_Tumerok_Salted_Meat",
+            ContractId::Contract72DeewainsDarkCavern => "Contract_72_Deewains_Dark_Cavern",
+            ContractId::Contract73SealingAwayTheBookOfEibhil => "Contract_73_Sealing_Away_the_Book_of_Eibhil",
+            ContractId::Contract74SocDarkIsleDelivery => "Contract_74_Soc__Dark_Isle_Delivery",
+            ContractId::Contract75SocVaeshok => "Contract_75_Soc__Vaeshok",
+            ContractId::Contract76SocShamblingArchivist => "Contract_76_Soc__Shambling_Archivist",
+            ContractId::Contract77SocUndeadJawCollection => "Contract_77_Soc__Undead_Jaw_Collection",
+            ContractId::Contract78SocWightBladeSorcerers => "Contract_78_Soc__Wight_Blade_Sorcerers",
+            ContractId::Contract79SocBlackCoralCollection => "Contract_79_Soc__Black_Coral_Collection",
+            ContractId::Contract80SocDarkIsleScouting => "Contract_80_Soc__Dark_Isle_Scouting",
+            ContractId::Contract81SocBanditManaHunterBoss => "Contract_81_Soc__Bandit_Mana_Hunter_Boss",
+            ContractId::Contract82SocManaInfusedJungleFlowers => "Contract_82_Soc__Mana_Infused_Jungle_Flowers",
+            ContractId::Contract83SocJungleLilies => "Contract_83_Soc__Jungle_Lilies",
+            ContractId::Contract84SocMoarGlands => "Contract_84_Soc__Moar_Glands",
+            ContractId::Contract85SocBlessedMoarsmen => "Contract_85_Soc__Blessed_Moarsmen",
+            ContractId::Contract86SocPhyntosHiveSplinters => "Contract_86_Soc__Phyntos_Hive_Splinters",
+            ContractId::Contract87SocPhyntosHoney => "Contract_87_Soc__Phyntos_Honey",
+            ContractId::Contract88SocPhyntosQueen => "Contract_88_Soc__Phyntos_Queen",
+            ContractId::Contract89SocPhyntosLarvae => "Contract_89_Soc__Phyntos_Larvae",
+            ContractId::Contract90SocKillerPhyntosWasps => "Contract_90_Soc__Killer_Phyntos_Wasps",
+            ContractId::Contract91SocCoralTowers => "Contract_91_Soc__Coral_Towers",
+            ContractId::Contract92SocMagshuthMoarsmen => "Contract_92_Soc__Magshuth_Moarsmen",
+            ContractId::Contract93SocMoarsmanHighPriest => "Contract_93_Soc__Moarsman_High_Priest",
+            ContractId::Contract94SocArtifactCollection => "Contract_94_Soc__Artifact_Collection",
+            ContractId::Contract95SocMoguthMoarsmen => "Contract_95_Soc__Moguth_Moarsmen",
+            ContractId::Contract96SocShoguthMoarsmen => "Contract_96_Soc__Shoguth_Moarsmen",
+            ContractId::Contract97SocSpawningPools => "Contract_97_Soc__Spawning_Pools",
+            ContractId::Contract98SocGraveyardDelivery => "Contract_98_Soc__Graveyard_Delivery",
+            ContractId::Contract99SocStoneTracings => "Contract_99_Soc__Stone_Tracings",
+            ContractId::Contract100SocFalatacotReports => "Contract_100_Soc__Falatacot_Reports",
+            ContractId::Contract101SocDarkIsleDelivery => "Contract_101_Soc__Dark_Isle_Delivery",
+            ContractId::Contract102SocVaeshok => "Contract_102_Soc__Vaeshok",
+            ContractId::Contract103SocShamblingArchivist => "Contract_103_Soc__Shambling_Archivist",
+            ContractId::Contract104SocUndeadJawCollection => "Contract_104_Soc__Undead_Jaw_Collection",
+            ContractId::Contract105SocWightBladeSorcerers => "Contract_105_Soc__Wight_Blade_Sorcerers",
+            ContractId::Contract106SocBlackCoralCollection => "Contract_106_Soc__Black_Coral_Collection",
+            ContractId::Contract107SocDarkIsleScouting => "Contract_107_Soc__Dark_Isle_Scouting",
+            ContractId::Contract108SocBanditManaHunterBoss => "Contract_108_Soc__Bandit_Mana_Hunter_Boss",
+            ContractId::Contract109SocManaInfusedJungleFlowers => "Contract_109_Soc__Mana_Infused_Jungle_Flowers",
+            ContractId::Contract110SocJungleLilies => "Contract_110_Soc__Jungle_Lilies",
+            ContractId::Contract111SocMoarGlands => "Contract_111_Soc__Moar_Glands",
+            ContractId::Contract112SocBlessedMoarsmen => "Contract_112_Soc__Blessed_Moarsmen",
+            ContractId::Contract113SocPhyntosHiveSplinters => "Contract_113_Soc__Phyntos_Hive_Splinters",
+            ContractId::Contract114SocPhyntosHoney => "Contract_114_Soc__Phyntos_Honey",
+            ContractId::Contract115SocPhyntosQueen => "Contract_115_Soc__Phyntos_Queen",
+            ContractId::Contract116SocPhyntosLarvae => "Contract_116_Soc__Phyntos_Larvae",
+            ContractId::Contract117SocKillerPhyntosWasps => "Contract_117_Soc__Killer_Phyntos_Wasps",
+            ContractId::Contract118SocCoralTowers => "Contract_118_Soc__Coral_Towers",
+            ContractId::Contract119SocMagshuthMoarsmen => "Contract_119_Soc__Magshuth_Moarsmen",
+            ContractId::Contract120SocMoarsmanHighPriest => "Contract_120_Soc__Moarsman_High_Priest",
+            ContractId::Contract121SocArtifactCollection => "Contract_121_Soc__Artifact_Collection",
+            ContractId::Contract122SocMoguthMoarsmen => "Contract_122_Soc__Moguth_Moarsmen",
+            ContractId::Contract123SocShoguthMoarsmen => "Contract_123_Soc__Shoguth_Moarsmen",
+            ContractId::Contract124SocSpawningPools => "Contract_124_Soc__Spawning_Pools",
+            ContractId::Contract125SocGraveyardDelivery => "Contract_125_Soc__Graveyard_Delivery",
+            ContractId::Contract126SocStoneTracings => "Contract_126_Soc__Stone_Tracings",
+            ContractId::Contract127SocFalatacotReports => "Contract_127_Soc__Falatacot_Reports",
+            ContractId::Contract128SocDarkIsleDelivery => "Contract_128_Soc__Dark_Isle_Delivery",
+            ContractId::Contract129SocVaeshok => "Contract_129_Soc__Vaeshok",
+            ContractId::Contract130SocShamblingArchivist => "Contract_130_Soc__Shambling_Archivist",
+            ContractId::Contract131SocUndeadJawCollection => "Contract_131_Soc__Undead_Jaw_Collection",
+            ContractId::Contract132SocWightBladeSorcerers => "Contract_132_Soc__Wight_Blade_Sorcerers",
+            ContractId::Contract133SocBlackCoralCollection => "Contract_133_Soc__Black_Coral_Collection",
+            ContractId::Contract134SocDarkIsleScouting => "Contract_134_Soc__Dark_Isle_Scouting",
+            ContractId::Contract135SocBanditManaHunterBoss => "Contract_135_Soc__Bandit_Mana_Hunter_Boss",
+            ContractId::Contract136SocManaInfusedJungleFlowers => "Contract_136_Soc__Mana_Infused_Jungle_Flowers",
+            ContractId::Contract137SocJungleLilies => "Contract_137_Soc__Jungle_Lilies",
+            ContractId::Contract138SocMoarGlands => "Contract_138_Soc__Moar_Glands",
+            ContractId::Contract139SocBlessedMoarsmen => "Contract_139_Soc__Blessed_Moarsmen",
+            ContractId::Contract140SocPhyntosHiveSplinters => "Contract_140_Soc__Phyntos_Hive_Splinters",
+            ContractId::Contract141SocPhyntosHoney => "Contract_141_Soc__Phyntos_Honey",
+            ContractId::Contract142SocPhyntosQueen => "Contract_142_Soc__Phyntos_Queen",
+            ContractId::Contract143SocPhyntosLarvae => "Contract_143_Soc__Phyntos_Larvae",
+            ContractId::Contract144SocKillerPhyntosWasps => "Contract_144_Soc__Killer_Phyntos_Wasps",
+            ContractId::Contract145SocCoralTowers => "Contract_145_Soc__Coral_Towers",
+            ContractId::Contract146SocMagshuthMoarsmen => "Contract_146_Soc__Magshuth_Moarsmen",
+            ContractId::Contract147SocMoarsmanHighPriest => "Contract_147_Soc__Moarsman_High_Priest",
+            ContractId::Contract148SocArtifactCollection => "Contract_148_Soc__Artifact_Collection",
+            ContractId::Contract149SocMoguthMoarsmen => "Contract_149_Soc__Moguth_Moarsmen",
+            ContractId::Contract150SocShoguthMoarsmen => "Contract_150_Soc__Shoguth_Moarsmen",
+            ContractId::Contract151SocSpawningPools => "Contract_151_Soc__Spawning_Pools",
+            ContractId::Contract152SocGraveyardDelivery => "Contract_152_Soc__Graveyard_Delivery",
+            ContractId::Contract153SocStoneTracings => "Contract_153_Soc__Stone_Tracings",
+            ContractId::Contract154SocFalatacotReports => "Contract_154_Soc__Falatacot_Reports",
+            ContractId::Contract155SocPalmFort => "Contract_155_Soc__Palm_Fort",
+            ContractId::Contract156SocSupplySaboteur => "Contract_156_Soc__Supply_Saboteur",
+            ContractId::Contract157SocForgottenTunnelsOfNyrleha => "Contract_157_Soc__Forgotten_Tunnels_of_Nyrleha",
+            ContractId::Contract158SocPalmFort => "Contract_158_Soc__Palm_Fort",
+            ContractId::Contract159SocSupplySaboteur => "Contract_159_Soc__Supply_Saboteur",
+            ContractId::Contract160SocForgottenTunnelsOfNyrleha => "Contract_160_Soc__Forgotten_Tunnels_of_Nyrleha",
+            ContractId::Contract161SocPalmFort => "Contract_161_Soc__Palm_Fort",
+            ContractId::Contract162SocSupplySaboteur => "Contract_162_Soc__Supply_Saboteur",
+            ContractId::Contract163SocForgottenTunnelsOfNyrleha => "Contract_163_Soc__Forgotten_Tunnels_of_Nyrleha",
+            ContractId::Contract164KillTenebrousRifts => "Contract_164_Kill__Tenebrous_Rifts",
+            ContractId::Contract165KillUmbralRifts => "Contract_165_Kill__Umbral_Rifts",
+            ContractId::Contract166HarlunesDiplomacy => "Contract_166_Harlunes_Diplomacy",
+            ContractId::Contract167SavingAsheron => "Contract_167_Saving_Asheron",
+            ContractId::Contract168MenhirResearch => "Contract_168_Menhir_Research",
+            ContractId::Contract169GearKnightExcavation => "Contract_169_Gear_Knight_Excavation",
+            ContractId::Contract170NexusCrawl => "Contract_170_Nexus_Crawl",
+            ContractId::Contract171JesterReleased => "Contract_171_Jester_Released",
+            ContractId::Contract172VisionQuest => "Contract_172_Vision_Quest",
+            ContractId::Contract173AerbaxsProdigalMonouga => "Contract_173_Aerbaxs_Prodigal_Monouga",
+            ContractId::Contract174QotMWeekly1 => "Contract_174_QotM__Weekly_1",
+            ContractId::Contract175QotMWeekly2 => "Contract_175_QotM__Weekly_2",
+            ContractId::Contract176QotMWeekly3 => "Contract_176_QotM__Weekly_3",
+            ContractId::Contract177DeathsAllure => "Contract_177_Deaths_Allure",
+            ContractId::Contract178YanshiTunnels => "Contract_178_Yanshi_Tunnels",
+            ContractId::Contract179KillGurogMinions => "Contract_179_Kill__Gurog_Minions",
+            ContractId::Contract180KillGurogSoldiers => "Contract_180_Kill__Gurog_Soldiers",
+            ContractId::Contract181KillGurogHenchmen => "Contract_181_Kill__Gurog_Henchmen",
+            ContractId::Contract182AerbaxsProdigalTusker => "Contract_182_Aerbaxs_Prodigal_Tusker",
+            ContractId::Contract183FindTheBarkeeper => "Contract_183_Find_the_Barkeeper",
+            ContractId::Contract184FindTheBarkeeper => "Contract_184_Find_the_Barkeeper",
+            ContractId::Contract185FindTheBarkeeper => "Contract_185_Find_the_Barkeeper",
+            ContractId::Contract186FindTheBarkeeper => "Contract_186_Find_the_Barkeeper",
+            ContractId::Contract187FindThePathwarden => "Contract_187_Find_the_Pathwarden",
+            ContractId::Contract188FindThePathwarden => "Contract_188_Find_the_Pathwarden",
+            ContractId::Contract189FindThePathwarden => "Contract_189_Find_the_Pathwarden",
+            ContractId::Contract190FindThePathwarden => "Contract_190_Find_the_Pathwarden",
+            ContractId::Contract191DrudgeHideout => "Contract_191_Drudge_Hideout",
+            ContractId::Contract192HoltburgRedoubt => "Contract_192_Holtburg_Redoubt",
+            ContractId::Contract193TheBeacon => "Contract_193_The_Beacon",
+            ContractId::Contract194TheMissingNecklace => "Contract_194_The_Missing_Necklace",
+            ContractId::Contract195BraidMansionRuin => "Contract_195_Braid_Mansion_Ruin",
+            ContractId::Contract196NenAisPetDrudge => "Contract_196_Nen_Ais_Pet_Drudge",
+            ContractId::Contract197SeaTempleCatacombs => "Contract_197_Sea_Temple_Catacombs",
+            ContractId::Contract198UnderCoveCrypt => "Contract_198_Under_Cove_Crypt",
+            ContractId::Contract199FacilityHub => "Contract_199_Facility_Hub",
+            ContractId::Contract200JailbreakArdentLeader => "Contract_200_Jailbreak__Ardent_Leader",
+            ContractId::Contract201JailbreakBlessedLeader => "Contract_201_Jailbreak__Blessed_Leader",
+            ContractId::Contract202JailbreakVerdantLeader => "Contract_202_Jailbreak__Verdant_Leader",
+            ContractId::Contract203JailbreakGeneralPopulation => "Contract_203_Jailbreak__General_Population",
+            ContractId::Contract204GurogCreation => "Contract_204_Gurog_Creation",
+            ContractId::Contract205WardleyAndTheWights => "Contract_205_Wardley_and_the_Wights",
+            ContractId::Contract206AetheriumOreCollection => "Contract_206_Aetherium_Ore_Collection",
+            ContractId::Contract207AetheriumPowerCoreCollection => "Contract_207_Aetherium_Power_Core_Collection",
+            ContractId::Contract208AetheriumRaidHigh => "Contract_208_Aetherium_Raid_High",
+            ContractId::Contract209SocManaSiphonDestruction => "Contract_209_Soc__Mana_Siphon_Destruction",
+            ContractId::Contract210KillGearKnightKnights => "Contract_210_Kill__Gear_Knight_Knights",
+            ContractId::Contract211KillGearKnightCommander => "Contract_211_Kill__Gear_Knight_Commander",
+            ContractId::Contract212NalicanasTest => "Contract_212_Nalicanas_Test",
+            ContractId::Contract213BloodstoneInvestigation => "Contract_213_Bloodstone_Investigation",
+            ContractId::Contract214ChasingOswald => "Contract_214_Chasing_Oswald",
+            ContractId::Contract215HuntingAunRalirea => "Contract_215_Hunting_Aun_Ralirea",
+            ContractId::Contract216AerbaxsProdigalMonouga => "Contract_216_Aerbaxs_Prodigal_Monouga",
+            ContractId::Contract217AerbaxsProdigalDrudge => "Contract_217_Aerbaxs_Prodigal_Drudge",
+            ContractId::Contract218AerbaxsProdigalHuman => "Contract_218_Aerbaxs_Prodigal_Human",
+            ContractId::Contract219KidnappedHandmaiden => "Contract_219_Kidnapped_Handmaiden",
+            ContractId::Contract220SepulcherOfNightmares => "Contract_220_Sepulcher_of_Nightmares",
+            ContractId::Contract221MhoireCastle => "Contract_221_Mhoire_Castle",
+            ContractId::Contract222BobosMedicine => "Contract_222_Bobos_Medicine",
+            ContractId::Contract223MhoireOubliette => "Contract_223_Mhoire_Oubliette",
+            ContractId::Contract224GerainesStudy => "Contract_224_Geraines_Study",
+            ContractId::Contract225GerainesHosts => "Contract_225_Geraines_Hosts",
+            ContractId::Contract226SplittingGraelHigh => "Contract_226_Splitting_Grael_High",
+            ContractId::Contract227SplittingGraelMid => "Contract_227_Splitting_Grael_Mid",
+            ContractId::Contract228SplittingGraelLow => "Contract_228_Splitting_Grael_Low",
+            ContractId::Contract229ClutchOfKingsReeshan => "Contract_229_Clutch_of_Kings__Reeshan",
+            ContractId::Contract230ClutchOfKingsKiree => "Contract_230_Clutch_of_Kings__Kiree",
+            ContractId::Contract231ClutchOfKingsBroodu => "Contract_231_Clutch_of_Kings__Broodu",
+            ContractId::Contract232ClutchOfKingsKeerik => "Contract_232_Clutch_of_Kings__Keerik",
+            ContractId::Contract233ClutchOfKingsRehir => "Contract_233_Clutch_of_Kings__Rehir",
+            ContractId::Contract234ClutchOfKingsBrowerk => "Contract_234_Clutch_of_Kings__Browerk",
+            ContractId::Contract235ClutchOfKingsAll => "Contract_235_Clutch_of_Kings__All",
+            ContractId::Contract236KillSpectralArchers => "Contract_236_Kill__Spectral_Archers",
+            ContractId::Contract237KillSpectralMinions => "Contract_237_Kill__Spectral_Minions",
+            ContractId::Contract238KillSpectralNanjouShouJen => "Contract_238_Kill__Spectral_Nanjou_Shou_jen",
+            ContractId::Contract239KillSpectralMages => "Contract_239_Kill__Spectral_Mages",
+            ContractId::Contract240KillSpectralBushi => "Contract_240_Kill__Spectral_Bushi",
+            ContractId::Contract241KillSpectralSamurai => "Contract_241_Kill__Spectral_Samurai",
+            ContractId::Contract242KillSpectralBladesAndClaws => "Contract_242_Kill__Spectral_Blades_and_Claws",
+            ContractId::Contract243KillSpectralSamuraiGolems => "Contract_243_Kill__Spectral_Samurai_Golems",
+            ContractId::Contract244HoshinoFortress => "Contract_244_Hoshino_Fortress",
+            ContractId::Contract245StipendGeneral => "Contract_245_Stipend__General",
+            ContractId::Contract246StipendCelestialHand => "Contract_246_Stipend__Celestial_Hand",
+            ContractId::Contract247StipendRadiantBlood => "Contract_247_Stipend__Radiant_Blood",
+            ContractId::Contract248StipendEldrytchWeb => "Contract_248_Stipend__Eldrytch_Web",
+            ContractId::Contract249JesterFocuses => "Contract_249_Jester_Focuses",
+            ContractId::Contract250UnleashTheGearknights => "Contract_250_Unleash_the_Gearknights",
+            ContractId::Contract251VirindiRescue => "Contract_251_Virindi_Rescue",
+            ContractId::Contract252NinjaAcademy => "Contract_252_Ninja_Academy",
+            ContractId::Contract253TanadaSlaughter => "Contract_253_Tanada_Slaughter",
+            ContractId::Contract254TanadaIntercept => "Contract_254_Tanada_Intercept",
+            ContractId::Contract255CrystallineAdventurer => "Contract_255_Crystalline_Adventurer",
+            ContractId::Contract256CrystallineMarkers => "Contract_256_Crystalline_Markers",
+            ContractId::Contract257CrystallineKiller => "Contract_257_Crystalline_Killer",
+            ContractId::Contract258CrystallineBoundWisp => "Contract_258_Crystalline_Bound_Wisp",
+            ContractId::Contract259NanjouStockade => "Contract_259_Nanjou_Stockade",
+            ContractId::Contract260MageAcademy => "Contract_260_Mage_Academy",
+            ContractId::Contract261ApostateFinale => "Contract_261_Apostate_Finale",
+            ContractId::Contract262LunnumsReturn => "Contract_262_Lunnums_Return",
+            ContractId::Contract263LunnumsPyre => "Contract_263_Lunnums_Pyre",
+            ContractId::Contract264LunnumsDisappearance => "Contract_264_Lunnums_Disappearance",
+            ContractId::Contract265LostLore => "Contract_265_Lost_Lore",
+            ContractId::Contract266SistersOfLight => "Contract_266_Sisters_of_Light",
+            ContractId::Contract267FirstSister => "Contract_267_First_Sister",
+            ContractId::Contract268SecondSister => "Contract_268_Second_Sister",
+            ContractId::Contract269ThirdSister => "Contract_269_Third_Sister",
+            ContractId::Contract270RitualInvestigation => "Contract_270_Ritual_Investigation",
+            ContractId::Contract271RitualDisruption => "Contract_271_Ritual_Disruption",
+            ContractId::Contract272DefeatHoshinoKei => "Contract_272_Defeat_Hoshino_Kei",
+            ContractId::Contract273ProtectingPicketedPets => "Contract_273_Protecting_Picketed_Pets",
+            ContractId::Contract274BuriedAlive => "Contract_274_Buried_Alive",
+            ContractId::Contract275Graverobber => "Contract_275_Graverobber",
+            ContractId::Contract276Escape => "Contract_276_Escape",
+            ContractId::Contract277Deconstruction => "Contract_277_Deconstruction",
+            ContractId::Contract278UzizAbductions => "Contract_278_Uziz_Abductions",
+            ContractId::Contract279GolemHuntersMudGolemSludgeLord => "Contract_279_Golem_Hunters__Mud_Golem_Sludge_Lord",
+            ContractId::Contract280GolemHuntersCopperGolemKingpin => "Contract_280_Golem_Hunters__Copper_Golem_Kingpin",
+            ContractId::Contract281GolemHuntersGlacialGolemMargrave => "Contract_281_Golem_Hunters__Glacial_Golem_Margrave",
+            ContractId::Contract282GolemHuntersMagmaGolemExarch => "Contract_282_Golem_Hunters__Magma_Golem_Exarch",
+            ContractId::Contract283GolemHuntersCoralGolemViceroy => "Contract_283_Golem_Hunters__Coral_Golem_Viceroy",
+            ContractId::Contract284GolemHuntersPlatinumGolemMountainKing => "Contract_284_Golem_Hunters__Platinum_Golem_Mountain_King",
+            ContractId::Contract285OlthoiHiveQueen => "Contract_285_Olthoi_Hive_Queen",
+            ContractId::Contract286SocManaSiphonDestruction => "Contract_286_Soc__Mana_Siphon_Destruction",
+            ContractId::Contract287SocManaSiphonDestruction => "Contract_287_Soc__Mana_Siphon_Destruction",
+            ContractId::Contract288SocDestroyThePhalanx => "Contract_288_Soc__Destroy_The_Phalanx",
+            ContractId::Contract289SocDestroyThePhalanx => "Contract_289_Soc__Destroy_The_Phalanx",
+            ContractId::Contract290SocDestroyThePhalanx => "Contract_290_Soc__Destroy_The_Phalanx",
+            ContractId::Contract291SocCollectGearKnightParts => "Contract_291_Soc__Collect_Gear_Knight_Parts",
+            ContractId::Contract292SocCollectGearKnightParts => "Contract_292_Soc__Collect_Gear_Knight_Parts",
+            ContractId::Contract293SocCollectGearKnightParts => "Contract_293_Soc__Collect_Gear_Knight_Parts",
+            ContractId::Contract294KillGearKnightSquires => "Contract_294_Kill__Gear_Knight_Squires",
+            ContractId::Contract295BehindTheMask => "Contract_295_Behind_The_Mask",
+            ContractId::Contract296FrozenFortressLaboratory => "Contract_296_Frozen_Fortress_Laboratory",
+            ContractId::Contract297FrozenFortressTestingGrounds => "Contract_297_Frozen_Fortress_Testing_Grounds",
+            ContractId::Contract298OlthoiHiveWarriorPincer => "Contract_298_Olthoi_Hive_Warrior_Pincer",
+            ContractId::Contract299OlthoiHiveEvisceratorPincer => "Contract_299_Olthoi_Hive_Eviscerator_Pincer",
+            ContractId::Contract300SnowTuskerLeaderTusk => "Contract_300_Snow_Tusker_Leader_Tusk",
+            ContractId::Contract301JourneyToMadness => "Contract_301_Journey_To_Madness",
+            ContractId::Contract302Visitors => "Contract_302_Visitors",
+            ContractId::Contract303KillRynthidMinions => "Contract_303_Kill__Rynthid_Minions",
+            ContractId::Contract304KillEmpoweredWisps => "Contract_304_Kill__Empowered_Wisps",
+            ContractId::Contract305KillRynthidRareBoss => "Contract_305_Kill__Rynthid_Rare_Boss",
+            ContractId::Contract306KillRynthidSlayers => "Contract_306_Kill__Rynthid_Slayers",
+            ContractId::Contract307KillRynthidRagers => "Contract_307_Kill__Rynthid_Ragers",
+            ContractId::Contract308KillRynthidSorcerers => "Contract_308_Kill__Rynthid_Sorcerers",
+            ContractId::Contract309KillRynthidRifts => "Contract_309_Kill__Rynthid_Rifts",
+            ContractId::Contract310LegendaryQuests => "Contract_310_Legendary_Quests",
+            ContractId::Contract311RynthidGenesis => "Contract_311_Rynthid_Genesis",
+            ContractId::Contract312ChangingGears => "Contract_312_Changing_Gears",
+            ContractId::Contract313FearFactory => "Contract_313_Fear_Factory",
+            ContractId::Contract314SpiritedHalls => "Contract_314_Spirited_Halls",
+            ContractId::Contract315EndOfDays => "Contract_315_End_of_Days",
+            ContractId::Contract316LugianAssault => "Contract_316_Lugian_Assault",
+            ContractId::Contract317RynthidTraining => "Contract_317_Rynthid_Training",
+            ContractId::Contract318KillTouTouShadowFlyers => "Contract_318_Kill__Tou_Tou_Shadow_Flyers",
+            ContractId::Contract319KillTouTouGrievverShredders => "Contract_319_Kill__Tou_Tou_Grievver_Shredders",
+            ContractId::Contract320KillTouTouDevourerMarguls => "Contract_320_Kill__Tou_Tou_Devourer_Marguls",
+            ContractId::Contract321KillTouTouShadows => "Contract_321_Kill__Tou_Tou_Shadows",
+            ContractId::Contract322KillTouTouVoidLords => "Contract_322_Kill__Tou_Tou_Void_Lords",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The PropertyInt64 identifies a specific Character or Object int64 property.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
@@ -5387,6 +8713,22 @@ impl crate::readers::ACDataType for PropertyInt64 {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyInt64::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for PropertyInt64 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyInt64::TotalExperience => "TotalExperience",
+            PropertyInt64::AvailableExperience => "AvailableExperience",
+            PropertyInt64::AugmentationCost => "AugmentationCost",
+            PropertyInt64::ItemTotalXp => "ItemTotalXp",
+            PropertyInt64::ItemBaseXp => "ItemBaseXp",
+            PropertyInt64::AvailableLuminance => "AvailableLuminance",
+            PropertyInt64::MaximumLuminance => "MaximumLuminance",
+            PropertyInt64::InteractionReqs => "InteractionReqs",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -5534,6 +8876,145 @@ impl crate::readers::ACDataType for PropertyBool {
     }
 }
 
+impl std::fmt::Display for PropertyBool {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyBool::Undef => "Undef",
+            PropertyBool::Stuck => "Stuck",
+            PropertyBool::Open => "Open",
+            PropertyBool::Locked => "Locked",
+            PropertyBool::RotProof => "RotProof",
+            PropertyBool::AllegianceUpdateRequest => "AllegianceUpdateRequest",
+            PropertyBool::AiUsesMana => "AiUsesMana",
+            PropertyBool::AiUseHumanMagicAnimations => "AiUseHumanMagicAnimations",
+            PropertyBool::AllowGive => "AllowGive",
+            PropertyBool::CurrentlyAttacking => "CurrentlyAttacking",
+            PropertyBool::AttackerAi => "AttackerAi",
+            PropertyBool::IgnoreCollisions => "IgnoreCollisions",
+            PropertyBool::ReportCollisions => "ReportCollisions",
+            PropertyBool::Ethereal => "Ethereal",
+            PropertyBool::GravityStatus => "GravityStatus",
+            PropertyBool::LightsStatus => "LightsStatus",
+            PropertyBool::ScriptedCollision => "ScriptedCollision",
+            PropertyBool::Inelastic => "Inelastic",
+            PropertyBool::Visibility => "Visibility",
+            PropertyBool::Attackable => "Attackable",
+            PropertyBool::SafeSpellComponents => "SafeSpellComponents",
+            PropertyBool::AdvocateState => "AdvocateState",
+            PropertyBool::Inscribable => "Inscribable",
+            PropertyBool::DestroyOnSell => "DestroyOnSell",
+            PropertyBool::UiHidden => "UiHidden",
+            PropertyBool::IgnoreHouseBarriers => "IgnoreHouseBarriers",
+            PropertyBool::HiddenAdmin => "HiddenAdmin",
+            PropertyBool::PkWounder => "PkWounder",
+            PropertyBool::PkKiller => "PkKiller",
+            PropertyBool::NoCorpse => "NoCorpse",
+            PropertyBool::UnderLifestoneProtection => "UnderLifestoneProtection",
+            PropertyBool::ItemManaUpdatePending => "ItemManaUpdatePending",
+            PropertyBool::GeneratorStatus => "GeneratorStatus",
+            PropertyBool::ResetMessagePending => "ResetMessagePending",
+            PropertyBool::DefaultOpen => "DefaultOpen",
+            PropertyBool::DefaultLocked => "DefaultLocked",
+            PropertyBool::DefaultOn => "DefaultOn",
+            PropertyBool::OpenForBusiness => "OpenForBusiness",
+            PropertyBool::IsFrozen => "IsFrozen",
+            PropertyBool::DealMagicalItems => "DealMagicalItems",
+            PropertyBool::LogoffImDead => "LogoffImDead",
+            PropertyBool::ReportCollisionsAsEnvironment => "ReportCollisionsAsEnvironment",
+            PropertyBool::AllowEdgeSlide => "AllowEdgeSlide",
+            PropertyBool::AdvocateQuest => "AdvocateQuest",
+            PropertyBool::IsAdmin => "IsAdmin",
+            PropertyBool::IsArch => "IsArch",
+            PropertyBool::IsSentinel => "IsSentinel",
+            PropertyBool::IsAdvocate => "IsAdvocate",
+            PropertyBool::CurrentlyPoweringUp => "CurrentlyPoweringUp",
+            PropertyBool::GeneratorEnteredWorld => "GeneratorEnteredWorld",
+            PropertyBool::NeverFailCasting => "NeverFailCasting",
+            PropertyBool::VendorService => "VendorService",
+            PropertyBool::AiImmobile => "AiImmobile",
+            PropertyBool::DamagedByCollisions => "DamagedByCollisions",
+            PropertyBool::IsDynamic => "IsDynamic",
+            PropertyBool::IsHot => "IsHot",
+            PropertyBool::IsAffecting => "IsAffecting",
+            PropertyBool::AffectsAis => "AffectsAis",
+            PropertyBool::SpellQueueActive => "SpellQueueActive",
+            PropertyBool::GeneratorDisabled => "GeneratorDisabled",
+            PropertyBool::IsAcceptingTells => "IsAcceptingTells",
+            PropertyBool::LoggingChannel => "LoggingChannel",
+            PropertyBool::OpensAnyLock => "OpensAnyLock",
+            PropertyBool::UnlimitedUse => "UnlimitedUse",
+            PropertyBool::GeneratedTreasureItem => "GeneratedTreasureItem",
+            PropertyBool::IgnoreMagicResist => "IgnoreMagicResist",
+            PropertyBool::IgnoreMagicArmor => "IgnoreMagicArmor",
+            PropertyBool::AiAllowTrade => "AiAllowTrade",
+            PropertyBool::SpellComponentsRequired => "SpellComponentsRequired",
+            PropertyBool::IsSellable => "IsSellable",
+            PropertyBool::IgnoreShieldsBySkill => "IgnoreShieldsBySkill",
+            PropertyBool::NoDraw => "NoDraw",
+            PropertyBool::ActivationUntargeted => "ActivationUntargeted",
+            PropertyBool::HouseHasGottenPriorityBootPos => "HouseHasGottenPriorityBootPos",
+            PropertyBool::GeneratorAutomaticDestruction => "GeneratorAutomaticDestruction",
+            PropertyBool::HouseHooksVisible => "HouseHooksVisible",
+            PropertyBool::HouseRequiresMonarch => "HouseRequiresMonarch",
+            PropertyBool::HouseHooksEnabled => "HouseHooksEnabled",
+            PropertyBool::HouseNotifiedHudOfHookCount => "HouseNotifiedHudOfHookCount",
+            PropertyBool::AiAcceptEverything => "AiAcceptEverything",
+            PropertyBool::IgnorePortalRestrictions => "IgnorePortalRestrictions",
+            PropertyBool::RequiresBackpackSlot => "RequiresBackpackSlot",
+            PropertyBool::DontTurnOrMoveWhenGiving => "DontTurnOrMoveWhenGiving",
+            PropertyBool::NpcLooksLikeObject => "NpcLooksLikeObject",
+            PropertyBool::IgnoreCloIcons => "IgnoreCloIcons",
+            PropertyBool::AppraisalHasAllowedWielder => "AppraisalHasAllowedWielder",
+            PropertyBool::ChestRegenOnClose => "ChestRegenOnClose",
+            PropertyBool::LogoffInMinigame => "LogoffInMinigame",
+            PropertyBool::PortalShowDestination => "PortalShowDestination",
+            PropertyBool::PortalIgnoresPkAttackTimer => "PortalIgnoresPkAttackTimer",
+            PropertyBool::NpcInteractsSilently => "NpcInteractsSilently",
+            PropertyBool::Retained => "Retained",
+            PropertyBool::IgnoreAuthor => "IgnoreAuthor",
+            PropertyBool::Limbo => "Limbo",
+            PropertyBool::AppraisalHasAllowedActivator => "AppraisalHasAllowedActivator",
+            PropertyBool::ExistedBeforeAllegianceXpChanges => "ExistedBeforeAllegianceXpChanges",
+            PropertyBool::IsDeaf => "IsDeaf",
+            PropertyBool::IsPsr => "IsPsr",
+            PropertyBool::Invincible => "Invincible",
+            PropertyBool::Ivoryable => "Ivoryable",
+            PropertyBool::Dyable => "Dyable",
+            PropertyBool::CanGenerateRare => "CanGenerateRare",
+            PropertyBool::CorpseGeneratedRare => "CorpseGeneratedRare",
+            PropertyBool::NonProjectileMagicImmune => "NonProjectileMagicImmune",
+            PropertyBool::ActdReceivedItems => "ActdReceivedItems",
+            PropertyBool::Unknown105 => "Unknown105",
+            PropertyBool::FirstEnterWorldDone => "FirstEnterWorldDone",
+            PropertyBool::RecallsDisabled => "RecallsDisabled",
+            PropertyBool::RareUsesTimer => "RareUsesTimer",
+            PropertyBool::ActdPreorderReceivedItems => "ActdPreorderReceivedItems",
+            PropertyBool::Afk => "Afk",
+            PropertyBool::IsGagged => "IsGagged",
+            PropertyBool::ProcSpellSelfTargeted => "ProcSpellSelfTargeted",
+            PropertyBool::IsAllegianceGagged => "IsAllegianceGagged",
+            PropertyBool::EquipmentSetTriggerPiece => "EquipmentSetTriggerPiece",
+            PropertyBool::Uninscribe => "Uninscribe",
+            PropertyBool::WieldOnUse => "WieldOnUse",
+            PropertyBool::ChestClearedWhenClosed => "ChestClearedWhenClosed",
+            PropertyBool::NeverAttack => "NeverAttack",
+            PropertyBool::SuppressGenerateEffect => "SuppressGenerateEffect",
+            PropertyBool::TreasureCorpse => "TreasureCorpse",
+            PropertyBool::EquipmentSetAddLevel => "EquipmentSetAddLevel",
+            PropertyBool::BarberActive => "BarberActive",
+            PropertyBool::TopLayerPriority => "TopLayerPriority",
+            PropertyBool::NoHeldItemShown => "NoHeldItemShown",
+            PropertyBool::LoginAtLifestone => "LoginAtLifestone",
+            PropertyBool::OlthoiPk => "OlthoiPk",
+            PropertyBool::Account15Days => "Account15Days",
+            PropertyBool::HadNoVitae => "HadNoVitae",
+            PropertyBool::NoOlthoiTalk => "NoOlthoiTalk",
+            PropertyBool::AutowieldLeft => "AutowieldLeft",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The DataPropertyId identifies a specific Character or Object data property.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
@@ -5605,6 +9086,75 @@ impl crate::readers::ACDataType for PropertyDataId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyDataId::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for PropertyDataId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyDataId::Setup => "Setup",
+            PropertyDataId::MotionTable => "MotionTable",
+            PropertyDataId::SoundTable => "SoundTable",
+            PropertyDataId::CombatTable => "CombatTable",
+            PropertyDataId::QualityFilter => "QualityFilter",
+            PropertyDataId::PaletteBase => "PaletteBase",
+            PropertyDataId::ClothingBase => "ClothingBase",
+            PropertyDataId::Icon => "Icon",
+            PropertyDataId::EyesTexture => "EyesTexture",
+            PropertyDataId::NoseTexture => "NoseTexture",
+            PropertyDataId::MouthTexture => "MouthTexture",
+            PropertyDataId::DefaultEyesTexture => "DefaultEyesTexture",
+            PropertyDataId::DefaultNoseTexture => "DefaultNoseTexture",
+            PropertyDataId::DefaultMouthTexture => "DefaultMouthTexture",
+            PropertyDataId::HairPalette => "HairPalette",
+            PropertyDataId::EyesPalette => "EyesPalette",
+            PropertyDataId::SkinPalette => "SkinPalette",
+            PropertyDataId::HeadObject => "HeadObject",
+            PropertyDataId::ActivationAnimation => "ActivationAnimation",
+            PropertyDataId::InitMotion => "InitMotion",
+            PropertyDataId::ActivationSound => "ActivationSound",
+            PropertyDataId::PhysicsEffectTable => "PhysicsEffectTable",
+            PropertyDataId::UseSound => "UseSound",
+            PropertyDataId::UseTargetAnimation => "UseTargetAnimation",
+            PropertyDataId::UseTargetSuccessAnimation => "UseTargetSuccessAnimation",
+            PropertyDataId::UseTargetFailureAnimation => "UseTargetFailureAnimation",
+            PropertyDataId::UseUserAnimation => "UseUserAnimation",
+            PropertyDataId::Spell => "Spell",
+            PropertyDataId::SpellComponent => "SpellComponent",
+            PropertyDataId::PhysicsScript => "PhysicsScript",
+            PropertyDataId::LinkedPortalOne => "LinkedPortalOne",
+            PropertyDataId::WieldedTreasureType => "WieldedTreasureType",
+            PropertyDataId::InventoryTreasureType => "InventoryTreasureType",
+            PropertyDataId::ShopTreasureType => "ShopTreasureType",
+            PropertyDataId::DeathTreasureType => "DeathTreasureType",
+            PropertyDataId::MutateFilter => "MutateFilter",
+            PropertyDataId::ItemSkillLimit => "ItemSkillLimit",
+            PropertyDataId::UseCreateItem => "UseCreateItem",
+            PropertyDataId::DeathSpell => "DeathSpell",
+            PropertyDataId::VendorsClassId => "VendorsClassId",
+            PropertyDataId::ItemSpecializedOnly => "ItemSpecializedOnly",
+            PropertyDataId::HouseId => "HouseId",
+            PropertyDataId::AccountHouseId => "AccountHouseId",
+            PropertyDataId::RestrictionEffect => "RestrictionEffect",
+            PropertyDataId::CreationMutationFilter => "CreationMutationFilter",
+            PropertyDataId::TsysMutationFilter => "TsysMutationFilter",
+            PropertyDataId::LastPortal => "LastPortal",
+            PropertyDataId::LinkedPortalTwo => "LinkedPortalTwo",
+            PropertyDataId::OriginalPortal => "OriginalPortal",
+            PropertyDataId::IconOverlay => "IconOverlay",
+            PropertyDataId::IconOverlaySecondary => "IconOverlaySecondary",
+            PropertyDataId::IconUnderlay => "IconUnderlay",
+            PropertyDataId::AugmentationMutationFilter => "AugmentationMutationFilter",
+            PropertyDataId::AugmentationEffect => "AugmentationEffect",
+            PropertyDataId::ProcSpell => "ProcSpell",
+            PropertyDataId::AugmentationCreateItem => "AugmentationCreateItem",
+            PropertyDataId::AlternateCurrency => "AlternateCurrency",
+            PropertyDataId::BlueSurgeSpell => "BlueSurgeSpell",
+            PropertyDataId::YellowSurgeSpell => "YellowSurgeSpell",
+            PropertyDataId::RedSurgeSpell => "RedSurgeSpell",
+            PropertyDataId::OlthoiDeathTreasureType => "OlthoiDeathTreasureType",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -6011,6 +9561,404 @@ impl crate::readers::ACDataType for PropertyInt {
     }
 }
 
+impl std::fmt::Display for PropertyInt {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyInt::ItemType => "ItemType",
+            PropertyInt::CreatureType => "CreatureType",
+            PropertyInt::PaletteTemplate => "PaletteTemplate",
+            PropertyInt::ClothingPriority => "ClothingPriority",
+            PropertyInt::EncumbranceVal => "EncumbranceVal",
+            PropertyInt::ItemsCapacity => "ItemsCapacity",
+            PropertyInt::ContainersCapacity => "ContainersCapacity",
+            PropertyInt::Mass => "Mass",
+            PropertyInt::ValidLocations => "ValidLocations",
+            PropertyInt::CurrentWieldedLocation => "CurrentWieldedLocation",
+            PropertyInt::MaxStackSize => "MaxStackSize",
+            PropertyInt::StackSize => "StackSize",
+            PropertyInt::StackUnitEncumbrance => "StackUnitEncumbrance",
+            PropertyInt::StackUnitMass => "StackUnitMass",
+            PropertyInt::StackUnitValue => "StackUnitValue",
+            PropertyInt::ItemUseable => "ItemUseable",
+            PropertyInt::RareId => "RareId",
+            PropertyInt::UiEffects => "UiEffects",
+            PropertyInt::Value => "Value",
+            PropertyInt::CoinValue => "CoinValue",
+            PropertyInt::TotalExperience => "TotalExperience",
+            PropertyInt::AvailableCharacter => "AvailableCharacter",
+            PropertyInt::TotalSkillCredits => "TotalSkillCredits",
+            PropertyInt::AvailableSkillCredits => "AvailableSkillCredits",
+            PropertyInt::Level => "Level",
+            PropertyInt::AccountRequirements => "AccountRequirements",
+            PropertyInt::ArmorType => "ArmorType",
+            PropertyInt::ArmorLevel => "ArmorLevel",
+            PropertyInt::AllegianceCpPool => "AllegianceCpPool",
+            PropertyInt::AllegianceRank => "AllegianceRank",
+            PropertyInt::ChannelsAllowed => "ChannelsAllowed",
+            PropertyInt::ChannelsActive => "ChannelsActive",
+            PropertyInt::Bonded => "Bonded",
+            PropertyInt::MonarchsRank => "MonarchsRank",
+            PropertyInt::AllegianceFollowers => "AllegianceFollowers",
+            PropertyInt::ResistMagic => "ResistMagic",
+            PropertyInt::ResistItemAppraisal => "ResistItemAppraisal",
+            PropertyInt::ResistLockpick => "ResistLockpick",
+            PropertyInt::DeprecatedResistRepair => "DeprecatedResistRepair",
+            PropertyInt::CombatMode => "CombatMode",
+            PropertyInt::CurrentAttackHeight => "CurrentAttackHeight",
+            PropertyInt::CombatCollisions => "CombatCollisions",
+            PropertyInt::NumDeaths => "NumDeaths",
+            PropertyInt::Damage => "Damage",
+            PropertyInt::DamageType => "DamageType",
+            PropertyInt::DefaultCombatStyle => "DefaultCombatStyle",
+            PropertyInt::AttackType => "AttackType",
+            PropertyInt::WeaponSkill => "WeaponSkill",
+            PropertyInt::WeaponTime => "WeaponTime",
+            PropertyInt::AmmoType => "AmmoType",
+            PropertyInt::CombatUse => "CombatUse",
+            PropertyInt::ParentLocation => "ParentLocation",
+            PropertyInt::PlacementPosition => "PlacementPosition",
+            PropertyInt::WeaponEncumbrance => "WeaponEncumbrance",
+            PropertyInt::WeaponMass => "WeaponMass",
+            PropertyInt::ShieldValue => "ShieldValue",
+            PropertyInt::ShieldEncumbrance => "ShieldEncumbrance",
+            PropertyInt::MissileInventoryLocation => "MissileInventoryLocation",
+            PropertyInt::FullDamageType => "FullDamageType",
+            PropertyInt::WeaponRange => "WeaponRange",
+            PropertyInt::AttackersSkill => "AttackersSkill",
+            PropertyInt::DefendersSkill => "DefendersSkill",
+            PropertyInt::AttackersSkillValue => "AttackersSkillValue",
+            PropertyInt::AttackersClass => "AttackersClass",
+            PropertyInt::Placement => "Placement",
+            PropertyInt::CheckpointStatus => "CheckpointStatus",
+            PropertyInt::Tolerance => "Tolerance",
+            PropertyInt::TargetingTactic => "TargetingTactic",
+            PropertyInt::CombatTactic => "CombatTactic",
+            PropertyInt::HomesickTargetingTactic => "HomesickTargetingTactic",
+            PropertyInt::NumFollowFailures => "NumFollowFailures",
+            PropertyInt::FriendType => "FriendType",
+            PropertyInt::FoeType => "FoeType",
+            PropertyInt::MerchandiseItemTypes => "MerchandiseItemTypes",
+            PropertyInt::MerchandiseMinValue => "MerchandiseMinValue",
+            PropertyInt::MerchandiseMaxValue => "MerchandiseMaxValue",
+            PropertyInt::NumItemsSold => "NumItemsSold",
+            PropertyInt::NumItemsBought => "NumItemsBought",
+            PropertyInt::MoneyIncome => "MoneyIncome",
+            PropertyInt::MoneyOutflow => "MoneyOutflow",
+            PropertyInt::MaxGeneratedObjects => "MaxGeneratedObjects",
+            PropertyInt::InitGeneratedObjects => "InitGeneratedObjects",
+            PropertyInt::ActivationResponse => "ActivationResponse",
+            PropertyInt::OriginalValue => "OriginalValue",
+            PropertyInt::NumMoveFailures => "NumMoveFailures",
+            PropertyInt::MinLevel => "MinLevel",
+            PropertyInt::MaxLevel => "MaxLevel",
+            PropertyInt::LockpickMod => "LockpickMod",
+            PropertyInt::BoosterEnum => "BoosterEnum",
+            PropertyInt::BoostValue => "BoostValue",
+            PropertyInt::MaxStructure => "MaxStructure",
+            PropertyInt::Structure => "Structure",
+            PropertyInt::PhysicsState => "PhysicsState",
+            PropertyInt::TargetType => "TargetType",
+            PropertyInt::RadarBlipColor => "RadarBlipColor",
+            PropertyInt::EncumbranceCapacity => "EncumbranceCapacity",
+            PropertyInt::LoginTimestamp => "LoginTimestamp",
+            PropertyInt::CreationTimestamp => "CreationTimestamp",
+            PropertyInt::PkLevelModifier => "PkLevelModifier",
+            PropertyInt::GeneratorType => "GeneratorType",
+            PropertyInt::AiAllowedCombatStyle => "AiAllowedCombatStyle",
+            PropertyInt::LogoffTimestamp => "LogoffTimestamp",
+            PropertyInt::GeneratorDestructionType => "GeneratorDestructionType",
+            PropertyInt::ActivationCreateClass => "ActivationCreateClass",
+            PropertyInt::ItemWorkmanship => "ItemWorkmanship",
+            PropertyInt::ItemSpellcraft => "ItemSpellcraft",
+            PropertyInt::ItemCurMana => "ItemCurMana",
+            PropertyInt::ItemMaxMana => "ItemMaxMana",
+            PropertyInt::ItemDifficulty => "ItemDifficulty",
+            PropertyInt::ItemAllegianceRankLimit => "ItemAllegianceRankLimit",
+            PropertyInt::PortalBitmask => "PortalBitmask",
+            PropertyInt::AdvocateLevel => "AdvocateLevel",
+            PropertyInt::Gender => "Gender",
+            PropertyInt::Attuned => "Attuned",
+            PropertyInt::ItemSkillLevelLimit => "ItemSkillLevelLimit",
+            PropertyInt::GateLogic => "GateLogic",
+            PropertyInt::ItemManaCost => "ItemManaCost",
+            PropertyInt::Logoff => "Logoff",
+            PropertyInt::Active => "Active",
+            PropertyInt::AttackHeight => "AttackHeight",
+            PropertyInt::NumAttackFailures => "NumAttackFailures",
+            PropertyInt::AiCpThreshold => "AiCpThreshold",
+            PropertyInt::AiAdvancementStrategy => "AiAdvancementStrategy",
+            PropertyInt::Version => "Version",
+            PropertyInt::Age => "Age",
+            PropertyInt::VendorHappyMean => "VendorHappyMean",
+            PropertyInt::VendorHappyVariance => "VendorHappyVariance",
+            PropertyInt::CloakStatus => "CloakStatus",
+            PropertyInt::VitaeCpPool => "VitaeCpPool",
+            PropertyInt::NumServicesSold => "NumServicesSold",
+            PropertyInt::MaterialType => "MaterialType",
+            PropertyInt::NumAllegianceBreaks => "NumAllegianceBreaks",
+            PropertyInt::ShowableOnRadar => "ShowableOnRadar",
+            PropertyInt::PlayerKillerStatus => "PlayerKillerStatus",
+            PropertyInt::VendorHappyMaxItems => "VendorHappyMaxItems",
+            PropertyInt::ScorePageNum => "ScorePageNum",
+            PropertyInt::ScoreConfigNum => "ScoreConfigNum",
+            PropertyInt::ScoreNumScores => "ScoreNumScores",
+            PropertyInt::DeathLevel => "DeathLevel",
+            PropertyInt::AiOptions => "AiOptions",
+            PropertyInt::OpenToEveryone => "OpenToEveryone",
+            PropertyInt::GeneratorTimeType => "GeneratorTimeType",
+            PropertyInt::GeneratorStartTime => "GeneratorStartTime",
+            PropertyInt::GeneratorEndTime => "GeneratorEndTime",
+            PropertyInt::GeneratorEndDestructionType => "GeneratorEndDestructionType",
+            PropertyInt::XpOverride => "XpOverride",
+            PropertyInt::NumCrashAndTurns => "NumCrashAndTurns",
+            PropertyInt::ComponentWarningThreshold => "ComponentWarningThreshold",
+            PropertyInt::HouseStatus => "HouseStatus",
+            PropertyInt::HookPlacement => "HookPlacement",
+            PropertyInt::HookType => "HookType",
+            PropertyInt::HookItemType => "HookItemType",
+            PropertyInt::AiPpThreshold => "AiPpThreshold",
+            PropertyInt::GeneratorVersion => "GeneratorVersion",
+            PropertyInt::HouseType => "HouseType",
+            PropertyInt::PickupEmoteOffset => "PickupEmoteOffset",
+            PropertyInt::WeenieIteration => "WeenieIteration",
+            PropertyInt::WieldRequirements => "WieldRequirements",
+            PropertyInt::WieldSkillType => "WieldSkillType",
+            PropertyInt::WieldDifficulty => "WieldDifficulty",
+            PropertyInt::HouseMaxHooksUsable => "HouseMaxHooksUsable",
+            PropertyInt::HouseCurrentHooksUsable => "HouseCurrentHooksUsable",
+            PropertyInt::AllegianceMinLevel => "AllegianceMinLevel",
+            PropertyInt::AllegianceMaxLevel => "AllegianceMaxLevel",
+            PropertyInt::HouseRelinkHookCount => "HouseRelinkHookCount",
+            PropertyInt::SlayerCreatureType => "SlayerCreatureType",
+            PropertyInt::ConfirmationInProgress => "ConfirmationInProgress",
+            PropertyInt::ConfirmationTypeInProgress => "ConfirmationTypeInProgress",
+            PropertyInt::TsysMutationData => "TsysMutationData",
+            PropertyInt::NumItemsInMaterial => "NumItemsInMaterial",
+            PropertyInt::NumTimesTinkered => "NumTimesTinkered",
+            PropertyInt::AppraisalLongDescDecoration => "AppraisalLongDescDecoration",
+            PropertyInt::AppraisalLockpickSuccessPercent => "AppraisalLockpickSuccessPercent",
+            PropertyInt::AppraisalPages => "AppraisalPages",
+            PropertyInt::AppraisalMaxPages => "AppraisalMaxPages",
+            PropertyInt::AppraisalItemSkill => "AppraisalItemSkill",
+            PropertyInt::GemCount => "GemCount",
+            PropertyInt::GemType => "GemType",
+            PropertyInt::ImbuedEffect => "ImbuedEffect",
+            PropertyInt::AttackersRawSkillValue => "AttackersRawSkillValue",
+            PropertyInt::ChessRank => "ChessRank",
+            PropertyInt::ChessTotalGames => "ChessTotalGames",
+            PropertyInt::ChessGamesWon => "ChessGamesWon",
+            PropertyInt::ChessGamesLost => "ChessGamesLost",
+            PropertyInt::TypeOfAlteration => "TypeOfAlteration",
+            PropertyInt::SkillToBeAltered => "SkillToBeAltered",
+            PropertyInt::SkillAlterationCount => "SkillAlterationCount",
+            PropertyInt::HeritageGroup => "HeritageGroup",
+            PropertyInt::TransferFromAttribute => "TransferFromAttribute",
+            PropertyInt::TransferToAttribute => "TransferToAttribute",
+            PropertyInt::AttributeTransferCount => "AttributeTransferCount",
+            PropertyInt::FakeFishingSkill => "FakeFishingSkill",
+            PropertyInt::NumKeys => "NumKeys",
+            PropertyInt::DeathTimestamp => "DeathTimestamp",
+            PropertyInt::PkTimestamp => "PkTimestamp",
+            PropertyInt::VictimTimestamp => "VictimTimestamp",
+            PropertyInt::HookGroup => "HookGroup",
+            PropertyInt::AllegianceSwearTimestamp => "AllegianceSwearTimestamp",
+            PropertyInt::HousePurchaseTimestamp => "HousePurchaseTimestamp",
+            PropertyInt::RedirectableEquippedArmorCount => "RedirectableEquippedArmorCount",
+            PropertyInt::MeleeDefenseImbuedEffectTypeCache => "MeleeDefenseImbuedEffectTypeCache",
+            PropertyInt::MissileDefenseImbuedEffectTypeCache => "MissileDefenseImbuedEffectTypeCache",
+            PropertyInt::MagicDefenseImbuedEffectTypeCache => "MagicDefenseImbuedEffectTypeCache",
+            PropertyInt::ElementalDamageBonus => "ElementalDamageBonus",
+            PropertyInt::ImbueAttempts => "ImbueAttempts",
+            PropertyInt::ImbueSuccesses => "ImbueSuccesses",
+            PropertyInt::CreatureKills => "CreatureKills",
+            PropertyInt::PlayerKillsPk => "PlayerKillsPk",
+            PropertyInt::PlayerKillsPkl => "PlayerKillsPkl",
+            PropertyInt::RaresTierOne => "RaresTierOne",
+            PropertyInt::RaresTierTwo => "RaresTierTwo",
+            PropertyInt::RaresTierThree => "RaresTierThree",
+            PropertyInt::RaresTierFour => "RaresTierFour",
+            PropertyInt::RaresTierFive => "RaresTierFive",
+            PropertyInt::AugmentationStat => "AugmentationStat",
+            PropertyInt::AugmentationFamilyStat => "AugmentationFamilyStat",
+            PropertyInt::AugmentationInnateFamily => "AugmentationInnateFamily",
+            PropertyInt::AugmentationInnateStrength => "AugmentationInnateStrength",
+            PropertyInt::AugmentationInnateEndurance => "AugmentationInnateEndurance",
+            PropertyInt::AugmentationInnateCoordination => "AugmentationInnateCoordination",
+            PropertyInt::AugmentationInnateQuickness => "AugmentationInnateQuickness",
+            PropertyInt::AugmentationInnateFocus => "AugmentationInnateFocus",
+            PropertyInt::AugmentationInnateSelf => "AugmentationInnateSelf",
+            PropertyInt::AugmentationSpecializeSalvaging => "AugmentationSpecializeSalvaging",
+            PropertyInt::AugmentationSpecializeItemTinkering => "AugmentationSpecializeItemTinkering",
+            PropertyInt::AugmentationSpecializeArmorTinkering => "AugmentationSpecializeArmorTinkering",
+            PropertyInt::AugmentationSpecializeMagicItemTinkering => "AugmentationSpecializeMagicItemTinkering",
+            PropertyInt::AugmentationSpecializeWeaponTinkering => "AugmentationSpecializeWeaponTinkering",
+            PropertyInt::AugmentationExtraPackSlot => "AugmentationExtraPackSlot",
+            PropertyInt::AugmentationIncreasedCarryingCapacity => "AugmentationIncreasedCarryingCapacity",
+            PropertyInt::AugmentationLessDeathItemLoss => "AugmentationLessDeathItemLoss",
+            PropertyInt::AugmentationSpellsRemainPastDeath => "AugmentationSpellsRemainPastDeath",
+            PropertyInt::AugmentationCriticalDefense => "AugmentationCriticalDefense",
+            PropertyInt::AugmentationBonusXp => "AugmentationBonusXp",
+            PropertyInt::AugmentationBonusSalvage => "AugmentationBonusSalvage",
+            PropertyInt::AugmentationBonusImbueChance => "AugmentationBonusImbueChance",
+            PropertyInt::AugmentationFasterRegen => "AugmentationFasterRegen",
+            PropertyInt::AugmentationIncreasedSpellDuration => "AugmentationIncreasedSpellDuration",
+            PropertyInt::AugmentationResistanceFamily => "AugmentationResistanceFamily",
+            PropertyInt::AugmentationResistanceSlash => "AugmentationResistanceSlash",
+            PropertyInt::AugmentationResistancePierce => "AugmentationResistancePierce",
+            PropertyInt::AugmentationResistanceBlunt => "AugmentationResistanceBlunt",
+            PropertyInt::AugmentationResistanceAcid => "AugmentationResistanceAcid",
+            PropertyInt::AugmentationResistanceFire => "AugmentationResistanceFire",
+            PropertyInt::AugmentationResistanceFrost => "AugmentationResistanceFrost",
+            PropertyInt::AugmentationResistanceLightning => "AugmentationResistanceLightning",
+            PropertyInt::RaresTierOneLogin => "RaresTierOneLogin",
+            PropertyInt::RaresTierTwoLogin => "RaresTierTwoLogin",
+            PropertyInt::RaresTierThreeLogin => "RaresTierThreeLogin",
+            PropertyInt::RaresTierFourLogin => "RaresTierFourLogin",
+            PropertyInt::RaresTierFiveLogin => "RaresTierFiveLogin",
+            PropertyInt::RaresLoginTimestamp => "RaresLoginTimestamp",
+            PropertyInt::RaresTierSix => "RaresTierSix",
+            PropertyInt::RaresTierSeven => "RaresTierSeven",
+            PropertyInt::RaresTierSixLogin => "RaresTierSixLogin",
+            PropertyInt::RaresTierSevenLogin => "RaresTierSevenLogin",
+            PropertyInt::ItemAttributeLimit => "ItemAttributeLimit",
+            PropertyInt::ItemAttributeLevelLimit => "ItemAttributeLevelLimit",
+            PropertyInt::ItemAttribute2ndLimit => "ItemAttribute2ndLimit",
+            PropertyInt::ItemAttribute2ndLevelLimit => "ItemAttribute2ndLevelLimit",
+            PropertyInt::CharacterTitleId => "CharacterTitleId",
+            PropertyInt::NumCharacterTitles => "NumCharacterTitles",
+            PropertyInt::ResistanceModifierType => "ResistanceModifierType",
+            PropertyInt::FreeTinkersBitfield => "FreeTinkersBitfield",
+            PropertyInt::EquipmentSetId => "EquipmentSetId",
+            PropertyInt::PetClass => "PetClass",
+            PropertyInt::Lifespan => "Lifespan",
+            PropertyInt::RemainingLifespan => "RemainingLifespan",
+            PropertyInt::UseCreateQuantity => "UseCreateQuantity",
+            PropertyInt::WieldRequirements2 => "WieldRequirements2",
+            PropertyInt::WieldSkillType2 => "WieldSkillType2",
+            PropertyInt::WieldDifficulty2 => "WieldDifficulty2",
+            PropertyInt::WieldRequirements3 => "WieldRequirements3",
+            PropertyInt::WieldSkillType3 => "WieldSkillType3",
+            PropertyInt::WieldDifficulty3 => "WieldDifficulty3",
+            PropertyInt::WieldRequirements4 => "WieldRequirements4",
+            PropertyInt::WieldSkillType4 => "WieldSkillType4",
+            PropertyInt::WieldDifficulty4 => "WieldDifficulty4",
+            PropertyInt::Unique => "Unique",
+            PropertyInt::SharedCooldown => "SharedCooldown",
+            PropertyInt::Faction1Bits => "Faction1Bits",
+            PropertyInt::Faction2Bits => "Faction2Bits",
+            PropertyInt::Faction3Bits => "Faction3Bits",
+            PropertyInt::Hatred1Bits => "Hatred1Bits",
+            PropertyInt::Hatred2Bits => "Hatred2Bits",
+            PropertyInt::Hatred3Bits => "Hatred3Bits",
+            PropertyInt::SocietyRankCelhan => "SocietyRankCelhan",
+            PropertyInt::SocietyRankEldweb => "SocietyRankEldweb",
+            PropertyInt::SocietyRankRadblo => "SocietyRankRadblo",
+            PropertyInt::HearLocalSignals => "HearLocalSignals",
+            PropertyInt::HearLocalSignalsRadius => "HearLocalSignalsRadius",
+            PropertyInt::Cleaving => "Cleaving",
+            PropertyInt::AugmentationSpecializeGearcraft => "AugmentationSpecializeGearcraft",
+            PropertyInt::AugmentationInfusedCreatureMagic => "AugmentationInfusedCreatureMagic",
+            PropertyInt::AugmentationInfusedItemMagic => "AugmentationInfusedItemMagic",
+            PropertyInt::AugmentationInfusedLifeMagic => "AugmentationInfusedLifeMagic",
+            PropertyInt::AugmentationInfusedWarMagic => "AugmentationInfusedWarMagic",
+            PropertyInt::AugmentationCriticalExpertise => "AugmentationCriticalExpertise",
+            PropertyInt::AugmentationCriticalPower => "AugmentationCriticalPower",
+            PropertyInt::AugmentationSkilledMelee => "AugmentationSkilledMelee",
+            PropertyInt::AugmentationSkilledMissile => "AugmentationSkilledMissile",
+            PropertyInt::AugmentationSkilledMagic => "AugmentationSkilledMagic",
+            PropertyInt::ImbuedEffect2 => "ImbuedEffect2",
+            PropertyInt::ImbuedEffect3 => "ImbuedEffect3",
+            PropertyInt::ImbuedEffect4 => "ImbuedEffect4",
+            PropertyInt::ImbuedEffect5 => "ImbuedEffect5",
+            PropertyInt::DamageRating => "DamageRating",
+            PropertyInt::DamageResistRating => "DamageResistRating",
+            PropertyInt::AugmentationDamageBonus => "AugmentationDamageBonus",
+            PropertyInt::AugmentationDamageReduction => "AugmentationDamageReduction",
+            PropertyInt::ImbueStackingBits => "ImbueStackingBits",
+            PropertyInt::HealOverTime => "HealOverTime",
+            PropertyInt::CritRating => "CritRating",
+            PropertyInt::CritDamageRating => "CritDamageRating",
+            PropertyInt::CritResistRating => "CritResistRating",
+            PropertyInt::CritDamageResistRating => "CritDamageResistRating",
+            PropertyInt::HealingResistRating => "HealingResistRating",
+            PropertyInt::DamageOverTime => "DamageOverTime",
+            PropertyInt::ItemMaxLevel => "ItemMaxLevel",
+            PropertyInt::ItemXpStyle => "ItemXpStyle",
+            PropertyInt::EquipmentSetExtra => "EquipmentSetExtra",
+            PropertyInt::AetheriaBitfield => "AetheriaBitfield",
+            PropertyInt::HealingBoostRating => "HealingBoostRating",
+            PropertyInt::HeritageSpecificArmor => "HeritageSpecificArmor",
+            PropertyInt::AlternateRacialSkills => "AlternateRacialSkills",
+            PropertyInt::AugmentationJackOfAllTrades => "AugmentationJackOfAllTrades",
+            PropertyInt::AugmentationResistanceNether => "AugmentationResistanceNether",
+            PropertyInt::AugmentationInfusedVoidMagic => "AugmentationInfusedVoidMagic",
+            PropertyInt::WeaknessRating => "WeaknessRating",
+            PropertyInt::NetherOverTime => "NetherOverTime",
+            PropertyInt::NetherResistRating => "NetherResistRating",
+            PropertyInt::LuminanceAward => "LuminanceAward",
+            PropertyInt::LumAugDamageRating => "LumAugDamageRating",
+            PropertyInt::LumAugDamageReductionRating => "LumAugDamageReductionRating",
+            PropertyInt::LumAugCritDamageRating => "LumAugCritDamageRating",
+            PropertyInt::LumAugCritReductionRating => "LumAugCritReductionRating",
+            PropertyInt::LumAugSurgeEffectRating => "LumAugSurgeEffectRating",
+            PropertyInt::LumAugSurgeChanceRating => "LumAugSurgeChanceRating",
+            PropertyInt::LumAugItemManaUsage => "LumAugItemManaUsage",
+            PropertyInt::LumAugItemManaGain => "LumAugItemManaGain",
+            PropertyInt::LumAugVitality => "LumAugVitality",
+            PropertyInt::LumAugHealingRating => "LumAugHealingRating",
+            PropertyInt::LumAugSkilledCraft => "LumAugSkilledCraft",
+            PropertyInt::LumAugSkilledSpec => "LumAugSkilledSpec",
+            PropertyInt::LumAugNoDestroyCraft => "LumAugNoDestroyCraft",
+            PropertyInt::RestrictInteraction => "RestrictInteraction",
+            PropertyInt::OlthoiLootTimestamp => "OlthoiLootTimestamp",
+            PropertyInt::OlthoiLootStep => "OlthoiLootStep",
+            PropertyInt::UseCreatesContractId => "UseCreatesContractId",
+            PropertyInt::DotResistRating => "DotResistRating",
+            PropertyInt::LifeResistRating => "LifeResistRating",
+            PropertyInt::CloakWeaveProc => "CloakWeaveProc",
+            PropertyInt::WeaponType => "WeaponType",
+            PropertyInt::MeleeMastery => "MeleeMastery",
+            PropertyInt::RangedMastery => "RangedMastery",
+            PropertyInt::SneakAttackRating => "SneakAttackRating",
+            PropertyInt::RecklessnessRating => "RecklessnessRating",
+            PropertyInt::DeceptionRating => "DeceptionRating",
+            PropertyInt::CombatPetRange => "CombatPetRange",
+            PropertyInt::WeaponAuraDamage => "WeaponAuraDamage",
+            PropertyInt::WeaponAuraSpeed => "WeaponAuraSpeed",
+            PropertyInt::SummoningMastery => "SummoningMastery",
+            PropertyInt::HeartbeatLifespan => "HeartbeatLifespan",
+            PropertyInt::UseLevelRequirement => "UseLevelRequirement",
+            PropertyInt::LumAugAllSkills => "LumAugAllSkills",
+            PropertyInt::UseRequiresSkill => "UseRequiresSkill",
+            PropertyInt::UseRequiresSkillLevel => "UseRequiresSkillLevel",
+            PropertyInt::UseRequiresSkillSpec => "UseRequiresSkillSpec",
+            PropertyInt::UseRequiresLevel => "UseRequiresLevel",
+            PropertyInt::GearDamage => "GearDamage",
+            PropertyInt::GearDamageResist => "GearDamageResist",
+            PropertyInt::GearCrit => "GearCrit",
+            PropertyInt::GearCritResist => "GearCritResist",
+            PropertyInt::GearCritDamage => "GearCritDamage",
+            PropertyInt::GearCritDamageResist => "GearCritDamageResist",
+            PropertyInt::GearHealingBoost => "GearHealingBoost",
+            PropertyInt::GearNetherResist => "GearNetherResist",
+            PropertyInt::GearLifeResist => "GearLifeResist",
+            PropertyInt::GearMaxHealth => "GearMaxHealth",
+            PropertyInt::Unknown380 => "Unknown380",
+            PropertyInt::PKDamageRating => "PKDamageRating",
+            PropertyInt::PKDamageResistRating => "PKDamageResistRating",
+            PropertyInt::GearPKDamageRating => "GearPKDamageRating",
+            PropertyInt::GearPKDamageResistRating => "GearPKDamageResistRating",
+            PropertyInt::Unknown385 => "Unknown385",
+            PropertyInt::Overpower => "Overpower",
+            PropertyInt::OverpowerResist => "OverpowerResist",
+            PropertyInt::GearOverpower => "GearOverpower",
+            PropertyInt::GearOverpowerResist => "GearOverpowerResist",
+            PropertyInt::Enlightenment => "Enlightenment",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The PropertyInstanceId identifies a specific Character or Object instance property.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
@@ -6069,6 +10017,59 @@ impl crate::readers::ACDataType for PropertyInstanceId {
     }
 }
 
+impl std::fmt::Display for PropertyInstanceId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyInstanceId::Owner => "Owner",
+            PropertyInstanceId::Container => "Container",
+            PropertyInstanceId::Wielder => "Wielder",
+            PropertyInstanceId::Freezer => "Freezer",
+            PropertyInstanceId::Viewer => "Viewer",
+            PropertyInstanceId::Generator => "Generator",
+            PropertyInstanceId::Scribe => "Scribe",
+            PropertyInstanceId::CurrentCombatTarget => "CurrentCombatTarget",
+            PropertyInstanceId::CurrentEnemy => "CurrentEnemy",
+            PropertyInstanceId::ProjectileLauncher => "ProjectileLauncher",
+            PropertyInstanceId::CurrentAttacker => "CurrentAttacker",
+            PropertyInstanceId::CurrentDamager => "CurrentDamager",
+            PropertyInstanceId::CurrentFollowTarget => "CurrentFollowTarget",
+            PropertyInstanceId::CurrentAppraisalTarget => "CurrentAppraisalTarget",
+            PropertyInstanceId::CurrentFellowshipAppraisalTarget => "CurrentFellowshipAppraisalTarget",
+            PropertyInstanceId::ActivationTarget => "ActivationTarget",
+            PropertyInstanceId::Creator => "Creator",
+            PropertyInstanceId::Victim => "Victim",
+            PropertyInstanceId::Killer => "Killer",
+            PropertyInstanceId::Vendor => "Vendor",
+            PropertyInstanceId::Customer => "Customer",
+            PropertyInstanceId::Bonded => "Bonded",
+            PropertyInstanceId::Wounder => "Wounder",
+            PropertyInstanceId::Allegiance => "Allegiance",
+            PropertyInstanceId::Patron => "Patron",
+            PropertyInstanceId::Monarch => "Monarch",
+            PropertyInstanceId::CombatTarget => "CombatTarget",
+            PropertyInstanceId::HealthQueryTarget => "HealthQueryTarget",
+            PropertyInstanceId::LastUnlocker => "LastUnlocker",
+            PropertyInstanceId::CrashAndTurnTarget => "CrashAndTurnTarget",
+            PropertyInstanceId::AllowedActivator => "AllowedActivator",
+            PropertyInstanceId::HouseOwner => "HouseOwner",
+            PropertyInstanceId::House => "House",
+            PropertyInstanceId::Slumlord => "Slumlord",
+            PropertyInstanceId::ManaQueryTarget => "ManaQueryTarget",
+            PropertyInstanceId::CurrentGame => "CurrentGame",
+            PropertyInstanceId::RequestedAppraisalTarget => "RequestedAppraisalTarget",
+            PropertyInstanceId::AllowedWielder => "AllowedWielder",
+            PropertyInstanceId::AssignedTarget => "AssignedTarget",
+            PropertyInstanceId::LimboSource => "LimboSource",
+            PropertyInstanceId::Snooper => "Snooper",
+            PropertyInstanceId::TeleportedCharacter => "TeleportedCharacter",
+            PropertyInstanceId::Pet => "Pet",
+            PropertyInstanceId::PetOwner => "PetOwner",
+            PropertyInstanceId::PetDevice => "PetDevice",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The PropertyPosition identifies a specific Character or Object position property.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
@@ -6106,6 +10107,41 @@ impl crate::readers::ACDataType for PropertyPosition {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyPosition::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for PropertyPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyPosition::Location => "Location",
+            PropertyPosition::Destination => "Destination",
+            PropertyPosition::Instantiation => "Instantiation",
+            PropertyPosition::Sanctuary => "Sanctuary",
+            PropertyPosition::Home => "Home",
+            PropertyPosition::ActivationMove => "ActivationMove",
+            PropertyPosition::Target => "Target",
+            PropertyPosition::LinkedPortalOne => "LinkedPortalOne",
+            PropertyPosition::LastPortal => "LastPortal",
+            PropertyPosition::PortalStorm => "PortalStorm",
+            PropertyPosition::CrashAndTurn => "CrashAndTurn",
+            PropertyPosition::PortalSummonLoc => "PortalSummonLoc",
+            PropertyPosition::HouseBoot => "HouseBoot",
+            PropertyPosition::LastOutsideDeath => "LastOutsideDeath",
+            PropertyPosition::LinkedLifestone => "LinkedLifestone",
+            PropertyPosition::LinkedPortalTwo => "LinkedPortalTwo",
+            PropertyPosition::Save1 => "Save1",
+            PropertyPosition::Save2 => "Save2",
+            PropertyPosition::Save3 => "Save3",
+            PropertyPosition::Save4 => "Save4",
+            PropertyPosition::Save5 => "Save5",
+            PropertyPosition::Save6 => "Save6",
+            PropertyPosition::Save7 => "Save7",
+            PropertyPosition::Save8 => "Save8",
+            PropertyPosition::Save9 => "Save9",
+            PropertyPosition::RelativeDestination => "RelativeDestination",
+            PropertyPosition::TeleportedCharacter => "TeleportedCharacter",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -6171,6 +10207,66 @@ impl crate::readers::ACDataType for PropertyString {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyString::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for PropertyString {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyString::Name => "Name",
+            PropertyString::Title => "Title",
+            PropertyString::Sex => "Sex",
+            PropertyString::HeritageGroup => "HeritageGroup",
+            PropertyString::Template => "Template",
+            PropertyString::AttackersName => "AttackersName",
+            PropertyString::Inscription => "Inscription",
+            PropertyString::ScribeName => "ScribeName",
+            PropertyString::VendorsName => "VendorsName",
+            PropertyString::Fellowship => "Fellowship",
+            PropertyString::MonarchsName => "MonarchsName",
+            PropertyString::LockCode => "LockCode",
+            PropertyString::KeyCode => "KeyCode",
+            PropertyString::Use => "Use",
+            PropertyString::ShortDesc => "ShortDesc",
+            PropertyString::LongDesc => "LongDesc",
+            PropertyString::ActivationTalk => "ActivationTalk",
+            PropertyString::UseMessage => "UseMessage",
+            PropertyString::ItemHeritageGroupRestriction => "ItemHeritageGroupRestriction",
+            PropertyString::PluralName => "PluralName",
+            PropertyString::MonarchsTitle => "MonarchsTitle",
+            PropertyString::ActivationFailure => "ActivationFailure",
+            PropertyString::ScribeAccount => "ScribeAccount",
+            PropertyString::TownName => "TownName",
+            PropertyString::CraftsmanName => "CraftsmanName",
+            PropertyString::UsePkServerError => "UsePkServerError",
+            PropertyString::ScoreCachedText => "ScoreCachedText",
+            PropertyString::ScoreDefaultEntryFormat => "ScoreDefaultEntryFormat",
+            PropertyString::ScoreFirstEntryFormat => "ScoreFirstEntryFormat",
+            PropertyString::ScoreLastEntryFormat => "ScoreLastEntryFormat",
+            PropertyString::ScoreOnlyEntryFormat => "ScoreOnlyEntryFormat",
+            PropertyString::ScoreNoEntry => "ScoreNoEntry",
+            PropertyString::Quest => "Quest",
+            PropertyString::GeneratorEvent => "GeneratorEvent",
+            PropertyString::PatronsTitle => "PatronsTitle",
+            PropertyString::HouseOwnerName => "HouseOwnerName",
+            PropertyString::QuestRestriction => "QuestRestriction",
+            PropertyString::AppraisalPortalDestination => "AppraisalPortalDestination",
+            PropertyString::TinkerName => "TinkerName",
+            PropertyString::ImbuerName => "ImbuerName",
+            PropertyString::HouseOwnerAccount => "HouseOwnerAccount",
+            PropertyString::DisplayName => "DisplayName",
+            PropertyString::DateOfBirth => "DateOfBirth",
+            PropertyString::ThirdPartyApi => "ThirdPartyApi",
+            PropertyString::KillQuest => "KillQuest",
+            PropertyString::Afk => "Afk",
+            PropertyString::AllegianceName => "AllegianceName",
+            PropertyString::AugmentationAddQuest => "AugmentationAddQuest",
+            PropertyString::KillQuest2 => "KillQuest2",
+            PropertyString::KillQuest3 => "KillQuest3",
+            PropertyString::UseSendsSignal => "UseSendsSignal",
+            PropertyString::GearPlatingName => "GearPlatingName",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -6356,6 +10452,186 @@ impl crate::readers::ACDataType for PropertyFloat {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyFloat::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for PropertyFloat {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            PropertyFloat::Undef => "Undef",
+            PropertyFloat::HeartbeatInterval => "HeartbeatInterval",
+            PropertyFloat::HeartbeatTimestamp => "HeartbeatTimestamp",
+            PropertyFloat::HealthRate => "HealthRate",
+            PropertyFloat::StaminaRate => "StaminaRate",
+            PropertyFloat::ManaRate => "ManaRate",
+            PropertyFloat::HealthUponResurrection => "HealthUponResurrection",
+            PropertyFloat::StaminaUponResurrection => "StaminaUponResurrection",
+            PropertyFloat::ManaUponResurrection => "ManaUponResurrection",
+            PropertyFloat::StartTime => "StartTime",
+            PropertyFloat::StopTime => "StopTime",
+            PropertyFloat::ResetInterval => "ResetInterval",
+            PropertyFloat::Shade => "Shade",
+            PropertyFloat::ArmorModVsSlash => "ArmorModVsSlash",
+            PropertyFloat::ArmorModVsPierce => "ArmorModVsPierce",
+            PropertyFloat::ArmorModVsBludgeon => "ArmorModVsBludgeon",
+            PropertyFloat::ArmorModVsCold => "ArmorModVsCold",
+            PropertyFloat::ArmorModVsFire => "ArmorModVsFire",
+            PropertyFloat::ArmorModVsAcid => "ArmorModVsAcid",
+            PropertyFloat::ArmorModVsElectric => "ArmorModVsElectric",
+            PropertyFloat::CombatSpeed => "CombatSpeed",
+            PropertyFloat::WeaponLength => "WeaponLength",
+            PropertyFloat::DamageVariance => "DamageVariance",
+            PropertyFloat::CurrentPowerMod => "CurrentPowerMod",
+            PropertyFloat::AccuracyMod => "AccuracyMod",
+            PropertyFloat::StrengthMod => "StrengthMod",
+            PropertyFloat::MaximumVelocity => "MaximumVelocity",
+            PropertyFloat::RotationSpeed => "RotationSpeed",
+            PropertyFloat::MotionTimestamp => "MotionTimestamp",
+            PropertyFloat::WeaponDefense => "WeaponDefense",
+            PropertyFloat::WimpyLevel => "WimpyLevel",
+            PropertyFloat::VisualAwarenessRange => "VisualAwarenessRange",
+            PropertyFloat::AuralAwarenessRange => "AuralAwarenessRange",
+            PropertyFloat::PerceptionLevel => "PerceptionLevel",
+            PropertyFloat::PowerupTime => "PowerupTime",
+            PropertyFloat::MaxChargeDistance => "MaxChargeDistance",
+            PropertyFloat::ChargeSpeed => "ChargeSpeed",
+            PropertyFloat::BuyPrice => "BuyPrice",
+            PropertyFloat::SellPrice => "SellPrice",
+            PropertyFloat::DefaultScale => "DefaultScale",
+            PropertyFloat::LockpickMod => "LockpickMod",
+            PropertyFloat::RegenerationInterval => "RegenerationInterval",
+            PropertyFloat::RegenerationTimestamp => "RegenerationTimestamp",
+            PropertyFloat::GeneratorRadius => "GeneratorRadius",
+            PropertyFloat::TimeToRot => "TimeToRot",
+            PropertyFloat::DeathTimestamp => "DeathTimestamp",
+            PropertyFloat::PkTimestamp => "PkTimestamp",
+            PropertyFloat::VictimTimestamp => "VictimTimestamp",
+            PropertyFloat::LoginTimestamp => "LoginTimestamp",
+            PropertyFloat::CreationTimestamp => "CreationTimestamp",
+            PropertyFloat::MinimumTimeSincePk => "MinimumTimeSincePk",
+            PropertyFloat::DeprecatedHousekeepingPriority => "DeprecatedHousekeepingPriority",
+            PropertyFloat::AbuseLoggingTimestamp => "AbuseLoggingTimestamp",
+            PropertyFloat::LastPortalTeleportTimestamp => "LastPortalTeleportTimestamp",
+            PropertyFloat::UseRadius => "UseRadius",
+            PropertyFloat::HomeRadius => "HomeRadius",
+            PropertyFloat::ReleasedTimestamp => "ReleasedTimestamp",
+            PropertyFloat::MinHomeRadius => "MinHomeRadius",
+            PropertyFloat::Facing => "Facing",
+            PropertyFloat::ResetTimestamp => "ResetTimestamp",
+            PropertyFloat::LogoffTimestamp => "LogoffTimestamp",
+            PropertyFloat::EconRecoveryInterval => "EconRecoveryInterval",
+            PropertyFloat::WeaponOffense => "WeaponOffense",
+            PropertyFloat::DamageMod => "DamageMod",
+            PropertyFloat::ResistSlash => "ResistSlash",
+            PropertyFloat::ResistPierce => "ResistPierce",
+            PropertyFloat::ResistBludgeon => "ResistBludgeon",
+            PropertyFloat::ResistFire => "ResistFire",
+            PropertyFloat::ResistCold => "ResistCold",
+            PropertyFloat::ResistAcid => "ResistAcid",
+            PropertyFloat::ResistElectric => "ResistElectric",
+            PropertyFloat::ResistHealthBoost => "ResistHealthBoost",
+            PropertyFloat::ResistStaminaDrain => "ResistStaminaDrain",
+            PropertyFloat::ResistStaminaBoost => "ResistStaminaBoost",
+            PropertyFloat::ResistManaDrain => "ResistManaDrain",
+            PropertyFloat::ResistManaBoost => "ResistManaBoost",
+            PropertyFloat::Translucency => "Translucency",
+            PropertyFloat::PhysicsScriptIntensity => "PhysicsScriptIntensity",
+            PropertyFloat::Friction => "Friction",
+            PropertyFloat::Elasticity => "Elasticity",
+            PropertyFloat::AiUseMagicDelay => "AiUseMagicDelay",
+            PropertyFloat::ItemMinSpellcraftMod => "ItemMinSpellcraftMod",
+            PropertyFloat::ItemMaxSpellcraftMod => "ItemMaxSpellcraftMod",
+            PropertyFloat::ItemRankProbability => "ItemRankProbability",
+            PropertyFloat::Shade2 => "Shade2",
+            PropertyFloat::Shade3 => "Shade3",
+            PropertyFloat::Shade4 => "Shade4",
+            PropertyFloat::ItemEfficiency => "ItemEfficiency",
+            PropertyFloat::ItemManaUpdateTimestamp => "ItemManaUpdateTimestamp",
+            PropertyFloat::SpellGestureSpeedMod => "SpellGestureSpeedMod",
+            PropertyFloat::SpellStanceSpeedMod => "SpellStanceSpeedMod",
+            PropertyFloat::AllegianceAppraisalTimestamp => "AllegianceAppraisalTimestamp",
+            PropertyFloat::PowerLevel => "PowerLevel",
+            PropertyFloat::AccuracyLevel => "AccuracyLevel",
+            PropertyFloat::AttackAngle => "AttackAngle",
+            PropertyFloat::AttackTimestamp => "AttackTimestamp",
+            PropertyFloat::CheckpointTimestamp => "CheckpointTimestamp",
+            PropertyFloat::SoldTimestamp => "SoldTimestamp",
+            PropertyFloat::UseTimestamp => "UseTimestamp",
+            PropertyFloat::UseLockTimestamp => "UseLockTimestamp",
+            PropertyFloat::HealkitMod => "HealkitMod",
+            PropertyFloat::FrozenTimestamp => "FrozenTimestamp",
+            PropertyFloat::HealthRateMod => "HealthRateMod",
+            PropertyFloat::AllegianceSwearTimestamp => "AllegianceSwearTimestamp",
+            PropertyFloat::ObviousRadarRange => "ObviousRadarRange",
+            PropertyFloat::HotspotCycleTime => "HotspotCycleTime",
+            PropertyFloat::HotspotCycleTimeVariance => "HotspotCycleTimeVariance",
+            PropertyFloat::SpamTimestamp => "SpamTimestamp",
+            PropertyFloat::SpamRate => "SpamRate",
+            PropertyFloat::BondWieldedTreasure => "BondWieldedTreasure",
+            PropertyFloat::BulkMod => "BulkMod",
+            PropertyFloat::SizeMod => "SizeMod",
+            PropertyFloat::GagTimestamp => "GagTimestamp",
+            PropertyFloat::GeneratorUpdateTimestamp => "GeneratorUpdateTimestamp",
+            PropertyFloat::DeathSpamTimestamp => "DeathSpamTimestamp",
+            PropertyFloat::DeathSpamRate => "DeathSpamRate",
+            PropertyFloat::WildAttackProbability => "WildAttackProbability",
+            PropertyFloat::FocusedProbability => "FocusedProbability",
+            PropertyFloat::CrashAndTurnProbability => "CrashAndTurnProbability",
+            PropertyFloat::CrashAndTurnRadius => "CrashAndTurnRadius",
+            PropertyFloat::CrashAndTurnBias => "CrashAndTurnBias",
+            PropertyFloat::GeneratorInitialDelay => "GeneratorInitialDelay",
+            PropertyFloat::AiAcquireHealth => "AiAcquireHealth",
+            PropertyFloat::AiAcquireStamina => "AiAcquireStamina",
+            PropertyFloat::AiAcquireMana => "AiAcquireMana",
+            PropertyFloat::ResistHealthDrain => "ResistHealthDrain",
+            PropertyFloat::LifestoneProtectionTimestamp => "LifestoneProtectionTimestamp",
+            PropertyFloat::AiCounteractEnchantment => "AiCounteractEnchantment",
+            PropertyFloat::AiDispelEnchantment => "AiDispelEnchantment",
+            PropertyFloat::TradeTimestamp => "TradeTimestamp",
+            PropertyFloat::AiTargetedDetectionRadius => "AiTargetedDetectionRadius",
+            PropertyFloat::EmotePriority => "EmotePriority",
+            PropertyFloat::LastTeleportStartTimestamp => "LastTeleportStartTimestamp",
+            PropertyFloat::EventSpamTimestamp => "EventSpamTimestamp",
+            PropertyFloat::EventSpamRate => "EventSpamRate",
+            PropertyFloat::InventoryOffset => "InventoryOffset",
+            PropertyFloat::CriticalMultiplier => "CriticalMultiplier",
+            PropertyFloat::ManaStoneDestroyChance => "ManaStoneDestroyChance",
+            PropertyFloat::SlayerDamageBonus => "SlayerDamageBonus",
+            PropertyFloat::AllegianceInfoSpamTimestamp => "AllegianceInfoSpamTimestamp",
+            PropertyFloat::AllegianceInfoSpamRate => "AllegianceInfoSpamRate",
+            PropertyFloat::NextSpellcastTimestamp => "NextSpellcastTimestamp",
+            PropertyFloat::AppraisalRequestedTimestamp => "AppraisalRequestedTimestamp",
+            PropertyFloat::AppraisalHeartbeatDueTimestamp => "AppraisalHeartbeatDueTimestamp",
+            PropertyFloat::ManaConversionMod => "ManaConversionMod",
+            PropertyFloat::LastPkAttackTimestamp => "LastPkAttackTimestamp",
+            PropertyFloat::FellowshipUpdateTimestamp => "FellowshipUpdateTimestamp",
+            PropertyFloat::CriticalFrequency => "CriticalFrequency",
+            PropertyFloat::LimboStartTimestamp => "LimboStartTimestamp",
+            PropertyFloat::WeaponMissileDefense => "WeaponMissileDefense",
+            PropertyFloat::WeaponMagicDefense => "WeaponMagicDefense",
+            PropertyFloat::IgnoreShield => "IgnoreShield",
+            PropertyFloat::ElementalDamageMod => "ElementalDamageMod",
+            PropertyFloat::StartMissileAttackTimestamp => "StartMissileAttackTimestamp",
+            PropertyFloat::LastRareUsedTimestamp => "LastRareUsedTimestamp",
+            PropertyFloat::IgnoreArmor => "IgnoreArmor",
+            PropertyFloat::ProcSpellRate => "ProcSpellRate",
+            PropertyFloat::ResistanceModifier => "ResistanceModifier",
+            PropertyFloat::AllegianceGagTimestamp => "AllegianceGagTimestamp",
+            PropertyFloat::AbsorbMagicDamage => "AbsorbMagicDamage",
+            PropertyFloat::CachedMaxAbsorbMagicDamage => "CachedMaxAbsorbMagicDamage",
+            PropertyFloat::GagDuration => "GagDuration",
+            PropertyFloat::AllegianceGagDuration => "AllegianceGagDuration",
+            PropertyFloat::GlobalXpMod => "GlobalXpMod",
+            PropertyFloat::HealingModifier => "HealingModifier",
+            PropertyFloat::ArmorModVsNether => "ArmorModVsNether",
+            PropertyFloat::ResistNether => "ResistNether",
+            PropertyFloat::CooldownDuration => "CooldownDuration",
+            PropertyFloat::WeaponAuraOffense => "WeaponAuraOffense",
+            PropertyFloat::WeaponAuraDefense => "WeaponAuraDefense",
+            PropertyFloat::WeaponAuraElemental => "WeaponAuraElemental",
+            PropertyFloat::WeaponAuraManaConv => "WeaponAuraManaConv",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -6563,6 +10839,155 @@ impl crate::readers::ACDataType for EquipmentSet {
     }
 }
 
+impl std::fmt::Display for EquipmentSet {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            EquipmentSet::None => "None",
+            EquipmentSet::Test => "Test",
+            EquipmentSet::Test2 => "Test2",
+            EquipmentSet::Unknown3 => "Unknown3",
+            EquipmentSet::CarraidasBenediction => "CarraidasBenediction",
+            EquipmentSet::NobleRelic => "NobleRelic",
+            EquipmentSet::AncientRelic => "AncientRelic",
+            EquipmentSet::AlduressaRelic => "AlduressaRelic",
+            EquipmentSet::Ninja => "Ninja",
+            EquipmentSet::EmpyreanRings => "EmpyreanRings",
+            EquipmentSet::ArmMindHeart => "ArmMindHeart",
+            EquipmentSet::ArmorPerfectLight => "ArmorPerfectLight",
+            EquipmentSet::ArmorPerfectLight2 => "ArmorPerfectLight2",
+            EquipmentSet::Soldiers => "Soldiers",
+            EquipmentSet::Adepts => "Adepts",
+            EquipmentSet::Archers => "Archers",
+            EquipmentSet::Defenders => "Defenders",
+            EquipmentSet::Tinkers => "Tinkers",
+            EquipmentSet::Crafters => "Crafters",
+            EquipmentSet::Hearty => "Hearty",
+            EquipmentSet::Dexterous => "Dexterous",
+            EquipmentSet::Wise => "Wise",
+            EquipmentSet::Swift => "Swift",
+            EquipmentSet::Hardened => "Hardened",
+            EquipmentSet::Reinforced => "Reinforced",
+            EquipmentSet::Interlocking => "Interlocking",
+            EquipmentSet::Flameproof => "Flameproof",
+            EquipmentSet::Acidproof => "Acidproof",
+            EquipmentSet::Coldproof => "Coldproof",
+            EquipmentSet::Lightningproof => "Lightningproof",
+            EquipmentSet::SocietyArmor => "SocietyArmor",
+            EquipmentSet::ColosseumClothing => "ColosseumClothing",
+            EquipmentSet::GraveyardClothing => "GraveyardClothing",
+            EquipmentSet::OlthoiClothing => "OlthoiClothing",
+            EquipmentSet::NoobieArmor => "NoobieArmor",
+            EquipmentSet::AetheriaDefense => "AetheriaDefense",
+            EquipmentSet::AetheriaDestruction => "AetheriaDestruction",
+            EquipmentSet::AetheriaFury => "AetheriaFury",
+            EquipmentSet::AetheriaGrowth => "AetheriaGrowth",
+            EquipmentSet::AetheriaVigor => "AetheriaVigor",
+            EquipmentSet::RareDamageResistance => "RareDamageResistance",
+            EquipmentSet::RareDamageBoost => "RareDamageBoost",
+            EquipmentSet::OlthoiArmorDRed => "OlthoiArmorDRed",
+            EquipmentSet::OlthoiArmorCRat => "OlthoiArmorCRat",
+            EquipmentSet::OlthoiArmorCRed => "OlthoiArmorCRed",
+            EquipmentSet::OlthoiArmorDRat => "OlthoiArmorDRat",
+            EquipmentSet::AlduressaRelicUpgrade => "AlduressaRelicUpgrade",
+            EquipmentSet::AncientRelicUpgrade => "AncientRelicUpgrade",
+            EquipmentSet::NobleRelicUpgrade => "NobleRelicUpgrade",
+            EquipmentSet::CloakAlchemy => "CloakAlchemy",
+            EquipmentSet::CloakArcaneLore => "CloakArcaneLore",
+            EquipmentSet::CloakArmorTinkering => "CloakArmorTinkering",
+            EquipmentSet::CloakAssessPerson => "CloakAssessPerson",
+            EquipmentSet::CloakLightWeapons => "CloakLightWeapons",
+            EquipmentSet::CloakMissileWeapons => "CloakMissileWeapons",
+            EquipmentSet::CloakCooking => "CloakCooking",
+            EquipmentSet::CloakCreatureEnchantment => "CloakCreatureEnchantment",
+            EquipmentSet::CloakCrossbow => "CloakCrossbow",
+            EquipmentSet::CloakFinesseWeapons => "CloakFinesseWeapons",
+            EquipmentSet::CloakDeception => "CloakDeception",
+            EquipmentSet::CloakFletching => "CloakFletching",
+            EquipmentSet::CloakHealing => "CloakHealing",
+            EquipmentSet::CloakItemEnchantment => "CloakItemEnchantment",
+            EquipmentSet::CloakItemTinkering => "CloakItemTinkering",
+            EquipmentSet::CloakLeadership => "CloakLeadership",
+            EquipmentSet::CloakLifeMagic => "CloakLifeMagic",
+            EquipmentSet::CloakLoyalty => "CloakLoyalty",
+            EquipmentSet::CloakMace => "CloakMace",
+            EquipmentSet::CloakMagicDefense => "CloakMagicDefense",
+            EquipmentSet::CloakMagicItemTinkering => "CloakMagicItemTinkering",
+            EquipmentSet::CloakManaConversion => "CloakManaConversion",
+            EquipmentSet::CloakMeleeDefense => "CloakMeleeDefense",
+            EquipmentSet::CloakMissileDefense => "CloakMissileDefense",
+            EquipmentSet::CloakSalvaging => "CloakSalvaging",
+            EquipmentSet::CloakSpear => "CloakSpear",
+            EquipmentSet::CloakStaff => "CloakStaff",
+            EquipmentSet::CloakHeavyWeapons => "CloakHeavyWeapons",
+            EquipmentSet::CloakThrownWeapon => "CloakThrownWeapon",
+            EquipmentSet::CloakTwoHandedCombat => "CloakTwoHandedCombat",
+            EquipmentSet::CloakUnarmedCombat => "CloakUnarmedCombat",
+            EquipmentSet::CloakVoidMagic => "CloakVoidMagic",
+            EquipmentSet::CloakWarMagic => "CloakWarMagic",
+            EquipmentSet::CloakWeaponTinkering => "CloakWeaponTinkering",
+            EquipmentSet::CloakAssessCreature => "CloakAssessCreature",
+            EquipmentSet::CloakDirtyFighting => "CloakDirtyFighting",
+            EquipmentSet::CloakDualWield => "CloakDualWield",
+            EquipmentSet::CloakRecklessness => "CloakRecklessness",
+            EquipmentSet::CloakShield => "CloakShield",
+            EquipmentSet::CloakSneakAttack => "CloakSneakAttack",
+            EquipmentSet::NinjaNew => "Ninja_New",
+            EquipmentSet::CloakSummoning => "CloakSummoning",
+            EquipmentSet::ShroudedSoul => "ShroudedSoul",
+            EquipmentSet::DarkenedMind => "DarkenedMind",
+            EquipmentSet::CloudedSpirit => "CloudedSpirit",
+            EquipmentSet::MinorStingingShroudedSoul => "MinorStingingShroudedSoul",
+            EquipmentSet::MinorSparkingShroudedSoul => "MinorSparkingShroudedSoul",
+            EquipmentSet::MinorSmolderingShroudedSoul => "MinorSmolderingShroudedSoul",
+            EquipmentSet::MinorShiveringShroudedSoul => "MinorShiveringShroudedSoul",
+            EquipmentSet::MinorStingingDarkenedMind => "MinorStingingDarkenedMind",
+            EquipmentSet::MinorSparkingDarkenedMind => "MinorSparkingDarkenedMind",
+            EquipmentSet::MinorSmolderingDarkenedMind => "MinorSmolderingDarkenedMind",
+            EquipmentSet::MinorShiveringDarkenedMind => "MinorShiveringDarkenedMind",
+            EquipmentSet::MinorStingingCloudedSpirit => "MinorStingingCloudedSpirit",
+            EquipmentSet::MinorSparkingCloudedSpirit => "MinorSparkingCloudedSpirit",
+            EquipmentSet::MinorSmolderingCloudedSpirit => "MinorSmolderingCloudedSpirit",
+            EquipmentSet::MinorShiveringCloudedSpirit => "MinorShiveringCloudedSpirit",
+            EquipmentSet::MajorStingingShroudedSoul => "MajorStingingShroudedSoul",
+            EquipmentSet::MajorSparkingShroudedSoul => "MajorSparkingShroudedSoul",
+            EquipmentSet::MajorSmolderingShroudedSoul => "MajorSmolderingShroudedSoul",
+            EquipmentSet::MajorShiveringShroudedSoul => "MajorShiveringShroudedSoul",
+            EquipmentSet::MajorStingingDarkenedMind => "MajorStingingDarkenedMind",
+            EquipmentSet::MajorSparkingDarkenedMind => "MajorSparkingDarkenedMind",
+            EquipmentSet::MajorSmolderingDarkenedMind => "MajorSmolderingDarkenedMind",
+            EquipmentSet::MajorShiveringDarkenedMind => "MajorShiveringDarkenedMind",
+            EquipmentSet::MajorStingingCloudedSpirit => "MajorStingingCloudedSpirit",
+            EquipmentSet::MajorSparkingCloudedSpirit => "MajorSparkingCloudedSpirit",
+            EquipmentSet::MajorSmolderingCloudedSpirit => "MajorSmolderingCloudedSpirit",
+            EquipmentSet::MajorShiveringCloudedSpirit => "MajorShiveringCloudedSpirit",
+            EquipmentSet::BlackfireStingingShroudedSoul => "BlackfireStingingShroudedSoul",
+            EquipmentSet::BlackfireSparkingShroudedSoul => "BlackfireSparkingShroudedSoul",
+            EquipmentSet::BlackfireSmolderingShroudedSoul => "BlackfireSmolderingShroudedSoul",
+            EquipmentSet::BlackfireShiveringShroudedSoul => "BlackfireShiveringShroudedSoul",
+            EquipmentSet::BlackfireStingingDarkenedMind => "BlackfireStingingDarkenedMind",
+            EquipmentSet::BlackfireSparkingDarkenedMind => "BlackfireSparkingDarkenedMind",
+            EquipmentSet::BlackfireSmolderingDarkenedMind => "BlackfireSmolderingDarkenedMind",
+            EquipmentSet::BlackfireShiveringDarkenedMind => "BlackfireShiveringDarkenedMind",
+            EquipmentSet::BlackfireStingingCloudedSpirit => "BlackfireStingingCloudedSpirit",
+            EquipmentSet::BlackfireSparkingCloudedSpirit => "BlackfireSparkingCloudedSpirit",
+            EquipmentSet::BlackfireSmolderingCloudedSpirit => "BlackfireSmolderingCloudedSpirit",
+            EquipmentSet::BlackfireShiveringCloudedSpirit => "BlackfireShiveringCloudedSpirit",
+            EquipmentSet::ShimmeringShadowsSet => "ShimmeringShadowsSet",
+            EquipmentSet::BrownSocietyLocket => "BrownSocietyLocket",
+            EquipmentSet::YellowSocietyLocket => "YellowSocietyLocket",
+            EquipmentSet::RedSocietyBand => "RedSocietyBand",
+            EquipmentSet::GreenSocietyBand => "GreenSocietyBand",
+            EquipmentSet::PurpleSocietyBand => "PurpleSocietyBand",
+            EquipmentSet::BlueSocietyBand => "BlueSocietyBand",
+            EquipmentSet::GauntletGarb => "GauntletGarb",
+            EquipmentSet::ParagonMissile => "ParagonMissile",
+            EquipmentSet::ParagonCaster => "ParagonCaster",
+            EquipmentSet::ParagonMelee => "ParagonMelee",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Radar Color
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -6584,6 +11009,25 @@ impl crate::readers::ACDataType for RadarColor {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(RadarColor::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for RadarColor {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            RadarColor::Default => "Default",
+            RadarColor::Blue => "Blue",
+            RadarColor::Gold => "Gold",
+            RadarColor::White => "White",
+            RadarColor::Purple => "Purple",
+            RadarColor::Red => "Red",
+            RadarColor::Pink => "Pink",
+            RadarColor::Green => "Green",
+            RadarColor::Yellow => "Yellow",
+            RadarColor::Cyan => "Cyan",
+            RadarColor::BrightGreen => "BrightGreen",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -7346,6 +11790,743 @@ impl crate::readers::ACDataType for SpellCategory {
     }
 }
 
+impl std::fmt::Display for SpellCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            SpellCategory::Undef => "Undef",
+            SpellCategory::StrengthRaising => "StrengthRaising",
+            SpellCategory::StrengthLowering => "StrengthLowering",
+            SpellCategory::EnduranceRaising => "EnduranceRaising",
+            SpellCategory::EnduranceLowering => "EnduranceLowering",
+            SpellCategory::QuicknessRaising => "QuicknessRaising",
+            SpellCategory::QuicknessLowering => "QuicknessLowering",
+            SpellCategory::CoordinationRaising => "CoordinationRaising",
+            SpellCategory::CoordinationLowering => "CoordinationLowering",
+            SpellCategory::FocusRaising => "FocusRaising",
+            SpellCategory::FocusLowering => "FocusLowering",
+            SpellCategory::SelfRaising => "SelfRaising",
+            SpellCategory::SelfLowering => "SelfLowering",
+            SpellCategory::FocusConcentration => "FocusConcentration",
+            SpellCategory::FocusDisruption => "FocusDisruption",
+            SpellCategory::FocusBrilliance => "FocusBrilliance",
+            SpellCategory::FocusDullness => "FocusDullness",
+            SpellCategory::AxeRaising => "AxeRaising",
+            SpellCategory::AxeLowering => "AxeLowering",
+            SpellCategory::BowRaising => "BowRaising",
+            SpellCategory::BowLowering => "BowLowering",
+            SpellCategory::CrossbowRaising => "CrossbowRaising",
+            SpellCategory::CrossbowLowering => "CrossbowLowering",
+            SpellCategory::DaggerRaising => "DaggerRaising",
+            SpellCategory::DaggerLowering => "DaggerLowering",
+            SpellCategory::MaceRaising => "MaceRaising",
+            SpellCategory::MaceLowering => "MaceLowering",
+            SpellCategory::SpearRaising => "SpearRaising",
+            SpellCategory::SpearLowering => "SpearLowering",
+            SpellCategory::StaffRaising => "StaffRaising",
+            SpellCategory::StaffLowering => "StaffLowering",
+            SpellCategory::SwordRaising => "SwordRaising",
+            SpellCategory::SwordLowering => "SwordLowering",
+            SpellCategory::ThrownWeaponsRaising => "ThrownWeaponsRaising",
+            SpellCategory::ThrownWeaponsLowering => "ThrownWeaponsLowering",
+            SpellCategory::UnarmedCombatRaising => "UnarmedCombatRaising",
+            SpellCategory::UnarmedCombatLowering => "UnarmedCombatLowering",
+            SpellCategory::MeleeDefenseRaising => "MeleeDefenseRaising",
+            SpellCategory::MeleeDefenseLowering => "MeleeDefenseLowering",
+            SpellCategory::MissileDefenseRaising => "MissileDefenseRaising",
+            SpellCategory::MissileDefenseLowering => "MissileDefenseLowering",
+            SpellCategory::MagicDefenseRaising => "MagicDefenseRaising",
+            SpellCategory::MagicDefenseLowering => "MagicDefenseLowering",
+            SpellCategory::CreatureEnchantmentRaising => "CreatureEnchantmentRaising",
+            SpellCategory::CreatureEnchantmentLowering => "CreatureEnchantmentLowering",
+            SpellCategory::ItemEnchantmentRaising => "ItemEnchantmentRaising",
+            SpellCategory::ItemEnchantmentLowering => "ItemEnchantmentLowering",
+            SpellCategory::LifeMagicRaising => "LifeMagicRaising",
+            SpellCategory::LifeMagicLowering => "LifeMagicLowering",
+            SpellCategory::WarMagicRaising => "WarMagicRaising",
+            SpellCategory::WarMagicLowering => "WarMagicLowering",
+            SpellCategory::ManaConversionRaising => "ManaConversionRaising",
+            SpellCategory::ManaConversionLowering => "ManaConversionLowering",
+            SpellCategory::ArcaneLoreRaising => "ArcaneLoreRaising",
+            SpellCategory::ArcaneLoreLowering => "ArcaneLoreLowering",
+            SpellCategory::AppraiseArmorRaising => "AppraiseArmorRaising",
+            SpellCategory::AppraiseArmorLowering => "AppraiseArmorLowering",
+            SpellCategory::AppraiseItemRaising => "AppraiseItemRaising",
+            SpellCategory::AppraiseItemLowering => "AppraiseItemLowering",
+            SpellCategory::AppraiseMagicItemRaising => "AppraiseMagicItemRaising",
+            SpellCategory::AppraiseMagicItemLowering => "AppraiseMagicItemLowering",
+            SpellCategory::AppraiseWeaponRaising => "AppraiseWeaponRaising",
+            SpellCategory::AppraiseWeaponLowering => "AppraiseWeaponLowering",
+            SpellCategory::AssessMonsterRaising => "AssessMonsterRaising",
+            SpellCategory::AssessMonsterLowering => "AssessMonsterLowering",
+            SpellCategory::DeceptionRaising => "DeceptionRaising",
+            SpellCategory::DeceptionLowering => "DeceptionLowering",
+            SpellCategory::HealingRaising => "HealingRaising",
+            SpellCategory::HealingLowering => "HealingLowering",
+            SpellCategory::JumpRaising => "JumpRaising",
+            SpellCategory::JumpLowering => "JumpLowering",
+            SpellCategory::LeadershipRaising => "LeadershipRaising",
+            SpellCategory::LeadershipLowering => "LeadershipLowering",
+            SpellCategory::LockpickRaising => "LockpickRaising",
+            SpellCategory::LockpickLowering => "LockpickLowering",
+            SpellCategory::LoyaltyRaising => "LoyaltyRaising",
+            SpellCategory::LoyaltyLowering => "LoyaltyLowering",
+            SpellCategory::RunRaising => "RunRaising",
+            SpellCategory::RunLowering => "RunLowering",
+            SpellCategory::HealthRaising => "HealthRaising",
+            SpellCategory::HealthLowering => "HealthLowering",
+            SpellCategory::StaminaRaising => "StaminaRaising",
+            SpellCategory::StaminaLowering => "StaminaLowering",
+            SpellCategory::ManaRaising => "ManaRaising",
+            SpellCategory::ManaLowering => "ManaLowering",
+            SpellCategory::ManaRemedy => "ManaRemedy",
+            SpellCategory::ManaMalediction => "ManaMalediction",
+            SpellCategory::HealthTransfertocaster => "HealthTransfertocaster",
+            SpellCategory::HealthTransferfromcaster => "HealthTransferfromcaster",
+            SpellCategory::StaminaTransfertocaster => "StaminaTransfertocaster",
+            SpellCategory::StaminaTransferfromcaster => "StaminaTransferfromcaster",
+            SpellCategory::ManaTransfertocaster => "ManaTransfertocaster",
+            SpellCategory::ManaTransferfromcaster => "ManaTransferfromcaster",
+            SpellCategory::HealthAccelerating => "HealthAccelerating",
+            SpellCategory::HealthDecelerating => "HealthDecelerating",
+            SpellCategory::StaminaAccelerating => "StaminaAccelerating",
+            SpellCategory::StaminaDecelerating => "StaminaDecelerating",
+            SpellCategory::ManaAccelerating => "ManaAccelerating",
+            SpellCategory::ManaDecelerating => "ManaDecelerating",
+            SpellCategory::VitaeRaising => "VitaeRaising",
+            SpellCategory::VitaeLowering => "VitaeLowering",
+            SpellCategory::AcidProtection => "AcidProtection",
+            SpellCategory::AcidVulnerability => "AcidVulnerability",
+            SpellCategory::BludgeonProtection => "BludgeonProtection",
+            SpellCategory::BludgeonVulnerability => "BludgeonVulnerability",
+            SpellCategory::ColdProtection => "ColdProtection",
+            SpellCategory::ColdVulnerability => "ColdVulnerability",
+            SpellCategory::ElectricProtection => "ElectricProtection",
+            SpellCategory::ElectricVulnerability => "ElectricVulnerability",
+            SpellCategory::FireProtection => "FireProtection",
+            SpellCategory::FireVulnerability => "FireVulnerability",
+            SpellCategory::PierceProtection => "PierceProtection",
+            SpellCategory::PierceVulnerability => "PierceVulnerability",
+            SpellCategory::SlashProtection => "SlashProtection",
+            SpellCategory::SlashVulnerability => "SlashVulnerability",
+            SpellCategory::ArmorRaising => "ArmorRaising",
+            SpellCategory::ArmorLowering => "ArmorLowering",
+            SpellCategory::AcidMissile => "AcidMissile",
+            SpellCategory::BludgeoningMissile => "BludgeoningMissile",
+            SpellCategory::ColdMissile => "ColdMissile",
+            SpellCategory::ElectricMissile => "ElectricMissile",
+            SpellCategory::FireMissile => "FireMissile",
+            SpellCategory::PiercingMissile => "PiercingMissile",
+            SpellCategory::SlashingMissile => "SlashingMissile",
+            SpellCategory::AcidSeeker => "AcidSeeker",
+            SpellCategory::BludgeoningSeeker => "BludgeoningSeeker",
+            SpellCategory::ColdSeeker => "ColdSeeker",
+            SpellCategory::ElectricSeeker => "ElectricSeeker",
+            SpellCategory::FireSeeker => "FireSeeker",
+            SpellCategory::PiercingSeeker => "PiercingSeeker",
+            SpellCategory::SlashingSeeker => "SlashingSeeker",
+            SpellCategory::AcidBurst => "AcidBurst",
+            SpellCategory::BludgeoningBurst => "BludgeoningBurst",
+            SpellCategory::ColdBurst => "ColdBurst",
+            SpellCategory::ElectricBurst => "ElectricBurst",
+            SpellCategory::FireBurst => "FireBurst",
+            SpellCategory::PiercingBurst => "PiercingBurst",
+            SpellCategory::SlashingBurst => "SlashingBurst",
+            SpellCategory::AcidBlast => "AcidBlast",
+            SpellCategory::BludgeoningBlast => "BludgeoningBlast",
+            SpellCategory::ColdBlast => "ColdBlast",
+            SpellCategory::ElectricBlast => "ElectricBlast",
+            SpellCategory::FireBlast => "FireBlast",
+            SpellCategory::PiercingBlast => "PiercingBlast",
+            SpellCategory::SlashingBlast => "SlashingBlast",
+            SpellCategory::AcidScatter => "AcidScatter",
+            SpellCategory::BludgeoningScatter => "BludgeoningScatter",
+            SpellCategory::ColdScatter => "ColdScatter",
+            SpellCategory::ElectricScatter => "ElectricScatter",
+            SpellCategory::FireScatter => "FireScatter",
+            SpellCategory::PiercingScatter => "PiercingScatter",
+            SpellCategory::SlashingScatter => "SlashingScatter",
+            SpellCategory::AttackModRaising => "AttackModRaising",
+            SpellCategory::AttackModLowering => "AttackModLowering",
+            SpellCategory::DamageRaising => "DamageRaising",
+            SpellCategory::DamageLowering => "DamageLowering",
+            SpellCategory::DefenseModRaising => "DefenseModRaising",
+            SpellCategory::DefenseModLowering => "DefenseModLowering",
+            SpellCategory::WeaponTimeRaising => "WeaponTimeRaising",
+            SpellCategory::WeaponTimeLowering => "WeaponTimeLowering",
+            SpellCategory::ArmorValueRaising => "ArmorValueRaising",
+            SpellCategory::ArmorValueLowering => "ArmorValueLowering",
+            SpellCategory::AcidResistanceRaising => "AcidResistanceRaising",
+            SpellCategory::AcidResistanceLowering => "AcidResistanceLowering",
+            SpellCategory::BludgeonResistanceRaising => "BludgeonResistanceRaising",
+            SpellCategory::BludgeonResistanceLowering => "BludgeonResistanceLowering",
+            SpellCategory::ColdResistanceRaising => "ColdResistanceRaising",
+            SpellCategory::ColdResistanceLowering => "ColdResistanceLowering",
+            SpellCategory::ElectricResistanceRaising => "ElectricResistanceRaising",
+            SpellCategory::ElectricResistanceLowering => "ElectricResistanceLowering",
+            SpellCategory::FireResistanceRaising => "FireResistanceRaising",
+            SpellCategory::FireResistanceLowering => "FireResistanceLowering",
+            SpellCategory::PierceResistanceRaising => "PierceResistanceRaising",
+            SpellCategory::PierceResistanceLowering => "PierceResistanceLowering",
+            SpellCategory::SlashResistanceRaising => "SlashResistanceRaising",
+            SpellCategory::SlashResistanceLowering => "SlashResistanceLowering",
+            SpellCategory::BludgeoningResistanceRaising => "BludgeoningResistanceRaising",
+            SpellCategory::BludgeoningResistanceLowering => "BludgeoningResistanceLowering",
+            SpellCategory::SlashingResistanceRaising => "SlashingResistanceRaising",
+            SpellCategory::SlashingResistanceLowering => "SlashingResistanceLowering",
+            SpellCategory::PiercingResistanceRaising => "PiercingResistanceRaising",
+            SpellCategory::PiercingResistanceLowering => "PiercingResistanceLowering",
+            SpellCategory::ElectricalResistanceRaising => "ElectricalResistanceRaising",
+            SpellCategory::ElectricalResistanceLowering => "ElectricalResistanceLowering",
+            SpellCategory::FrostResistanceRaising => "FrostResistanceRaising",
+            SpellCategory::FrostResistanceLowering => "FrostResistanceLowering",
+            SpellCategory::FlameResistanceRaising => "FlameResistanceRaising",
+            SpellCategory::FlameResistanceLowering => "FlameResistanceLowering",
+            SpellCategory::AcidicResistanceRaising => "AcidicResistanceRaising",
+            SpellCategory::AcidicResistanceLowering => "AcidicResistanceLowering",
+            SpellCategory::ArmorLevelRaising => "ArmorLevelRaising",
+            SpellCategory::ArmorLevelLowering => "ArmorLevelLowering",
+            SpellCategory::LockpickResistanceRaising => "LockpickResistanceRaising",
+            SpellCategory::LockpickResistanceLowering => "LockpickResistanceLowering",
+            SpellCategory::ManaConversionModLowering => "ManaConversionModLowering",
+            SpellCategory::ManaConversionModRaising => "ManaConversionModRaising",
+            SpellCategory::VisionRaising => "VisionRaising",
+            SpellCategory::VisionLowering => "VisionLowering",
+            SpellCategory::TransparencyRaising => "TransparencyRaising",
+            SpellCategory::TransparencyLowering => "TransparencyLowering",
+            SpellCategory::PortalTie => "PortalTie",
+            SpellCategory::PortalRecall => "PortalRecall",
+            SpellCategory::PortalCreation => "PortalCreation",
+            SpellCategory::PortalItemCreation => "PortalItemCreation",
+            SpellCategory::Vitae => "Vitae",
+            SpellCategory::AssessPersonRaising => "AssessPersonRaising",
+            SpellCategory::AssessPersonLowering => "AssessPersonLowering",
+            SpellCategory::AcidVolley => "AcidVolley",
+            SpellCategory::BludgeoningVolley => "BludgeoningVolley",
+            SpellCategory::FrostVolley => "FrostVolley",
+            SpellCategory::LightningVolley => "LightningVolley",
+            SpellCategory::FlameVolley => "FlameVolley",
+            SpellCategory::ForceVolley => "ForceVolley",
+            SpellCategory::BladeVolley => "BladeVolley",
+            SpellCategory::PortalSending => "PortalSending",
+            SpellCategory::LifestoneSending => "LifestoneSending",
+            SpellCategory::CookingRaising => "CookingRaising",
+            SpellCategory::CookingLowering => "CookingLowering",
+            SpellCategory::FletchingRaising => "FletchingRaising",
+            SpellCategory::FletchingLowering => "FletchingLowering",
+            SpellCategory::AlchemyLowering => "AlchemyLowering",
+            SpellCategory::AlchemyRaising => "AlchemyRaising",
+            SpellCategory::AcidRing => "AcidRing",
+            SpellCategory::BludgeoningRing => "BludgeoningRing",
+            SpellCategory::ColdRing => "ColdRing",
+            SpellCategory::ElectricRing => "ElectricRing",
+            SpellCategory::FireRing => "FireRing",
+            SpellCategory::PiercingRing => "PiercingRing",
+            SpellCategory::SlashingRing => "SlashingRing",
+            SpellCategory::AcidWall => "AcidWall",
+            SpellCategory::BludgeoningWall => "BludgeoningWall",
+            SpellCategory::ColdWall => "ColdWall",
+            SpellCategory::ElectricWall => "ElectricWall",
+            SpellCategory::FireWall => "FireWall",
+            SpellCategory::PiercingWall => "PiercingWall",
+            SpellCategory::SlashingWall => "SlashingWall",
+            SpellCategory::AcidStrike => "AcidStrike",
+            SpellCategory::BludgeoningStrike => "BludgeoningStrike",
+            SpellCategory::ColdStrike => "ColdStrike",
+            SpellCategory::ElectricStrike => "ElectricStrike",
+            SpellCategory::FireStrike => "FireStrike",
+            SpellCategory::PiercingStrike => "PiercingStrike",
+            SpellCategory::SlashingStrike => "SlashingStrike",
+            SpellCategory::AcidStreak => "AcidStreak",
+            SpellCategory::BludgeoningStreak => "BludgeoningStreak",
+            SpellCategory::ColdStreak => "ColdStreak",
+            SpellCategory::ElectricStreak => "ElectricStreak",
+            SpellCategory::FireStreak => "FireStreak",
+            SpellCategory::PiercingStreak => "PiercingStreak",
+            SpellCategory::SlashingStreak => "SlashingStreak",
+            SpellCategory::Dispel => "Dispel",
+            SpellCategory::CreatureMysticRaising => "CreatureMysticRaising",
+            SpellCategory::CreatureMysticLowering => "CreatureMysticLowering",
+            SpellCategory::ItemMysticRaising => "ItemMysticRaising",
+            SpellCategory::ItemMysticLowering => "ItemMysticLowering",
+            SpellCategory::WarMysticRaising => "WarMysticRaising",
+            SpellCategory::WarMysticLowering => "WarMysticLowering",
+            SpellCategory::HealthRestoring => "HealthRestoring",
+            SpellCategory::HealthDepleting => "HealthDepleting",
+            SpellCategory::ManaRestoring => "ManaRestoring",
+            SpellCategory::ManaDepleting => "ManaDepleting",
+            SpellCategory::StrengthIncrease => "StrengthIncrease",
+            SpellCategory::StrengthDecrease => "StrengthDecrease",
+            SpellCategory::EnduranceIncrease => "EnduranceIncrease",
+            SpellCategory::EnduranceDecrease => "EnduranceDecrease",
+            SpellCategory::QuicknessIncrease => "QuicknessIncrease",
+            SpellCategory::QuicknessDecrease => "QuicknessDecrease",
+            SpellCategory::CoordinationIncrease => "CoordinationIncrease",
+            SpellCategory::CoordinationDecrease => "CoordinationDecrease",
+            SpellCategory::FocusIncrease => "FocusIncrease",
+            SpellCategory::FocusDecrease => "FocusDecrease",
+            SpellCategory::SelfIncrease => "SelfIncrease",
+            SpellCategory::SelfDecrease => "SelfDecrease",
+            SpellCategory::GreatVitalityRaising => "GreatVitalityRaising",
+            SpellCategory::PoorVitalityLowering => "PoorVitalityLowering",
+            SpellCategory::GreatVigorRaising => "GreatVigorRaising",
+            SpellCategory::PoorVigorLowering => "PoorVigorLowering",
+            SpellCategory::GreaterIntellectRaising => "GreaterIntellectRaising",
+            SpellCategory::LessorIntellectLowering => "LessorIntellectLowering",
+            SpellCategory::LifeGiverRaising => "LifeGiverRaising",
+            SpellCategory::LifeTakerLowering => "LifeTakerLowering",
+            SpellCategory::StaminaGiverRaising => "StaminaGiverRaising",
+            SpellCategory::StaminaTakerLowering => "StaminaTakerLowering",
+            SpellCategory::ManaGiverRaising => "ManaGiverRaising",
+            SpellCategory::ManaTakerLowering => "ManaTakerLowering",
+            SpellCategory::AcidWardProtection => "AcidWardProtection",
+            SpellCategory::AcidWardVulnerability => "AcidWardVulnerability",
+            SpellCategory::FireWardProtection => "FireWardProtection",
+            SpellCategory::FireWardVulnerability => "FireWardVulnerability",
+            SpellCategory::ColdWardProtection => "ColdWardProtection",
+            SpellCategory::ColdWardVulnerability => "ColdWardVulnerability",
+            SpellCategory::ElectricWardProtection => "ElectricWardProtection",
+            SpellCategory::ElectricWardVulnerability => "ElectricWardVulnerability",
+            SpellCategory::LeadershipObedienceRaising => "LeadershipObedienceRaising",
+            SpellCategory::LeadershipObedienceLowering => "LeadershipObedienceLowering",
+            SpellCategory::MeleeDefenseShelterRaising => "MeleeDefenseShelterRaising",
+            SpellCategory::MeleeDefenseShelterLowering => "MeleeDefenseShelterLowering",
+            SpellCategory::MissileDefenseShelterRaising => "MissileDefenseShelterRaising",
+            SpellCategory::MissileDefenseShelterLowering => "MissileDefenseShelterLowering",
+            SpellCategory::MagicDefenseShelterRaising => "MagicDefenseShelterRaising",
+            SpellCategory::MagicDefenseShelterLowering => "MagicDefenseShelterLowering",
+            SpellCategory::HuntersAcumenRaising => "HuntersAcumenRaising",
+            SpellCategory::HuntersAcumenLowering => "HuntersAcumenLowering",
+            SpellCategory::StillWaterRaising => "StillWaterRaising",
+            SpellCategory::StillWaterLowering => "StillWaterLowering",
+            SpellCategory::StrengthofEarthRaising => "StrengthofEarthRaising",
+            SpellCategory::StrengthofEarthLowering => "StrengthofEarthLowering",
+            SpellCategory::TorrentRaising => "TorrentRaising",
+            SpellCategory::TorrentLowering => "TorrentLowering",
+            SpellCategory::GrowthRaising => "GrowthRaising",
+            SpellCategory::GrowthLowering => "GrowthLowering",
+            SpellCategory::CascadeAxeRaising => "CascadeAxeRaising",
+            SpellCategory::CascadeAxeLowering => "CascadeAxeLowering",
+            SpellCategory::CascadeDaggerRaising => "CascadeDaggerRaising",
+            SpellCategory::CascadeDaggerLowering => "CascadeDaggerLowering",
+            SpellCategory::CascadeMaceRaising => "CascadeMaceRaising",
+            SpellCategory::CascadeMaceLowering => "CascadeMaceLowering",
+            SpellCategory::CascadeSpearRaising => "CascadeSpearRaising",
+            SpellCategory::CascadeSpearLowering => "CascadeSpearLowering",
+            SpellCategory::CascadeStaffRaising => "CascadeStaffRaising",
+            SpellCategory::CascadeStaffLowering => "CascadeStaffLowering",
+            SpellCategory::StoneCliffsRaising => "StoneCliffsRaising",
+            SpellCategory::StoneCliffsLowering => "StoneCliffsLowering",
+            SpellCategory::MaxDamageRaising => "MaxDamageRaising",
+            SpellCategory::MaxDamageLowering => "MaxDamageLowering",
+            SpellCategory::BowDamageRaising => "BowDamageRaising",
+            SpellCategory::BowDamageLowering => "BowDamageLowering",
+            SpellCategory::BowRangeRaising => "BowRangeRaising",
+            SpellCategory::BowRangeLowering => "BowRangeLowering",
+            SpellCategory::ExtraDefenseModRaising => "ExtraDefenseModRaising",
+            SpellCategory::ExtraDefenseModLowering => "ExtraDefenseModLowering",
+            SpellCategory::ExtraBowSkillRaising => "ExtraBowSkillRaising",
+            SpellCategory::ExtraBowSkillLowering => "ExtraBowSkillLowering",
+            SpellCategory::ExtraAlchemySkillRaising => "ExtraAlchemySkillRaising",
+            SpellCategory::ExtraAlchemySkillLowering => "ExtraAlchemySkillLowering",
+            SpellCategory::ExtraArcaneLoreSkillRaising => "ExtraArcaneLoreSkillRaising",
+            SpellCategory::ExtraArcaneLoreSkillLowering => "ExtraArcaneLoreSkillLowering",
+            SpellCategory::ExtraAppraiseArmorSkillRaising => "ExtraAppraiseArmorSkillRaising",
+            SpellCategory::ExtraAppraiseArmorSkillLowering => "ExtraAppraiseArmorSkillLowering",
+            SpellCategory::ExtraCookingSkillRaising => "ExtraCookingSkillRaising",
+            SpellCategory::ExtraCookingSkillLowering => "ExtraCookingSkillLowering",
+            SpellCategory::ExtraCrossbowSkillRaising => "ExtraCrossbowSkillRaising",
+            SpellCategory::ExtraCrossbowSkillLowering => "ExtraCrossbowSkillLowering",
+            SpellCategory::ExtraDeceptionSkillRaising => "ExtraDeceptionSkillRaising",
+            SpellCategory::ExtraDeceptionSkillLowering => "ExtraDeceptionSkillLowering",
+            SpellCategory::ExtraLoyaltySkillRaising => "ExtraLoyaltySkillRaising",
+            SpellCategory::ExtraLoyaltySkillLowering => "ExtraLoyaltySkillLowering",
+            SpellCategory::ExtraFletchingSkillRaising => "ExtraFletchingSkillRaising",
+            SpellCategory::ExtraFletchingSkillLowering => "ExtraFletchingSkillLowering",
+            SpellCategory::ExtraHealingSkillRaising => "ExtraHealingSkillRaising",
+            SpellCategory::ExtraHealingSkillLowering => "ExtraHealingSkillLowering",
+            SpellCategory::ExtraMeleeDefenseSkillRaising => "ExtraMeleeDefenseSkillRaising",
+            SpellCategory::ExtraMeleeDefenseSkillLowering => "ExtraMeleeDefenseSkillLowering",
+            SpellCategory::ExtraAppraiseItemSkillRaising => "ExtraAppraiseItemSkillRaising",
+            SpellCategory::ExtraAppraiseItemSkillLowering => "ExtraAppraiseItemSkillLowering",
+            SpellCategory::ExtraJumpingSkillRaising => "ExtraJumpingSkillRaising",
+            SpellCategory::ExtraJumpingSkillLowering => "ExtraJumpingSkillLowering",
+            SpellCategory::ExtraLifeMagicSkillRaising => "ExtraLifeMagicSkillRaising",
+            SpellCategory::ExtraLifeMagicSkillLowering => "ExtraLifeMagicSkillLowering",
+            SpellCategory::ExtraLockpickSkillRaising => "ExtraLockpickSkillRaising",
+            SpellCategory::ExtraLockpickSkillLowering => "ExtraLockpickSkillLowering",
+            SpellCategory::ExtraAppraiseMagicItemSkillRaising => "ExtraAppraiseMagicItemSkillRaising",
+            SpellCategory::ExtraAppraiseMagicItemSkillLowering => "ExtraAppraiseMagicItemSkillLowering",
+            SpellCategory::ExtraManaConversionSkillRaising => "ExtraManaConversionSkillRaising",
+            SpellCategory::ExtraManaConversionSkillLowering => "ExtraManaConversionSkillLowering",
+            SpellCategory::ExtraAssessCreatureSkillRaising => "ExtraAssessCreatureSkillRaising",
+            SpellCategory::ExtraAssessCreatureSkillLowering => "ExtraAssessCreatureSkillLowering",
+            SpellCategory::ExtraAssessPersonSkillRaising => "ExtraAssessPersonSkillRaising",
+            SpellCategory::ExtraAssessPersonSkillLowering => "ExtraAssessPersonSkillLowering",
+            SpellCategory::ExtraRunSkillRaising => "ExtraRunSkillRaising",
+            SpellCategory::ExtraRunSkillLowering => "ExtraRunSkillLowering",
+            SpellCategory::ExtraSwordSkillRaising => "ExtraSwordSkillRaising",
+            SpellCategory::ExtraSwordSkillLowering => "ExtraSwordSkillLowering",
+            SpellCategory::ExtraThrownWeaponsSkillRaising => "ExtraThrownWeaponsSkillRaising",
+            SpellCategory::ExtraThrownWeaponsSkillLowering => "ExtraThrownWeaponsSkillLowering",
+            SpellCategory::ExtraUnarmedCombatSkillRaising => "ExtraUnarmedCombatSkillRaising",
+            SpellCategory::ExtraUnarmedCombatSkillLowering => "ExtraUnarmedCombatSkillLowering",
+            SpellCategory::ExtraAppraiseWeaponSkillRaising => "ExtraAppraiseWeaponSkillRaising",
+            SpellCategory::ExtraAppraiseWeaponSkillLowering => "ExtraAppraiseWeaponSkillLowering",
+            SpellCategory::ArmorIncrease => "ArmorIncrease",
+            SpellCategory::ArmorDecrease => "ArmorDecrease",
+            SpellCategory::ExtraAcidResistanceRaising => "ExtraAcidResistanceRaising",
+            SpellCategory::ExtraAcidResistanceLowering => "ExtraAcidResistanceLowering",
+            SpellCategory::ExtraBludgeonResistanceRaising => "ExtraBludgeonResistanceRaising",
+            SpellCategory::ExtraBludgeonResistanceLowering => "ExtraBludgeonResistanceLowering",
+            SpellCategory::ExtraFireResistanceRaising => "ExtraFireResistanceRaising",
+            SpellCategory::ExtraFireResistanceLowering => "ExtraFireResistanceLowering",
+            SpellCategory::ExtraColdResistanceRaising => "ExtraColdResistanceRaising",
+            SpellCategory::ExtraColdResistanceLowering => "ExtraColdResistanceLowering",
+            SpellCategory::ExtraAttackModRaising => "ExtraAttackModRaising",
+            SpellCategory::ExtraAttackModLowering => "ExtraAttackModLowering",
+            SpellCategory::ExtraArmorValueRaising => "ExtraArmorValueRaising",
+            SpellCategory::ExtraArmorValueLowering => "ExtraArmorValueLowering",
+            SpellCategory::ExtraPierceResistanceRaising => "ExtraPierceResistanceRaising",
+            SpellCategory::ExtraPierceResistanceLowering => "ExtraPierceResistanceLowering",
+            SpellCategory::ExtraSlashResistanceRaising => "ExtraSlashResistanceRaising",
+            SpellCategory::ExtraSlashResistanceLowering => "ExtraSlashResistanceLowering",
+            SpellCategory::ExtraElectricResistanceRaising => "ExtraElectricResistanceRaising",
+            SpellCategory::ExtraElectricResistanceLowering => "ExtraElectricResistanceLowering",
+            SpellCategory::ExtraWeaponTimeRaising => "ExtraWeaponTimeRaising",
+            SpellCategory::ExtraWeaponTimeLowering => "ExtraWeaponTimeLowering",
+            SpellCategory::BludgeonWardProtection => "BludgeonWardProtection",
+            SpellCategory::BludgeonWardVulnerability => "BludgeonWardVulnerability",
+            SpellCategory::SlashWardProtection => "SlashWardProtection",
+            SpellCategory::SlashWardVulnerability => "SlashWardVulnerability",
+            SpellCategory::PierceWardProtection => "PierceWardProtection",
+            SpellCategory::PierceWardVulnerability => "PierceWardVulnerability",
+            SpellCategory::StaminaRestoring => "StaminaRestoring",
+            SpellCategory::StaminaDepleting => "StaminaDepleting",
+            SpellCategory::Fireworks => "Fireworks",
+            SpellCategory::HealthDivide => "HealthDivide",
+            SpellCategory::StaminaDivide => "StaminaDivide",
+            SpellCategory::ManaDivide => "ManaDivide",
+            SpellCategory::CoordinationIncrease2 => "CoordinationIncrease2",
+            SpellCategory::StrengthIncrease2 => "StrengthIncrease2",
+            SpellCategory::FocusIncrease2 => "FocusIncrease2",
+            SpellCategory::EnduranceIncrease2 => "EnduranceIncrease2",
+            SpellCategory::SelfIncrease2 => "SelfIncrease2",
+            SpellCategory::MeleeDefenseMultiply => "MeleeDefenseMultiply",
+            SpellCategory::MissileDefenseMultiply => "MissileDefenseMultiply",
+            SpellCategory::MagicDefenseMultiply => "MagicDefenseMultiply",
+            SpellCategory::AttributesDecrease => "AttributesDecrease",
+            SpellCategory::LifeGiverRaising2 => "LifeGiverRaising2",
+            SpellCategory::ItemEnchantmentRaising2 => "ItemEnchantmentRaising2",
+            SpellCategory::SkillsDecrease => "SkillsDecrease",
+            SpellCategory::ExtraManaConversionBonus => "ExtraManaConversionBonus",
+            SpellCategory::WarMysticRaising2 => "WarMysticRaising2",
+            SpellCategory::WarMysticLowering2 => "WarMysticLowering2",
+            SpellCategory::MagicDefenseShelterRaising2 => "MagicDefenseShelterRaising2",
+            SpellCategory::ExtraLifeMagicSkillRaising2 => "ExtraLifeMagicSkillRaising2",
+            SpellCategory::CreatureMysticRaising2 => "CreatureMysticRaising2",
+            SpellCategory::ItemMysticRaising2 => "ItemMysticRaising2",
+            SpellCategory::ManaRaising2 => "ManaRaising2",
+            SpellCategory::SelfRaising2 => "SelfRaising2",
+            SpellCategory::CreatureEnchantmentRaising2 => "CreatureEnchantmentRaising2",
+            SpellCategory::SalvagingRaising => "SalvagingRaising",
+            SpellCategory::ExtraSalvagingRaising => "ExtraSalvagingRaising",
+            SpellCategory::ExtraSalvagingRaising2 => "ExtraSalvagingRaising2",
+            SpellCategory::CascadeAxeRaising2 => "CascadeAxeRaising2",
+            SpellCategory::ExtraBowSkillRaising2 => "ExtraBowSkillRaising2",
+            SpellCategory::ExtraThrownWeaponsSkillRaising2 => "ExtraThrownWeaponsSkillRaising2",
+            SpellCategory::ExtraCrossbowSkillRaising2 => "ExtraCrossbowSkillRaising2",
+            SpellCategory::CascadeDaggerRaising2 => "CascadeDaggerRaising2",
+            SpellCategory::CascadeMaceRaising2 => "CascadeMaceRaising2",
+            SpellCategory::ExtraUnarmedCombatSkillRaising2 => "ExtraUnarmedCombatSkillRaising2",
+            SpellCategory::CascadeSpearRaising2 => "CascadeSpearRaising2",
+            SpellCategory::CascadeStaffRaising2 => "CascadeStaffRaising2",
+            SpellCategory::ExtraSwordSkillRaising2 => "ExtraSwordSkillRaising2",
+            SpellCategory::AcidProtectionRare => "AcidProtectionRare",
+            SpellCategory::AcidResistanceRaisingRare => "AcidResistanceRaisingRare",
+            SpellCategory::AlchemyRaisingRare => "AlchemyRaisingRare",
+            SpellCategory::AppraisalResistanceLoweringRare => "AppraisalResistanceLoweringRare",
+            SpellCategory::AppraiseArmorRaisingRare => "AppraiseArmorRaisingRare",
+            SpellCategory::AppraiseItemRaisingRare => "AppraiseItemRaisingRare",
+            SpellCategory::AppraiseMagicItemRaisingRare => "AppraiseMagicItemRaisingRare",
+            SpellCategory::AppraiseWeaponRaisingRare => "AppraiseWeaponRaisingRare",
+            SpellCategory::ArcaneLoreRaisingRare => "ArcaneLoreRaisingRare",
+            SpellCategory::ArmorRaisingRare => "ArmorRaisingRare",
+            SpellCategory::ArmorValueRaisingRare => "ArmorValueRaisingRare",
+            SpellCategory::AssessMonsterRaisingRare => "AssessMonsterRaisingRare",
+            SpellCategory::AssessPersonRaisingRare => "AssessPersonRaisingRare",
+            SpellCategory::AttackModRaisingRare => "AttackModRaisingRare",
+            SpellCategory::AxeRaisingRare => "AxeRaisingRare",
+            SpellCategory::BludgeonProtectionRare => "BludgeonProtectionRare",
+            SpellCategory::BludgeonResistanceRaisingRare => "BludgeonResistanceRaisingRare",
+            SpellCategory::BowRaisingRare => "BowRaisingRare",
+            SpellCategory::ColdProtectionRare => "ColdProtectionRare",
+            SpellCategory::ColdResistanceRaisingRare => "ColdResistanceRaisingRare",
+            SpellCategory::CookingRaisingRare => "CookingRaisingRare",
+            SpellCategory::CoordinationRaisingRare => "CoordinationRaisingRare",
+            SpellCategory::CreatureEnchantmentRaisingRare => "CreatureEnchantmentRaisingRare",
+            SpellCategory::CrossbowRaisingRare => "CrossbowRaisingRare",
+            SpellCategory::DaggerRaisingRare => "DaggerRaisingRare",
+            SpellCategory::DamageRaisingRare => "DamageRaisingRare",
+            SpellCategory::DeceptionRaisingRare => "DeceptionRaisingRare",
+            SpellCategory::DefenseModRaisingRare => "DefenseModRaisingRare",
+            SpellCategory::ElectricProtectionRare => "ElectricProtectionRare",
+            SpellCategory::ElectricResistanceRaisingRare => "ElectricResistanceRaisingRare",
+            SpellCategory::EnduranceRaisingRare => "EnduranceRaisingRare",
+            SpellCategory::FireProtectionRare => "FireProtectionRare",
+            SpellCategory::FireResistanceRaisingRare => "FireResistanceRaisingRare",
+            SpellCategory::FletchingRaisingRare => "FletchingRaisingRare",
+            SpellCategory::FocusRaisingRare => "FocusRaisingRare",
+            SpellCategory::HealingRaisingRare => "HealingRaisingRare",
+            SpellCategory::HealthAcceleratingRare => "HealthAcceleratingRare",
+            SpellCategory::ItemEnchantmentRaisingRare => "ItemEnchantmentRaisingRare",
+            SpellCategory::JumpRaisingRare => "JumpRaisingRare",
+            SpellCategory::LeadershipRaisingRare => "LeadershipRaisingRare",
+            SpellCategory::LifeMagicRaisingRare => "LifeMagicRaisingRare",
+            SpellCategory::LockpickRaisingRare => "LockpickRaisingRare",
+            SpellCategory::LoyaltyRaisingRare => "LoyaltyRaisingRare",
+            SpellCategory::MaceRaisingRare => "MaceRaisingRare",
+            SpellCategory::MagicDefenseRaisingRare => "MagicDefenseRaisingRare",
+            SpellCategory::ManaAcceleratingRare => "ManaAcceleratingRare",
+            SpellCategory::ManaConversionRaisingRare => "ManaConversionRaisingRare",
+            SpellCategory::MeleeDefenseRaisingRare => "MeleeDefenseRaisingRare",
+            SpellCategory::MissileDefenseRaisingRare => "MissileDefenseRaisingRare",
+            SpellCategory::PierceProtectionRare => "PierceProtectionRare",
+            SpellCategory::PierceResistanceRaisingRare => "PierceResistanceRaisingRare",
+            SpellCategory::QuicknessRaisingRare => "QuicknessRaisingRare",
+            SpellCategory::RunRaisingRare => "RunRaisingRare",
+            SpellCategory::SelfRaisingRare => "SelfRaisingRare",
+            SpellCategory::SlashProtectionRare => "SlashProtectionRare",
+            SpellCategory::SlashResistanceRaisingRare => "SlashResistanceRaisingRare",
+            SpellCategory::SpearRaisingRare => "SpearRaisingRare",
+            SpellCategory::StaffRaisingRare => "StaffRaisingRare",
+            SpellCategory::StaminaAcceleratingRare => "StaminaAcceleratingRare",
+            SpellCategory::StrengthRaisingRare => "StrengthRaisingRare",
+            SpellCategory::SwordRaisingRare => "SwordRaisingRare",
+            SpellCategory::ThrownWeaponsRaisingRare => "ThrownWeaponsRaisingRare",
+            SpellCategory::UnarmedCombatRaisingRare => "UnarmedCombatRaisingRare",
+            SpellCategory::WarMagicRaisingRare => "WarMagicRaisingRare",
+            SpellCategory::WeaponTimeRaisingRare => "WeaponTimeRaisingRare",
+            SpellCategory::ArmorIncreaseInkyArmor => "ArmorIncreaseInkyArmor",
+            SpellCategory::MagicDefenseShelterRaisingFiun => "MagicDefenseShelterRaisingFiun",
+            SpellCategory::ExtraRunSkillRaisingFiun => "ExtraRunSkillRaisingFiun",
+            SpellCategory::ExtraManaConversionSkillRaisingFiun => "ExtraManaConversionSkillRaisingFiun",
+            SpellCategory::AttributesIncreaseCantrip1 => "AttributesIncreaseCantrip1",
+            SpellCategory::ExtraMeleeDefenseSkillRaising2 => "ExtraMeleeDefenseSkillRaising2",
+            SpellCategory::ACTDPurchaseRewardSpell => "ACTDPurchaseRewardSpell",
+            SpellCategory::ACTDPurchaseRewardSpellHealth => "ACTDPurchaseRewardSpellHealth",
+            SpellCategory::SaltAshAttackModRaising => "SaltAshAttackModRaising",
+            SpellCategory::QuicknessIncrease2 => "QuicknessIncrease2",
+            SpellCategory::ExtraAlchemySkillRaising2 => "ExtraAlchemySkillRaising2",
+            SpellCategory::ExtraCookingSkillRaising2 => "ExtraCookingSkillRaising2",
+            SpellCategory::ExtraFletchingSkillRaising2 => "ExtraFletchingSkillRaising2",
+            SpellCategory::ExtraLockpickSkillRaising2 => "ExtraLockpickSkillRaising2",
+            SpellCategory::MucorManaWell => "MucorManaWell",
+            SpellCategory::StaminaRestoring2 => "StaminaRestoring2",
+            SpellCategory::AllegianceRaising => "AllegianceRaising",
+            SpellCategory::HealthDoT => "HealthDoT",
+            SpellCategory::HealthDoTSecondary => "HealthDoTSecondary",
+            SpellCategory::HealthDoTTertiary => "HealthDoTTertiary",
+            SpellCategory::HealthHoT => "HealthHoT",
+            SpellCategory::HealthHoTSecondary => "HealthHoTSecondary",
+            SpellCategory::HealthHoTTertiary => "HealthHoTTertiary",
+            SpellCategory::HealthDivideSecondary => "HealthDivideSecondary",
+            SpellCategory::HealthDivideTertiary => "HealthDivideTertiary",
+            SpellCategory::SetSwordRaising => "SetSwordRaising",
+            SpellCategory::SetAxeRaising => "SetAxeRaising",
+            SpellCategory::SetDaggerRaising => "SetDaggerRaising",
+            SpellCategory::SetMaceRaising => "SetMaceRaising",
+            SpellCategory::SetSpearRaising => "SetSpearRaising",
+            SpellCategory::SetStaffRaising => "SetStaffRaising",
+            SpellCategory::SetUnarmedRaising => "SetUnarmedRaising",
+            SpellCategory::SetBowRaising => "SetBowRaising",
+            SpellCategory::SetCrossbowRaising => "SetCrossbowRaising",
+            SpellCategory::SetThrownRaising => "SetThrownRaising",
+            SpellCategory::SetItemEnchantmentRaising => "SetItemEnchantmentRaising",
+            SpellCategory::SetCreatureEnchantmentRaising => "SetCreatureEnchantmentRaising",
+            SpellCategory::SetWarMagicRaising => "SetWarMagicRaising",
+            SpellCategory::SetLifeMagicRaising => "SetLifeMagicRaising",
+            SpellCategory::SetMeleeDefenseRaising => "SetMeleeDefenseRaising",
+            SpellCategory::SetMissileDefenseRaising => "SetMissileDefenseRaising",
+            SpellCategory::SetMagicDefenseRaising => "SetMagicDefenseRaising",
+            SpellCategory::SetStaminaAccelerating => "SetStaminaAccelerating",
+            SpellCategory::SetCookingRaising => "SetCookingRaising",
+            SpellCategory::SetFletchingRaising => "SetFletchingRaising",
+            SpellCategory::SetLockpickRaising => "SetLockpickRaising",
+            SpellCategory::SetAlchemyRaising => "SetAlchemyRaising",
+            SpellCategory::SetSalvagingRaising => "SetSalvagingRaising",
+            SpellCategory::SetArmorExpertiseRaising => "SetArmorExpertiseRaising",
+            SpellCategory::SetWeaponExpertiseRaising => "SetWeaponExpertiseRaising",
+            SpellCategory::SetItemTinkeringRaising => "SetItemTinkeringRaising",
+            SpellCategory::SetMagicItemExpertiseRaising => "SetMagicItemExpertiseRaising",
+            SpellCategory::SetLoyaltyRaising => "SetLoyaltyRaising",
+            SpellCategory::SetStrengthRaising => "SetStrengthRaising",
+            SpellCategory::SetEnduranceRaising => "SetEnduranceRaising",
+            SpellCategory::SetCoordinationRaising => "SetCoordinationRaising",
+            SpellCategory::SetQuicknessRaising => "SetQuicknessRaising",
+            SpellCategory::SetFocusRaising => "SetFocusRaising",
+            SpellCategory::SetWillpowerRaising => "SetWillpowerRaising",
+            SpellCategory::SetHealthRaising => "SetHealthRaising",
+            SpellCategory::SetStaminaRaising => "SetStaminaRaising",
+            SpellCategory::SetManaRaising => "SetManaRaising",
+            SpellCategory::SetSprintRaising => "SetSprintRaising",
+            SpellCategory::SetJumpingRaising => "SetJumpingRaising",
+            SpellCategory::SetSlashResistanceRaising => "SetSlashResistanceRaising",
+            SpellCategory::SetBludgeonResistanceRaising => "SetBludgeonResistanceRaising",
+            SpellCategory::SetPierceResistanceRaising => "SetPierceResistanceRaising",
+            SpellCategory::SetFlameResistanceRaising => "SetFlameResistanceRaising",
+            SpellCategory::SetAcidResistanceRaising => "SetAcidResistanceRaising",
+            SpellCategory::SetFrostResistanceRaising => "SetFrostResistanceRaising",
+            SpellCategory::SetLightningResistanceRaising => "SetLightningResistanceRaising",
+            SpellCategory::CraftingLockPickRaising => "CraftingLockPickRaising",
+            SpellCategory::CraftingFletchingRaising => "CraftingFletchingRaising",
+            SpellCategory::CraftingCookingRaising => "CraftingCookingRaising",
+            SpellCategory::CraftingAlchemyRaising => "CraftingAlchemyRaising",
+            SpellCategory::CraftingArmorTinkeringRaising => "CraftingArmorTinkeringRaising",
+            SpellCategory::CraftingWeaponTinkeringRaising => "CraftingWeaponTinkeringRaising",
+            SpellCategory::CraftingMagicTinkeringRaising => "CraftingMagicTinkeringRaising",
+            SpellCategory::CraftingItemTinkeringRaising => "CraftingItemTinkeringRaising",
+            SpellCategory::SkillPercentAlchemyRaising => "SkillPercentAlchemyRaising",
+            SpellCategory::TwoHandedRaising => "TwoHandedRaising",
+            SpellCategory::TwoHandedLowering => "TwoHandedLowering",
+            SpellCategory::ExtraTwoHandedSkillRaising => "ExtraTwoHandedSkillRaising",
+            SpellCategory::ExtraTwoHandedSkillLowering => "ExtraTwoHandedSkillLowering",
+            SpellCategory::ExtraTwoHandedSkillRaising2 => "ExtraTwoHandedSkillRaising2",
+            SpellCategory::TwoHandedRaisingRare => "TwoHandedRaisingRare",
+            SpellCategory::SetTwoHandedRaising => "SetTwoHandedRaising",
+            SpellCategory::GearCraftRaising => "GearCraftRaising",
+            SpellCategory::GearCraftLowering => "GearCraftLowering",
+            SpellCategory::ExtraGearCraftSkillRaising => "ExtraGearCraftSkillRaising",
+            SpellCategory::ExtraGearCraftSkillLowering => "ExtraGearCraftSkillLowering",
+            SpellCategory::ExtraGearCraftSkillRaising2 => "ExtraGearCraftSkillRaising2",
+            SpellCategory::GearCraftRaisingRare => "GearCraftRaisingRare",
+            SpellCategory::SetGearCraftRaising => "SetGearCraftRaising",
+            SpellCategory::LoyaltyManaRaising => "LoyaltyManaRaising",
+            SpellCategory::LoyaltyStaminaRaising => "LoyaltyStaminaRaising",
+            SpellCategory::LeadershipHealthRaising => "LeadershipHealthRaising",
+            SpellCategory::TrinketDamageRaising => "TrinketDamageRaising",
+            SpellCategory::TrinketDamageLowering => "TrinketDamageLowering",
+            SpellCategory::TrinketHealthRaising => "TrinketHealthRaising",
+            SpellCategory::TrinketStaminaRaising => "TrinketStaminaRaising",
+            SpellCategory::TrinketManaRaising => "TrinketManaRaising",
+            SpellCategory::TrinketXPRaising => "TrinketXPRaising",
+            SpellCategory::DeceptionArcaneLoreRaising => "DeceptionArcaneLoreRaising",
+            SpellCategory::HealOverTimeRaising => "HealOverTimeRaising",
+            SpellCategory::DamageOverTimeRaising => "DamageOverTimeRaising",
+            SpellCategory::HealingResistRatingRaising => "HealingResistRatingRaising",
+            SpellCategory::AetheriaDamageRatingRaising => "AetheriaDamageRatingRaising",
+            SpellCategory::AetheriaDamageReductionRaising => "AetheriaDamageReductionRaising",
+            SpellCategory::AetheriaHealthRaising => "AetheriaHealthRaising",
+            SpellCategory::AetheriaStaminaRaising => "AetheriaStaminaRaising",
+            SpellCategory::AetheriaManaRaising => "AetheriaManaRaising",
+            SpellCategory::AetheriaCriticalDamageRaising => "AetheriaCriticalDamageRaising",
+            SpellCategory::AetheriaHealingAmplificationRaising => "AetheriaHealingAmplificationRaising",
+            SpellCategory::AetheriaProcDamageRatingRaising => "AetheriaProcDamageRatingRaising",
+            SpellCategory::AetheriaProcDamageReductionRaising => "AetheriaProcDamageReductionRaising",
+            SpellCategory::AetheriaProcHealthOverTimeRaising => "AetheriaProcHealthOverTimeRaising",
+            SpellCategory::AetheriaProcDamageOverTimeRaising => "AetheriaProcDamageOverTimeRaising",
+            SpellCategory::AetheriaProcHealingReductionRaising => "AetheriaProcHealingReductionRaising",
+            SpellCategory::RareDamageRatingRaising => "RareDamageRatingRaising",
+            SpellCategory::RareDamageReductionRatingRaising => "RareDamageReductionRatingRaising",
+            SpellCategory::AetheriaEnduranceRaising => "AetheriaEnduranceRaising",
+            SpellCategory::NetherDamageOverTimeRaising => "NetherDamageOverTimeRaising",
+            SpellCategory::NetherDamageOverTimeRaising2 => "NetherDamageOverTimeRaising2",
+            SpellCategory::NetherDamageOverTimeRaising3 => "NetherDamageOverTimeRaising3",
+            SpellCategory::NetherStreak => "NetherStreak",
+            SpellCategory::NetherMissile => "NetherMissile",
+            SpellCategory::NetherRing => "NetherRing",
+            SpellCategory::NetherDamageRatingLowering => "NetherDamageRatingLowering",
+            SpellCategory::NetherDamageHealingReductionRaising => "NetherDamageHealingReductionRaising",
+            SpellCategory::VoidMagicLowering => "VoidMagicLowering",
+            SpellCategory::VoidMagicRaising => "VoidMagicRaising",
+            SpellCategory::VoidMysticRaising => "VoidMysticRaising",
+            SpellCategory::SetVoidMagicRaising => "SetVoidMagicRaising",
+            SpellCategory::VoidMagicRaisingRare => "VoidMagicRaisingRare",
+            SpellCategory::VoidMysticRaising2 => "VoidMysticRaising2",
+            SpellCategory::LuminanceDamageRatingRaising => "LuminanceDamageRatingRaising",
+            SpellCategory::LuminanceDamageReductionRaising => "LuminanceDamageReductionRaising",
+            SpellCategory::LuminanceHealthRaising => "LuminanceHealthRaising",
+            SpellCategory::AetheriaCriticalReductionRaising => "AetheriaCriticalReductionRaising",
+            SpellCategory::ExtraMissileDefenseSkillRaising => "ExtraMissileDefenseSkillRaising",
+            SpellCategory::ExtraMissileDefenseSkillLowering => "ExtraMissileDefenseSkillLowering",
+            SpellCategory::ExtraMissileDefenseSkillRaising2 => "ExtraMissileDefenseSkillRaising2",
+            SpellCategory::AetheriaHealthResistanceRaising => "AetheriaHealthResistanceRaising",
+            SpellCategory::AetheriaDotResistanceRaising => "AetheriaDotResistanceRaising",
+            SpellCategory::CloakSkillRaising => "CloakSkillRaising",
+            SpellCategory::CloakAllSkillRaising => "CloakAllSkillRaising",
+            SpellCategory::CloakMagicDefenseLowering => "CloakMagicDefenseLowering",
+            SpellCategory::CloakMeleeDefenseLowering => "CloakMeleeDefenseLowering",
+            SpellCategory::CloakMissileDefenseLowering => "CloakMissileDefenseLowering",
+            SpellCategory::DirtyFightingLowering => "DirtyFightingLowering",
+            SpellCategory::DirtyFightingRaising => "DirtyFightingRaising",
+            SpellCategory::ExtraDirtyFightingRaising => "ExtraDirtyFightingRaising",
+            SpellCategory::DualWieldLowering => "DualWieldLowering",
+            SpellCategory::DualWieldRaising => "DualWieldRaising",
+            SpellCategory::ExtraDualWieldRaising => "ExtraDualWieldRaising",
+            SpellCategory::RecklessnessLowering => "RecklessnessLowering",
+            SpellCategory::RecklessnessRaising => "RecklessnessRaising",
+            SpellCategory::ExtraRecklessnessRaising => "ExtraRecklessnessRaising",
+            SpellCategory::ShieldLowering => "ShieldLowering",
+            SpellCategory::ShieldRaising => "ShieldRaising",
+            SpellCategory::ExtraShieldRaising => "ExtraShieldRaising",
+            SpellCategory::SneakAttackLowering => "SneakAttackLowering",
+            SpellCategory::SneakAttackRaising => "SneakAttackRaising",
+            SpellCategory::ExtraSneakAttackRaising => "ExtraSneakAttackRaising",
+            SpellCategory::RareDirtyFightingRaising => "RareDirtyFightingRaising",
+            SpellCategory::RareDualWieldRaising => "RareDualWieldRaising",
+            SpellCategory::RareRecklessnessRaising => "RareRecklessnessRaising",
+            SpellCategory::RareShieldRaising => "RareShieldRaising",
+            SpellCategory::RareSneakAttackRaising => "RareSneakAttackRaising",
+            SpellCategory::DFAttackSkillDebuff => "DFAttackSkillDebuff",
+            SpellCategory::DFBleedDamage => "DFBleedDamage",
+            SpellCategory::DFDefenseSkillDebuff => "DFDefenseSkillDebuff",
+            SpellCategory::DFHealingDebuff => "DFHealingDebuff",
+            SpellCategory::SetDirtyFightingRaising => "SetDirtyFightingRaising",
+            SpellCategory::SetDualWieldRaising => "SetDualWieldRaising",
+            SpellCategory::SetRecklessnessRaising => "SetRecklessnessRaising",
+            SpellCategory::SetShieldRaising => "SetShieldRaising",
+            SpellCategory::SetSneakAttackRaising => "SetSneakAttackRaising",
+            SpellCategory::LifeGiverMhoire => "LifeGiverMhoire",
+            SpellCategory::RareDamageRatingRaising2 => "RareDamageRatingRaising2",
+            SpellCategory::SpellDamageRaising => "SpellDamageRaising",
+            SpellCategory::SummoningRaising => "SummoningRaising",
+            SpellCategory::SummoningLowering => "SummoningLowering",
+            SpellCategory::ExtraSummoningSkillRaising => "ExtraSummoningSkillRaising",
+            SpellCategory::SetSummoningRaising => "SetSummoningRaising",
+            SpellCategory::ParagonEnduranceRaising => "ParagonEnduranceRaising",
+            SpellCategory::ParagonManaRaising => "ParagonManaRaising",
+            SpellCategory::ParagonStaminaRaising => "ParagonStaminaRaising",
+            SpellCategory::ParagonDirtyFightingRaising => "ParagonDirtyFightingRaising",
+            SpellCategory::ParagonDualWieldRaising => "ParagonDualWieldRaising",
+            SpellCategory::ParagonRecklessnessRaising => "ParagonRecklessnessRaising",
+            SpellCategory::ParagonSneakAttackRaising => "ParagonSneakAttackRaising",
+            SpellCategory::ParagonDamageRatingRaising => "ParagonDamageRatingRaising",
+            SpellCategory::ParagonDamageReductionRatingRaising => "ParagonDamageReductionRatingRaising",
+            SpellCategory::ParagonCriticalDamageRatingRaising => "ParagonCriticalDamageRatingRaising",
+            SpellCategory::ParagonCriticalDamageReductionRatingRaising => "ParagonCriticalDamageReductionRatingRaising",
+            SpellCategory::ParagonAxeRaising => "ParagonAxeRaising",
+            SpellCategory::ParagonDaggerRaising => "ParagonDaggerRaising",
+            SpellCategory::ParagonSwordRaising => "ParagonSwordRaising",
+            SpellCategory::ParagonWarMagicRaising => "ParagonWarMagicRaising",
+            SpellCategory::ParagonLifeMagicRaising => "ParagonLifeMagicRaising",
+            SpellCategory::ParagonVoidMagicRaising => "ParagonVoidMagicRaising",
+            SpellCategory::ParagonBowRaising => "ParagonBowRaising",
+            SpellCategory::ParagonStrengthRaising => "ParagonStrengthRaising",
+            SpellCategory::ParagonCoordinationRaising => "ParagonCoordinationRaising",
+            SpellCategory::ParagonQuicknessRaising => "ParagonQuicknessRaising",
+            SpellCategory::ParagonFocusRaising => "ParagonFocusRaising",
+            SpellCategory::ParagonWillpowerRaising => "ParagonWillpowerRaising",
+            SpellCategory::ParagonTwoHandedRaising => "ParagonTwoHandedRaising",
+            SpellCategory::GauntletDamageReductionRatingRaising => "GauntletDamageReductionRatingRaising",
+            SpellCategory::GauntletDamageRatingRaising => "GauntletDamageRatingRaising",
+            SpellCategory::GauntletHealingRatingRaising => "GauntletHealingRatingRaising",
+            SpellCategory::GauntletVitalityRaising => "GauntletVitalityRaising",
+            SpellCategory::GauntletCriticalDamageRatingRaising => "GauntletCriticalDamageRatingRaising",
+            SpellCategory::GauntletCriticalDamageReductionRatingRaising => "GauntletCriticalDamageReductionRatingRaising",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// Heritage of a player
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -7370,6 +12551,28 @@ impl crate::readers::ACDataType for HeritageGroup {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(HeritageGroup::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for HeritageGroup {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            HeritageGroup::Invalid => "Invalid",
+            HeritageGroup::Aluvian => "Aluvian",
+            HeritageGroup::Gharundim => "Gharundim",
+            HeritageGroup::Sho => "Sho",
+            HeritageGroup::Viamontian => "Viamontian",
+            HeritageGroup::Shadowbound => "Shadowbound",
+            HeritageGroup::Gearknight => "Gearknight",
+            HeritageGroup::Tumerok => "Tumerok",
+            HeritageGroup::Lugian => "Lugian",
+            HeritageGroup::Empyrean => "Empyrean",
+            HeritageGroup::Penumbraen => "Penumbraen",
+            HeritageGroup::Undead => "Undead",
+            HeritageGroup::Olthoi => "Olthoi",
+            HeritageGroup::OlthoiAcid => "OlthoiAcid",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -7419,6 +12622,20 @@ impl crate::readers::ACDataType for CombatUse {
     }
 }
 
+impl std::fmt::Display for CombatUse {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            CombatUse::None => "None",
+            CombatUse::Melee => "Melee",
+            CombatUse::Missile => "Missile",
+            CombatUse::Ammo => "Ammo",
+            CombatUse::Shield => "Shield",
+            CombatUse::TwoHanded => "TwoHanded",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// the type of wieldable item this is
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -7434,6 +12651,19 @@ impl crate::readers::ACDataType for WieldType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(WieldType::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for WieldType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            WieldType::Invalid => "Invalid",
+            WieldType::MeleeWeapon => "MeleeWeapon",
+            WieldType::Armor => "Armor",
+            WieldType::Clothing => "Clothing",
+            WieldType::Jewelry => "Jewelry",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -7461,6 +12691,25 @@ impl crate::readers::ACDataType for ChatType {
     }
 }
 
+impl std::fmt::Display for ChatType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ChatType::Undef => "Undef",
+            ChatType::Allegiance => "Allegiance",
+            ChatType::General => "General",
+            ChatType::Trade => "Trade",
+            ChatType::LFG => "LFG",
+            ChatType::Roleplay => "Roleplay",
+            ChatType::Society => "Society",
+            ChatType::SocietyCelHan => "SocietyCelHan",
+            ChatType::SocietyEldWeb => "SocietyEldWeb",
+            ChatType::SocietyRadBlo => "SocietyRadBlo",
+            ChatType::Olthoi => "Olthoi",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 /// The ChatDisplayMask identifies that types of chat that are displayed in each chat window. 
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -7483,6 +12732,26 @@ impl crate::readers::ACDataType for ChatDisplayMask {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ChatDisplayMask::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for ChatDisplayMask {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ChatDisplayMask::Gameplay => "Gameplay",
+            ChatDisplayMask::Mandatory => "Mandatory",
+            ChatDisplayMask::AreaChat => "AreaChat",
+            ChatDisplayMask::Tells => "Tells",
+            ChatDisplayMask::Combat => "Combat",
+            ChatDisplayMask::Magic => "Magic",
+            ChatDisplayMask::Allegiance => "Allegiance",
+            ChatDisplayMask::Fellowship => "Fellowship",
+            ChatDisplayMask::Errors => "Errors",
+            ChatDisplayMask::TradeChannel => "TradeChannel",
+            ChatDisplayMask::LFGChannel => "LFGChannel",
+            ChatDisplayMask::RoleplayChannel => "RoleplayChannel",
+        };
+        write!(f, "{}", s)
     }
 }
 
@@ -7542,6 +12811,24 @@ impl crate::readers::ACDataType for ParentLocation {
     }
 }
 
+impl std::fmt::Display for ParentLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            ParentLocation::None => "None",
+            ParentLocation::RightHand => "RightHand",
+            ParentLocation::LeftHand => "LeftHand",
+            ParentLocation::Shield => "Shield",
+            ParentLocation::Belt => "Belt",
+            ParentLocation::Quiver => "Quiver",
+            ParentLocation::Hearldry => "Hearldry",
+            ParentLocation::Mouth => "Mouth",
+            ParentLocation::LeftWeapon => "LeftWeapon",
+            ParentLocation::LeftUnarmed => "LeftUnarmed",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum Placement {
@@ -7589,6 +12876,52 @@ impl crate::readers::ACDataType for Placement {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(Placement::try_from(value)?)
+    }
+}
+
+impl std::fmt::Display for Placement {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            Placement::Default => "Default",
+            Placement::RightHandCombat => "RightHandCombat",
+            Placement::RightHandNonCombat => "RightHandNonCombat",
+            Placement::LeftHand => "LeftHand",
+            Placement::Belt => "Belt",
+            Placement::Quiver => "Quiver",
+            Placement::Shield => "Shield",
+            Placement::LeftWeapon => "LeftWeapon",
+            Placement::LeftUnarmed => "LeftUnarmed",
+            Placement::SpecialCrowssbowBolt => "SpecialCrowssbowBolt",
+            Placement::MissileFlight => "MissileFlight",
+            Placement::Resting => "Resting",
+            Placement::Other => "Other",
+            Placement::Hook => "Hook",
+            Placement::Random1 => "Random1",
+            Placement::Random2 => "Random2",
+            Placement::Random3 => "Random3",
+            Placement::Random4 => "Random4",
+            Placement::Random5 => "Random5",
+            Placement::Random6 => "Random6",
+            Placement::Random7 => "Random7",
+            Placement::Random8 => "Random8",
+            Placement::Random9 => "Random9",
+            Placement::Random10 => "Random10",
+            Placement::XXXUnknownA => "XXXUnknownA",
+            Placement::XXXUnknownF => "XXXUnknownF",
+            Placement::XXXUnknown14 => "XXXUnknown14",
+            Placement::XXXUnknown1E => "XXXUnknown1E",
+            Placement::XXXUnknown20 => "XXXUnknown20",
+            Placement::XXXUnknown3C => "XXXUnknown3C",
+            Placement::XXXUnknown69 => "XXXUnknown69",
+            Placement::XXXUnknown6A => "XXXUnknown6A",
+            Placement::XXXUnknown63 => "XXXUnknown63",
+            Placement::XXXUnknown68 => "XXXUnknown68",
+            Placement::XXXUnknown78 => "XXXUnknown78",
+            Placement::XXXUnknown84 => "XXXUnknown84",
+            Placement::XXXUnknownF0 => "XXXUnknownF0",
+            Placement::XXXUnknown3F2 => "XXXUnknown3F2",
+        };
+        write!(f, "{}", s)
     }
 }
 

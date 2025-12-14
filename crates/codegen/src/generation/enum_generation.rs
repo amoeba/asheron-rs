@@ -199,6 +199,9 @@ pub fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
         ));
     }
 
+    // Add Display trait implementation
+    out.push_str(&generate_display_impl(protocol_enum));
+
     out
 }
 
@@ -427,5 +430,40 @@ pub fn generate_nested_switch_enum(
     }
 
     out.push_str("}\n\n");
+    out
+}
+
+/// Generate a Display implementation for enum variants
+fn generate_display_impl(protocol_enum: &ProtocolEnum) -> String {
+    let enum_name = &protocol_enum.name;
+    let mut out = String::new();
+
+    out.push_str(&format!("impl std::fmt::Display for {} {{\n", enum_name));
+    out.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {\n");
+    out.push_str("        let s = match self {\n");
+
+    for enum_value in &protocol_enum.values {
+        let original_name = &enum_value.name;
+
+        // Generate variant name - same logic as in generate_enum
+        let variant_name = if let Some(stripped) = original_name.strip_prefix("0x") {
+            format!("Type{stripped}")
+        } else {
+            original_name.clone()
+        };
+
+        let safe_variant = safe_enum_variant_name(&variant_name);
+
+        out.push_str(&format!(
+            "            {}::{} => \"{}\",\n",
+            enum_name, safe_variant.name, original_name
+        ));
+    }
+
+    out.push_str("        };\n");
+    out.push_str("        write!(f, \"{}\", s)\n");
+    out.push_str("    }\n");
+    out.push_str("}\n\n");
+
     out
 }
