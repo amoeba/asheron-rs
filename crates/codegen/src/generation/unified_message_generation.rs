@@ -16,7 +16,6 @@ pub fn generate_unified_message_types(
     // Add imports
     out.push_str("use serde::{Serialize, Deserialize};\n");
     out.push_str("use crate::readers::*;\n");
-    out.push_str("use crate::types::*;\n");
     out.push_str("use crate::enums::*;\n");
     out.push_str("use crate::messages::c2s;\n");
     out.push_str("use crate::messages::s2c;\n");

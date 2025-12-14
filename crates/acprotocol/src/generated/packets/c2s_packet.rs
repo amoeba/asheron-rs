@@ -10,6 +10,7 @@ use crate::enums::*;
 use super::*;
 
 // Client to Server AC packet.
+#[allow(dead_code)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct C2SPacket {
     #[serde(rename = "Sequence")]

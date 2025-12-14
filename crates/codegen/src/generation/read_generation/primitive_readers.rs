@@ -1,4 +1,3 @@
-
 use crate::{
     identifiers::{IdentifierType, safe_identifier},
     type_utils::get_rust_type,

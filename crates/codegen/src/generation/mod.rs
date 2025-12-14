@@ -9,11 +9,7 @@ pub mod unified_message_generation;
 
 use std::collections::BTreeMap;
 
-use crate::{
-    identifiers::to_snake_case,
-    type_utils::get_rust_type,
-    types::ProtocolCategory,
-};
+use crate::{identifiers::to_snake_case, type_utils::get_rust_type, types::ProtocolCategory};
 
 pub use types::{GeneratedCode, GeneratedFile};
 

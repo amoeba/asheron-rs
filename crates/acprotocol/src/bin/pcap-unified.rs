@@ -11,8 +11,6 @@ struct Cli {
 
 fn process_pcap(path: &str) -> Result<()> {
     use acprotocol::network::{FragmentAssembler, UnifiedMessage, pcap};
-    
-    
 
     let mut pcap_iter = pcap::open(path)?;
     let mut assembler = FragmentAssembler::new();

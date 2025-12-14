@@ -1,4 +1,3 @@
-
 use crate::type_utils::get_rust_type;
 
 use super::types::GeneratedFile;
@@ -23,9 +22,11 @@ pub fn generate_module_file(modules: &[String], path: &str) -> GeneratedFile {
 
     content.push('\n');
 
-    // Add pub use re-exports
+    // Add pub use re-exports (skip c2s_packet and s2c_packet as they're infrastructure not public API)
     for module_name in modules {
-        content.push_str(&format!("pub use {}::*;\n", module_name));
+        if module_name != "c2s_packet" && module_name != "s2c_packet" {
+            content.push_str(&format!("pub use {}::*;\n", module_name));
+        }
     }
 
     GeneratedFile {

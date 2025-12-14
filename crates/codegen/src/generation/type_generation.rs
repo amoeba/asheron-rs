@@ -214,16 +214,23 @@ pub enum {type_name}{type_generics} {{\n"
 
         let derives = build_derive_string(&protocol_type.extra_derives);
 
+        // Add #[allow(dead_code)] for packet header structs that are infrastructure not public API
+        let allow_dead_code = if type_name == "C2SPacket" || type_name == "S2CPacket" {
+            "#[allow(dead_code)]\n"
+        } else {
+            ""
+        };
+
         if safe_type_name.needs_rename {
             out.push_str(&format!(
-                "{derives}\n#[serde(rename = \"{original_type_name}\")]
+                "{allow_dead_code}{derives}\n#[serde(rename = \"{original_type_name}\")]
 pub struct {type_name}{type_generics} {{
 {fields_out}
 }}\n\n"
             ));
         } else {
             out.push_str(&format!(
-                "{derives}\npub struct {type_name}{type_generics} {{
+                "{allow_dead_code}{derives}\npub struct {type_name}{type_generics} {{
 {fields_out}
 }}\n\n"
             ));
