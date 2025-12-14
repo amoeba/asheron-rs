@@ -157,7 +157,6 @@ pub fn generate_with_source(
     // Generate common types - will add readers after building reader context
     let mut common_types_out = String::new();
     common_types_out.push_str("use serde::{Serialize, Deserialize};\n");
-    common_types_out.push_str("use std::io::Read;\n");
     common_types_out.push_str("use crate::readers::ACReader;\n");
     common_types_out.push_str("use crate::readers::*;\n");
     common_types_out.push_str("use crate::enums::*;\n\n");

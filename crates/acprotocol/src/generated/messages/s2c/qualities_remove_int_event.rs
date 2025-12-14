@@ -1,5 +1,4 @@
 use serde::{Serialize, Deserialize};
-use std::io::Read;
 use crate::readers::ACReader;
 use crate::readers::*;
 use crate::types::*;

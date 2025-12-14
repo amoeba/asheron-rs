@@ -19,7 +19,6 @@ pub fn generate_type_and_reader_file(
 
     // Add imports
     out.push_str("use serde::{Serialize, Deserialize};\n");
-    out.push_str("use std::io::Read;\n");
     out.push_str("use crate::readers::ACReader;\n");
     out.push_str("use crate::readers::*;\n");
     out.push_str("use crate::types::*;\n");
