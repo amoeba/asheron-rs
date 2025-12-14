@@ -154,8 +154,6 @@ fn generate_c2s_message_enum(
         out.push_str("                let action = GameActionMessage::read(reader)?;\n");
         out.push_str("                Ok(C2SMessage::OrderedGameAction { sequence, action })\n");
         out.push_str("            }\n");
-
-        out.push_str("            other => Err(format!(\"Unhandled C2SMessage variant: {:?}\", other).into()),\n");
     }
 
     out.push_str("        }\n");
@@ -264,8 +262,6 @@ fn generate_s2c_message_enum(
             "                Ok(S2CMessage::OrderedGameEvent { object_id, sequence, event })\n",
         );
         out.push_str("            }\n");
-
-        out.push_str("            other => Err(format!(\"Unhandled S2CMessage variant: {:?}\", other).into()),\n");
     }
 
     out.push_str("        }\n");
@@ -382,13 +378,6 @@ fn generate_message_enum(
                 }
             }
         }
-
-        // Add catch-all for any remaining enum variants not in message_types
-        // (e.g., OrderedGameAction, OrderedGameEvent which have special handling)
-        out.push_str(&format!(
-            "            other => Err(format!(\"Unhandled {} variant: {{:?}}\", other).into()),\n",
-            enum_name
-        ));
     }
 
     out.push_str("        }\n");

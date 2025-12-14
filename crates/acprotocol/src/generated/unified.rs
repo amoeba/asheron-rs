@@ -364,7 +364,6 @@ impl GameActionMessage {
             crate::enums::GameAction::MovementAutonomyLevel => Ok(GameActionMessage::MovementAutonomyLevel(gameactions::MovementAutonomyLevel::read(reader)?)),
             crate::enums::GameAction::MovementAutonomousPosition => Ok(GameActionMessage::MovementAutonomousPosition(gameactions::MovementAutonomousPosition::read(reader)?)),
             crate::enums::GameAction::MovementJumpNonAutonomous => Ok(GameActionMessage::MovementJumpNonAutonomous(gameactions::MovementJumpNonAutonomous::read(reader)?)),
-            other => Err(format!("Unhandled GameActionMessage variant: {:?}", other).into()),
         }
     }
 
@@ -742,7 +741,6 @@ impl GameEventMessage {
             crate::enums::GameEvent::MagicPurgeBadEnchantments => Ok(GameEventMessage::MagicPurgeBadEnchantments(gameevents::MagicPurgeBadEnchantments::read(reader)?)),
             crate::enums::GameEvent::SocialSendClientContractTrackerTable => Ok(GameEventMessage::SocialSendClientContractTrackerTable(gameevents::SocialSendClientContractTrackerTable::read(reader)?)),
             crate::enums::GameEvent::SocialSendClientContractTracker => Ok(GameEventMessage::SocialSendClientContractTracker(gameevents::SocialSendClientContractTracker::read(reader)?)),
-            other => Err(format!("Unhandled GameEventMessage variant: {:?}", other).into()),
         }
     }
 
@@ -901,7 +899,6 @@ impl C2SMessage {
                 let action = GameActionMessage::read(reader)?;
                 Ok(C2SMessage::OrderedGameAction { sequence, action })
             }
-            other => Err(format!("Unhandled C2SMessage variant: {:?}", other).into()),
         }
     }
 
@@ -1131,7 +1128,6 @@ impl S2CMessage {
                 let event = GameEventMessage::read(reader)?;
                 Ok(S2CMessage::OrderedGameEvent { object_id, sequence, event })
             }
-            other => Err(format!("Unhandled S2CMessage variant: {:?}", other).into()),
         }
     }
 
