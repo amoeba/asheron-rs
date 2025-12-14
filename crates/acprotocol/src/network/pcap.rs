@@ -1,5 +1,10 @@
+use std::io::{Cursor, Read};
+
+#[cfg(not(target_arch = "wasm32"))]
 use std::fs::File;
-use std::io::{BufReader, Read};
+#[cfg(not(target_arch = "wasm32"))]
+use std::io::BufReader;
+#[cfg(not(target_arch = "wasm32"))]
 use std::path::Path;
 
 /// Represents a single packet from a pcap file
@@ -45,6 +50,12 @@ impl<R: Read> PcapIterator<R> {
         })
     }
 
+    /// Create a new pcap iterator from a byte slice (WASM-compatible)
+    pub fn from_bytes(bytes: &[u8]) -> std::io::Result<PcapIterator<Cursor<&[u8]>>> {
+        let cursor = Cursor::new(bytes);
+        PcapIterator::new(cursor)
+    }
+
     fn read_u32(&self, bytes: &[u8]) -> u32 {
         let val = u32::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]);
         if self.is_big_endian {
@@ -84,6 +95,10 @@ impl<R: Read> Iterator for PcapIterator<R> {
 }
 
 /// Open a pcap file and return an iterator over its packets
+///
+/// This function is only available on non-WASM targets.
+/// For WASM compatibility, use `PcapIterator::from_bytes()` instead.
+#[cfg(not(target_arch = "wasm32"))]
 pub fn open<P: AsRef<Path>>(path: P) -> std::io::Result<PcapIterator<BufReader<File>>> {
     let file = File::open(path)?;
     let reader = BufReader::new(file);
