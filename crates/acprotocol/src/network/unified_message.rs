@@ -32,7 +32,7 @@ impl UnifiedMessage {
 
         // Parse the message
         let mut cursor = Cursor::new(&data[..]);
-        let mut reader: &mut dyn ACReader = &mut cursor;
+        let reader: &mut dyn ACReader = &mut cursor;
 
         let message = MessageKind::read(reader, direction)
             .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e.to_string()))?;
