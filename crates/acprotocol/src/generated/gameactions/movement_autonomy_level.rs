@@ -20,7 +20,7 @@ pub struct MovementAutonomyLevel {
 impl crate::readers::ACDataType for MovementAutonomyLevel {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let autonomy_level = read_u32(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             autonomy_level,

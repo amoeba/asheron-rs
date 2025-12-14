@@ -12,13 +12,13 @@ pub fn generate_vec_read_with_length(element_type: &str, length_code: &str) -> S
         // For primitive types like u8, read directly as bytes
         if rust_type == "u8" {
             // Use read_to_end which requires special handling - wrap in Ok
-            return "(|| -> Result<Vec<u8>, Box<dyn std::error::Error>> {\n                let mut data = Vec::new();\n                let _ = reader.read_to_end(&mut data);\n                Ok(data)\n            })()"
+            return "{\n                let mut data = Vec::new();\n                let _ = reader.read_to_end(&mut data);\n                Ok::<_, Box<dyn std::error::Error>>(data)\n            }"
                 .to_string();
         } else {
             // For other types, read items until EOF - wrap in Ok
             return format!(
-                "(|| -> Result<Vec<{}>, Box<dyn std::error::Error>> {{\n                let mut vec = Vec::new();\n                loop {{\n                    match read_item::<{}>(reader) {{\n                        Ok(item) => vec.push(item),\n                        Err(_) => break,\n                    }}\n                }}\n                Ok(vec)\n            }})()",
-                rust_type, rust_type
+                "{{\n                let mut vec = Vec::new();\n                loop {{\n                    match read_item::<{}>(reader) {{\n                        Ok(item) => vec.push(item),\n                        Err(_) => break,\n                    }}\n                }}\n                Ok::<_, Box<dyn std::error::Error>>(vec)\n            }}",
+                rust_type
             );
         }
     }

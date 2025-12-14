@@ -20,7 +20,7 @@ pub struct EffectsPlayerTeleport {
 impl crate::readers::ACDataType for EffectsPlayerTeleport {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let object_teleport_sequence = read_u16(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             object_teleport_sequence,

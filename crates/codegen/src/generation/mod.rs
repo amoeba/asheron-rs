@@ -96,15 +96,17 @@ pub fn generate_with_source(
     let ctx = context::GenerationContext::new(filter_types.to_vec());
 
     // Parse XML content using the xml_parser module
-    let (
-        mut enum_types,
+    let crate::xml_parser::ParseResult {
+        enums,
         common_types,
         game_action_types,
         game_event_types,
         c2s_types,
         s2c_types,
         packet_types,
-    ) = crate::xml_parser::parse_xml_content(xml, source);
+    } = crate::xml_parser::parse_xml_content(xml, source);
+
+    let mut enum_types = enums;
 
     // Rectify dependencies between types and enums
     let mut rectified_common_types = Vec::new();

@@ -2798,6 +2798,7 @@ impl crate::readers::ACDataType for SocketAddress {
 }
 
 impl LoginRequestHeaderType2 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
         let password = read_wstring(reader).map(WString)?;
 
@@ -2814,6 +2815,7 @@ impl LoginRequestHeaderType2 {
 }
 
 impl LoginRequestHeaderType40000002 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
         let gls_ticket = read_string(reader)?;
 
@@ -2864,7 +2866,7 @@ impl crate::readers::ACDataType for ReferralHeader {
         let cookie = read_u64(reader)?;
         let address = SocketAddress::read(reader)?;
         let id_server = read_u16(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
         let unknown = DWORD::read(reader)?;
 
         Ok(Self {
@@ -3368,6 +3370,7 @@ impl crate::readers::ACDataType for EmoteSetList {
 }
 
 impl EmoteSetType1 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let class_id = read_u32(reader)?;
 
@@ -3380,6 +3383,7 @@ impl EmoteSetType1 {
 }
 
 impl EmoteSetType2 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let vendor_type = read_u32(reader)?;
 
@@ -3392,6 +3396,7 @@ impl EmoteSetType2 {
 }
 
 impl EmoteSetType5 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let style = read_u32(reader)?;
         let substyle = read_u32(reader)?;
@@ -3406,6 +3411,7 @@ impl EmoteSetType5 {
 }
 
 impl EmoteSetTypeC {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let quest = read_string(reader)?;
 
@@ -3418,6 +3424,7 @@ impl EmoteSetTypeC {
 }
 
 impl EmoteSetTypeF {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
         let min_health = read_f32(reader)?;
         let max_health = read_f32(reader)?;
@@ -3470,6 +3477,7 @@ impl crate::readers::ACDataType for EmoteSet {
 }
 
 impl EmoteType1 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
 
@@ -3482,6 +3490,7 @@ impl EmoteType1 {
 }
 
 impl EmoteType2 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount64 = read_u64(reader)?;
         let hero_xp64 = read_u64(reader)?;
@@ -3496,6 +3505,7 @@ impl EmoteType2 {
 }
 
 impl EmoteType3 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let c_profile = CreationProfile::read(reader)?;
 
@@ -3508,6 +3518,7 @@ impl EmoteType3 {
 }
 
 impl EmoteType4 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let frame = Frame::read(reader)?;
 
@@ -3520,6 +3531,7 @@ impl EmoteType4 {
 }
 
 impl EmoteType5 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let motion = read_u32(reader)?;
 
@@ -3532,6 +3544,7 @@ impl EmoteType5 {
 }
 
 impl EmoteType7 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let physics_script = read_u32(reader)?;
 
@@ -3544,6 +3557,7 @@ impl EmoteType7 {
 }
 
 impl EmoteType9 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let sound = read_u32(reader)?;
 
@@ -3556,6 +3570,7 @@ impl EmoteType9 {
 }
 
 impl EmoteTypeE {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let spell_id = read_u32(reader)?;
 
@@ -3568,6 +3583,7 @@ impl EmoteTypeE {
 }
 
 impl EmoteType1C {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount = read_u32(reader)?;
         let stat = read_u32(reader)?;
@@ -3582,6 +3598,7 @@ impl EmoteType1C {
 }
 
 impl EmoteType1E {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let min = read_u32(reader)?;
@@ -3598,6 +3615,7 @@ impl EmoteType1E {
 }
 
 impl EmoteType20 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let amount = read_u32(reader)?;
@@ -3612,6 +3630,7 @@ impl EmoteType20 {
 }
 
 impl EmoteType22 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount = read_u32(reader)?;
 
@@ -3624,6 +3643,7 @@ impl EmoteType22 {
 }
 
 impl EmoteType23 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let stat = read_u32(reader)?;
@@ -3638,6 +3658,7 @@ impl EmoteType23 {
 }
 
 impl EmoteType24 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let min = read_u32(reader)?;
@@ -3656,6 +3677,7 @@ impl EmoteType24 {
 }
 
 impl EmoteType25 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let f_min = read_f64(reader)?;
@@ -3674,6 +3696,7 @@ impl EmoteType25 {
 }
 
 impl EmoteType26 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let test_string = read_string(reader)?;
@@ -3690,6 +3713,7 @@ impl EmoteType26 {
 }
 
 impl EmoteType31 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let percent = read_f64(reader)?;
         let min64 = read_u64(reader)?;
@@ -3706,6 +3730,7 @@ impl EmoteType31 {
 }
 
 impl EmoteType32 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
         let percent = read_f64(reader)?;
@@ -3726,6 +3751,7 @@ impl EmoteType32 {
 }
 
 impl EmoteType35 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
         let amount = read_u32(reader)?;
@@ -3740,6 +3766,7 @@ impl EmoteType35 {
 }
 
 impl EmoteType38 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let wealth_rating = read_i32(reader)?;
         let treasure_class = read_i32(reader)?;
@@ -3756,6 +3783,7 @@ impl EmoteType38 {
 }
 
 impl EmoteType3F {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let position = Position::read(reader)?;
 
@@ -3768,6 +3796,7 @@ impl EmoteType3F {
 }
 
 impl EmoteType4C {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let msg = read_string(reader)?;
         let c_profile = CreationProfile::read(reader)?;
@@ -3782,6 +3811,7 @@ impl EmoteType4C {
 }
 
 impl EmoteType6E {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
 
@@ -3794,6 +3824,7 @@ impl EmoteType6E {
 }
 
 impl EmoteType70 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let amount64 = read_u64(reader)?;
 
@@ -3806,6 +3837,7 @@ impl EmoteType70 {
 }
 
 impl EmoteType72 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let message = read_string(reader)?;
         let min64 = read_u64(reader)?;
@@ -3824,6 +3856,7 @@ impl EmoteType72 {
 }
 
 impl EmoteType76 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
         let stat = read_u32(reader)?;
         let percent = read_f64(reader)?;
@@ -4138,6 +4171,7 @@ impl crate::readers::ACDataType for GeneratorQueueNode {
 }
 
 impl WindowPropertyType1000007F {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_j = read_u32(reader)?;
         let value_j = read_u64(reader)?;
@@ -4150,6 +4184,7 @@ impl WindowPropertyType1000007F {
 }
 
 impl WindowPropertyType10000086 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_i = read_u32(reader)?;
         let value_i = read_u32(reader)?;
@@ -4162,6 +4197,7 @@ impl WindowPropertyType10000086 {
 }
 
 impl WindowPropertyType10000087 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_h = read_u32(reader)?;
         let value_h = read_u32(reader)?;
@@ -4174,6 +4210,7 @@ impl WindowPropertyType10000087 {
 }
 
 impl WindowPropertyType10000088 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_f = read_u32(reader)?;
         let value_f = read_u32(reader)?;
@@ -4186,6 +4223,7 @@ impl WindowPropertyType10000088 {
 }
 
 impl WindowPropertyType10000089 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_e = read_u32(reader)?;
         let value_e = read_u32(reader)?;
@@ -4198,6 +4236,7 @@ impl WindowPropertyType10000089 {
 }
 
 impl WindowPropertyType1000008A {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_d = read_u32(reader)?;
         let value_d = read_u8(reader)?;
@@ -4210,6 +4249,7 @@ impl WindowPropertyType1000008A {
 }
 
 impl WindowPropertyType1000008D {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_c = read_u32(reader)?;
         let title_source = WindowPropertyType1000008DTitleSourceVariant::read(reader)?;
@@ -4291,6 +4331,7 @@ impl crate::readers::ACDataType for WindowProperty {
 }
 
 impl WindowOptionType1000008B {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_b = read_u8(reader)?;
         let property_count = read_u8(reader)?;
@@ -4325,6 +4366,7 @@ impl crate::readers::ACDataType for WindowOption {
 }
 
 impl OptionPropertyType10000080 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_l = read_u32(reader)?;
         let inactive_opacity = read_f32(reader)?;
@@ -4337,6 +4379,7 @@ impl OptionPropertyType10000080 {
 }
 
 impl OptionPropertyType10000081 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_k = read_u32(reader)?;
         let active_opacity = read_f32(reader)?;
@@ -4349,6 +4392,7 @@ impl OptionPropertyType10000081 {
 }
 
 impl OptionPropertyType1000008C {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let unknown_a = read_u32(reader)?;
         let window_options = read_packable_list::<WindowOption>(reader)?;
@@ -4394,7 +4438,7 @@ impl crate::readers::ACDataType for GameplayOptions {
         let unknown200_2 = read_u8(reader)?;
         let option_property_count = read_u8(reader)?;
         let option_properties = read_vec::<OptionProperty>(reader, option_property_count as usize)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             size,
@@ -4663,6 +4707,7 @@ impl crate::readers::ACDataType for FriendData {
 }
 
 impl ItemProfileTypeNeg1 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
         let weenie_description = PublicWeenieDesc::read(reader)?;
 
@@ -4675,6 +4720,7 @@ impl ItemProfileTypeNeg1 {
 }
 
 impl ItemProfileType1 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
         let old_weenie_description = OldPublicWeenieDesc::read(reader)?;
 
@@ -4722,7 +4768,7 @@ impl crate::readers::ACDataType for PublicWeenieDesc {
         let icon = PackedDWORD::read(reader)?;
         let type_ = Ok::<_, Box<dyn std::error::Error>>(ItemType::from_bits_retain(read_u32(reader)?))?;
         let behavior = Ok::<_, Box<dyn std::error::Error>>(ObjectDescriptionFlag::from_bits_retain(read_u32(reader)?))?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
         let mut header2 = None;
         if (behavior.bits() & 0x04000000) != 0 {
             header2 = Some(read_u32(reader)?);
@@ -4871,7 +4917,7 @@ impl crate::readers::ACDataType for PublicWeenieDesc {
         if (header2.unwrap_or(0) & 0x00000008) != 0 {
             pet_owner_id = Some(ObjectId::read(reader)?);
         }
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             header,
@@ -5073,7 +5119,7 @@ impl crate::readers::ACDataType for OldPublicWeenieDesc {
         if (header & 0x80000000) != 0 {
             material = Some(MaterialType::try_from(read_u32(reader)?)?);
         }
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             header,
@@ -5146,7 +5192,7 @@ impl crate::readers::ACDataType for JumpPack {
         let object_server_control_sequence = read_u16(reader)?;
         let object_teleport_sequence = read_u16(reader)?;
         let object_force_position_sequence = read_u16(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             extent,
@@ -5168,7 +5214,7 @@ impl crate::readers::ACDataType for MoveToStatePack {
         let object_teleport_sequence = read_u16(reader)?;
         let object_force_position_sequence = read_u16(reader)?;
         let contact = read_u8(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             raw_motion_state,
@@ -5276,7 +5322,7 @@ impl crate::readers::ACDataType for AutonomousPositionPack {
         let object_teleport_sequence = read_u16(reader)?;
         let object_force_position_sequence = read_u16(reader)?;
         let contact = read_u8(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             position,
@@ -5340,6 +5386,7 @@ impl crate::readers::ACDataType for PositionPack {
 }
 
 impl MovementDataType0 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let state = InterpretedMotionState::read(reader)?;
         let sticky_object = if (option_flags.clone() as u32 & 0x01) != 0 { ObjectId::read(reader).map(Some) } else { Ok(None) }?;
@@ -5357,6 +5404,7 @@ impl MovementDataType0 {
 }
 
 impl MovementDataType6 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let target = ObjectId::read(reader)?;
         let origin = Origin::read(reader)?;
@@ -5378,6 +5426,7 @@ impl MovementDataType6 {
 }
 
 impl MovementDataType7 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let origin = Origin::read(reader)?;
         let move_to_params = MoveToMovementParameters::read(reader)?;
@@ -5397,6 +5446,7 @@ impl MovementDataType7 {
 }
 
 impl MovementDataType8 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let target_id = ObjectId::read(reader)?;
         let desired_heading = read_f32(reader)?;
@@ -5416,6 +5466,7 @@ impl MovementDataType8 {
 }
 
 impl MovementDataType9 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
         let turn_to_params = TurnToMovementParameters::read(reader)?;
 
@@ -5503,7 +5554,7 @@ impl crate::readers::ACDataType for InterpretedMotionState {
             turn_speed = Some(read_f32(reader)?);
         }
         let commands = read_vec::<PackedMotionCommand>(reader, command_list_length as usize)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             flags,
@@ -5586,7 +5637,7 @@ impl crate::readers::ACDataType for ObjDesc {
         let subpalettes = read_vec::<Subpalette>(reader, palette_count as usize)?;
         let tm_changes = read_vec::<TextureMapChange>(reader, texture_count as usize)?;
         let ap_changes = read_vec::<AnimPartChange>(reader, model_count as usize)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             version,
@@ -5732,7 +5783,7 @@ impl crate::readers::ACDataType for CharacterIdentity {
         let character_id = ObjectId::read(reader)?;
         let name = read_string(reader)?;
         let seconds_greyed_out = read_u32(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             character_id,
@@ -5843,7 +5894,7 @@ impl crate::readers::ACDataType for PhysicsDesc {
         let object_force_position_sequence = read_u16(reader)?;
         let object_visual_desc_sequence = read_u16(reader)?;
         let object_instance_sequence = read_u16(reader)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
 
         Ok(Self {
             flags,
@@ -6182,6 +6233,7 @@ impl crate::readers::ACDataType for GuestInfo {
 }
 
 impl GameMoveDataType4 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
         let id_piece_to_move = read_i32(reader)?;
         let y_grid = read_i32(reader)?;
@@ -6196,6 +6248,7 @@ impl GameMoveDataType4 {
 }
 
 impl GameMoveDataType5 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
         let id_piece_to_move = read_i32(reader)?;
         let y_grid = read_i32(reader)?;
@@ -6214,6 +6267,7 @@ impl GameMoveDataType5 {
 }
 
 impl GameMoveDataType6 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
         let id_piece_to_move = read_i32(reader)?;
 

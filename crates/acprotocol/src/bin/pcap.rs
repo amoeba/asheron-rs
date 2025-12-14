@@ -14,11 +14,11 @@ mod read {
     pub fn run(path: &Path, message_index: Option<usize>) -> Result<()> {
         use acprotocol::network::{FragmentAssembler, pcap};
 
-        let mut pcap_iter = pcap::open(path.to_str().unwrap())?;
+        let pcap_iter = pcap::open(path.to_str().unwrap())?;
         let mut assembler = FragmentAssembler::new();
         let mut message_count = 0;
 
-        while let Some(packet_result) = pcap_iter.next() {
+        for packet_result in pcap_iter {
             let packet = packet_result?;
 
             // Skip network packet headers (Ethernet + IP + UDP)
@@ -445,19 +445,17 @@ mod tui {
                             }
                             KeyCode::Char('a') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                                 // Ctrl+a: expand all nodes (when Shift+Enter doesn't work)
-                                if matches!(app.focused_pane, FocusedPane::Details) {
-                                    if !app.packets.is_empty() {
-                                        let packet = &app.packets[app.selected];
-                                        if let Ok(json_val) =
-                                            serde_json::from_str::<Value>(&packet.raw_json)
-                                        {
-                                            let root = TreeNode::from_json("root", &json_val);
-                                            collect_all_expandable_paths(
-                                                &root,
-                                                String::new(),
-                                                &mut app.tree_expanded,
-                                            );
-                                        }
+                                if matches!(app.focused_pane, FocusedPane::Details) && !app.packets.is_empty() {
+                                    let packet = &app.packets[app.selected];
+                                    if let Ok(json_val) =
+                                        serde_json::from_str::<Value>(&packet.raw_json)
+                                    {
+                                        let root = TreeNode::from_json("root", &json_val);
+                                        collect_all_expandable_paths(
+                                            &root,
+                                            String::new(),
+                                            &mut app.tree_expanded,
+                                        );
                                     }
                                 }
                             }
@@ -697,20 +695,20 @@ mod tui {
             let detail_lines = match serde_json::from_str::<Value>(&packet.raw_json) {
                 Ok(mut json_val) => {
                     // Format header_flags if present
-                    if let Some(flags_val) = json_val.get("header_flags") {
-                        if let Some(flags_num) = flags_val.as_u64() {
-                            let formatted_flags = format_packet_flags(
-                                PacketHeaderFlags::from_bits_retain(flags_num as u32),
-                            );
-                            json_val["header_flags"] = Value::String(formatted_flags);
-                        }
+                    if let Some(flags_val) = json_val.get("header_flags")
+                        && let Some(flags_num) = flags_val.as_u64()
+                    {
+                        let formatted_flags = format_packet_flags(
+                            PacketHeaderFlags::from_bits_retain(flags_num as u32),
+                        );
+                        json_val["header_flags"] = Value::String(formatted_flags);
                     }
                     // Format opcode if present
-                    if let Some(opcode_val) = json_val.get("opcode") {
-                        if let Some(opcode_num) = opcode_val.as_u64() {
-                            let formatted_opcode = format!("0x{:04x} ({})", opcode_num, opcode_num);
-                            json_val["opcode"] = Value::String(formatted_opcode);
-                        }
+                    if let Some(opcode_val) = json_val.get("opcode")
+                        && let Some(opcode_num) = opcode_val.as_u64()
+                    {
+                        let formatted_opcode = format!("0x{:04x} ({})", opcode_num, opcode_num);
+                        json_val["opcode"] = Value::String(formatted_opcode);
                     }
                     let mut expanded = app.tree_expanded.clone();
                     expanded.insert("root".to_string()); // Root is always expanded
@@ -797,12 +795,12 @@ mod tui {
     fn load_packets(path: &Path) -> Result<Vec<PacketInfo>> {
         use acprotocol::network::{FragmentAssembler, pcap};
 
-        let mut pcap_iter = pcap::open(path.to_str().unwrap())?;
+        let pcap_iter = pcap::open(path.to_str().unwrap())?;
         let mut assembler = FragmentAssembler::new();
         let mut packets = Vec::new();
         let mut packet_num = 0u32;
 
-        while let Some(packet_result) = pcap_iter.next() {
+        for packet_result in pcap_iter {
             let packet = packet_result?;
 
             // Extract port info from UDP header (before stripping headers)
@@ -828,14 +826,14 @@ mod tui {
             match assembler.parse_packet_payload(udp_payload) {
                 Ok(messages) => {
                     for msg in messages {
-                        if let Ok(json_str) = serde_json::to_string(&msg) {
-                            if let Ok(json_val) = serde_json::from_str::<Value>(&json_str) {
-                                packet_num += 1;
-                                let info = extract_packet_info(
-                                    packet_num, &json_val, &json_str, &timestamp, dest_port,
-                                );
-                                packets.push(info);
-                            }
+                        if let Ok(json_str) = serde_json::to_string(&msg)
+                            && let Ok(json_val) = serde_json::from_str::<Value>(&json_str)
+                        {
+                            packet_num += 1;
+                            let info = extract_packet_info(
+                                packet_num, &json_val, &json_str, &timestamp, dest_port,
+                            );
+                            packets.push(info);
                         }
                     }
                 }

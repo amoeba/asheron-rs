@@ -28,7 +28,7 @@ impl crate::readers::ACDataType for QualitiesUpdateString {
         let sequence = read_u8(reader)?;
         let object_id = ObjectId::read(reader)?;
         let key = PropertyString::try_from(read_u32(reader)?)?;
-        align_dword(reader)?;
+        let _ = align_dword(reader)?;
         let value = read_string(reader)?;
 
         Ok(Self {

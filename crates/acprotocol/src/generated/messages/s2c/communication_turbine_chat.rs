@@ -151,6 +151,7 @@ pub enum CommunicationTurbineChat {
 }
 
 impl CommunicationTurbineChatType1 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, message_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
         let blob_dispatch_type = CommunicationTurbineChatType1BlobDispatchTypeVariant::read(reader)?;
 
@@ -197,6 +198,7 @@ impl CommunicationTurbineChatType1BlobDispatchTypeVariant {
 
 
 impl CommunicationTurbineChatType3 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, message_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
         let blob_dispatch_type = CommunicationTurbineChatType3BlobDispatchTypeVariant::read(reader)?;
 
@@ -247,6 +249,7 @@ impl CommunicationTurbineChatType3BlobDispatchTypeVariant {
 
 
 impl CommunicationTurbineChatType5 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, message_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
         let blob_dispatch_type = CommunicationTurbineChatType5BlobDispatchTypeVariant::read(reader)?;
 

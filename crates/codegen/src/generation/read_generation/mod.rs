@@ -112,7 +112,7 @@ pub fn generate_field_group_reads(
 
                 // Alignment fields don't need to be stored, just executed
                 if field.name.starts_with("__alignment_marker_") {
-                    out.push_str(&format!("        {}?;\n", read_call));
+                    out.push_str(&format!("        let _ = {}?;\n", read_call));
                 } else {
                     out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
                 }

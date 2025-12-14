@@ -20,19 +20,19 @@ use crate::{
     },
 };
 
+/// Result type for XML parsing with named fields
+pub struct ParseResult {
+    pub enums: Vec<ProtocolEnum>,
+    pub common_types: Vec<ProtocolType>,
+    pub game_action_types: Vec<ProtocolType>,
+    pub game_event_types: Vec<ProtocolType>,
+    pub c2s_types: Vec<ProtocolType>,
+    pub s2c_types: Vec<ProtocolType>,
+    pub packet_types: Vec<ProtocolType>,
+}
+
 /// Parse XML content and extract protocol types and enums
-pub fn parse_xml_content(
-    xml: &str,
-    source: GenerateSource,
-) -> (
-    Vec<ProtocolEnum>,
-    Vec<ProtocolType>,
-    Vec<ProtocolType>,
-    Vec<ProtocolType>,
-    Vec<ProtocolType>,
-    Vec<ProtocolType>,
-    Vec<ProtocolType>,
-) {
+pub fn parse_xml_content(xml: &str, source: GenerateSource) -> ParseResult {
     let mut reader = Reader::from_str(xml);
     let mut buf = Vec::new();
 
@@ -479,13 +479,13 @@ pub fn parse_xml_content(
         buf.clear();
     }
 
-    (
-        enum_types,
+    ParseResult {
+        enums: enum_types,
         common_types,
         game_action_types,
         game_event_types,
         c2s_types,
         s2c_types,
         packet_types,
-    )
+    }
 }

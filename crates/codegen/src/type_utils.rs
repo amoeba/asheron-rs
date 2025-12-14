@@ -71,13 +71,13 @@ fn split_generic_params(params: &str) -> Vec<&str> {
     let mut current_start = 0;
     let mut bracket_depth = 0;
 
-    for (i, ch) in params.chars().enumerate() {
+    for (byte_pos, ch) in params.char_indices() {
         match ch {
             '<' => bracket_depth += 1,
             '>' => bracket_depth -= 1,
             ',' if bracket_depth == 0 => {
-                result.push(&params[current_start..i]);
-                current_start = i + 1;
+                result.push(&params[current_start..byte_pos]);
+                current_start = byte_pos + 1;
             }
             _ => {}
         }

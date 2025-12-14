@@ -21,11 +21,11 @@ pub struct Fragment {
 impl crate::readers::ACDataType for Fragment {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let header = FragmentHeader::read(reader)?;
-        let data = (|| -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+        let data = {
                 let mut data = Vec::new();
                 let _ = reader.read_to_end(&mut data);
-                Ok(data)
-            })()?;
+                Ok::<_, Box<dyn std::error::Error>>(data)
+            }?;
 
         Ok(Self {
             header,

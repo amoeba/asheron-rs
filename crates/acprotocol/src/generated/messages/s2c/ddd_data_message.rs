@@ -56,6 +56,7 @@ pub enum DDDDataMessage {
 }
 
 impl DDDDataMessageType0 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, dat_file: DatFileType, resource_type: uint, resource_id: DataId, iteration: uint, version: uint, data_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
         let data = read_vec::<u8>(reader, data_size as usize)?;
 
@@ -72,6 +73,7 @@ impl DDDDataMessageType0 {
 }
 
 impl DDDDataMessageType1 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, dat_file: DatFileType, resource_type: uint, resource_id: DataId, iteration: uint, version: uint, data_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
         let file_size = read_u32(reader)?;
         let data = read_vec::<u8>(reader, data_size as usize)?;

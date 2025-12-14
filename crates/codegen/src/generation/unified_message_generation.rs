@@ -381,34 +381,30 @@ fn generate_message_enum(
     out.push_str("    }\n\n");
 
     // Generate queue method
-    out.push_str(&format!(
-        "    pub fn queue(&self) -> Option<MessageQueue> {{\n"
-    ));
+    out.push_str("    pub fn queue(&self) -> Option<MessageQueue> {\n");
     out.push_str("        match self {\n");
 
     for protocol_type in message_types {
-        if !protocol_type.is_primitive {
-            if let Some(ref queue) = protocol_type.queue {
-                let type_name = &protocol_type.name;
-                let type_name_no_underscores = type_name.replace('_', "");
-                let snake_case = to_snake_case(queue);
-                let pascal_case = snake_case
-                    .split('_')
-                    .map(|s| {
-                        let mut chars = s.chars();
-                        match chars.next() {
-                            None => String::new(),
-                            Some(first) => {
-                                first.to_uppercase().collect::<String>() + chars.as_str()
-                            }
-                        }
-                    })
-                    .collect::<String>();
-                out.push_str(&format!(
-                    "            {}::{}(_) => Some(MessageQueue::{}),\n",
-                    enum_name, type_name_no_underscores, pascal_case
-                ));
-            }
+        if !protocol_type.is_primitive
+            && let Some(ref queue) = protocol_type.queue
+        {
+            let type_name = &protocol_type.name;
+            let type_name_no_underscores = type_name.replace('_', "");
+            let snake_case = to_snake_case(queue);
+            let pascal_case = snake_case
+                .split('_')
+                .map(|s| {
+                    let mut chars = s.chars();
+                    match chars.next() {
+                        None => String::new(),
+                        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+                    }
+                })
+                .collect::<String>();
+            out.push_str(&format!(
+                "            {}::{}(_) => Some(MessageQueue::{}),\n",
+                enum_name, type_name_no_underscores, pascal_case
+            ));
         }
     }
 

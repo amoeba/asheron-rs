@@ -28,6 +28,7 @@ pub enum CharacterCharGenVerificationResponse {
 }
 
 impl CharacterCharGenVerificationResponseType1 {
+    #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let character_id = ObjectId::read(reader)?;
         let name = read_string(reader)?;

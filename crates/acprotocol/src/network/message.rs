@@ -78,11 +78,9 @@ fn determine_direction(opcode: u32) -> Direction {
 impl ParsedMessage {
     /// Determine the direction enum for this message
     fn determine_direction_enum(&self) -> Direction {
-        use crate::enums::{C2SMessage, S2CMessage};
+        use crate::enums::C2SMessage;
         if C2SMessage::try_from(self.opcode).is_ok() {
             Direction::ClientToServer
-        } else if S2CMessage::try_from(self.opcode).is_ok() {
-            Direction::ServerToClient
         } else {
             Direction::ServerToClient
         }

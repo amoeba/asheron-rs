@@ -12,7 +12,7 @@ pub fn generate_and_write(
 
     // Clean the generated directory
     if generated_dir.exists() {
-        fs::remove_dir_all(&generated_dir)?;
+        fs::remove_dir_all(generated_dir)?;
     }
 
     // Read XML files

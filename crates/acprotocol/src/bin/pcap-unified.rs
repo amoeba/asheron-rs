@@ -12,10 +12,10 @@ struct Cli {
 fn process_pcap(path: &str) -> Result<()> {
     use acprotocol::network::{FragmentAssembler, UnifiedMessage, pcap};
 
-    let mut pcap_iter = pcap::open(path)?;
+    let pcap_iter = pcap::open(path)?;
     let mut assembler = FragmentAssembler::new();
 
-    while let Some(packet_result) = pcap_iter.next() {
+    for packet_result in pcap_iter {
         let packet = packet_result?;
 
         // Skip first 42 bytes (Ethernet + IP + UDP headers)

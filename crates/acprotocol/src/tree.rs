@@ -15,7 +15,7 @@ impl TreeNode {
     pub fn from_json(key: &str, value: &Value) -> Self {
         let (value_str, children) = match value {
             Value::Object(obj) => {
-                let val = format!("{{...}}");
+                let val = "{...}".to_string();
                 let children: Vec<TreeNode> =
                     obj.iter().map(|(k, v)| TreeNode::from_json(k, v)).collect();
                 (val, children)
