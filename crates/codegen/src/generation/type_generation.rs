@@ -9,7 +9,6 @@ use crate::{
 
 pub fn generate_type(protocol_type: &ProtocolType) -> String {
     let original_type_name = &protocol_type.name;
-    println!("generate_type: name = {original_type_name}");
 
     // Convert type name to PascalCase
     let safe_type_name = safe_identifier(original_type_name, IdentifierType::Type);

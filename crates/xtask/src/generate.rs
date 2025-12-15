@@ -7,6 +7,4 @@ pub fn generate() {
 
     codegen::codegen::generate_and_write(workspace_root, &generated_dir)
         .expect("Code generation failed");
-
-    println!("Code generation complete!");
 }
