@@ -45,8 +45,8 @@ fn print_generation_summary(generated_code: &crate::generation::GeneratedCode) {
     let mut struct_count = 0;
 
     for file in &generated_code.files {
-        enum_count += count_items(&file.content, "pub enum ");
-        struct_count += count_items(&file.content, "pub struct ");
+        enum_count += count_occurrences(&file.content, "pub enum ");
+        struct_count += count_occurrences(&file.content, "pub struct ");
     }
 
     println!(
@@ -56,6 +56,6 @@ fn print_generation_summary(generated_code: &crate::generation::GeneratedCode) {
 }
 
 /// Count occurrences of a pattern in a string
-fn count_items(content: &str, pattern: &str) -> usize {
+fn count_occurrences(content: &str, pattern: &str) -> usize {
     content.matches(pattern).count()
 }
