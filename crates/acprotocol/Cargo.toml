@@ -9,25 +9,12 @@ license.workspace = true
 [lib]
 path = "src/lib.rs"
 
-[[bin]]
-name = "pcap"
-path = "src/bin/pcap.rs"
-required-features = ["cli"]
-
-[[bin]]
-name = "pcap-unified"
-path = "src/bin/pcap-unified.rs"
-required-features = ["cli"]
-
 [dependencies]
 anyhow = { workspace = true }
 bitflags = { workspace = true }
-clap = { workspace = true, optional = true, features = ["derive"] }
 num_enum = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-ratatui = { version = "0.28", optional = true }
-crossterm = { version = "0.28", optional = true }
 
 [build-dependencies]
 codegen = { path = "../codegen" }
@@ -35,4 +22,3 @@ env_logger = { workspace = true }
 
 [features]
 default = []
-cli = ["clap", "ratatui", "crossterm"]
