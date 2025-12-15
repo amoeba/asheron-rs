@@ -15,9 +15,6 @@ fn main() {
         println!("cargo:rerun-if-changed={}", network_path.display());
     }
 
-    // Generate readers for all types
-    println!("cargo:warning=Generating readers for all types");
-
     // Use shared code generation workflow
     codegen::codegen::generate_and_write(workspace_root, &generated_dir)
         .expect("Code generation failed");

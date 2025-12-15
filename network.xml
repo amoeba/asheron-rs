@@ -12,5 +12,19 @@
             <field type="FragmentHeader" name="Header" text="Fragment header information" />
             <vector name="Data" length="*" type="byte" text="Fragment payload data" />
         </type>
+        <!-- Candidate: FragmentInfo, type for parsed Fragment info -->
+        <!--
+        pub struct FragmentInfo {
+            #[serde(rename = "Data")]
+            pub data: String, // Base64 encoded
+            #[serde(rename = "Count")]
+            pub count: u16,
+            #[serde(rename = "Received")]
+            pub received: usize,
+            #[serde(rename = "Length")]
+            pub length: usize,
+            #[serde(rename = "Sequence")]
+            pub sequence: u32,
+        } -->
     </packets>
 </schema>

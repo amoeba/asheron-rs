@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema text="Additional game types not defined in protocol.xml">
+    <types>
+        <type name="Weenie" text="">
+            <!-- TODO -->
+        </type>
+    </types>
+</schema>

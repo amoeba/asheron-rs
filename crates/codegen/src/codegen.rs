@@ -2,7 +2,6 @@ use std::{fs, path::Path};
 
 /// Execute the full code generation workflow: read files, generate, and write output
 pub fn generate_and_write(workspace_root: &Path, generated_dir: &Path) -> std::io::Result<()> {
-    println!("workspace_root: {:?}", workspace_root);
     let protocol_path = workspace_root.join("ACProtocol/protocol.xml");
     let network_path = workspace_root.join("network.xml");
 
@@ -22,6 +21,9 @@ pub fn generate_and_write(workspace_root: &Path, generated_dir: &Path) -> std::i
     // Generate code
     let generated_code = crate::generate_and_merge(&protocol_xml, network_xml.as_deref());
 
+    // Print summary before writing
+    print_generation_summary(&generated_code);
+
     // Write all generated files
     for file in generated_code.files {
         let file_path = generated_dir.join(&file.path);
@@ -35,4 +37,25 @@ pub fn generate_and_write(workspace_root: &Path, generated_dir: &Path) -> std::i
     }
 
     Ok(())
+}
+
+/// Print a summary of what was generated
+fn print_generation_summary(generated_code: &crate::generation::GeneratedCode) {
+    let mut enum_count = 0;
+    let mut struct_count = 0;
+
+    for file in &generated_code.files {
+        enum_count += count_items(&file.content, "pub enum ");
+        struct_count += count_items(&file.content, "pub struct ");
+    }
+
+    println!(
+        "codgen complete:\n----------------\nEnums:\t\t{}\nStructs:\t{}",
+        enum_count, struct_count
+    );
+}
+
+/// Count occurrences of a pattern in a string
+fn count_items(content: &str, pattern: &str) -> usize {
+    content.matches(pattern).count()
 }
