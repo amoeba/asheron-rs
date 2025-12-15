@@ -50,7 +50,7 @@ fn print_generation_summary(generated_code: &crate::generation::GeneratedCode) {
     }
 
     println!(
-        "codgen complete:\n----------------\nEnums:\t\t{}\nStructs:\t{}",
+        "codegen complete:\n----------------\nEnums:\t\t{}\nStructs:\t{}",
         enum_count, struct_count
     );
 }
