@@ -14,7 +14,6 @@ name = "pcap"
 path = "src/bin/pcap.rs"
 required-features = ["cli"]
 
-
 [[bin]]
 name = "dat"
 path = "src/bin/dat.rs"
@@ -37,7 +36,12 @@ reqwest = { version = "0.12.15", optional = true }
 serde = { workspace = true }
 serde_json = { workspace = true, optional = true }
 strum = { version = "0.27.1", features = ["derive"] }
-tokio = { version = "1.44.1", features = ["fs", "io-util", "macros", "rt-multi-thread"], optional = true }
+tokio = { version = "1.44.1", features = [
+  "fs",
+  "io-util",
+  "macros",
+  "rt-multi-thread"
+], optional = true }
 tokio-util = { version = "0.7.15", features = ["compat"], optional = true }
 worker = { version = "0.6.1", optional = true }
 
@@ -46,7 +50,7 @@ codegen = { path = "../codegen" }
 env_logger = { workspace = true }
 
 [features]
-default = ["cli", "dat", "dat-export"]
+default = []
 cli = ["dep:clap", "dep:crossterm", "dep:ratatui", "dep:serde_json"]
 # TODO: Not sure about these yet
 dat = ["dat-tokio"]

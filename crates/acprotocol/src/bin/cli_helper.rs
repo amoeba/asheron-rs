@@ -1,7 +1,7 @@
 use std::error::Error;
 
-use acprotocol::dat::reader::types::dat_directory_entry::DatDirectoryEntry;
 use acprotocol::dat::reader::types::dat_database::DatDatabase;
+use acprotocol::dat::reader::types::dat_directory_entry::DatDirectoryEntry;
 
 pub async fn find_file_by_id(
     db: &DatDatabase,

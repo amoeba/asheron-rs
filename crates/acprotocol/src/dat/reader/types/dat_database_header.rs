@@ -80,12 +80,16 @@ impl DatDatabaseHeader {
     }
 
     #[cfg(feature = "dat-tokio")]
-    pub async fn read_async<R: RangeReader>(reader: &mut R) -> Result<DatDatabaseHeader, Box<dyn Error>> {
+    pub async fn read_async<R: RangeReader>(
+        reader: &mut R,
+    ) -> Result<DatDatabaseHeader, Box<dyn Error>> {
         // Calculate the total size of the header data: 16 u32s + 16 bytes for version_major
         const HEADER_SIZE: usize = 16 * 4 + 16;
 
         // Read the header data in one range read operation
-        let data = reader.read_range(DAT_HEADER_OFFSET as u32, HEADER_SIZE).await?;
+        let data = reader
+            .read_range(DAT_HEADER_OFFSET as u32, HEADER_SIZE)
+            .await?;
         let mut cursor = std::io::Cursor::new(data);
 
         Self::from_buffer(&mut cursor)

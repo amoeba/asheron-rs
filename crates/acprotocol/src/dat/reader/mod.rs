@@ -18,11 +18,8 @@ pub mod sync_dat_file_reader;
 
 // Re-export commonly used types
 pub use types::{
-    dat_block::DatBlock,
-    dat_database::DatDatabase,
-    dat_database_header::DatDatabaseHeader,
-    dat_directory::DatDirectory,
-    dat_directory_entry::DatDirectoryEntry,
+    dat_block::DatBlock, dat_database::DatDatabase, dat_database_header::DatDatabaseHeader,
+    dat_directory::DatDirectory, dat_directory_entry::DatDirectoryEntry,
     dat_directory_header::DatDirectoryHeader,
 };
 

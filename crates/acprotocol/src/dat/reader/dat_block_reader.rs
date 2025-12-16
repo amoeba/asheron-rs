@@ -62,7 +62,9 @@ impl DatBlockReader {
         while left_to_read > 0 {
             if left_to_read < block_size {
                 // Read the remaining data
-                let data = reader.read_range(current_offset + 4, left_to_read as usize).await?;
+                let data = reader
+                    .read_range(current_offset + 4, left_to_read as usize)
+                    .await?;
                 writer.write_all(&data)?;
                 break;
             } else {

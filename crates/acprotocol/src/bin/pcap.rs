@@ -2,9 +2,9 @@ use anyhow::Result;
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
 
-use acprotocol::network::{ParsedMessage, FragmentAssembler};
-use acprotocol::network::pcap;
 use acprotocol::cli_helper;
+use acprotocol::network::pcap;
+use acprotocol::network::{FragmentAssembler, ParsedMessage};
 
 // TUI module definition (moved from tui.rs)
 mod tui {
@@ -281,9 +281,7 @@ mod tui {
             let detail_lines = if !app.packets.is_empty() {
                 let packet = &app.packets[app.selected];
                 match serde_json::from_str::<Value>(&packet.raw_json) {
-                    Ok(json_val) => {
-                        tree_display_lines(&json_val, &app.tree_expanded)
-                    }
+                    Ok(json_val) => tree_display_lines(&json_val, &app.tree_expanded),
                     Err(_) => vec![],
                 }
             } else {
@@ -386,7 +384,11 @@ mod tui {
                                     if let Ok(json_val) =
                                         serde_json::from_str::<Value>(&packet.raw_json)
                                     {
-                                        collect_all_paths(&json_val, String::new(), &mut app.tree_expanded);
+                                        collect_all_paths(
+                                            &json_val,
+                                            String::new(),
+                                            &mut app.tree_expanded,
+                                        );
                                     }
                                 }
                             }
@@ -454,7 +456,10 @@ mod tui {
         }
     }
 
-    fn tree_display_lines(value: &Value, expanded: &std::collections::HashSet<String>) -> Vec<(String, String)> {
+    fn tree_display_lines(
+        value: &Value,
+        expanded: &std::collections::HashSet<String>,
+    ) -> Vec<(String, String)> {
         let mut lines = Vec::new();
         format_json_value(value, 0, &mut lines, expanded, String::new());
         lines
@@ -491,10 +496,7 @@ mod tui {
                             }
                         }
                         _ => {
-                            lines.push((
-                                format!("{}{}: {}", indent_str, key, val),
-                                item_path,
-                            ));
+                            lines.push((format!("{}{}: {}", indent_str, key, val), item_path));
                         }
                     }
                 }
@@ -516,10 +518,7 @@ mod tui {
                             }
                         }
                         _ => {
-                            lines.push((
-                                format!("{}[{}]: {}", indent_str, idx, val),
-                                item_path,
-                            ));
+                            lines.push((format!("{}[{}]: {}", indent_str, idx, val), item_path));
                         }
                     }
                 }
@@ -530,7 +529,11 @@ mod tui {
         }
     }
 
-    fn collect_all_paths(value: &Value, path: String, expanded: &mut std::collections::HashSet<String>) {
+    fn collect_all_paths(
+        value: &Value,
+        path: String,
+        expanded: &mut std::collections::HashSet<String>,
+    ) {
         match value {
             Value::Object(obj) => {
                 for (key, val) in obj {
@@ -715,9 +718,7 @@ mod tui {
 
             // Parse JSON and build display
             let detail_lines = match serde_json::from_str::<Value>(&packet.raw_json) {
-                Ok(json_val) => {
-                    tree_display_lines(&json_val, &app.tree_expanded)
-                }
+                Ok(json_val) => tree_display_lines(&json_val, &app.tree_expanded),
                 Err(e) => {
                     vec![(
                         format!("Failed to parse JSON: {}\n\nRaw:\n{}", e, &packet.raw_json),
@@ -890,8 +891,6 @@ pub enum SortField {
     Direction,
 }
 
-
-
 #[derive(Clone, Copy, ValueEnum)]
 pub enum OutputFormat {
     Jsonl,
@@ -899,9 +898,7 @@ pub enum OutputFormat {
     Table,
 }
 
-fn print_summary(
-    messages: &[ParsedMessage],
-) {
+fn print_summary(messages: &[ParsedMessage]) {
     println!("=== PCAP Summary ===\n");
 
     println!("Messages: {}", messages.len());
@@ -1014,8 +1011,6 @@ fn output_messages(
     }
 }
 
-
-
 fn truncate(s: &str, max_len: usize) -> String {
     if s.len() <= max_len {
         s.to_string()
@@ -1055,7 +1050,11 @@ fn main() -> Result<()> {
 
             if summary {
                 print_summary(&messages);
-            } else if filter_type.is_none() && filter_opcode.is_none() && direction.is_none() && limit.is_none() {
+            } else if filter_type.is_none()
+                && filter_opcode.is_none()
+                && direction.is_none()
+                && limit.is_none()
+            {
                 // If no filters are applied, print all messages (like the original cat command)
                 match output {
                     OutputFormat::Jsonl => {
