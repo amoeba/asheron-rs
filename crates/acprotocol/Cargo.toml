@@ -10,14 +10,10 @@ license.workspace = true
 path = "src/lib.rs"
 
 [[bin]]
-name = "cli"
-path = "src/bin/cli.rs"
+name = "pcap"
+path = "src/bin/pcap.rs"
 required-features = ["cli"]
 
-[[bin]]
-name = "tui"
-path = "src/bin/tui.rs"
-required-features = ["cli"]
 
 [[bin]]
 name = "dat"
