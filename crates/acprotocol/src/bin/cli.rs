@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 use acprotocol::network::{ParsedMessage, FragmentAssembler};
 use acprotocol::network::pcap;
-use acprotocol::network::packet::PacketPayloadParser;
+use acprotocol::cli_helper;
 
 #[derive(Parser)]
 #[command(name = "ac-pcap-parser")]
@@ -126,7 +126,7 @@ fn output_messages(
 ) {
     // Parse opcode filter if provided
     let opcode_filter: Option<u32> =
-        filter_opcode.and_then(|s| filter::parse_opcode_filter(s).ok());
+        filter_opcode.and_then(|s| cli_helper::parse_opcode_filter(s).ok());
 
     let mut filtered: Vec<&ParsedMessage> = messages
         .iter()

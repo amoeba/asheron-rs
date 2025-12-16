@@ -34,8 +34,16 @@ impl FragmentAssembler {
 
     /// Parse a network packet's payload and extract fragments, returning any completed messages
     pub fn parse_packet_payload(&mut self, payload: &[u8]) -> io::Result<Vec<ParsedMessage>> {
+        // PCAP packets include the full network stack: Ethernet (14) + IP (20) + UDP (8) = 42 bytes
+        // We need to skip these headers to get to the AC protocol payload
+        let ac_payload = if payload.len() > 42 {
+            &payload[42..]
+        } else {
+            payload
+        };
+
         let mut completed_messages = Vec::new();
-        let mut reader = BinaryReader::new(payload);
+        let mut reader = BinaryReader::new(ac_payload);
 
         while reader.remaining() > 0 {
             let start_pos = reader.position();

@@ -783,13 +783,17 @@ mod tui {
     }
 
     fn load_packets(path: &Path) -> Result<Vec<PacketInfo>> {
-        use std::fs::File;
+        use acprotocol::network::pcap;
 
-        let file = File::open(path)?;
         let mut assembler = FragmentAssembler::new();
-        
-        // For now, return empty list - proper PCAP parsing needs to be implemented
-        let messages: Vec<ParsedMessage> = vec![];
+        let mut messages: Vec<ParsedMessage> = vec![];
+
+        let pcap_iter = pcap::open(path)?;
+        for packet_result in pcap_iter {
+            let packet = packet_result?;
+            let parsed_messages = assembler.parse_packet_payload(&packet.data)?;
+            messages.extend(parsed_messages);
+        }
 
         let mut packet_infos = Vec::new();
 
@@ -818,10 +822,35 @@ mod tui {
 struct Cli {
     /// Path to .pcap file
     path: PathBuf,
+    /// Print all messages to stdout instead of launching interactive TUI
+    #[arg(short, long)]
+    print: bool,
 }
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
-    tui::run(&cli.path)?;
+    if cli.print {
+        print_messages(&cli.path)?;
+    } else {
+        tui::run(&cli.path)?;
+    }
+    Ok(())
+}
+
+fn print_messages(path: &std::path::Path) -> anyhow::Result<()> {
+    use acprotocol::network::pcap;
+    use acprotocol::network::FragmentAssembler;
+
+    let mut assembler = FragmentAssembler::new();
+    let pcap_iter = pcap::open(path)?;
+    
+    for packet_result in pcap_iter {
+        let packet = packet_result?;
+        let parsed_messages = assembler.parse_packet_payload(&packet.data)?;
+        for msg in parsed_messages {
+            println!("{}", serde_json::to_string_pretty(&msg)?);
+        }
+    }
+
     Ok(())
 }

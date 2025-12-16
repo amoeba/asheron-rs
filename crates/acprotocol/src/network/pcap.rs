@@ -32,11 +32,14 @@ impl<R: Read> PcapIterator<R> {
         reader.read_exact(&mut header)?;
 
         // Check magic number to determine endianness
+        // The magic bytes are always stored in the file's native endianness
+        // 0xa1b2c3d4 = little-endian PCAP file
+        // 0xd4c3b2a1 = big-endian PCAP file
         let magic = u32::from_le_bytes([header[0], header[1], header[2], header[3]]);
         let is_big_endian = if magic == 0xa1b2c3d4 {
-            false // little-endian
+            false // little-endian PCAP file - the bytes read as LE give this magic
         } else if magic == 0xd4c3b2a1 {
-            true // big-endian
+            true // big-endian PCAP file - the bytes read as LE give this magic
         } else {
             return Err(std::io::Error::new(
                 std::io::ErrorKind::InvalidData,
