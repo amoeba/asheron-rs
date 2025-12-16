@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
 
-use acprotocol::cli_helper;
+use acprotocol::cli_helper::parse_opcode_filter;
 use acprotocol::network::pcap;
 use acprotocol::network::{FragmentAssembler, ParsedMessage};
 
@@ -939,8 +939,7 @@ fn output_messages(
     output: OutputFormat,
 ) {
     // Parse opcode filter if provided
-    let opcode_filter: Option<u32> =
-        filter_opcode.and_then(|s| cli_helper::parse_opcode_filter(s).ok());
+    let opcode_filter: Option<u32> = filter_opcode.and_then(|s| parse_opcode_filter(s).ok());
 
     let mut filtered: Vec<&ParsedMessage> = messages
         .iter()
@@ -950,10 +949,10 @@ fn output_messages(
             {
                 return false;
             }
-            if let Some(oc) = opcode_filter {
-                if m.opcode != oc {
-                    return false;
-                }
+            if let Some(oc) = opcode_filter
+                && m.opcode != oc
+            {
+                return false;
             }
             if let Some(d) = direction {
                 match d {

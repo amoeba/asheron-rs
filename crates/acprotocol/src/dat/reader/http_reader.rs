@@ -2,17 +2,9 @@
 use crate::dat::reader::range_reader::RangeReader;
 
 #[cfg(feature = "dat-http")]
+#[derive(Default)]
 pub struct HttpRangeReaderOptions {
     allow_fallback_full_read: bool,
-}
-
-#[cfg(feature = "dat-http")]
-impl Default for HttpRangeReaderOptions {
-    fn default() -> Self {
-        HttpRangeReaderOptions {
-            allow_fallback_full_read: false,
-        }
-    }
 }
 
 #[cfg(feature = "dat-http")]
@@ -68,7 +60,7 @@ impl RangeReader for HttpRangeReader {
             } else if response.status().is_success() {
                 if !self.options.allow_fallback_full_read {
                     return Err(
-                        format!("HTTP server doesn't support range requests and falling back to reading the entire resource (allow_fallback_full_read) was disabled using options.").into(),
+                        "HTTP server doesn't support range requests and falling back to reading the entire resource (allow_fallback_full_read) was disabled using options.".into(),
                     );
                 }
 

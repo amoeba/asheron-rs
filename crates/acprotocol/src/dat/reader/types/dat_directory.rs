@@ -13,6 +13,10 @@ use crate::dat::reader::range_reader::RangeReader;
 
 pub const DAT_DIRECTORY_HEADER_OBJECT_SIZE: u32 = 0x6B4;
 
+#[cfg(feature = "dat-tokio")]
+type AsyncDatDirectoryResult<'a> =
+    std::pin::Pin<Box<dyn std::future::Future<Output = Result<DatDirectory, Box<dyn Error>>> + 'a>>;
+
 #[derive(Debug)]
 pub struct DatDirectory {
     header: DatDirectoryHeader,
@@ -52,9 +56,7 @@ impl DatDirectory {
         reader: &mut R,
         offset: u32,
         block_size: u32,
-    ) -> std::pin::Pin<
-        Box<dyn std::future::Future<Output = Result<DatDirectory, Box<dyn Error>>> + '_>,
-    > {
+    ) -> AsyncDatDirectoryResult<'_> {
         Box::pin(async move {
             // Read DatDirectoryHeader using async block reader
             let header_buf = DatBlockReader::read_async(
@@ -92,13 +94,13 @@ impl DatDirectory {
         recursive: bool,
     ) -> Result<(), Box<dyn Error>> {
         if recursive {
-            for i in 0..self.directories.len() {
-                self.directories[i].list_files(files_list, recursive)?;
+            for dir in &self.directories {
+                dir.list_files(files_list, recursive)?;
             }
         }
 
-        for i in 0..self.header.entries.len() {
-            files_list.push(self.header.entries[i as usize]);
+        for entry in &self.header.entries {
+            files_list.push(*entry);
         }
 
         Ok(())

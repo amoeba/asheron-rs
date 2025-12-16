@@ -70,9 +70,8 @@ impl Icon {
         // We now have a Vec<Texture> with at least one element so we create
         // our final ImageBuffer from the first layer and blend in the rest
         let base_buf = texture_stack[0].export()?;
-        let mut blended_image: RgbaImage =
-            ImageBuffer::from_raw(self.width as u32, self.height as u32, base_buf)
-                .expect("Failed to create ImageBuffer");
+        let mut blended_image: RgbaImage = ImageBuffer::from_raw(self.width, self.height, base_buf)
+            .expect("Failed to create ImageBuffer");
 
         if texture_stack.len() == 1 {
             println!("Early return since we only have one layer.");
@@ -80,11 +79,10 @@ impl Icon {
         }
 
         // Write any remaining textures in the stack
-        for l in 1..texture_stack.len() {
-            let next_layer = &texture_stack[l];
+        for next_layer in texture_stack.iter().skip(1) {
             let next_layer_buf = next_layer.export()?;
             let next_layer_img: RgbaImage =
-                ImageBuffer::from_raw(self.width as u32, self.height as u32, next_layer_buf)
+                ImageBuffer::from_raw(self.width, self.height, next_layer_buf)
                     .expect("Failed to create ImageBuffer");
 
             for x in 0..self.width {

@@ -1,10 +1,8 @@
-mod cli_helper;
-
 use std::{error::Error, io::Cursor};
 
+use acprotocol::cli_helper::find_file_by_id;
 use acprotocol::dat::{DatDatabase, DatFile, DatFileType, Texture};
 use clap::{Parser, Subcommand};
-use cli_helper::find_file_by_id;
 
 #[derive(Parser)]
 #[command(name = "dat")]

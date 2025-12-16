@@ -15,7 +15,7 @@ pub struct DatFile<T> {
 impl<T: DatFileRead> DatFile<T> {
     pub fn read<R: Read>(reader: &mut R) -> Result<Self> {
         let id = reader.read_i32::<LittleEndian>()?;
-        let inner = T::read(reader)?.into();
+        let inner = T::read(reader)?;
 
         Ok(Self { id, inner })
     }

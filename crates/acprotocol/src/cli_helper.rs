@@ -14,8 +14,8 @@ pub async fn find_file_by_id(
 ) -> Result<DatDirectoryEntry, Box<dyn Error>> {
     // TODO: Factor out into testable helper
     // Convert hex string to u32
-    let parsed_id = if object_id.starts_with("0x") {
-        u32::from_str_radix(&object_id[2..], 16)?
+    let parsed_id = if let Some(stripped) = object_id.strip_prefix("0x") {
+        u32::from_str_radix(stripped, 16)?
     } else {
         u32::from_str_radix(object_id, 16)?
     };
@@ -26,9 +26,7 @@ pub async fn find_file_by_id(
 
     match target_file {
         Some(file) => Ok(*file),
-        None => {
-            return Err(format!("Object ID {} not found in DAT file", object_id).into());
-        }
+        None => Err(format!("Object ID {} not found in DAT file", object_id).into()),
     }
 }
 
@@ -38,8 +36,8 @@ pub async fn extract_texture_by_id(
     output_dir: &str,
 ) -> Result<(), Box<dyn Error>> {
     // Convert hex string to u32
-    let parsed_id = if object_id.starts_with("0x") {
-        u32::from_str_radix(&object_id[2..], 16)?
+    let parsed_id = if let Some(stripped) = object_id.strip_prefix("0x") {
+        u32::from_str_radix(stripped, 16)?
     } else {
         u32::from_str_radix(object_id, 16)?
     };
@@ -114,9 +112,9 @@ use anyhow::Result;
 pub fn parse_opcode_filter(s: &str) -> Result<u32> {
     let s = s.trim();
 
-    if s.starts_with("0x") || s.starts_with("0X") {
+    if let Some(stripped) = s.strip_prefix("0x").or_else(|| s.strip_prefix("0X")) {
         // Parse as hex
-        u32::from_str_radix(&s[2..], 16)
+        u32::from_str_radix(stripped, 16)
             .map_err(|e| anyhow::anyhow!("Invalid hex opcode '{s}': {e}"))
     } else {
         // Parse as decimal

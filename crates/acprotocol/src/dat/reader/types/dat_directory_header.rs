@@ -18,8 +18,8 @@ impl DatDirectoryHeader {
     pub fn read<R: Read + Seek>(reader: &mut R) -> Result<DatDirectoryHeader, Box<dyn Error>> {
         let mut branches = vec![0; 62];
 
-        for i in 0..branches.len() {
-            branches[i] = reader.read_u32::<LittleEndian>()?;
+        for branch in &mut branches {
+            *branch = reader.read_u32::<LittleEndian>()?;
         }
 
         let entry_count = reader.read_u32::<LittleEndian>()?;
