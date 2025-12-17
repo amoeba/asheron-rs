@@ -159,7 +159,11 @@ pub fn read_f64(reader: &mut dyn ACReader) -> Result<f64, Box<dyn Error>> {
 
 /// Read a boolean (represented as u32, 0 = false, 1 = true)
 pub fn read_bool(reader: &mut dyn ACReader) -> Result<bool, Box<dyn Error>> {
-    Ok(read_u32(reader)? == 1)
+    let value = read_u32(reader)?;
+    if value > 1 {
+        return Err(format!("Invalid bool value: {} (expected 0 or 1)", value).into());
+    }
+    Ok(value == 1)
 }
 
 /// Read a string (packed word length-prefixed, aligned to 4-byte boundary)
@@ -170,6 +174,8 @@ pub fn read_string(reader: &mut dyn ACReader) -> Result<String, Box<dyn Error>> 
     let len = if len_i16 == -1 {
         // Special case: -1 means read a 32-bit length
         read_i32(reader)? as usize
+    } else if len_i16 < -1 {
+        return Err(format!("Invalid string length: {} (must be -1 or >= 0)", len_i16).into());
     } else {
         len_i16 as usize
     };
@@ -249,6 +255,9 @@ pub fn read_string32l(reader: &mut dyn ACReader, pad: bool) -> Result<String, Bo
     if length > 255 {
         read_u8(reader)?;
         bytes_read += 1;
+        if length == 0 {
+            return Err("String32L length became 0 after reading packed word prefix".into());
+        }
         length -= 1;
     }
 
@@ -410,6 +419,14 @@ where
     reader.read_exact(&mut max_size_buf)?;
     let max_size = u16::from_le_bytes(max_size_buf);
 
+    if count as u16 > max_size {
+        return Err(format!(
+            "PackableHashTable count {} exceeds max_size {}",
+            count, max_size
+        )
+        .into());
+    }
+
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
         let key = read_key(reader)?;
@@ -435,6 +452,14 @@ pub fn read_packable_hash_table<K: ACDataType + Eq + Hash, V: ACDataType>(
     let mut max_size_buf = [0u8; 2];
     reader.read_exact(&mut max_size_buf)?;
     let max_size = u16::from_le_bytes(max_size_buf);
+
+    if count as u16 > max_size {
+        return Err(format!(
+            "PackableHashTable count {} exceeds max_size {}",
+            count, max_size
+        )
+        .into());
+    }
 
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
@@ -464,6 +489,16 @@ where
     let packed_size = u32::from_le_bytes(packed_size_buf);
     let count = (packed_size & 0xFFFFFF) as usize;
 
+    // Upper byte should be reasonable (typically used for flags/metadata)
+    let upper_byte = (packed_size >> 24) & 0xFF;
+    if upper_byte > 0x7F {
+        return Err(format!(
+            "PHashTable packed_size has invalid upper byte: 0x{:02X}",
+            upper_byte
+        )
+        .into());
+    }
+
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
         let key = read_key(reader)?;
@@ -480,6 +515,16 @@ pub fn read_phash_table<K: ACDataType + Eq + Hash, V: ACDataType>(
 ) -> Result<PHashTable<K, V>, Box<dyn Error>> {
     let packed_size = read_u32(reader)?;
     let count = (packed_size & 0xFFFFFF) as usize;
+
+    // Upper byte should be reasonable (typically used for flags/metadata)
+    let upper_byte = (packed_size >> 24) & 0xFF;
+    if upper_byte > 0x7F {
+        return Err(format!(
+            "PHashTable packed_size has invalid upper byte: 0x{:02X}",
+            upper_byte
+        )
+        .into());
+    }
 
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
