@@ -5,7 +5,7 @@ use crate::generated::network::Fragment;
 
 use super::message::ParsedMessage;
 use super::packet::{PacketHeader, PacketHeaderFlags};
-use super::reader::BinaryReader;
+use super::packet_reader::PacketReader;
 
 /// Information about a fragment extracted from a packet
 #[derive(Debug, Clone)]
@@ -43,7 +43,7 @@ impl FragmentAssembler {
         };
 
         let mut completed_messages = Vec::new();
-        let mut reader = BinaryReader::new(ac_payload);
+        let mut reader = PacketReader::new(ac_payload);
 
         while reader.remaining() > 0 {
             let start_pos = reader.position();
@@ -181,7 +181,7 @@ impl FragmentAssembler {
     /// Returns Some(ParsedMessage) if the fragment completes a message, None otherwise
     fn parse_fragment_internal(
         &mut self,
-        reader: &mut BinaryReader,
+        reader: &mut PacketReader,
         packet_iteration: Option<u16>,
         header_flags: Option<u32>,
     ) -> io::Result<Option<ParsedMessage>> {
@@ -241,7 +241,7 @@ impl FragmentAssembler {
     /// Parse a single fragment from the reader
     /// Returns Some(ParsedMessage) if the fragment completes a message, None otherwise
     #[allow(dead_code)]
-    fn parse_fragment(&mut self, reader: &mut BinaryReader) -> io::Result<Option<ParsedMessage>> {
+    fn parse_fragment(&mut self, reader: &mut PacketReader) -> io::Result<Option<ParsedMessage>> {
         self.parse_fragment_internal(reader, None, None)
     }
 }

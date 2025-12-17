@@ -1,6 +1,8 @@
-use super::reader::BinaryReader;
 use serde::Serialize;
-use std::io;
+use std::io::{self, Read, Seek};
+
+#[cfg(test)]
+use std::io::Cursor;
 
 bitflags::bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -45,15 +47,30 @@ pub struct PacketHeader {
 impl PacketHeader {
     pub const BASE_SIZE: usize = 20;
 
-    pub fn parse(reader: &mut BinaryReader) -> io::Result<Self> {
-        let sequence = reader.read_u32()?;
-        let flags_raw = reader.read_u32()?;
+    pub fn parse(reader: &mut (impl Read + Seek)) -> io::Result<Self> {
+        let mut buf = [0u8; 4];
+        reader.read_exact(&mut buf)?;
+        let sequence = u32::from_le_bytes(buf);
+
+        reader.read_exact(&mut buf)?;
+        let flags_raw = u32::from_le_bytes(buf);
         let flags = PacketHeaderFlags::from_bits_truncate(flags_raw);
-        let checksum = reader.read_u32()?;
-        let id = reader.read_u16()?;
-        let time = reader.read_u16()?;
-        let size = reader.read_u16()?;
-        let iteration = reader.read_u16()?;
+
+        reader.read_exact(&mut buf)?;
+        let checksum = u32::from_le_bytes(buf);
+
+        let mut buf = [0u8; 2];
+        reader.read_exact(&mut buf)?;
+        let id = u16::from_le_bytes(buf);
+
+        reader.read_exact(&mut buf)?;
+        let time = u16::from_le_bytes(buf);
+
+        reader.read_exact(&mut buf)?;
+        let size = u16::from_le_bytes(buf);
+
+        reader.read_exact(&mut buf)?;
+        let iteration = u16::from_le_bytes(buf);
 
         Ok(Self {
             sequence,
@@ -99,8 +116,8 @@ mod tests {
             0x01, 0x00, // iteration: 1
         ];
 
-        let mut reader = BinaryReader::new(&data);
-        let header = PacketHeader::parse(&mut reader).unwrap();
+        let mut cursor = Cursor::new(&data[..]);
+        let header = PacketHeader::parse(&mut cursor).unwrap();
 
         assert_eq!(header.sequence, 1);
         assert_eq!(header.flags, PacketHeaderFlags::BLOB_FRAGMENTS);
@@ -124,8 +141,8 @@ mod tests {
             0x00, 0x00, // iteration: 0
         ];
 
-        let mut reader = BinaryReader::new(&data);
-        let header = PacketHeader::parse(&mut reader).unwrap();
+        let mut cursor = Cursor::new(&data[..]);
+        let header = PacketHeader::parse(&mut cursor).unwrap();
 
         assert!(header.flags.contains(PacketHeaderFlags::BLOB_FRAGMENTS));
         assert!(header.flags.contains(PacketHeaderFlags::ACK_SEQUENCE));
@@ -137,8 +154,8 @@ mod tests {
         // Only 10 bytes when 20 are needed
         let data = vec![0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A];
 
-        let mut reader = BinaryReader::new(&data);
-        let result = PacketHeader::parse(&mut reader);
+        let mut cursor = Cursor::new(&data[..]);
+        let result = PacketHeader::parse(&mut cursor);
 
         assert!(result.is_err());
     }

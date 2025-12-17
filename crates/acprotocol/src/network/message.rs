@@ -1,4 +1,3 @@
-use super::reader::BinaryReader;
 use crate::enums::MessageQueue;
 use crate::unified::{Direction, MessageKind};
 use serde::Serialize;
@@ -141,11 +140,6 @@ impl ParsedMessage {
             iteration: message.iteration,
             header_flags,
         })
-    }
-
-    /// Get a binary reader for reading message fields
-    pub fn reader(&self) -> BinaryReader<'_> {
-        BinaryReader::new(&self.data)
     }
 
     /// Get the opcode as hex string
