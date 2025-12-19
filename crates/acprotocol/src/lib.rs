@@ -15,3 +15,6 @@ pub mod dat;
 pub mod filter;
 pub mod network;
 pub mod readers;
+
+#[cfg(feature = "cli")]
+pub mod cli;
