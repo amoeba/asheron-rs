@@ -243,7 +243,10 @@ fn output_messages(
                 println!("{}", serde_json::to_string_pretty(&raw_outputs).unwrap());
             }
             OutputFormat::Table => {
-                println!("{:>6}  {:40}  {:>6}  {:>10}  {:>6}  {}", "ID", "Type", "Dir", "OpCode", "Len", "Raw Data");
+                println!(
+                    "{:>6}  {:40}  {:>6}  {:>10}  {:>6}  {}",
+                    "ID", "Type", "Dir", "OpCode", "Len", "Raw Data"
+                );
                 println!("{}", "-".repeat(140));
                 for msg in filtered {
                     let hex_data = hex::encode(&msg.data);
@@ -376,7 +379,10 @@ fn main() -> Result<()> {
                             println!("{}", serde_json::to_string_pretty(&raw_outputs).unwrap());
                         }
                         OutputFormat::Table => {
-                            println!("{:>6}  {:40}  {:>6}  {:>10}  {:>6}  {}", "ID", "Type", "Dir", "OpCode", "Len", "Raw Data");
+                            println!(
+                                "{:>6}  {:40}  {:>6}  {:>10}  {:>6}  {}",
+                                "ID", "Type", "Dir", "OpCode", "Len", "Raw Data"
+                            );
                             println!("{}", "-".repeat(140));
                             for msg in &messages {
                                 let hex_data = hex::encode(&msg.data);
