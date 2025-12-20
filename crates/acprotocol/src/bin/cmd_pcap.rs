@@ -23,6 +23,10 @@ pub enum Commands {
         #[arg(value_name = "FILE", required = true)]
         file: String,
 
+        /// Filter by message ID
+        #[arg(short = 'i', long)]
+        id: Option<u32>,
+
         /// Filter by message type (substring match)
         #[arg(short = 't', long)]
         filter_type: Option<String>,
@@ -116,6 +120,7 @@ fn print_summary(messages: &[RawMessage]) {
 #[allow(clippy::too_many_arguments)]
 fn output_messages(
     messages: &[RawMessage],
+    id: Option<u32>,
     filter_type: Option<&str>,
     filter_opcode: Option<&str>,
     direction: Option<DirectionFilter>,
@@ -130,6 +135,11 @@ fn output_messages(
     let mut filtered: Vec<&RawMessage> = messages
         .iter()
         .filter(|m| {
+            if let Some(msg_id) = id
+                && m.id != msg_id
+            {
+                return false;
+            }
             if let Some(ft) = filter_type
                 && !m.message_type.to_lowercase().contains(&ft.to_lowercase())
             {
@@ -210,6 +220,7 @@ fn main() -> Result<()> {
     match cli.command {
         Some(Commands::Print {
             file,
+            id,
             filter_type,
             filter_opcode,
             direction,
@@ -235,7 +246,8 @@ fn main() -> Result<()> {
 
             if summary {
                 print_summary(&messages);
-            } else if filter_type.is_none()
+            } else if id.is_none()
+                && filter_type.is_none()
                 && filter_opcode.is_none()
                 && direction.is_none()
                 && limit.is_none()
@@ -268,6 +280,7 @@ fn main() -> Result<()> {
                 // If any filters are applied, use the filtering logic
                 output_messages(
                     &messages,
+                    id,
                     filter_type.as_deref(),
                     filter_opcode.as_deref(),
                     direction,
