@@ -167,11 +167,11 @@ pub fn read_bool(reader: &mut dyn ACReader) -> Result<bool, Box<dyn Error>> {
     Ok(value == 1)
 }
 
-/// Read a string (packed word length-prefixed, aligned to 4-byte boundary)
-/// Length is encoded as a PackedWORD (1-2 bytes depending on value)
+/// Read a string (16-bit length-prefixed, aligned to 4-byte boundary)
+/// Length is encoded as a fixed 2-byte signed integer (Int16)
 /// If length is -1, reads a 32-bit length instead (special case for long strings)
 pub fn read_string(reader: &mut dyn ACReader) -> Result<String, Box<dyn Error>> {
-    let len_i16 = read_packed_word(reader)?;
+    let len_i16 = read_i16(reader)?;
     let len = if len_i16 == -1 {
         // Special case: -1 means read a 32-bit length
         read_i32(reader)? as usize
