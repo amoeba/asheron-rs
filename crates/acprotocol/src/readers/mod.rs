@@ -1,4 +1,5 @@
 use crate::types::{PHashTable, PackableHashTable, PackableList};
+use encoding_rs::WINDOWS_1252;
 use std::cmp::Eq;
 use std::collections::HashMap;
 use std::error::Error;
@@ -197,7 +198,9 @@ pub fn read_string(reader: &mut dyn ACReader) -> Result<String, Box<dyn Error>> 
         reader.read_exact(&mut pad_buf)?;
     }
 
-    Ok(String::from_utf8(buf)?)
+    // Convert from Windows-1252 encoding to UTF-8
+    let (cow, _encoding_used, _had_errors) = WINDOWS_1252.decode(&buf);
+    Ok(cow.into_owned())
 }
 
 /// Read an ObjectId (u32)
@@ -266,7 +269,9 @@ pub fn read_string32l(reader: &mut dyn ACReader, pad: bool) -> Result<String, Bo
         let mut buf = vec![0u8; length as usize];
         reader.read_exact(&mut buf)?;
         bytes_read += length as usize;
-        String::from_utf8(buf)?
+        // Convert from Windows-1252 encoding to UTF-8
+        let (cow, _encoding_used, _had_errors) = WINDOWS_1252.decode(&buf);
+        cow.into_owned()
     } else {
         String::new()
     };

@@ -25,6 +25,7 @@ bitflags = { workspace = true }
 byteorder = "1.5.0"
 clap = { version = "4.5", features = ["derive"], optional = true }
 crossterm = { version = "0.28", optional = true }
+encoding_rs = "0.8"
 futures = { version = "0.3", optional = true }
 futures-util = { version = "0.3.31", optional = true }
 image = { version = "0.25.5", features = ["png"], optional = true }
