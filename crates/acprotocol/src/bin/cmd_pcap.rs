@@ -244,8 +244,8 @@ fn output_messages(
             }
             OutputFormat::Table => {
                 println!(
-                    "{:>6}  {:40}  {:>6}  {:>10}  {:>6}  {}",
-                    "ID", "Type", "Dir", "OpCode", "Len", "Raw Data"
+                    "{:>6}  {:40}  {:>6}  {:>10}  {:>6}  Raw Data",
+                    "ID", "Type", "Dir", "OpCode", "Len"
                 );
                 println!("{}", "-".repeat(140));
                 for msg in filtered {
@@ -380,8 +380,8 @@ fn main() -> Result<()> {
                         }
                         OutputFormat::Table => {
                             println!(
-                                "{:>6}  {:40}  {:>6}  {:>10}  {:>6}  {}",
-                                "ID", "Type", "Dir", "OpCode", "Len", "Raw Data"
+                                "{:>6}  {:40}  {:>6}  {:>10}  {:>6}  Raw Data",
+                                "ID", "Type", "Dir", "OpCode", "Len"
                             );
                             println!("{}", "-".repeat(140));
                             for msg in &messages {

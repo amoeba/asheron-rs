@@ -22,7 +22,6 @@ pub struct CommunicationTextboxString {
 impl crate::readers::ACDataType for CommunicationTextboxString {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let text = read_string(reader)?;
-        align_dword(reader)?;
         let type_ = ChatFragmentType::try_from(read_u32(reader)?)?;
 
         Ok(Self {
