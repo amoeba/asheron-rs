@@ -407,7 +407,8 @@ pub fn read_packable_list<T: ACDataType>(
 }
 
 /// Read a PackableHashTable<K, V> with custom key and value reader functions
-/// Format: u16 count, u16 max_size, followed by count key-value pairs
+/// Format: i16 count, i16 max_size, followed by count key-value pairs
+/// Note: Matches C# behavior which reads as int16 and ignores max_size validation
 pub fn read_packable_hash_table_with<K, V>(
     reader: &mut dyn ACReader,
     mut read_key: impl FnMut(&mut dyn ACReader) -> Result<K, Box<dyn Error>>,
@@ -418,19 +419,11 @@ where
 {
     let mut count_buf = [0u8; 2];
     reader.read_exact(&mut count_buf)?;
-    let count = u16::from_le_bytes(count_buf) as usize;
+    let count = i16::from_le_bytes(count_buf) as usize;
 
     let mut max_size_buf = [0u8; 2];
     reader.read_exact(&mut max_size_buf)?;
-    let max_size = u16::from_le_bytes(max_size_buf);
-
-    if count as u16 > max_size {
-        return Err(format!(
-            "PackableHashTable count {} exceeds max_size {}",
-            count, max_size
-        )
-        .into());
-    }
+    let max_size = i16::from_le_bytes(max_size_buf) as u16;
 
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
@@ -446,25 +439,18 @@ where
 }
 
 /// Read a PackableHashTable<K, V> where K and V implement ACDataType
-/// Format: u16 count, u16 max_size, followed by count key-value pairs
+/// Format: i16 count, i16 max_size, followed by count key-value pairs
+/// Note: Matches C# behavior which reads as int16 and ignores max_size validation
 pub fn read_packable_hash_table<K: ACDataType + Eq + Hash, V: ACDataType>(
     reader: &mut dyn ACReader,
 ) -> Result<PackableHashTable<K, V>, Box<dyn Error>> {
     let mut count_buf = [0u8; 2];
     reader.read_exact(&mut count_buf)?;
-    let count = u16::from_le_bytes(count_buf) as usize;
+    let count = i16::from_le_bytes(count_buf) as usize;
 
     let mut max_size_buf = [0u8; 2];
     reader.read_exact(&mut max_size_buf)?;
-    let max_size = u16::from_le_bytes(max_size_buf);
-
-    if count as u16 > max_size {
-        return Err(format!(
-            "PackableHashTable count {} exceeds max_size {}",
-            count, max_size
-        )
-        .into());
-    }
+    let max_size = i16::from_le_bytes(max_size_buf) as u16;
 
     let mut table = HashMap::with_capacity(count);
     for _ in 0..count {
