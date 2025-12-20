@@ -51,7 +51,13 @@ pub fn generate_type(protocol_type: &ProtocolType) -> String {
     if protocol_type.templated.is_none()
         && let Some(parent_type) = &protocol_type.parent
     {
-        let rust_type = get_rust_type(parent_type);
+        // Special case: DataId has parent="PackedDWORD" in XML but C# reads it as uint32
+        // The packed format is only for writing, not storage
+        let rust_type = if type_name == "DataId" && parent_type == "PackedDWORD" {
+            "u32"
+        } else {
+            get_rust_type(parent_type)
+        };
 
         // Only generate if the rust type differs from the XML type name
         if rust_type != *original_type_name {
@@ -68,6 +74,20 @@ pub fn generate_type(protocol_type: &ProtocolType) -> String {
                 out.push_str("#[derive(serde::Serialize, serde::Deserialize)]\n");
                 out.push_str("#[serde(transparent)]\n");
                 out.push_str(&format!("pub struct {type_name}(pub {rust_type});\n\n"));
+                
+                // Generate impl block for DataId to support reading from binary
+                if type_name == "DataId" {
+                    out.push_str("impl DataId {\n");
+                    out.push_str("    pub fn read(reader: &mut dyn crate::readers::ACReader) -> Result<Self, Box<dyn std::error::Error>> {\n");
+                    out.push_str("        Ok(Self(crate::readers::read_u32(reader)?))\n");
+                    out.push_str("    }\n");
+                    out.push_str("}\n\n");
+                    out.push_str("impl crate::readers::ACDataType for DataId {\n");
+                    out.push_str("    fn read(reader: &mut dyn crate::readers::ACReader) -> Result<Self, Box<dyn std::error::Error>> {\n");
+                    out.push_str("        DataId::read(reader)\n");
+                    out.push_str("    }\n");
+                    out.push_str("}\n\n");
+                }
             } else {
                 // Generate type alias for C-style aliases or non-primitive parents
                 out.push_str(&format!(

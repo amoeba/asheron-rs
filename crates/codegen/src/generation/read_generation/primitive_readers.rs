@@ -154,6 +154,10 @@ pub fn generate_read_base_logic(
                 } else {
                     format!("{}::try_from({}(reader)?)", field_type, read_fn)
                 }
+            } else if field_type == "DataId" && field.param.is_some() {
+                // DataId with param attribute should be read as PackedDWORD (variable-length)
+                // Need to wrap the u32 result in DataId() newtype
+                "read_packed_dword(reader).map(DataId)".to_string()
             } else if field_type.starts_with("Vec<") {
                 // Handle Vec - extract element type
                 let element_type = &field_type[4..field_type.len() - 1];
