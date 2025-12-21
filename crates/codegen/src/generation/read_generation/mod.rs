@@ -110,12 +110,23 @@ pub fn generate_field_group_reads(
                 let allow_directive = get_allow_unused_directive(type_name, &field_name);
                 out.push_str(allow_directive);
 
+                // Add field-level tracing span
+                out.push_str("        #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("        let _field_span_{} = {{\n", field_name));
+                out.push_str("            let pos = reader.stream_position().unwrap_or(0);\n");
+                out.push_str(&format!("            tracing::span!(tracing::Level::TRACE, \"field\", name = \"{}\", position = pos).entered()\n", field.name));
+                out.push_str("        };\n");
+
                 // Alignment fields don't need to be stored, just executed
                 if field.name.starts_with("__alignment_marker_") {
                     out.push_str(&format!("        {}?;\n", read_call));
                 } else {
                     out.push_str(&format!("        let {} = {}?;\n", field_name, read_call));
                 }
+
+                // Drop field span
+                out.push_str("        #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("        drop(_field_span_{});\n", field_name));
 
                 // Generate subfield computations if any
                 for subfield in &field.subfields {
@@ -171,6 +182,12 @@ pub fn generate_field_group_reads(
             // TRUE branch: read all true-only and both-branch fields
             for field in &true_only {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                // Add field-level tracing span
+                out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("            let _field_span_{} = {{\n", field_name));
+                out.push_str("                let pos = reader.stream_position().unwrap_or(0);\n");
+                out.push_str(&format!("                tracing::span!(tracing::Level::TRACE, \"field\", name = \"{}\", position = pos).entered()\n", field.name));
+                out.push_str("            };\n");
                 // For conditional fields, generate_read_call already handles optionality
                 // by returning an expression that evaluates to Option<T> based on the condition
                 out.push_str(&format!(
@@ -178,9 +195,18 @@ pub fn generate_field_group_reads(
                     field_name,
                     primitive_readers::generate_read_call(ctx, field, all_fields)
                 ));
+                // Drop field span
+                out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("            drop(_field_span_{});\n", field_name));
             }
             for field in &both {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                // Add field-level tracing span
+                out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("            let _field_span_{} = {{\n", field_name));
+                out.push_str("                let pos = reader.stream_position().unwrap_or(0);\n");
+                out.push_str(&format!("                tracing::span!(tracing::Level::TRACE, \"field\", name = \"{}\", position = pos).entered()\n", field.name));
+                out.push_str("            };\n");
                 // For fields that exist in both branches, read directly without wrapping in Some
                 // since the struct field is not Option<T> for these (they're always present)
                 out.push_str(&format!(
@@ -188,6 +214,9 @@ pub fn generate_field_group_reads(
                     field_name,
                     primitive_readers::generate_read_call(ctx, field, all_fields)
                 ));
+                // Drop field span
+                out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("            drop(_field_span_{});\n", field_name));
             }
 
             // FALSE branch: only emit if there are fields to read in the false branch
@@ -197,6 +226,12 @@ pub fn generate_field_group_reads(
                 // Read false-only fields
                 for field in &false_only {
                     let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                    // Add field-level tracing span
+                    out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                    out.push_str(&format!("            let _field_span_{} = {{\n", field_name));
+                    out.push_str("                let pos = reader.stream_position().unwrap_or(0);\n");
+                    out.push_str(&format!("                tracing::span!(tracing::Level::TRACE, \"field\", name = \"{}\", position = pos).entered()\n", field.name));
+                    out.push_str("            };\n");
                     // For conditional fields, generate_read_call already handles optionality
                     // by returning an expression that evaluates to Option<T> based on the condition
                     out.push_str(&format!(
@@ -204,15 +239,27 @@ pub fn generate_field_group_reads(
                         field_name,
                         primitive_readers::generate_read_call(ctx, field, all_fields)
                     ));
+                    // Drop field span
+                    out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                    out.push_str(&format!("            drop(_field_span_{});\n", field_name));
                 }
 
                 // Read both-branch fields, with type casting if needed
                 for field in &both {
                     let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                    // Add field-level tracing span
+                    out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                    out.push_str(&format!("            let _field_span_{} = {{\n", field_name));
+                    out.push_str("                let pos = reader.stream_position().unwrap_or(0);\n");
+                    out.push_str(&format!("                tracing::span!(tracing::Level::TRACE, \"field\", name = \"{}\", position = pos).entered()\n", field.name));
+                    out.push_str("            };\n");
                     // For fields that exist in both branches, read directly without wrapping in Some
                     // since the struct field is not Option<T> for these (they're always present)
                     let read_call = primitive_readers::generate_read_call(ctx, field, all_fields);
                     out.push_str(&format!("            {} = {}?;\n", field_name, read_call));
+                    // Drop field span
+                    out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                    out.push_str(&format!("            drop(_field_span_{});\n", field_name));
                 }
 
                 out.push_str("        }\n");
@@ -277,6 +324,12 @@ pub fn generate_field_group_reads(
             ));
             for field in fields {
                 let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
+                // Add field-level tracing span
+                out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("            let _field_span_{} = {{\n", field_name));
+                out.push_str("                let pos = reader.stream_position().unwrap_or(0);\n");
+                out.push_str(&format!("                tracing::span!(tracing::Level::TRACE, \"field\", name = \"{}\", position = pos).entered()\n", field.name));
+                out.push_str("            };\n");
                 // For maskmap fields: we read the raw value and wrap it in Some(),
                 // since the variable was initialized as None (making it Option<T>)
                 let read_call = primitive_readers::generate_read_base_logic(ctx, field, all_fields);
@@ -284,6 +337,9 @@ pub fn generate_field_group_reads(
                     "            {} = Some({}?);\n",
                     field_name, read_call
                 ));
+                // Drop field span
+                out.push_str("            #[cfg(feature = \"tracing\")]\n");
+                out.push_str(&format!("            drop(_field_span_{});\n", field_name));
             }
             out.push_str("        }\n");
         }

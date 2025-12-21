@@ -45,6 +45,8 @@ tokio = { version = "1.44.1", features = [
   "rt-multi-thread"
 ], optional = true }
 tokio-util = { version = "0.7.15", features = ["compat"], optional = true }
+tracing = { version = "0.1", optional = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"], optional = true }
 worker = { version = "0.6.1", optional = true }
 
 [build-dependencies]
@@ -53,7 +55,8 @@ env_logger = { workspace = true }
 
 [features]
 default = []
-cli = ["dep:clap", "dep:crossterm", "dep:ratatui", "dep:serde_json"]
+cli = ["dep:clap", "dep:crossterm", "dep:ratatui", "dep:serde_json", "dep:tracing-subscriber"]
+tracing = ["dep:tracing"]
 # TODO: Not sure about these yet
 dat = ["dat-tokio"]
 dat-cloudflare = ["dat-tokio", "dep:worker"]

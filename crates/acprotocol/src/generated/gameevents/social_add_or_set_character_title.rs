@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Set a title for the current character.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,8 +24,25 @@ pub struct SocialAddOrSetCharacterTitle {
 
 impl crate::readers::ACDataType for SocialAddOrSetCharacterTitle {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SocialAddOrSetCharacterTitle").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_new_title = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NewTitle", position = pos).entered()
+        };
         let new_title = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_new_title);
+        #[cfg(feature = "tracing")]
+        let _field_span_set_as_display_title = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SetAsDisplayTitle", position = pos).entered()
+        };
         let set_as_display_title = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_set_as_display_title);
 
         Ok(Self {
             new_title,

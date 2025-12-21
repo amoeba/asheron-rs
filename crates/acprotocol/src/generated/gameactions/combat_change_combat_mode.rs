@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Changes the combat mode
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -19,7 +22,17 @@ pub struct CombatChangeCombatMode {
 
 impl crate::readers::ACDataType for CombatChangeCombatMode {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CombatChangeCombatMode").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_mode = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Mode", position = pos).entered()
+        };
         let mode = Ok::<_, Box<dyn std::error::Error>>(CombatMode::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_mode);
 
         Ok(Self {
             mode,

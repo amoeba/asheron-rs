@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // The result of an attempt to assess an item or creature.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -75,70 +78,213 @@ pub struct ItemSetAppraiseInfo {
 
 impl crate::readers::ACDataType for ItemSetAppraiseInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ItemSetAppraiseInfo").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_success = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Success", position = pos).entered()
+        };
         let success = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_success);
         let mut int_properties = None;
         if (flags & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_int_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "IntProperties", position = pos).entered()
+            };
             int_properties = Some(read_packable_hash_table::<PropertyInt, i32>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_int_properties);
         }
         let mut int64_properties = None;
         if (flags & 0x00002000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_int64_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Int64Properties", position = pos).entered()
+            };
             int64_properties = Some(read_packable_hash_table::<PropertyInt64, i64>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_int64_properties);
         }
         let mut bool_properties = None;
         if (flags & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_bool_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BoolProperties", position = pos).entered()
+            };
             bool_properties = Some(read_packable_hash_table::<PropertyBool, bool>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_bool_properties);
         }
         let mut float_properties = None;
         if (flags & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_float_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "FloatProperties", position = pos).entered()
+            };
             float_properties = Some(read_packable_hash_table::<PropertyFloat, f64>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_float_properties);
         }
         let mut string_properties = None;
         if (flags & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_string_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "StringProperties", position = pos).entered()
+            };
             string_properties = Some(read_packable_hash_table::<PropertyString, String>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_string_properties);
         }
         let mut data_id_properties = None;
         if (flags & 0x00001000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_data_id_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "DataIdProperties", position = pos).entered()
+            };
             data_id_properties = Some(read_packable_hash_table::<PropertyDataId, DataId>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_data_id_properties);
         }
         let mut spell_book = None;
         if (flags & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_spell_book = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SpellBook", position = pos).entered()
+            };
             spell_book = Some(read_packable_list::<LayeredSpellId>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_spell_book);
         }
         let mut armor_profile = None;
         if (flags & 0x00000080) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_armor_profile = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ArmorProfile", position = pos).entered()
+            };
             armor_profile = Some(ArmorProfile::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_armor_profile);
         }
         let mut creature_profile = None;
         if (flags & 0x00000100) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_creature_profile = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CreatureProfile", position = pos).entered()
+            };
             creature_profile = Some(CreatureAppraisalProfile::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_creature_profile);
         }
         let mut weapon_profile = None;
         if (flags & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_weapon_profile = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "WeaponProfile", position = pos).entered()
+            };
             weapon_profile = Some(WeaponProfile::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_weapon_profile);
         }
         let mut hook_profile = None;
         if (flags & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_hook_profile = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "HookProfile", position = pos).entered()
+            };
             hook_profile = Some(HookAppraisalProfile::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_hook_profile);
         }
         let mut armor_highlight = None;
         let mut armor_color = None;
         if (flags & 0x00000200) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_armor_highlight = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ArmorHighlight", position = pos).entered()
+            };
             armor_highlight = Some(Ok::<_, Box<dyn std::error::Error>>(ArmorHighlightMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_armor_highlight);
+            #[cfg(feature = "tracing")]
+            let _field_span_armor_color = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ArmorColor", position = pos).entered()
+            };
             armor_color = Some(Ok::<_, Box<dyn std::error::Error>>(ArmorHighlightMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_armor_color);
         }
         let mut weapon_highlight = None;
         let mut weapon_color = None;
         if (flags & 0x00000800) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_weapon_highlight = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "WeaponHighlight", position = pos).entered()
+            };
             weapon_highlight = Some(Ok::<_, Box<dyn std::error::Error>>(WeaponHighlightMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_weapon_highlight);
+            #[cfg(feature = "tracing")]
+            let _field_span_weapon_color = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "WeaponColor", position = pos).entered()
+            };
             weapon_color = Some(Ok::<_, Box<dyn std::error::Error>>(WeaponHighlightMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_weapon_color);
         }
         let mut resist_highlight = None;
         let mut resist_color = None;
         if (flags & 0x00000400) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_resist_highlight = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ResistHighlight", position = pos).entered()
+            };
             resist_highlight = Some(Ok::<_, Box<dyn std::error::Error>>(ResistHighlightMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_resist_highlight);
+            #[cfg(feature = "tracing")]
+            let _field_span_resist_color = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ResistColor", position = pos).entered()
+            };
             resist_color = Some(Ok::<_, Box<dyn std::error::Error>>(ResistHighlightMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_resist_color);
         }
         let mut base_armor_head = None;
         let mut base_armor_chest = None;
@@ -150,15 +296,78 @@ impl crate::readers::ACDataType for ItemSetAppraiseInfo {
         let mut base_armor_shin = None;
         let mut base_armor_foot = None;
         if (flags & 0x00004000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_head = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorHead", position = pos).entered()
+            };
             base_armor_head = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_head);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_chest = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorChest", position = pos).entered()
+            };
             base_armor_chest = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_chest);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_groin = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorGroin", position = pos).entered()
+            };
             base_armor_groin = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_groin);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_bicep = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorBicep", position = pos).entered()
+            };
             base_armor_bicep = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_bicep);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_wrist = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorWrist", position = pos).entered()
+            };
             base_armor_wrist = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_wrist);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_hand = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorHand", position = pos).entered()
+            };
             base_armor_hand = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_hand);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_thigh = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorThigh", position = pos).entered()
+            };
             base_armor_thigh = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_thigh);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_shin = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorShin", position = pos).entered()
+            };
             base_armor_shin = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_shin);
+            #[cfg(feature = "tracing")]
+            let _field_span_base_armor_foot = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmorFoot", position = pos).entered()
+            };
             base_armor_foot = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_base_armor_foot);
         }
 
         Ok(Self {

@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Response to an attempt to delete a page from a book.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -23,9 +26,33 @@ pub struct WritingBookDeletePageResponse {
 
 impl crate::readers::ACDataType for WritingBookDeletePageResponse {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WritingBookDeletePageResponse").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_book_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BookId", position = pos).entered()
+        };
         let book_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_book_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_page_number = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PageNumber", position = pos).entered()
+        };
         let page_number = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_page_number);
+        #[cfg(feature = "tracing")]
+        let _field_span_success = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Success", position = pos).entered()
+        };
         let success = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_success);
 
         Ok(Self {
             book_id,

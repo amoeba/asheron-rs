@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Titles for the current character.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,8 +24,25 @@ pub struct SocialCharacterTitleTable {
 
 impl crate::readers::ACDataType for SocialCharacterTitleTable {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SocialCharacterTitleTable").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_display_title = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DisplayTitle", position = pos).entered()
+        };
         let display_title = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_display_title);
+        #[cfg(feature = "tracing")]
+        let _field_span_titles = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Titles", position = pos).entered()
+        };
         let titles = read_packable_list::<u32>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_titles);
 
         Ok(Self {
             display_title,

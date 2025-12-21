@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // ChannelList: Provides list of characters listening to a channel, I assume in response to a command
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -19,7 +22,17 @@ pub struct CommunicationChannelList {
 
 impl crate::readers::ACDataType for CommunicationChannelList {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationChannelList").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_characters = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Characters", position = pos).entered()
+        };
         let characters = read_packable_list::<String>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_characters);
 
         Ok(Self {
             characters,

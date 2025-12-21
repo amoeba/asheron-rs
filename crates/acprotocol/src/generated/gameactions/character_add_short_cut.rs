@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Add an item to the shortcut bar.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -19,7 +22,17 @@ pub struct CharacterAddShortCut {
 
 impl crate::readers::ACDataType for CharacterAddShortCut {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CharacterAddShortCut").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_shortcut = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Shortcut", position = pos).entered()
+        };
         let shortcut = ShortCutData::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shortcut);
 
         Ok(Self {
             shortcut,

@@ -24,7 +24,10 @@ pub fn generate_type_and_reader_file(
     out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::enums::*;\n");
     out.push_str("#[allow(unused_imports)]\n");
-    out.push_str("use super::*;\n\n");
+    out.push_str("use super::*;\n");
+    out.push_str("#[cfg(feature = \"tracing\")]\n");
+    out.push_str("#[allow(unused_imports)]\n");
+    out.push_str("use tracing::{span, Level};\n\n");
 
     // Generate type definition
     if protocol_type.is_primitive {

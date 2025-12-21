@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Account has been booted
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,8 +24,25 @@ pub struct LoginAccountBooted {
 
 impl crate::readers::ACDataType for LoginAccountBooted {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "LoginAccountBooted").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_additional_reason_text = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AdditionalReasonText", position = pos).entered()
+        };
         let additional_reason_text = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_additional_reason_text);
+        #[cfg(feature = "tracing")]
+        let _field_span_reason_text = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ReasonText", position = pos).entered()
+        };
         let reason_text = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_reason_text);
 
         Ok(Self {
             additional_reason_text,

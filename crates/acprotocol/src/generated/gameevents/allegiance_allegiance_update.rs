@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Returns info related to your monarch, patron and vassals.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,8 +24,25 @@ pub struct AllegianceAllegianceUpdate {
 
 impl crate::readers::ACDataType for AllegianceAllegianceUpdate {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AllegianceAllegianceUpdate").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_rank = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Rank", position = pos).entered()
+        };
         let rank = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_rank);
+        #[cfg(feature = "tracing")]
+        let _field_span_profile = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Profile", position = pos).entered()
+        };
         let profile = AllegianceProfile::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_profile);
 
         Ok(Self {
             rank,

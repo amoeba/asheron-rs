@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Resets the trade, when clear all is clicked?
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Gets and weilds an item.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,8 +24,25 @@ pub struct InventoryGetAndWieldItem {
 
 impl crate::readers::ACDataType for InventoryGetAndWieldItem {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "InventoryGetAndWieldItem").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_slot = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Slot", position = pos).entered()
+        };
         let slot = Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_slot);
 
         Ok(Self {
             object_id,

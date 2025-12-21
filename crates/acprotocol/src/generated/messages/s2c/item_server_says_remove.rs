@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Sent every time an object you are aware of ceases to exist. Merely running out of range does not generate this message - in that case, the client just automatically stops tracking it after receiving no updates for a while (which I presume is a very short while).
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -19,7 +22,17 @@ pub struct ItemServerSaysRemove {
 
 impl crate::readers::ACDataType for ItemServerSaysRemove {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ItemServerSaysRemove").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
 
         Ok(Self {
             object_id,

@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Add or update a dat file Resource.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -58,6 +61,9 @@ pub enum DDDDataMessage {
 impl DDDDataMessageType0 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, dat_file: DatFileType, resource_type: uint, resource_id: DataId, iteration: uint, version: uint, data_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "DDDDataMessageType0").entered();
+
         let data = read_vec::<u8>(reader, data_size as usize)?;
 
         Ok(Self {
@@ -75,6 +81,9 @@ impl DDDDataMessageType0 {
 impl DDDDataMessageType1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, dat_file: DatFileType, resource_type: uint, resource_id: DataId, iteration: uint, version: uint, data_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "DDDDataMessageType1").entered();
+
         let file_size = read_u32(reader)?;
         let data = read_vec::<u8>(reader, data_size as usize)?;
 
@@ -93,6 +102,9 @@ impl DDDDataMessageType1 {
 
 impl DDDDataMessage {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "DDDDataMessage").entered();
+
         let dat_file = DatFileType::try_from(read_i64(reader)?)?;
         let resource_type = read_u32(reader)?;
         let resource_id = DataId::read(reader)?;

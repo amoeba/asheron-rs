@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Removes all storage permissions, /house storage remove_all
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

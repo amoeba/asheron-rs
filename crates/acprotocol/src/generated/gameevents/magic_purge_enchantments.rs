@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Silently remove all enchantments from your character, e.g. when you die (no message in the chat window).
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

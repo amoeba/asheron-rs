@@ -112,6 +112,10 @@ fn generate_enum_reader_impl(
         "    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {\n",
     );
 
+    // Add struct-level tracing span
+    out.push_str("        #[cfg(feature = \"tracing\")]\n");
+    out.push_str(&format!("        let _span = tracing::span!(tracing::Level::DEBUG, \"read\", r#type = \"{}\").entered();\n\n", type_name));
+
     // Read all common fields (these come before the switch)
     for field in &field_set.common_fields {
         let field_name = safe_identifier(&field.name, IdentifierType::Field).name;
@@ -375,6 +379,10 @@ fn generate_variant_struct_reader_impl(
         params_str
     ));
 
+    // Add struct-level tracing span
+    out.push_str("        #[cfg(feature = \"tracing\")]\n");
+    out.push_str(&format!("        let _span = tracing::span!(tracing::Level::DEBUG, \"read\", r#type = \"{}\").entered();\n\n", struct_name));
+
     // Don't read common fields - they're passed in as parameters
 
     // Read variant-specific fields
@@ -535,6 +543,10 @@ fn generate_nested_switch_enum_reader(
     out.push_str(
         "    pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {\n",
     );
+
+    // Add struct-level tracing span
+    out.push_str("        #[cfg(feature = \"tracing\")]\n");
+    out.push_str(&format!("        let _span = tracing::span!(tracing::Level::DEBUG, \"read\", r#type = \"{}\").entered();\n\n", enum_name));
 
     // Read the switch field
     let switch_field_name =

@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Send or receive a message using Turbine Chat.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -153,6 +156,9 @@ pub enum CommunicationTurbineChat {
 impl CommunicationTurbineChatType1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationTurbineChatType1").entered();
+
         let blob_dispatch_type = CommunicationTurbineChatType1BlobDispatchTypeVariant::read(reader)?;
 
         Ok(Self {
@@ -170,6 +176,9 @@ impl CommunicationTurbineChatType1 {
 
 impl CommunicationTurbineChatType1BlobDispatchTypeVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationTurbineChatType1BlobDispatchTypeVariant").entered();
+
         let blob_dispatch_type = read_u8(reader)?;
 
         match blob_dispatch_type {
@@ -200,6 +209,9 @@ impl CommunicationTurbineChatType1BlobDispatchTypeVariant {
 impl CommunicationTurbineChatType3 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationTurbineChatType3").entered();
+
         let blob_dispatch_type = CommunicationTurbineChatType3BlobDispatchTypeVariant::read(reader)?;
 
         Ok(Self {
@@ -217,6 +229,9 @@ impl CommunicationTurbineChatType3 {
 
 impl CommunicationTurbineChatType3BlobDispatchTypeVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationTurbineChatType3BlobDispatchTypeVariant").entered();
+
         let blob_dispatch_type = read_u8(reader)?;
 
         match blob_dispatch_type {
@@ -251,6 +266,9 @@ impl CommunicationTurbineChatType3BlobDispatchTypeVariant {
 impl CommunicationTurbineChatType5 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, mmessage_size: uint, target_type: int, target_id: int, transport_type: int, transport_id: int, cookie: int, payload_size: uint) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationTurbineChatType5").entered();
+
         let blob_dispatch_type = CommunicationTurbineChatType5BlobDispatchTypeVariant::read(reader)?;
 
         Ok(Self {
@@ -268,6 +286,9 @@ impl CommunicationTurbineChatType5 {
 
 impl CommunicationTurbineChatType5BlobDispatchTypeVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationTurbineChatType5BlobDispatchTypeVariant").entered();
+
         let blob_dispatch_type = read_u8(reader)?;
 
         match blob_dispatch_type {
@@ -291,6 +312,9 @@ impl CommunicationTurbineChatType5BlobDispatchTypeVariant {
 
 impl CommunicationTurbineChat {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CommunicationTurbineChat").entered();
+
         let mmessage_size = read_u32(reader)?;
         let type_ = TurbineChatType::try_from(read_u32(reader)?)?;
         #[allow(unused_variables)]

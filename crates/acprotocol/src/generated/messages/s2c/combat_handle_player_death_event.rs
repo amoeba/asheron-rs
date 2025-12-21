@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // A Player Kill occurred nearby (also sent for suicides).
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -23,9 +26,33 @@ pub struct CombatHandlePlayerDeathEvent {
 
 impl crate::readers::ACDataType for CombatHandlePlayerDeathEvent {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CombatHandlePlayerDeathEvent").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_message = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Message", position = pos).entered()
+        };
         let message = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_message);
+        #[cfg(feature = "tracing")]
+        let _field_span_killed_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "KilledId", position = pos).entered()
+        };
         let killed_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_killed_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_killer_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "KillerId", position = pos).entered()
+        };
         let killer_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_killer_id);
 
         Ok(Self {
             message,

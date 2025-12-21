@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // TODO
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,8 +24,25 @@ pub struct DDDInterrogationResponseMessage {
 
 impl crate::readers::ACDataType for DDDInterrogationResponseMessage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "DDDInterrogationResponseMessage").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_language = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Language", position = pos).entered()
+        };
         let language = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_language);
+        #[cfg(feature = "tracing")]
+        let _field_span_files = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Files", position = pos).entered()
+        };
         let files = read_packable_list::<i64>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_files);
 
         Ok(Self {
             language,

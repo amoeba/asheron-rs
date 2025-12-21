@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // DDD error
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -23,9 +26,33 @@ pub struct DDDErrorMessage {
 
 impl crate::readers::ACDataType for DDDErrorMessage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "DDDErrorMessage").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_resource_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ResourceType", position = pos).entered()
+        };
         let resource_type = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_resource_type);
+        #[cfg(feature = "tracing")]
+        let _field_span_resource_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ResourceId", position = pos).entered()
+        };
         let resource_id = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_resource_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_r_error = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "RError", position = pos).entered()
+        };
         let r_error = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_r_error);
 
         Ok(Self {
             resource_type,

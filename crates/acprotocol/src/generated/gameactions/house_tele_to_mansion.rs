@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Teleports player to their allegiance housing, /house mansion_recall
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

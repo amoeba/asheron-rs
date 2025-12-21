@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Client to Server AC packet.
 #[allow(dead_code)]
@@ -55,60 +58,196 @@ pub struct C2SPacket {
 
 impl crate::readers::ACDataType for C2SPacket {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "C2SPacket").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Sequence", position = pos).entered()
+        };
         let sequence = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = Ok::<_, Box<dyn std::error::Error>>(PacketHeaderFlags::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_checksum = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Checksum", position = pos).entered()
+        };
         let checksum = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_checksum);
+        #[cfg(feature = "tracing")]
+        let _field_span_recipient_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "RecipientId", position = pos).entered()
+        };
         let recipient_id = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_recipient_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_time_since_last_packet = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TimeSinceLastPacket", position = pos).entered()
+        };
         let time_since_last_packet = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_time_since_last_packet);
+        #[cfg(feature = "tracing")]
+        let _field_span_size = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Size", position = pos).entered()
+        };
         let size = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_size);
+        #[cfg(feature = "tracing")]
+        let _field_span_iteration = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Iteration", position = pos).entered()
+        };
         let iteration = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_iteration);
         let mut server_switch = None;
         if (flags.bits() & PacketHeaderFlags::SERVER_SWITCH.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_server_switch = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ServerSwitch", position = pos).entered()
+            };
             server_switch = Some(ServerSwitchHeader::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_server_switch);
         }
         let mut retransmit_sequences = None;
         if (flags.bits() & PacketHeaderFlags::REQUEST_RETRANSMIT.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_retransmit_sequences = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "RetransmitSequences", position = pos).entered()
+            };
             retransmit_sequences = Some(read_packable_list::<u32>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_retransmit_sequences);
         }
         let mut reject_sequences = None;
         if (flags.bits() & PacketHeaderFlags::REJECT_RETRANSMIT.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_reject_sequences = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "RejectSequences", position = pos).entered()
+            };
             reject_sequences = Some(read_packable_list::<u32>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_reject_sequences);
         }
         let mut ack_sequence = None;
         if (flags.bits() & PacketHeaderFlags::ACK_SEQUENCE.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_ack_sequence = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "AckSequence", position = pos).entered()
+            };
             ack_sequence = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_ack_sequence);
         }
         let mut login_request = None;
         if (flags.bits() & PacketHeaderFlags::LOGIN_REQUEST.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_login_request = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "LoginRequest", position = pos).entered()
+            };
             login_request = Some(LoginRequestHeader::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_login_request);
         }
         let mut world_login_request = None;
         if (flags.bits() & PacketHeaderFlags::WORLD_LOGIN_REQUEST.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_world_login_request = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "WorldLoginRequest", position = pos).entered()
+            };
             world_login_request = Some(read_u64(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_world_login_request);
         }
         let mut connect_response = None;
         if (flags.bits() & PacketHeaderFlags::CONNECT_RESPONSE.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_connect_response = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ConnectResponse", position = pos).entered()
+            };
             connect_response = Some(read_u64(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_connect_response);
         }
         let mut cicmd_command = None;
         if (flags.bits() & PacketHeaderFlags::CICMDCOMMAND.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_cicmd_command = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CICMDCommand", position = pos).entered()
+            };
             cicmd_command = Some(CICMDCommandHeader::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_cicmd_command);
         }
         let mut time = None;
         if (flags.bits() & PacketHeaderFlags::TIME_SYNC.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_time = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Time", position = pos).entered()
+            };
             time = Some(read_u64(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_time);
         }
         let mut echo_time = None;
         if (flags.bits() & PacketHeaderFlags::ECHO_REQUEST.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_echo_time = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "EchoTime", position = pos).entered()
+            };
             echo_time = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_echo_time);
         }
         let mut flow = None;
         if (flags.bits() & PacketHeaderFlags::FLOW.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_flow = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Flow", position = pos).entered()
+            };
             flow = Some(FlowHeader::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_flow);
         }
         let mut fragments = None;
         if (flags.bits() & PacketHeaderFlags::BLOB_FRAGMENTS.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_fragments = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Fragments", position = pos).entered()
+            };
             fragments = Some(BlobFragments::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_fragments);
         }
 
         Ok(Self {

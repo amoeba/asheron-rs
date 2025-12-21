@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Sent when you first open a book, contains the entire table of contents.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -29,12 +32,57 @@ pub struct WritingBookOpen {
 
 impl crate::readers::ACDataType for WritingBookOpen {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WritingBookOpen").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_book_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BookId", position = pos).entered()
+        };
         let book_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_book_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_num_pages = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxNumPages", position = pos).entered()
+        };
         let max_num_pages = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_num_pages);
+        #[cfg(feature = "tracing")]
+        let _field_span_page_data = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PageData", position = pos).entered()
+        };
         let page_data = PageDataList::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_page_data);
+        #[cfg(feature = "tracing")]
+        let _field_span_inscription = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Inscription", position = pos).entered()
+        };
         let inscription = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_inscription);
+        #[cfg(feature = "tracing")]
+        let _field_span_scribe_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ScribeId", position = pos).entered()
+        };
         let scribe_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_scribe_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_scribe_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ScribeName", position = pos).entered()
+        };
         let scribe_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_scribe_name);
 
         Ok(Self {
             book_id,

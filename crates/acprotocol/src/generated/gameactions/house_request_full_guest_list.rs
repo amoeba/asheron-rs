@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Requests your full guest list, /house guest list
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Instructs the client to return to 2D mode - the character list.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

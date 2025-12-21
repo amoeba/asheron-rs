@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Information describing your character.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -27,11 +30,49 @@ pub struct LoginPlayerDescription {
 
 impl crate::readers::ACDataType for LoginPlayerDescription {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "LoginPlayerDescription").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_base_qualities = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BaseQualities", position = pos).entered()
+        };
         let base_qualities = ACBaseQualities::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_base_qualities);
+        #[cfg(feature = "tracing")]
+        let _field_span_qualities = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Qualities", position = pos).entered()
+        };
         let qualities = ACQualities::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_qualities);
+        #[cfg(feature = "tracing")]
+        let _field_span_player_module = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PlayerModule", position = pos).entered()
+        };
         let player_module = PlayerModule::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_player_module);
+        #[cfg(feature = "tracing")]
+        let _field_span_content_profile = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ContentProfile", position = pos).entered()
+        };
         let content_profile = read_packable_list::<ContentProfile>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_content_profile);
+        #[cfg(feature = "tracing")]
+        let _field_span_inventory_placement = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "InventoryPlacement", position = pos).entered()
+        };
         let inventory_placement = read_packable_list::<InventoryPlacement>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_inventory_placement);
 
         Ok(Self {
             base_qualities,

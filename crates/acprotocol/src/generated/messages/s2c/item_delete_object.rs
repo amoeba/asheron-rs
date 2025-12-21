@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Sent whenever an object is being deleted from the scene.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,9 +24,33 @@ pub struct ItemDeleteObject {
 
 impl crate::readers::ACDataType for ItemDeleteObject {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ItemDeleteObject").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_instance_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectInstanceSequence", position = pos).entered()
+        };
         let object_instance_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_instance_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             object_id,

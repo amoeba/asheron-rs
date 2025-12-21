@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Character creation screen initilised.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -30,6 +33,9 @@ pub enum CharacterCharGenVerificationResponse {
 impl CharacterCharGenVerificationResponseType1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CharacterCharGenVerificationResponseType1").entered();
+
         let character_id = ObjectId::read(reader)?;
         let name = read_string(reader)?;
         let seconds_until_deletion = read_u32(reader)?;
@@ -45,6 +51,9 @@ impl CharacterCharGenVerificationResponseType1 {
 
 impl CharacterCharGenVerificationResponse {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CharacterCharGenVerificationResponse").entered();
+
         let response_type = CharGenResponseType::try_from(read_u32(reader)?)?;
 
         match response_type {

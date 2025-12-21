@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Failure to log in
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -19,7 +22,17 @@ pub struct CharacterCharacterError {
 
 impl crate::readers::ACDataType for CharacterCharacterError {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CharacterCharacterError").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_reason = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Reason", position = pos).entered()
+        };
         let reason = CharacterErrorType::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_reason);
 
         Ok(Self {
             reason,

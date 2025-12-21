@@ -19,6 +19,10 @@ pub fn generate_struct_reader_impl(
         type_name
     ));
 
+    // Add struct-level tracing span
+    out.push_str("        #[cfg(feature = \"tracing\")]\n");
+    out.push_str(&format!("        let _span = tracing::span!(tracing::Level::DEBUG, \"read\", r#type = \"{}\").entered();\n\n", type_name));
+
     // Group consecutive fields with the same condition
     let field_groups = helpers::group_consecutive_fields_by_condition(&field_set.common_fields);
 

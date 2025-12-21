@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Stops a movement
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -21,8 +24,25 @@ pub struct MovementStopMovementCommand {
 
 impl crate::readers::ACDataType for MovementStopMovementCommand {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MovementStopMovementCommand").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_motion = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Motion", position = pos).entered()
+        };
         let motion = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_motion);
+        #[cfg(feature = "tracing")]
+        let _field_span_hold_key = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HoldKey", position = pos).entered()
+        };
         let hold_key = HoldKey::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hold_key);
 
         Ok(Self {
             motion,

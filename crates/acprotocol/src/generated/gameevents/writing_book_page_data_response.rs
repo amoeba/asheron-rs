@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Contains the text of a single page of a book, parchment or sign.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -23,9 +26,33 @@ pub struct WritingBookPageDataResponse {
 
 impl crate::readers::ACDataType for WritingBookPageDataResponse {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WritingBookPageDataResponse").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_page = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Page", position = pos).entered()
+        };
         let page = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_page);
+        #[cfg(feature = "tracing")]
+        let _field_span_page_data = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PageData", position = pos).entered()
+        };
         let page_data = PageData::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_page_data);
 
         Ok(Self {
             object_id,

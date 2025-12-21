@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Completes the barber interaction
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -49,22 +52,137 @@ pub struct CharacterFinishBarber {
 
 impl crate::readers::ACDataType for CharacterFinishBarber {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CharacterFinishBarber").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_base_palette = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BasePalette", position = pos).entered()
+        };
         let base_palette = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_base_palette);
+        #[cfg(feature = "tracing")]
+        let _field_span_head_object = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HeadObject", position = pos).entered()
+        };
         let head_object = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_head_object);
+        #[cfg(feature = "tracing")]
+        let _field_span_head_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HeadTexture", position = pos).entered()
+        };
         let head_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_head_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_default_head_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DefaultHeadTexture", position = pos).entered()
+        };
         let default_head_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_default_head_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_eyes_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "EyesTexture", position = pos).entered()
+        };
         let eyes_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_eyes_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_default_eyes_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DefaultEyesTexture", position = pos).entered()
+        };
         let default_eyes_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_default_eyes_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_nose_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NoseTexture", position = pos).entered()
+        };
         let nose_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_nose_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_default_nose_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DefaultNoseTexture", position = pos).entered()
+        };
         let default_nose_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_default_nose_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_mouth_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MouthTexture", position = pos).entered()
+        };
         let mouth_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_mouth_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_default_mouth_texture = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DefaultMouthTexture", position = pos).entered()
+        };
         let default_mouth_texture = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_default_mouth_texture);
+        #[cfg(feature = "tracing")]
+        let _field_span_skin_palette = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SkinPalette", position = pos).entered()
+        };
         let skin_palette = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_skin_palette);
+        #[cfg(feature = "tracing")]
+        let _field_span_hair_palette = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HairPalette", position = pos).entered()
+        };
         let hair_palette = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hair_palette);
+        #[cfg(feature = "tracing")]
+        let _field_span_eyes_palette = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "EyesPalette", position = pos).entered()
+        };
         let eyes_palette = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_eyes_palette);
+        #[cfg(feature = "tracing")]
+        let _field_span_setup_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SetupId", position = pos).entered()
+        };
         let setup_id = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_setup_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_option1 = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Option1", position = pos).entered()
+        };
         let option1 = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_option1);
+        #[cfg(feature = "tracing")]
+        let _field_span_option2 = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Option2", position = pos).entered()
+        };
         let option2 = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_option2);
 
         Ok(Self {
             base_palette,

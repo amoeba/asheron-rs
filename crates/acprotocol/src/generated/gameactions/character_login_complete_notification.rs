@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // The client is ready for the character to materialize after portalling or logging on.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

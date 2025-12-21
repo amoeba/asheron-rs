@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Accepts a trade.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -19,7 +22,17 @@ pub struct TradeAcceptTrade {
 
 impl crate::readers::ACDataType for TradeAcceptTrade {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "TradeAcceptTrade").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_contents = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Contents", position = pos).entered()
+        };
         let contents = Trade::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_contents);
 
         Ok(Self {
             contents,

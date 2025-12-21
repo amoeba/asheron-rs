@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Sent if player is an PSR, I assume it displays the server version number
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

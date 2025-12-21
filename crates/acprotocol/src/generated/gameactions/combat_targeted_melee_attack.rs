@@ -8,6 +8,9 @@ use crate::types::*;
 use crate::enums::*;
 #[allow(unused_imports)]
 use super::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 // Starts a melee attack against a target
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -23,9 +26,33 @@ pub struct CombatTargetedMeleeAttack {
 
 impl crate::readers::ACDataType for CombatTargetedMeleeAttack {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CombatTargetedMeleeAttack").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_height = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Height", position = pos).entered()
+        };
         let height = AttackHeight::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_height);
+        #[cfg(feature = "tracing")]
+        let _field_span_power = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Power", position = pos).entered()
+        };
         let power = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_power);
 
         Ok(Self {
             object_id,

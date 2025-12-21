@@ -302,7 +302,26 @@ fn truncate(s: &str, max_len: usize) -> String {
     }
 }
 
+#[cfg(feature = "tracing")]
+fn setup_tracing() {
+    use tracing_subscriber::{fmt, prelude::*, EnvFilter};
+
+    tracing_subscriber::registry()
+        .with(
+            fmt::layer()
+                .with_span_events(fmt::format::FmtSpan::ENTER | fmt::format::FmtSpan::CLOSE)
+        )
+        .with(
+            EnvFilter::from_default_env()
+                .add_directive("acprotocol=trace".parse().unwrap())
+        )
+        .init();
+}
+
 fn main() -> Result<()> {
+    #[cfg(feature = "tracing")]
+    setup_tracing();
+
     let cli = Cli::parse();
 
     match cli.command {

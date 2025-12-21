@@ -2685,8 +2685,25 @@ impl crate::readers::ACDataType for SpellId {
 
 impl crate::readers::ACDataType for LayeredSpellId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "LayeredSpellId").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Id", position = pos).entered()
+        };
         let id = SpellId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_layer = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Layer", position = pos).entered()
+        };
         let layer = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_layer);
 
         Ok(Self {
             id,
@@ -2697,9 +2714,33 @@ impl crate::readers::ACDataType for LayeredSpellId {
 
 impl crate::readers::ACDataType for Vector3 {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Vector3").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_x = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "X", position = pos).entered()
+        };
         let x = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_x);
+        #[cfg(feature = "tracing")]
+        let _field_span_y = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Y", position = pos).entered()
+        };
         let y = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_y);
+        #[cfg(feature = "tracing")]
+        let _field_span_z = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Z", position = pos).entered()
+        };
         let z = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_z);
 
         Ok(Self {
             x,
@@ -2711,10 +2752,41 @@ impl crate::readers::ACDataType for Vector3 {
 
 impl crate::readers::ACDataType for Quaternion {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Quaternion").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_w = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "W", position = pos).entered()
+        };
         let w = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_w);
+        #[cfg(feature = "tracing")]
+        let _field_span_x = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "X", position = pos).entered()
+        };
         let x = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_x);
+        #[cfg(feature = "tracing")]
+        let _field_span_y = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Y", position = pos).entered()
+        };
         let y = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_y);
+        #[cfg(feature = "tracing")]
+        let _field_span_z = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Z", position = pos).entered()
+        };
         let z = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_z);
 
         Ok(Self {
             w,
@@ -2727,8 +2799,25 @@ impl crate::readers::ACDataType for Quaternion {
 
 impl crate::readers::ACDataType for Origin {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Origin").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_landcell = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Landcell", position = pos).entered()
+        };
         let landcell = LandcellId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_landcell);
+        #[cfg(feature = "tracing")]
+        let _field_span_location = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Location", position = pos).entered()
+        };
         let location = Vector3::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_location);
 
         Ok(Self {
             landcell,
@@ -2739,8 +2828,25 @@ impl crate::readers::ACDataType for Origin {
 
 impl crate::readers::ACDataType for Position {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Position").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_landcell = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Landcell", position = pos).entered()
+        };
         let landcell = LandcellId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_landcell);
+        #[cfg(feature = "tracing")]
+        let _field_span_frame = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Frame", position = pos).entered()
+        };
         let frame = Frame::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_frame);
 
         Ok(Self {
             landcell,
@@ -2751,8 +2857,25 @@ impl crate::readers::ACDataType for Position {
 
 impl crate::readers::ACDataType for Frame {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Frame").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_origin = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Origin", position = pos).entered()
+        };
         let origin = Vector3::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_origin);
+        #[cfg(feature = "tracing")]
+        let _field_span_orientation = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Orientation", position = pos).entered()
+        };
         let orientation = Quaternion::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_orientation);
 
         Ok(Self {
             origin,
@@ -2763,8 +2886,25 @@ impl crate::readers::ACDataType for Frame {
 
 impl crate::readers::ACDataType for ServerSwitchHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ServerSwitchHeader").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Sequence", position = pos).entered()
+        };
         let sequence = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_type_ = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Type", position = pos).entered()
+        };
         let type_ = ServerSwitchType::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_type_);
 
         Ok(Self {
             sequence,
@@ -2775,8 +2915,25 @@ impl crate::readers::ACDataType for ServerSwitchHeader {
 
 impl crate::readers::ACDataType for CICMDCommandHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CICMDCommandHeader").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_command = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Command", position = pos).entered()
+        };
         let command = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_command);
+        #[cfg(feature = "tracing")]
+        let _field_span_parameter = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Parameter", position = pos).entered()
+        };
         let parameter = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_parameter);
 
         Ok(Self {
             command,
@@ -2787,8 +2944,25 @@ impl crate::readers::ACDataType for CICMDCommandHeader {
 
 impl crate::readers::ACDataType for FlowHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "FlowHeader").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_bytes = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Bytes", position = pos).entered()
+        };
         let bytes = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bytes);
+        #[cfg(feature = "tracing")]
+        let _field_span_interval = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Interval", position = pos).entered()
+        };
         let interval = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_interval);
 
         Ok(Self {
             bytes,
@@ -2799,10 +2973,41 @@ impl crate::readers::ACDataType for FlowHeader {
 
 impl crate::readers::ACDataType for SocketAddress {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SocketAddress").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_family = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Family", position = pos).entered()
+        };
         let family = read_i16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_family);
+        #[cfg(feature = "tracing")]
+        let _field_span_port = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Port", position = pos).entered()
+        };
         let port = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_port);
+        #[cfg(feature = "tracing")]
+        let _field_span_address = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Address", position = pos).entered()
+        };
         let address = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_address);
+        #[cfg(feature = "tracing")]
+        let _field_span_empty = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Empty", position = pos).entered()
+        };
         let empty = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_empty);
 
         Ok(Self {
             family,
@@ -2816,6 +3021,9 @@ impl crate::readers::ACDataType for SocketAddress {
 impl LoginRequestHeaderType2 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "LoginRequestHeaderType2").entered();
+
         let password = read_wstring(reader).map(WString)?;
 
         Ok(Self {
@@ -2833,6 +3041,9 @@ impl LoginRequestHeaderType2 {
 impl LoginRequestHeaderType40000002 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, client_version: string, length: uint, flags: AuthFlags, sequence: uint, account: string, account_to_login_as: string) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "LoginRequestHeaderType40000002").entered();
+
         let gls_ticket = read_string(reader)?;
 
         Ok(Self {
@@ -2849,6 +3060,9 @@ impl LoginRequestHeaderType40000002 {
 
 impl LoginRequestHeader {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "LoginRequestHeader").entered();
+
         let client_version = read_string(reader)?;
         let length = read_u32(reader)?;
         let auth_type = NetAuthType::try_from(read_u32(reader)?)?;
@@ -2879,11 +3093,49 @@ impl crate::readers::ACDataType for LoginRequestHeader {
 
 impl crate::readers::ACDataType for ReferralHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ReferralHeader").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_cookie = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Cookie", position = pos).entered()
+        };
         let cookie = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_cookie);
+        #[cfg(feature = "tracing")]
+        let _field_span_address = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Address", position = pos).entered()
+        };
         let address = SocketAddress::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_address);
+        #[cfg(feature = "tracing")]
+        let _field_span_id_server = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IdServer", position = pos).entered()
+        };
         let id_server = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_id_server);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
+        #[cfg(feature = "tracing")]
+        let _field_span_unknown = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Unknown", position = pos).entered()
+        };
         let unknown = DWORD::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_unknown);
 
         Ok(Self {
             cookie,
@@ -2896,12 +3148,57 @@ impl crate::readers::ACDataType for ReferralHeader {
 
 impl crate::readers::ACDataType for ConnectRequestHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ConnectRequestHeader").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_server_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ServerTime", position = pos).entered()
+        };
         let server_time = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_server_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_cookie = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Cookie", position = pos).entered()
+        };
         let cookie = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_cookie);
+        #[cfg(feature = "tracing")]
+        let _field_span_net_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NetID", position = pos).entered()
+        };
         let net_id = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_net_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_outgoing_seed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OutgoingSeed", position = pos).entered()
+        };
         let outgoing_seed = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_outgoing_seed);
+        #[cfg(feature = "tracing")]
+        let _field_span_incoming_seed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IncomingSeed", position = pos).entered()
+        };
         let incoming_seed = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_incoming_seed);
+        #[cfg(feature = "tracing")]
+        let _field_span_unknown = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Unknown", position = pos).entered()
+        };
         let unknown = DWORD::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_unknown);
 
         Ok(Self {
             server_time,
@@ -2916,8 +3213,25 @@ impl crate::readers::ACDataType for ConnectRequestHeader {
 
 impl crate::readers::ACDataType for NetError {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "NetError").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_string_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "StringId", position = pos).entered()
+        };
         let string_id = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_string_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_table_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TableId", position = pos).entered()
+        };
         let table_id = DataId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_table_id);
 
         Ok(Self {
             string_id,
@@ -2928,8 +3242,25 @@ impl crate::readers::ACDataType for NetError {
 
 impl crate::readers::ACDataType for EchoResponseHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EchoResponseHeader").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_local_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LocalTime", position = pos).entered()
+        };
         let local_time = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_local_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_holding_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HoldingTime", position = pos).entered()
+        };
         let holding_time = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_holding_time);
 
         Ok(Self {
             local_time,
@@ -2940,39 +3271,112 @@ impl crate::readers::ACDataType for EchoResponseHeader {
 
 impl crate::readers::ACDataType for ACBaseQualities {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ACBaseQualities").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = Ok::<_, Box<dyn std::error::Error>>(ACBaseQualitiesFlags::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_weenie_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WeenieType", position = pos).entered()
+        };
         let weenie_type = WeenieType::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_weenie_type);
         let mut int_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_int_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "IntProperties", position = pos).entered()
+            };
             int_properties = Some(read_packable_hash_table::<PropertyInt, i32>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_int_properties);
         }
         let mut int64_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT64.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_int64_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Int64Properties", position = pos).entered()
+            };
             int64_properties = Some(read_packable_hash_table::<PropertyInt64, i64>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_int64_properties);
         }
         let mut bool_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_BOOL.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_bool_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BoolProperties", position = pos).entered()
+            };
             bool_properties = Some(read_packable_hash_table::<PropertyBool, bool>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_bool_properties);
         }
         let mut float_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_FLOAT.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_float_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "FloatProperties", position = pos).entered()
+            };
             float_properties = Some(read_packable_hash_table::<PropertyFloat, f64>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_float_properties);
         }
         let mut string_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_STRING.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_string_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "StringProperties", position = pos).entered()
+            };
             string_properties = Some(read_packable_hash_table::<PropertyString, String>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_string_properties);
         }
         let mut data_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_DATA_ID.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_data_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "DataProperties", position = pos).entered()
+            };
             data_properties = Some(read_packable_hash_table::<PropertyDataId, DataId>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_data_properties);
         }
         let mut instance_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_INSTANCE_ID.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_instance_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "InstanceProperties", position = pos).entered()
+            };
             instance_properties = Some(read_packable_hash_table::<PropertyInstanceId, ObjectId>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_instance_properties);
         }
         let mut position_properties = None;
         if (flags.bits() & ACBaseQualitiesFlags::PROPERTY_POSITION.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_position_properties = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PositionProperties", position = pos).entered()
+            };
             position_properties = Some(read_packable_hash_table::<PropertyPosition, Position>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_position_properties);
         }
 
         Ok(Self {
@@ -2992,55 +3396,156 @@ impl crate::readers::ACDataType for ACBaseQualities {
 
 impl crate::readers::ACDataType for ACQualities {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ACQualities").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = Ok::<_, Box<dyn std::error::Error>>(ACQualitiesFlags::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_has_health = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HasHealth", position = pos).entered()
+        };
         let has_health = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_has_health);
         let mut attributes = None;
         if (flags.bits() & ACQualitiesFlags::ATTRIBUTES.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_attributes = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Attributes", position = pos).entered()
+            };
             attributes = Some(AttributeCache::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_attributes);
         }
         let mut skills = None;
         if (flags.bits() & ACQualitiesFlags::SKILLS.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_skills = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Skills", position = pos).entered()
+            };
             skills = Some(read_packable_hash_table::<SkillId, Skill>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_skills);
         }
         let mut body = None;
         if (flags.bits() & ACQualitiesFlags::BODY.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_body = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Body", position = pos).entered()
+            };
             body = Some(Body::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_body);
         }
         let mut spell_book = None;
         if (flags.bits() & ACQualitiesFlags::SPELL_BOOK.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_spell_book = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SpellBook", position = pos).entered()
+            };
             spell_book = Some(read_packable_hash_table::<LayeredSpellId, SpellBookPage>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_spell_book);
         }
         let mut enchantments = None;
         if (flags.bits() & ACQualitiesFlags::ENCHANTMENTS.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_enchantments = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Enchantments", position = pos).entered()
+            };
             enchantments = Some(EnchantmentRegistry::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_enchantments);
         }
         let mut event_filter = None;
         if (flags.bits() & ACQualitiesFlags::EVENT_FILTER.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_event_filter = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "EventFilter", position = pos).entered()
+            };
             event_filter = Some(EventFilter::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_event_filter);
         }
         let mut emotes = None;
         if (flags.bits() & ACQualitiesFlags::EMOTES.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_emotes = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Emotes", position = pos).entered()
+            };
             emotes = Some(EmoteTable::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_emotes);
         }
         let mut creation_profile = None;
         if (flags.bits() & ACQualitiesFlags::CREATION_PROFILE.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_creation_profile = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CreationProfile", position = pos).entered()
+            };
             creation_profile = Some(read_packable_list::<CreationProfile>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_creation_profile);
         }
         let mut page_data = None;
         if (flags.bits() & ACQualitiesFlags::PAGE_DATA.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_page_data = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PageData", position = pos).entered()
+            };
             page_data = Some(PageDataList::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_page_data);
         }
         let mut generators = None;
         if (flags.bits() & ACQualitiesFlags::GENERATORS.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_generators = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Generators", position = pos).entered()
+            };
             generators = Some(GeneratorTable::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_generators);
         }
         let mut generator_registry = None;
         if (flags.bits() & ACQualitiesFlags::GENERATOR_REGISTRY.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_generator_registry = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "GeneratorRegistry", position = pos).entered()
+            };
             generator_registry = Some(GeneratorRegistry::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_generator_registry);
         }
         let mut generator_queue = None;
         if (flags.bits() & ACQualitiesFlags::GENERATOR_QUEUE.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_generator_queue = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "GeneratorQueue", position = pos).entered()
+            };
             generator_queue = Some(GeneratorQueue::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_generator_queue);
         }
 
         Ok(Self {
@@ -3064,42 +3569,115 @@ impl crate::readers::ACDataType for ACQualities {
 
 impl crate::readers::ACDataType for AttributeCache {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AttributeCache").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
         let mut strength = None;
         if (flags & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_strength = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Strength", position = pos).entered()
+            };
             strength = Some(AttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_strength);
         }
         let mut endurance = None;
         if (flags & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_endurance = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Endurance", position = pos).entered()
+            };
             endurance = Some(AttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_endurance);
         }
         let mut quickness = None;
         if (flags & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_quickness = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Quickness", position = pos).entered()
+            };
             quickness = Some(AttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_quickness);
         }
         let mut coordination = None;
         if (flags & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_coordination = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Coordination", position = pos).entered()
+            };
             coordination = Some(AttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_coordination);
         }
         let mut focus = None;
         if (flags & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_focus = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Focus", position = pos).entered()
+            };
             focus = Some(AttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_focus);
         }
         let mut self_ = None;
         if (flags & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_self_ = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Self", position = pos).entered()
+            };
             self_ = Some(AttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_self_);
         }
         let mut health = None;
         if (flags & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_health = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Health", position = pos).entered()
+            };
             health = Some(SecondaryAttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_health);
         }
         let mut stamina = None;
         if (flags & 0x00000080) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_stamina = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Stamina", position = pos).entered()
+            };
             stamina = Some(SecondaryAttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_stamina);
         }
         let mut mana = None;
         if (flags & 0x00000100) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_mana = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Mana", position = pos).entered()
+            };
             mana = Some(SecondaryAttributeInfo::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_mana);
         }
 
         Ok(Self {
@@ -3119,9 +3697,33 @@ impl crate::readers::ACDataType for AttributeCache {
 
 impl crate::readers::ACDataType for AttributeInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AttributeInfo").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_points_raised = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PointsRaised", position = pos).entered()
+        };
         let points_raised = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_points_raised);
+        #[cfg(feature = "tracing")]
+        let _field_span_innate_points = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "InnatePoints", position = pos).entered()
+        };
         let innate_points = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_innate_points);
+        #[cfg(feature = "tracing")]
+        let _field_span_experience_spent = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ExperienceSpent", position = pos).entered()
+        };
         let experience_spent = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_experience_spent);
 
         Ok(Self {
             points_raised,
@@ -3133,8 +3735,25 @@ impl crate::readers::ACDataType for AttributeInfo {
 
 impl crate::readers::ACDataType for SecondaryAttributeInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SecondaryAttributeInfo").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_attribute = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Attribute", position = pos).entered()
+        };
         let attribute = AttributeInfo::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_attribute);
+        #[cfg(feature = "tracing")]
+        let _field_span_current = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Current", position = pos).entered()
+        };
         let current = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_current);
 
         Ok(Self {
             attribute,
@@ -3145,13 +3764,65 @@ impl crate::readers::ACDataType for SecondaryAttributeInfo {
 
 impl crate::readers::ACDataType for Skill {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Skill").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_points_raised = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PointsRaised", position = pos).entered()
+        };
         let points_raised = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_points_raised);
+        #[cfg(feature = "tracing")]
+        let _field_span_adjust_pp = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AdjustPP", position = pos).entered()
+        };
         let adjust_pp = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_adjust_pp);
+        #[cfg(feature = "tracing")]
+        let _field_span_training_level = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TrainingLevel", position = pos).entered()
+        };
         let training_level = SkillAdvancementClass::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_training_level);
+        #[cfg(feature = "tracing")]
+        let _field_span_experience_spent = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ExperienceSpent", position = pos).entered()
+        };
         let experience_spent = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_experience_spent);
+        #[cfg(feature = "tracing")]
+        let _field_span_innate_points = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "InnatePoints", position = pos).entered()
+        };
         let innate_points = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_innate_points);
+        #[cfg(feature = "tracing")]
+        let _field_span_resistance_of_last_check = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ResistanceOfLastCheck", position = pos).entered()
+        };
         let resistance_of_last_check = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_resistance_of_last_check);
+        #[cfg(feature = "tracing")]
+        let _field_span_last_used_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LastUsedTime", position = pos).entered()
+        };
         let last_used_time = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_last_used_time);
 
         Ok(Self {
             points_raised,
@@ -3167,7 +3838,17 @@ impl crate::readers::ACDataType for Skill {
 
 impl crate::readers::ACDataType for Body {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Body").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_body_parts = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BodyParts", position = pos).entered()
+        };
         let body_parts = read_packable_hash_table::<u32, BodyPart>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_body_parts);
 
         Ok(Self {
             body_parts,
@@ -3177,15 +3858,67 @@ impl crate::readers::ACDataType for Body {
 
 impl crate::readers::ACDataType for BodyPart {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "BodyPart").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_has_bpsd = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HasBPSD", position = pos).entered()
+        };
         let has_bpsd = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_has_bpsd);
+        #[cfg(feature = "tracing")]
+        let _field_span_damage_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DamageType", position = pos).entered()
+        };
         let damage_type = Ok::<_, Box<dyn std::error::Error>>(DamageType::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_damage_type);
+        #[cfg(feature = "tracing")]
+        let _field_span_damage_val = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DamageVal", position = pos).entered()
+        };
         let damage_val = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_damage_val);
+        #[cfg(feature = "tracing")]
+        let _field_span_damage_var = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DamageVar", position = pos).entered()
+        };
         let damage_var = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_damage_var);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_cache = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorCache", position = pos).entered()
+        };
         let armor_cache = ArmorCache::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_cache);
+        #[cfg(feature = "tracing")]
+        let _field_span_bh = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BH", position = pos).entered()
+        };
         let bh = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bh);
         let mut bpsd = None;
         if (has_bpsd & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_bpsd = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BPSD", position = pos).entered()
+            };
             bpsd = Some(BodyPartSelectionData::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_bpsd);
         }
 
         Ok(Self {
@@ -3202,15 +3935,81 @@ impl crate::readers::ACDataType for BodyPart {
 
 impl crate::readers::ACDataType for ArmorCache {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ArmorCache").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_base_armor = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BaseArmor", position = pos).entered()
+        };
         let base_armor = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_base_armor);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_slash = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsSlash", position = pos).entered()
+        };
         let armor_vs_slash = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_slash);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_pierce = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsPierce", position = pos).entered()
+        };
         let armor_vs_pierce = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_pierce);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_bludgeon = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsBludgeon", position = pos).entered()
+        };
         let armor_vs_bludgeon = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_bludgeon);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_cold = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsCold", position = pos).entered()
+        };
         let armor_vs_cold = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_cold);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_fire = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsFire", position = pos).entered()
+        };
         let armor_vs_fire = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_fire);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_acid = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsAcid", position = pos).entered()
+        };
         let armor_vs_acid = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_acid);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_electric = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsElectric", position = pos).entered()
+        };
         let armor_vs_electric = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_electric);
+        #[cfg(feature = "tracing")]
+        let _field_span_armor_vs_nether = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ArmorVsNether", position = pos).entered()
+        };
         let armor_vs_nether = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_armor_vs_nether);
 
         Ok(Self {
             base_armor,
@@ -3228,18 +4027,105 @@ impl crate::readers::ACDataType for ArmorCache {
 
 impl crate::readers::ACDataType for BodyPartSelectionData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "BodyPartSelectionData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_hlf = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HLF", position = pos).entered()
+        };
         let hlf = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hlf);
+        #[cfg(feature = "tracing")]
+        let _field_span_mlf = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MLF", position = pos).entered()
+        };
         let mlf = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_mlf);
+        #[cfg(feature = "tracing")]
+        let _field_span_llf = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LLF", position = pos).entered()
+        };
         let llf = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_llf);
+        #[cfg(feature = "tracing")]
+        let _field_span_hrf = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HRF", position = pos).entered()
+        };
         let hrf = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hrf);
+        #[cfg(feature = "tracing")]
+        let _field_span_mrf = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MRF", position = pos).entered()
+        };
         let mrf = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_mrf);
+        #[cfg(feature = "tracing")]
+        let _field_span_lrf = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LRF", position = pos).entered()
+        };
         let lrf = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_lrf);
+        #[cfg(feature = "tracing")]
+        let _field_span_hlb = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HLB", position = pos).entered()
+        };
         let hlb = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hlb);
+        #[cfg(feature = "tracing")]
+        let _field_span_mlb = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MLB", position = pos).entered()
+        };
         let mlb = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_mlb);
+        #[cfg(feature = "tracing")]
+        let _field_span_llb = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LLB", position = pos).entered()
+        };
         let llb = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_llb);
+        #[cfg(feature = "tracing")]
+        let _field_span_hrb = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HRB", position = pos).entered()
+        };
         let hrb = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hrb);
+        #[cfg(feature = "tracing")]
+        let _field_span_mrb = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MRB", position = pos).entered()
+        };
         let mrb = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_mrb);
+        #[cfg(feature = "tracing")]
+        let _field_span_lrb = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LRB", position = pos).entered()
+        };
         let lrb = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_lrb);
 
         Ok(Self {
             hlf,
@@ -3260,12 +4146,36 @@ impl crate::readers::ACDataType for BodyPartSelectionData {
 
 impl crate::readers::ACDataType for SpellBookPage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SpellBookPage").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_casting_likelihood = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CastingLikelihood", position = pos).entered()
+        };
         let casting_likelihood = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_casting_likelihood);
         let mut casting_likelihood2 = None;
         let mut unknown = None;
         if casting_likelihood < 2.0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_casting_likelihood2 = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CastingLikelihood2", position = pos).entered()
+            };
             casting_likelihood2 = if casting_likelihood < 2.0 { read_f32(reader).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_casting_likelihood2);
+            #[cfg(feature = "tracing")]
+            let _field_span_unknown = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Unknown", position = pos).entered()
+            };
             unknown = if casting_likelihood < 2.0 { read_i32(reader).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_unknown);
         }
 
         Ok(Self {
@@ -3278,22 +4188,60 @@ impl crate::readers::ACDataType for SpellBookPage {
 
 impl crate::readers::ACDataType for EnchantmentRegistry {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EnchantmentRegistry").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = Ok::<_, Box<dyn std::error::Error>>(EnchantmentRegistryFlags::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
         let mut life_spells = None;
         if (flags.bits() & EnchantmentRegistryFlags::LIFE_SPELLS.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_life_spells = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "LifeSpells", position = pos).entered()
+            };
             life_spells = Some(read_packable_list::<Enchantment>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_life_spells);
         }
         let mut creature_spells = None;
         if (flags.bits() & EnchantmentRegistryFlags::CREATURE_SPELLS.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_creature_spells = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CreatureSpells", position = pos).entered()
+            };
             creature_spells = Some(read_packable_list::<Enchantment>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_creature_spells);
         }
         let mut vitae = None;
         if (flags.bits() & EnchantmentRegistryFlags::VITAE.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_vitae = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Vitae", position = pos).entered()
+            };
             vitae = Some(Enchantment::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_vitae);
         }
         let mut cooldowns = None;
         if (flags.bits() & EnchantmentRegistryFlags::COOLDOWNS.bits()) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_cooldowns = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Cooldowns", position = pos).entered()
+            };
             cooldowns = Some(read_packable_list::<Enchantment>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_cooldowns);
         }
 
         Ok(Self {
@@ -3308,20 +4256,107 @@ impl crate::readers::ACDataType for EnchantmentRegistry {
 
 impl crate::readers::ACDataType for Enchantment {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Enchantment").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Id", position = pos).entered()
+        };
         let id = LayeredSpellId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_has_equipment_set = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HasEquipmentSet", position = pos).entered()
+        };
         let has_equipment_set = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_has_equipment_set);
+        #[cfg(feature = "tracing")]
+        let _field_span_spell_category = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SpellCategory", position = pos).entered()
+        };
         let spell_category = SpellCategory::try_from(read_u16(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_spell_category);
+        #[cfg(feature = "tracing")]
+        let _field_span_power_level = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PowerLevel", position = pos).entered()
+        };
         let power_level = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_power_level);
+        #[cfg(feature = "tracing")]
+        let _field_span_start_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "StartTime", position = pos).entered()
+        };
         let start_time = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_start_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_duration = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Duration", position = pos).entered()
+        };
         let duration = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_duration);
+        #[cfg(feature = "tracing")]
+        let _field_span_caster_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CasterId", position = pos).entered()
+        };
         let caster_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_caster_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_degrade_modifier = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DegradeModifier", position = pos).entered()
+        };
         let degrade_modifier = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_degrade_modifier);
+        #[cfg(feature = "tracing")]
+        let _field_span_degrade_limit = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DegradeLimit", position = pos).entered()
+        };
         let degrade_limit = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_degrade_limit);
+        #[cfg(feature = "tracing")]
+        let _field_span_last_time_degraded = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LastTimeDegraded", position = pos).entered()
+        };
         let last_time_degraded = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_last_time_degraded);
+        #[cfg(feature = "tracing")]
+        let _field_span_stat_mod = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "StatMod", position = pos).entered()
+        };
         let stat_mod = StatMod::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_stat_mod);
         let mut equipment_set = None;
         if has_equipment_set > 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_equipment_set = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "EquipmentSet", position = pos).entered()
+            };
             equipment_set = if has_equipment_set > 0 { EquipmentSet::try_from(read_u32(reader)?).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_equipment_set);
         }
 
         Ok(Self {
@@ -3343,9 +4378,33 @@ impl crate::readers::ACDataType for Enchantment {
 
 impl crate::readers::ACDataType for StatMod {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "StatMod").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_type_ = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Type", position = pos).entered()
+        };
         let type_ = Ok::<_, Box<dyn std::error::Error>>(EnchantmentTypeFlags::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_type_);
+        #[cfg(feature = "tracing")]
+        let _field_span_key = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Key", position = pos).entered()
+        };
         let key = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_key);
+        #[cfg(feature = "tracing")]
+        let _field_span_value = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Value", position = pos).entered()
+        };
         let value = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_value);
 
         Ok(Self {
             type_,
@@ -3357,7 +4416,17 @@ impl crate::readers::ACDataType for StatMod {
 
 impl crate::readers::ACDataType for EventFilter {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EventFilter").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_events = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Events", position = pos).entered()
+        };
         let events = read_packable_list::<u32>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_events);
 
         Ok(Self {
             events,
@@ -3367,7 +4436,17 @@ impl crate::readers::ACDataType for EventFilter {
 
 impl crate::readers::ACDataType for EmoteTable {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteTable").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_emotes = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Emotes", position = pos).entered()
+        };
         let emotes = read_packable_hash_table::<EmoteCategory, EmoteSetList>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_emotes);
 
         Ok(Self {
             emotes,
@@ -3377,7 +4456,17 @@ impl crate::readers::ACDataType for EmoteTable {
 
 impl crate::readers::ACDataType for EmoteSetList {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteSetList").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_emotes = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Emotes", position = pos).entered()
+        };
         let emotes = read_packable_list::<EmoteSet>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_emotes);
 
         Ok(Self {
             emotes,
@@ -3388,6 +4477,9 @@ impl crate::readers::ACDataType for EmoteSetList {
 impl EmoteSetType1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteSetType1").entered();
+
         let class_id = read_u32(reader)?;
 
         Ok(Self {
@@ -3401,6 +4493,9 @@ impl EmoteSetType1 {
 impl EmoteSetType2 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteSetType2").entered();
+
         let vendor_type = read_u32(reader)?;
 
         Ok(Self {
@@ -3414,6 +4509,9 @@ impl EmoteSetType2 {
 impl EmoteSetType5 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteSetType5").entered();
+
         let style = read_u32(reader)?;
         let substyle = read_u32(reader)?;
 
@@ -3429,6 +4527,9 @@ impl EmoteSetType5 {
 impl EmoteSetTypeC {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteSetTypeC").entered();
+
         let quest = read_string(reader)?;
 
         Ok(Self {
@@ -3442,6 +4543,9 @@ impl EmoteSetTypeC {
 impl EmoteSetTypeF {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, probability: float, emotes: PackableList<Emote>) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteSetTypeF").entered();
+
         let min_health = read_f32(reader)?;
         let max_health = read_f32(reader)?;
 
@@ -3456,6 +4560,9 @@ impl EmoteSetTypeF {
 
 impl EmoteSet {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteSet").entered();
+
         let category = EmoteCategory::try_from(read_u32(reader)?)?;
         let probability = read_f32(reader)?;
         let emotes = read_packable_list::<Emote>(reader)?;
@@ -3495,6 +4602,9 @@ impl crate::readers::ACDataType for EmoteSet {
 impl EmoteType1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType1").entered();
+
         let message = read_string(reader)?;
 
         Ok(Self {
@@ -3508,6 +4618,9 @@ impl EmoteType1 {
 impl EmoteType2 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType2").entered();
+
         let amount64 = read_u64(reader)?;
         let hero_xp64 = read_u64(reader)?;
 
@@ -3523,6 +4636,9 @@ impl EmoteType2 {
 impl EmoteType3 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType3").entered();
+
         let c_profile = CreationProfile::read(reader)?;
 
         Ok(Self {
@@ -3536,6 +4652,9 @@ impl EmoteType3 {
 impl EmoteType4 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType4").entered();
+
         let frame = Frame::read(reader)?;
 
         Ok(Self {
@@ -3549,6 +4668,9 @@ impl EmoteType4 {
 impl EmoteType5 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType5").entered();
+
         let motion = read_u32(reader)?;
 
         Ok(Self {
@@ -3562,6 +4684,9 @@ impl EmoteType5 {
 impl EmoteType7 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType7").entered();
+
         let physics_script = read_u32(reader)?;
 
         Ok(Self {
@@ -3575,6 +4700,9 @@ impl EmoteType7 {
 impl EmoteType9 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType9").entered();
+
         let sound = read_u32(reader)?;
 
         Ok(Self {
@@ -3588,6 +4716,9 @@ impl EmoteType9 {
 impl EmoteTypeE {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteTypeE").entered();
+
         let spell_id = read_u32(reader)?;
 
         Ok(Self {
@@ -3601,6 +4732,9 @@ impl EmoteTypeE {
 impl EmoteType1C {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType1C").entered();
+
         let amount = read_u32(reader)?;
         let stat = read_u32(reader)?;
 
@@ -3616,6 +4750,9 @@ impl EmoteType1C {
 impl EmoteType1E {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType1E").entered();
+
         let message = read_string(reader)?;
         let min = read_u32(reader)?;
         let max = read_u32(reader)?;
@@ -3633,6 +4770,9 @@ impl EmoteType1E {
 impl EmoteType20 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType20").entered();
+
         let message = read_string(reader)?;
         let amount = read_u32(reader)?;
 
@@ -3648,6 +4788,9 @@ impl EmoteType20 {
 impl EmoteType22 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType22").entered();
+
         let amount = read_u32(reader)?;
 
         Ok(Self {
@@ -3661,6 +4804,9 @@ impl EmoteType22 {
 impl EmoteType23 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType23").entered();
+
         let message = read_string(reader)?;
         let stat = read_u32(reader)?;
 
@@ -3676,6 +4822,9 @@ impl EmoteType23 {
 impl EmoteType24 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType24").entered();
+
         let message = read_string(reader)?;
         let min = read_u32(reader)?;
         let max = read_u32(reader)?;
@@ -3695,6 +4844,9 @@ impl EmoteType24 {
 impl EmoteType25 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType25").entered();
+
         let message = read_string(reader)?;
         let f_min = read_f64(reader)?;
         let f_max = read_f64(reader)?;
@@ -3714,6 +4866,9 @@ impl EmoteType25 {
 impl EmoteType26 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType26").entered();
+
         let message = read_string(reader)?;
         let test_string = read_string(reader)?;
         let stat = read_u32(reader)?;
@@ -3731,6 +4886,9 @@ impl EmoteType26 {
 impl EmoteType31 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType31").entered();
+
         let percent = read_f64(reader)?;
         let min64 = read_u64(reader)?;
         let max64 = read_u64(reader)?;
@@ -3748,6 +4906,9 @@ impl EmoteType31 {
 impl EmoteType32 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType32").entered();
+
         let stat = read_u32(reader)?;
         let percent = read_f64(reader)?;
         let min = read_u32(reader)?;
@@ -3769,6 +4930,9 @@ impl EmoteType32 {
 impl EmoteType35 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType35").entered();
+
         let stat = read_u32(reader)?;
         let amount = read_u32(reader)?;
 
@@ -3784,6 +4948,9 @@ impl EmoteType35 {
 impl EmoteType38 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType38").entered();
+
         let wealth_rating = read_i32(reader)?;
         let treasure_class = read_i32(reader)?;
         let treasure_type = read_i32(reader)?;
@@ -3801,6 +4968,9 @@ impl EmoteType38 {
 impl EmoteType3F {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType3F").entered();
+
         let position = Position::read(reader)?;
 
         Ok(Self {
@@ -3814,6 +4984,9 @@ impl EmoteType3F {
 impl EmoteType4C {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType4C").entered();
+
         let msg = read_string(reader)?;
         let c_profile = CreationProfile::read(reader)?;
 
@@ -3829,6 +5002,9 @@ impl EmoteType4C {
 impl EmoteType6E {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType6E").entered();
+
         let stat = read_u32(reader)?;
 
         Ok(Self {
@@ -3842,6 +5018,9 @@ impl EmoteType6E {
 impl EmoteType70 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType70").entered();
+
         let amount64 = read_u64(reader)?;
 
         Ok(Self {
@@ -3855,6 +5034,9 @@ impl EmoteType70 {
 impl EmoteType72 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType72").entered();
+
         let message = read_string(reader)?;
         let min64 = read_u64(reader)?;
         let max64 = read_u64(reader)?;
@@ -3874,6 +5056,9 @@ impl EmoteType72 {
 impl EmoteType76 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, delay: float, extent: float) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EmoteType76").entered();
+
         let stat = read_u32(reader)?;
         let percent = read_f64(reader)?;
 
@@ -3888,6 +5073,9 @@ impl EmoteType76 {
 
 impl Emote {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Emote").entered();
+
         let type_ = EmoteType::try_from(read_u32(reader)?)?;
         let delay = read_f32(reader)?;
         let extent = read_f32(reader)?;
@@ -4010,12 +5198,57 @@ impl crate::readers::ACDataType for Emote {
 
 impl crate::readers::ACDataType for CreationProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CreationProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_weenie_class_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WeenieClassId", position = pos).entered()
+        };
         let weenie_class_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_weenie_class_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_palette = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Palette", position = pos).entered()
+        };
         let palette = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_palette);
+        #[cfg(feature = "tracing")]
+        let _field_span_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Shade", position = pos).entered()
+        };
         let shade = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_destination = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Destination", position = pos).entered()
+        };
         let destination = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_destination);
+        #[cfg(feature = "tracing")]
+        let _field_span_stack_size = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "StackSize", position = pos).entered()
+        };
         let stack_size = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_stack_size);
+        #[cfg(feature = "tracing")]
+        let _field_span_try_to_bond = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TryToBond", position = pos).entered()
+        };
         let try_to_bond = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_try_to_bond);
 
         Ok(Self {
             weenie_class_id,
@@ -4030,9 +5263,33 @@ impl crate::readers::ACDataType for CreationProfile {
 
 impl crate::readers::ACDataType for PageDataList {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "PageDataList").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_max_num_pages = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxNumPages", position = pos).entered()
+        };
         let max_num_pages = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_num_pages);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_num_chars_per_page = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxNumCharsPerPage", position = pos).entered()
+        };
         let max_num_chars_per_page = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_num_chars_per_page);
+        #[cfg(feature = "tracing")]
+        let _field_span_pages = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Pages", position = pos).entered()
+        };
         let pages = read_packable_list::<PageData>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_pages);
 
         Ok(Self {
             max_num_pages,
@@ -4044,15 +5301,67 @@ impl crate::readers::ACDataType for PageDataList {
 
 impl crate::readers::ACDataType for PageData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "PageData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_author_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AuthorId", position = pos).entered()
+        };
         let author_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_author_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_author_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AuthorName", position = pos).entered()
+        };
         let author_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_author_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_author_account = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AuthorAccount", position = pos).entered()
+        };
         let author_account = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_author_account);
+        #[cfg(feature = "tracing")]
+        let _field_span_version = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Version", position = pos).entered()
+        };
         let version = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_version);
+        #[cfg(feature = "tracing")]
+        let _field_span_text_included = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TextIncluded", position = pos).entered()
+        };
         let text_included = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_text_included);
+        #[cfg(feature = "tracing")]
+        let _field_span_ignore_author = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IgnoreAuthor", position = pos).entered()
+        };
         let ignore_author = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_ignore_author);
         let mut page_text = None;
         if text_included {
+            #[cfg(feature = "tracing")]
+            let _field_span_page_text = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PageText", position = pos).entered()
+            };
             page_text = if text_included { read_string(reader).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_page_text);
         }
 
         Ok(Self {
@@ -4069,14 +5378,66 @@ impl crate::readers::ACDataType for PageData {
 
 impl crate::readers::ACDataType for BlobFragments {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "BlobFragments").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Sequence", position = pos).entered()
+        };
         let sequence = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Id", position = pos).entered()
+        };
         let id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_count = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Count", position = pos).entered()
+        };
         let count = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_count);
+        #[cfg(feature = "tracing")]
+        let _field_span_size = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Size", position = pos).entered()
+        };
         let size = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_size);
         let body_size = (size - 16) as u16;
+        #[cfg(feature = "tracing")]
+        let _field_span_index = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Index", position = pos).entered()
+        };
         let index = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_index);
+        #[cfg(feature = "tracing")]
+        let _field_span_group = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Group", position = pos).entered()
+        };
         let group = FragmentGroup::try_from(read_u16(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_group);
+        #[cfg(feature = "tracing")]
+        let _field_span_data = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Data", position = pos).entered()
+        };
         let data = read_vec::<u8>(reader, body_size as usize)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_data);
 
         Ok(Self {
             sequence,
@@ -4092,7 +5453,17 @@ impl crate::readers::ACDataType for BlobFragments {
 
 impl crate::readers::ACDataType for GeneratorTable {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GeneratorTable").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_generators = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Generators", position = pos).entered()
+        };
         let generators = read_packable_list::<GeneratorProfile>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_generators);
 
         Ok(Self {
             generators,
@@ -4102,18 +5473,105 @@ impl crate::readers::ACDataType for GeneratorTable {
 
 impl crate::readers::ACDataType for GeneratorProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GeneratorProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_probability = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Probability", position = pos).entered()
+        };
         let probability = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_probability);
+        #[cfg(feature = "tracing")]
+        let _field_span_type_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TypeId", position = pos).entered()
+        };
         let type_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_type_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_delay = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Delay", position = pos).entered()
+        };
         let delay = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_delay);
+        #[cfg(feature = "tracing")]
+        let _field_span_init_create = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "InitCreate", position = pos).entered()
+        };
         let init_create = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_init_create);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_num = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxNum", position = pos).entered()
+        };
         let max_num = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_num);
+        #[cfg(feature = "tracing")]
+        let _field_span_when_create = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WhenCreate", position = pos).entered()
+        };
         let when_create = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_when_create);
+        #[cfg(feature = "tracing")]
+        let _field_span_where_create = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WhereCreate", position = pos).entered()
+        };
         let where_create = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_where_create);
+        #[cfg(feature = "tracing")]
+        let _field_span_stack_size = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "StackSize", position = pos).entered()
+        };
         let stack_size = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_stack_size);
+        #[cfg(feature = "tracing")]
+        let _field_span_ptid = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Ptid", position = pos).entered()
+        };
         let ptid = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_ptid);
+        #[cfg(feature = "tracing")]
+        let _field_span_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Shade", position = pos).entered()
+        };
         let shade = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_pos_val = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PosVal", position = pos).entered()
+        };
         let pos_val = Position::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_pos_val);
+        #[cfg(feature = "tracing")]
+        let _field_span_slot = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Slot", position = pos).entered()
+        };
         let slot = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_slot);
 
         Ok(Self {
             probability,
@@ -4134,7 +5592,17 @@ impl crate::readers::ACDataType for GeneratorProfile {
 
 impl crate::readers::ACDataType for GeneratorRegistry {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GeneratorRegistry").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_registry = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Registry", position = pos).entered()
+        };
         let registry = read_packable_hash_table::<u32, GeneratorRegistryNode>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_registry);
 
         Ok(Self {
             registry,
@@ -4144,13 +5612,65 @@ impl crate::readers::ACDataType for GeneratorRegistry {
 
 impl crate::readers::ACDataType for GeneratorRegistryNode {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GeneratorRegistryNode").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_wcid_or_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WcidOrType", position = pos).entered()
+        };
         let wcid_or_type = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_wcid_or_type);
+        #[cfg(feature = "tracing")]
+        let _field_span_ts = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Ts", position = pos).entered()
+        };
         let ts = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_ts);
+        #[cfg(feature = "tracing")]
+        let _field_span_treasure_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TreasureType", position = pos).entered()
+        };
         let treasure_type = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_treasure_type);
+        #[cfg(feature = "tracing")]
+        let _field_span_slot = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Slot", position = pos).entered()
+        };
         let slot = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_slot);
+        #[cfg(feature = "tracing")]
+        let _field_span_checkpointed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Checkpointed", position = pos).entered()
+        };
         let checkpointed = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_checkpointed);
+        #[cfg(feature = "tracing")]
+        let _field_span_shop = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Shop", position = pos).entered()
+        };
         let shop = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shop);
+        #[cfg(feature = "tracing")]
+        let _field_span_amount = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Amount", position = pos).entered()
+        };
         let amount = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_amount);
 
         Ok(Self {
             wcid_or_type,
@@ -4166,7 +5686,17 @@ impl crate::readers::ACDataType for GeneratorRegistryNode {
 
 impl crate::readers::ACDataType for GeneratorQueue {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GeneratorQueue").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_queue = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Queue", position = pos).entered()
+        };
         let queue = read_packable_list::<GeneratorQueueNode>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_queue);
 
         Ok(Self {
             queue,
@@ -4176,8 +5706,25 @@ impl crate::readers::ACDataType for GeneratorQueue {
 
 impl crate::readers::ACDataType for GeneratorQueueNode {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GeneratorQueueNode").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_slot = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Slot", position = pos).entered()
+        };
         let slot = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_slot);
+        #[cfg(feature = "tracing")]
+        let _field_span_when = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "When", position = pos).entered()
+        };
         let when = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_when);
 
         Ok(Self {
             slot,
@@ -4189,6 +5736,9 @@ impl crate::readers::ACDataType for GeneratorQueueNode {
 impl WindowPropertyType1000007F {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType1000007F").entered();
+
         let unknown_j = read_u32(reader)?;
         let value_j = read_u64(reader)?;
 
@@ -4202,6 +5752,9 @@ impl WindowPropertyType1000007F {
 impl WindowPropertyType10000086 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType10000086").entered();
+
         let unknown_i = read_u32(reader)?;
         let value_i = read_u32(reader)?;
 
@@ -4215,6 +5768,9 @@ impl WindowPropertyType10000086 {
 impl WindowPropertyType10000087 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType10000087").entered();
+
         let unknown_h = read_u32(reader)?;
         let value_h = read_u32(reader)?;
 
@@ -4228,6 +5784,9 @@ impl WindowPropertyType10000087 {
 impl WindowPropertyType10000088 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType10000088").entered();
+
         let unknown_f = read_u32(reader)?;
         let value_f = read_u32(reader)?;
 
@@ -4241,6 +5800,9 @@ impl WindowPropertyType10000088 {
 impl WindowPropertyType10000089 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType10000089").entered();
+
         let unknown_e = read_u32(reader)?;
         let value_e = read_u32(reader)?;
 
@@ -4254,6 +5816,9 @@ impl WindowPropertyType10000089 {
 impl WindowPropertyType1000008A {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType1000008A").entered();
+
         let unknown_d = read_u32(reader)?;
         let value_d = read_u8(reader)?;
 
@@ -4267,6 +5832,9 @@ impl WindowPropertyType1000008A {
 impl WindowPropertyType1000008D {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType1000008D").entered();
+
         let unknown_c = read_u32(reader)?;
         let title_source = WindowPropertyType1000008DTitleSourceVariant::read(reader)?;
 
@@ -4279,6 +5847,9 @@ impl WindowPropertyType1000008D {
 
 impl WindowPropertyType1000008DTitleSourceVariant {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowPropertyType1000008DTitleSourceVariant").entered();
+
         let title_source = read_u8(reader)?;
 
         match title_source {
@@ -4304,6 +5875,9 @@ impl WindowPropertyType1000008DTitleSourceVariant {
 
 impl WindowProperty {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowProperty").entered();
+
         let key_a = read_u32(reader)?;
 
         match key_a {
@@ -4349,6 +5923,9 @@ impl crate::readers::ACDataType for WindowProperty {
 impl WindowOptionType1000008B {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowOptionType1000008B").entered();
+
         let unknown_b = read_u8(reader)?;
         let property_count = read_u8(reader)?;
         let properties = read_vec::<WindowProperty>(reader, property_count as usize)?;
@@ -4363,6 +5940,9 @@ impl WindowOptionType1000008B {
 
 impl WindowOption {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WindowOption").entered();
+
         let type_a = read_u32(reader)?;
 
         match type_a {
@@ -4384,6 +5964,9 @@ impl crate::readers::ACDataType for WindowOption {
 impl OptionPropertyType10000080 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "OptionPropertyType10000080").entered();
+
         let unknown_l = read_u32(reader)?;
         let inactive_opacity = read_f32(reader)?;
 
@@ -4397,6 +5980,9 @@ impl OptionPropertyType10000080 {
 impl OptionPropertyType10000081 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "OptionPropertyType10000081").entered();
+
         let unknown_k = read_u32(reader)?;
         let active_opacity = read_f32(reader)?;
 
@@ -4410,6 +5996,9 @@ impl OptionPropertyType10000081 {
 impl OptionPropertyType1000008C {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "OptionPropertyType1000008C").entered();
+
         let unknown_a = read_u32(reader)?;
         let window_options = read_packable_list::<WindowOption>(reader)?;
 
@@ -4422,6 +6011,9 @@ impl OptionPropertyType1000008C {
 
 impl OptionProperty {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "OptionProperty").entered();
+
         let type_ = read_u32(reader)?;
 
         match type_ {
@@ -4450,11 +6042,49 @@ impl crate::readers::ACDataType for OptionProperty {
 
 impl crate::readers::ACDataType for GameplayOptions {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GameplayOptions").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_size = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Size", position = pos).entered()
+        };
         let size = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_size);
+        #[cfg(feature = "tracing")]
+        let _field_span_unknown200_2 = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Unknown200_2", position = pos).entered()
+        };
         let unknown200_2 = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_unknown200_2);
+        #[cfg(feature = "tracing")]
+        let _field_span_option_property_count = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OptionPropertyCount", position = pos).entered()
+        };
         let option_property_count = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_option_property_count);
+        #[cfg(feature = "tracing")]
+        let _field_span_option_properties = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OptionProperties", position = pos).entered()
+        };
         let option_properties = read_vec::<OptionProperty>(reader, option_property_count as usize)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_option_properties);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             size,
@@ -4467,41 +6097,163 @@ impl crate::readers::ACDataType for GameplayOptions {
 
 impl crate::readers::ACDataType for PlayerModule {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "PlayerModule").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_options = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Options", position = pos).entered()
+        };
         let options = Ok::<_, Box<dyn std::error::Error>>(CharacterOptions1::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_options);
         let mut shortcuts = None;
         if (flags & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_shortcuts = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Shortcuts", position = pos).entered()
+            };
             shortcuts = Some(read_packable_list::<ShortCutData>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_shortcuts);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_tab1_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab1Spells", position = pos).entered()
+        };
         let tab1_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab1_spells);
+        #[cfg(feature = "tracing")]
+        let _field_span_tab2_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab2Spells", position = pos).entered()
+        };
         let tab2_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab2_spells);
+        #[cfg(feature = "tracing")]
+        let _field_span_tab3_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab3Spells", position = pos).entered()
+        };
         let tab3_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab3_spells);
+        #[cfg(feature = "tracing")]
+        let _field_span_tab4_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab4Spells", position = pos).entered()
+        };
         let tab4_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab4_spells);
+        #[cfg(feature = "tracing")]
+        let _field_span_tab5_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab5Spells", position = pos).entered()
+        };
         let tab5_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab5_spells);
+        #[cfg(feature = "tracing")]
+        let _field_span_tab6_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab6Spells", position = pos).entered()
+        };
         let tab6_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab6_spells);
+        #[cfg(feature = "tracing")]
+        let _field_span_tab7_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab7Spells", position = pos).entered()
+        };
         let tab7_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab7_spells);
+        #[cfg(feature = "tracing")]
+        let _field_span_tab8_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Tab8Spells", position = pos).entered()
+        };
         let tab8_spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tab8_spells);
         let mut fill_comps = None;
         if (flags & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_fill_comps = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "FillComps", position = pos).entered()
+            };
             fill_comps = Some(read_packable_hash_table::<u32, u32>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_fill_comps);
         }
         let mut spell_book_filters = None;
         if (flags & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_spell_book_filters = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SpellBookFilters", position = pos).entered()
+            };
             spell_book_filters = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_spell_book_filters);
         }
         let mut option_flags = None;
         if (flags & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_option_flags = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "OptionFlags", position = pos).entered()
+            };
             option_flags = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_option_flags);
         }
         let mut unknown100_1 = None;
         let mut option_strings = None;
         if (flags & 0x00000100) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_unknown100_1 = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Unknown100_1", position = pos).entered()
+            };
             unknown100_1 = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_unknown100_1);
+            #[cfg(feature = "tracing")]
+            let _field_span_option_strings = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "OptionStrings", position = pos).entered()
+            };
             option_strings = Some(read_packable_hash_table::<u32, String>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_option_strings);
         }
         let mut gameplay_options = None;
         if (flags & 0x00000200) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_gameplay_options = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "GameplayOptions", position = pos).entered()
+            };
             gameplay_options = Some(GameplayOptions::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_gameplay_options);
         }
 
         Ok(Self {
@@ -4528,7 +6280,17 @@ impl crate::readers::ACDataType for PlayerModule {
 
 impl crate::readers::ACDataType for ShortCutManager {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ShortCutManager").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_shortcuts = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Shortcuts", position = pos).entered()
+        };
         let shortcuts = read_packable_list::<ShortCutData>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shortcuts);
 
         Ok(Self {
             shortcuts,
@@ -4538,9 +6300,33 @@ impl crate::readers::ACDataType for ShortCutManager {
 
 impl crate::readers::ACDataType for ShortCutData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ShortCutData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_index = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Index", position = pos).entered()
+        };
         let index = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_index);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_spell_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SpellId", position = pos).entered()
+        };
         let spell_id = LayeredSpellId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_spell_id);
 
         Ok(Self {
             index,
@@ -4552,7 +6338,17 @@ impl crate::readers::ACDataType for ShortCutData {
 
 impl crate::readers::ACDataType for SpellTab {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SpellTab").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_spells = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Spells", position = pos).entered()
+        };
         let spells = read_packable_list::<LayeredSpellId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_spells);
 
         Ok(Self {
             spells,
@@ -4562,8 +6358,25 @@ impl crate::readers::ACDataType for SpellTab {
 
 impl crate::readers::ACDataType for ContentProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ContentProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_container_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ContainerType", position = pos).entered()
+        };
         let container_type = ContainerProperties::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_container_type);
 
         Ok(Self {
             object_id,
@@ -4574,9 +6387,33 @@ impl crate::readers::ACDataType for ContentProfile {
 
 impl crate::readers::ACDataType for InventoryPlacement {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "InventoryPlacement").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_location = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Location", position = pos).entered()
+        };
         let location = Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_location);
+        #[cfg(feature = "tracing")]
+        let _field_span_priority = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Priority", position = pos).entered()
+        };
         let priority = Ok::<_, Box<dyn std::error::Error>>(CoverageMask::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_priority);
 
         Ok(Self {
             object_id,
@@ -4588,9 +6425,33 @@ impl crate::readers::ACDataType for InventoryPlacement {
 
 impl crate::readers::ACDataType for AllegianceProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AllegianceProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_total_members = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TotalMembers", position = pos).entered()
+        };
         let total_members = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_total_members);
+        #[cfg(feature = "tracing")]
+        let _field_span_total_vassals = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TotalVassals", position = pos).entered()
+        };
         let total_vassals = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_total_vassals);
+        #[cfg(feature = "tracing")]
+        let _field_span_hierarchy = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Hierarchy", position = pos).entered()
+        };
         let hierarchy = AllegianceHierarchy::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hierarchy);
 
         Ok(Self {
             total_members,
@@ -4602,8 +6463,25 @@ impl crate::readers::ACDataType for AllegianceProfile {
 
 impl crate::readers::ACDataType for AllegianceRecord {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AllegianceRecord").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_tree_parent = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TreeParent", position = pos).entered()
+        };
         let tree_parent = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tree_parent);
+        #[cfg(feature = "tracing")]
+        let _field_span_allegiance_data = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AllegianceData", position = pos).entered()
+        };
         let allegiance_data = AllegianceData::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_allegiance_data);
 
         Ok(Self {
             tree_parent,
@@ -4614,27 +6492,156 @@ impl crate::readers::ACDataType for AllegianceRecord {
 
 impl crate::readers::ACDataType for AllegianceHierarchy {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AllegianceHierarchy").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_record_count = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "RecordCount", position = pos).entered()
+        };
         let record_count = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_record_count);
+        #[cfg(feature = "tracing")]
+        let _field_span_old_version = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OldVersion", position = pos).entered()
+        };
         let old_version = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_old_version);
+        #[cfg(feature = "tracing")]
+        let _field_span_officers = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Officers", position = pos).entered()
+        };
         let officers = read_phash_table::<ObjectId, AllegianceOfficerLevel>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_officers);
+        #[cfg(feature = "tracing")]
+        let _field_span_officer_titles = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OfficerTitles", position = pos).entered()
+        };
         let officer_titles = read_packable_list::<String>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_officer_titles);
+        #[cfg(feature = "tracing")]
+        let _field_span_monarch_broadcast_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MonarchBroadcastTime", position = pos).entered()
+        };
         let monarch_broadcast_time = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_monarch_broadcast_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_monarch_broadcasts_today = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MonarchBroadcastsToday", position = pos).entered()
+        };
         let monarch_broadcasts_today = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_monarch_broadcasts_today);
+        #[cfg(feature = "tracing")]
+        let _field_span_spokes_broadcast_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SpokesBroadcastTime", position = pos).entered()
+        };
         let spokes_broadcast_time = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_spokes_broadcast_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_spokes_broadcasts_today = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SpokesBroadcastsToday", position = pos).entered()
+        };
         let spokes_broadcasts_today = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_spokes_broadcasts_today);
+        #[cfg(feature = "tracing")]
+        let _field_span_motd = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Motd", position = pos).entered()
+        };
         let motd = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_motd);
+        #[cfg(feature = "tracing")]
+        let _field_span_motd_set_by = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MotdSetBy", position = pos).entered()
+        };
         let motd_set_by = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_motd_set_by);
+        #[cfg(feature = "tracing")]
+        let _field_span_chat_room_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ChatRoomId", position = pos).entered()
+        };
         let chat_room_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_chat_room_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_bindpoint = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Bindpoint", position = pos).entered()
+        };
         let bindpoint = Position::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bindpoint);
+        #[cfg(feature = "tracing")]
+        let _field_span_allegiance_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AllegianceName", position = pos).entered()
+        };
         let allegiance_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_allegiance_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_name_last_set_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NameLastSetTime", position = pos).entered()
+        };
         let name_last_set_time = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name_last_set_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_is_locked = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IsLocked", position = pos).entered()
+        };
         let is_locked = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_is_locked);
+        #[cfg(feature = "tracing")]
+        let _field_span_approved_vassal = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ApprovedVassal", position = pos).entered()
+        };
         let approved_vassal = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_approved_vassal);
         let mut monarch_data = None;
         if record_count > 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_monarch_data = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MonarchData", position = pos).entered()
+            };
             monarch_data = if record_count > 0 { AllegianceData::read(reader).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_monarch_data);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_records = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Records", position = pos).entered()
+        };
         let records = read_vec::<AllegianceRecord>(reader, record_count as usize - 1)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_records);
 
         Ok(Self {
             record_count,
@@ -4661,28 +6668,129 @@ impl crate::readers::ACDataType for AllegianceHierarchy {
 
 impl crate::readers::ACDataType for AllegianceData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AllegianceData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_character_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CharacterId", position = pos).entered()
+        };
         let character_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_character_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_xp_cached = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "XPCached", position = pos).entered()
+        };
         let xp_cached = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_xp_cached);
+        #[cfg(feature = "tracing")]
+        let _field_span_xp_tithed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "XPTithed", position = pos).entered()
+        };
         let xp_tithed = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_xp_tithed);
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_gender = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Gender", position = pos).entered()
+        };
         let gender = Gender::try_from(read_u8(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_gender);
+        #[cfg(feature = "tracing")]
+        let _field_span_heritage = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Heritage", position = pos).entered()
+        };
         let heritage = HeritageGroup::try_from(read_u8(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_heritage);
+        #[cfg(feature = "tracing")]
+        let _field_span_rank = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Rank", position = pos).entered()
+        };
         let rank = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_rank);
         let mut level = None;
         if (flags & 0x8) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_level = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Level", position = pos).entered()
+            };
             level = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_level);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_loyalty = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Loyalty", position = pos).entered()
+        };
         let loyalty = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_loyalty);
+        #[cfg(feature = "tracing")]
+        let _field_span_leadership = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Leadership", position = pos).entered()
+        };
         let leadership = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_leadership);
         let mut allegiance_age = None;
         let time_online;
         if flags == 0x4 {
+            #[cfg(feature = "tracing")]
+            let _field_span_time_online = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TimeOnline", position = pos).entered()
+            };
             time_online = if flags == 0x4 { read_u64(reader).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_time_online);
         } else {
+            #[cfg(feature = "tracing")]
+            let _field_span_allegiance_age = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "AllegianceAge", position = pos).entered()
+            };
             allegiance_age = if flags == 0x4 { read_u32(reader).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_allegiance_age);
+            #[cfg(feature = "tracing")]
+            let _field_span_time_online = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TimeOnline", position = pos).entered()
+            };
             time_online = if flags == 0x4 { read_u64(reader).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_time_online);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
 
         Ok(Self {
             character_id,
@@ -4704,12 +6812,57 @@ impl crate::readers::ACDataType for AllegianceData {
 
 impl crate::readers::ACDataType for FriendData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "FriendData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_friend_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "FriendId", position = pos).entered()
+        };
         let friend_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_friend_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_online = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Online", position = pos).entered()
+        };
         let online = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_online);
+        #[cfg(feature = "tracing")]
+        let _field_span_appear_offline = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AppearOffline", position = pos).entered()
+        };
         let appear_offline = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_appear_offline);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_out_friends = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OutFriends", position = pos).entered()
+        };
         let out_friends = read_packable_list::<ObjectId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_out_friends);
+        #[cfg(feature = "tracing")]
+        let _field_span_in_friends = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "InFriends", position = pos).entered()
+        };
         let in_friends = read_packable_list::<ObjectId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_in_friends);
 
         Ok(Self {
             friend_id,
@@ -4725,6 +6878,9 @@ impl crate::readers::ACDataType for FriendData {
 impl ItemProfileTypeNeg1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ItemProfileTypeNeg1").entered();
+
         let weenie_description = PublicWeenieDesc::read(reader)?;
 
         Ok(Self {
@@ -4738,6 +6894,9 @@ impl ItemProfileTypeNeg1 {
 impl ItemProfileType1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ItemProfileType1").entered();
+
         let old_weenie_description = OldPublicWeenieDesc::read(reader)?;
 
         Ok(Self {
@@ -4750,6 +6909,9 @@ impl ItemProfileType1 {
 
 impl ItemProfile {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ItemProfile").entered();
+
         let packed_amount = read_u32(reader)?;
         #[allow(unused_variables)]
         let amount = (packed_amount & 0x_ffffff) as i32;
@@ -4778,162 +6940,480 @@ impl crate::readers::ACDataType for ItemProfile {
 
 impl crate::readers::ACDataType for PublicWeenieDesc {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "PublicWeenieDesc").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_header = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Header", position = pos).entered()
+        };
         let header = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_header);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_weenie_class_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WeenieClassId", position = pos).entered()
+        };
         let weenie_class_id = PackedDWORD::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_weenie_class_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_icon = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Icon", position = pos).entered()
+        };
         let icon = PackedDWORD::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_icon);
+        #[cfg(feature = "tracing")]
+        let _field_span_type_ = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Type", position = pos).entered()
+        };
         let type_ = Ok::<_, Box<dyn std::error::Error>>(ItemType::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_type_);
+        #[cfg(feature = "tracing")]
+        let _field_span_behavior = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Behavior", position = pos).entered()
+        };
         let behavior = Ok::<_, Box<dyn std::error::Error>>(ObjectDescriptionFlag::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_behavior);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
         let mut header2 = None;
         if (behavior.bits() & 0x04000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_header2 = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Header2", position = pos).entered()
+            };
             header2 = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_header2);
         }
         let mut plural_name = None;
         if (header & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_plural_name = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PluralName", position = pos).entered()
+            };
             plural_name = Some(read_string(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_plural_name);
         }
         let mut items_capacity = None;
         if (header & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_items_capacity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ItemsCapacity", position = pos).entered()
+            };
             items_capacity = Some(read_u8(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_items_capacity);
         }
         let mut container_capacity = None;
         if (header & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_container_capacity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ContainerCapacity", position = pos).entered()
+            };
             container_capacity = Some(read_u8(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_container_capacity);
         }
         let mut ammunition_type = None;
         if (header & 0x00000100) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_ammunition_type = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "AmmunitionType", position = pos).entered()
+            };
             ammunition_type = Some(Ok::<_, Box<dyn std::error::Error>>(AmmoType::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_ammunition_type);
         }
         let mut value = None;
         if (header & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_value = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Value", position = pos).entered()
+            };
             value = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_value);
         }
         let mut useability = None;
         if (header & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_useability = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Useability", position = pos).entered()
+            };
             useability = Some(Ok::<_, Box<dyn std::error::Error>>(Usable::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_useability);
         }
         let mut use_radius = None;
         if (header & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_use_radius = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "UseRadius", position = pos).entered()
+            };
             use_radius = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_use_radius);
         }
         let mut target_type = None;
         if (header & 0x00080000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_target_type = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TargetType", position = pos).entered()
+            };
             target_type = Some(Ok::<_, Box<dyn std::error::Error>>(ItemType::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_target_type);
         }
         let mut effects = None;
         if (header & 0x00000080) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_effects = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Effects", position = pos).entered()
+            };
             effects = Some(Ok::<_, Box<dyn std::error::Error>>(IconHighlight::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_effects);
         }
         let mut combat_use = None;
         if (header & 0x00000200) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_combat_use = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CombatUse", position = pos).entered()
+            };
             combat_use = Some(WieldType::try_from(read_u8(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_combat_use);
         }
         let mut structure = None;
         if (header & 0x00000400) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_structure = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Structure", position = pos).entered()
+            };
             structure = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_structure);
         }
         let mut max_structure = None;
         if (header & 0x00000800) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_max_structure = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MaxStructure", position = pos).entered()
+            };
             max_structure = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_max_structure);
         }
         let mut stack_size = None;
         if (header & 0x00001000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_stack_size = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "StackSize", position = pos).entered()
+            };
             stack_size = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_stack_size);
         }
         let mut max_stack_size = None;
         if (header & 0x00002000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_max_stack_size = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MaxStackSize", position = pos).entered()
+            };
             max_stack_size = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_max_stack_size);
         }
         let mut container_id = None;
         if (header & 0x00004000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_container_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ContainerId", position = pos).entered()
+            };
             container_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_container_id);
         }
         let mut wielder_id = None;
         if (header & 0x00008000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_wielder_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "WielderId", position = pos).entered()
+            };
             wielder_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_wielder_id);
         }
         let mut valid_slots = None;
         if (header & 0x00010000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_valid_slots = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ValidSlots", position = pos).entered()
+            };
             valid_slots = Some(Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_valid_slots);
         }
         let mut slot = None;
         if (header & 0x00020000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_slot = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Slot", position = pos).entered()
+            };
             slot = Some(Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_slot);
         }
         let mut priority = None;
         if (header & 0x00040000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_priority = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Priority", position = pos).entered()
+            };
             priority = Some(Ok::<_, Box<dyn std::error::Error>>(CoverageMask::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_priority);
         }
         let mut blip_color = None;
         if (header & 0x00100000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_blip_color = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BlipColor", position = pos).entered()
+            };
             blip_color = Some(RadarColor::try_from(read_u8(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_blip_color);
         }
         let mut radar_enum = None;
         if (header & 0x00800000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_radar_enum = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "RadarEnum", position = pos).entered()
+            };
             radar_enum = Some(RadarBehavior::try_from(read_u8(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_radar_enum);
         }
         let mut physics_script = None;
         if (header & 0x08000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_physics_script = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PhysicsScript", position = pos).entered()
+            };
             physics_script = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_physics_script);
         }
         let mut workmanship = None;
         if (header & 0x01000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_workmanship = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Workmanship", position = pos).entered()
+            };
             workmanship = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_workmanship);
         }
         let mut burden = None;
         if (header & 0x00200000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_burden = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Burden", position = pos).entered()
+            };
             burden = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_burden);
         }
         let mut spell_id = None;
         if (header & 0x00400000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_spell_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SpellId", position = pos).entered()
+            };
             spell_id = Some(SpellId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_spell_id);
         }
         let mut owner_id = None;
         if (header & 0x02000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_owner_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "OwnerId", position = pos).entered()
+            };
             owner_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_owner_id);
         }
         let mut restrictions = None;
         if (header & 0x04000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_restrictions = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Restrictions", position = pos).entered()
+            };
             restrictions = Some(RestrictionDB::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_restrictions);
         }
         let mut hook_item_types = None;
         if (header & 0x20000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_hook_item_types = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "HookItemTypes", position = pos).entered()
+            };
             hook_item_types = Some(Ok::<_, Box<dyn std::error::Error>>(HookType::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_hook_item_types);
         }
         let mut monarch_id = None;
         if (header & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_monarch_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MonarchId", position = pos).entered()
+            };
             monarch_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_monarch_id);
         }
         let mut hook_type = None;
         if (header & 0x10000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_hook_type = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "HookType", position = pos).entered()
+            };
             hook_type = Some(Ok::<_, Box<dyn std::error::Error>>(HookType::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_hook_type);
         }
         let mut icon_overlay = None;
         if (header & 0x40000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_icon_overlay = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "IconOverlay", position = pos).entered()
+            };
             icon_overlay = Some(PackedDWORD::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_icon_overlay);
         }
         let mut icon_underlay = None;
         if (header2.unwrap_or(0) & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_icon_underlay = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "IconUnderlay", position = pos).entered()
+            };
             icon_underlay = Some(PackedDWORD::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_icon_underlay);
         }
         let mut material = None;
         if (header & 0x80000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_material = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Material", position = pos).entered()
+            };
             material = Some(MaterialType::try_from(read_u32(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_material);
         }
         let mut cooldown_id = None;
         if (header2.unwrap_or(0) & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_cooldown_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CooldownId", position = pos).entered()
+            };
             cooldown_id = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_cooldown_id);
         }
         let mut cooldown_duration = None;
         if (header2.unwrap_or(0) & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_cooldown_duration = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CooldownDuration", position = pos).entered()
+            };
             cooldown_duration = Some(read_u64(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_cooldown_duration);
         }
         let mut pet_owner_id = None;
         if (header2.unwrap_or(0) & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_pet_owner_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PetOwnerId", position = pos).entered()
+            };
             pet_owner_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_pet_owner_id);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             header,
@@ -4985,10 +7465,41 @@ impl crate::readers::ACDataType for PublicWeenieDesc {
 
 impl crate::readers::ACDataType for RestrictionDB {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "RestrictionDB").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_version = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Version", position = pos).entered()
+        };
         let version = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_version);
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_monarch_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MonarchId", position = pos).entered()
+        };
         let monarch_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_monarch_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_permissions = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Permissions", position = pos).entered()
+        };
         let permissions = read_phash_table::<ObjectId, u32>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_permissions);
 
         Ok(Self {
             version,
@@ -5001,141 +7512,417 @@ impl crate::readers::ACDataType for RestrictionDB {
 
 impl crate::readers::ACDataType for OldPublicWeenieDesc {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "OldPublicWeenieDesc").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_header = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Header", position = pos).entered()
+        };
         let header = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_header);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_weenie_class_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WeenieClassId", position = pos).entered()
+        };
         let weenie_class_id = PackedDWORD::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_weenie_class_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_icon = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Icon", position = pos).entered()
+        };
         let icon = PackedDWORD::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_icon);
+        #[cfg(feature = "tracing")]
+        let _field_span_type_ = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Type", position = pos).entered()
+        };
         let type_ = Ok::<_, Box<dyn std::error::Error>>(ItemType::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_type_);
+        #[cfg(feature = "tracing")]
+        let _field_span_bitfield = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Bitfield", position = pos).entered()
+        };
         let bitfield = Ok::<_, Box<dyn std::error::Error>>(ObjectDescriptionFlag::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bitfield);
         let mut plural_name = None;
         if (header & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_plural_name = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PluralName", position = pos).entered()
+            };
             plural_name = Some(read_string(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_plural_name);
         }
         let mut items_capacity = None;
         if (header & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_items_capacity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ItemsCapacity", position = pos).entered()
+            };
             items_capacity = Some(read_u8(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_items_capacity);
         }
         let mut container_capacity = None;
         if (header & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_container_capacity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ContainerCapacity", position = pos).entered()
+            };
             container_capacity = Some(read_u8(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_container_capacity);
         }
         let mut value = None;
         if (header & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_value = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Value", position = pos).entered()
+            };
             value = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_value);
         }
         let mut useability = None;
         if (header & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_useability = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Useability", position = pos).entered()
+            };
             useability = Some(Ok::<_, Box<dyn std::error::Error>>(Usable::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_useability);
         }
         let mut use_radius = None;
         if (header & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_use_radius = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "UseRadius", position = pos).entered()
+            };
             use_radius = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_use_radius);
         }
         let mut t_target_type = None;
         if (header & 0x00080000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_t_target_type = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "tTargetType", position = pos).entered()
+            };
             t_target_type = Some(Ok::<_, Box<dyn std::error::Error>>(ItemType::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_t_target_type);
         }
         let mut effects = None;
         if (header & 0x00000080) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_effects = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Effects", position = pos).entered()
+            };
             effects = Some(Ok::<_, Box<dyn std::error::Error>>(IconHighlight::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_effects);
         }
         let mut ammunition_type = None;
         if (header & 0x00000100) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_ammunition_type = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "AmmunitionType", position = pos).entered()
+            };
             ammunition_type = Some(Ok::<_, Box<dyn std::error::Error>>(AmmoType::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_ammunition_type);
         }
         let mut combat_use = None;
         if (header & 0x00000200) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_combat_use = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CombatUse", position = pos).entered()
+            };
             combat_use = Some(WieldType::try_from(read_u8(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_combat_use);
         }
         let mut structure = None;
         if (header & 0x00000400) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_structure = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Structure", position = pos).entered()
+            };
             structure = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_structure);
         }
         let mut max_structure = None;
         if (header & 0x00000800) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_max_structure = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MaxStructure", position = pos).entered()
+            };
             max_structure = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_max_structure);
         }
         let mut stack_size = None;
         if (header & 0x00001000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_stack_size = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "StackSize", position = pos).entered()
+            };
             stack_size = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_stack_size);
         }
         let mut max_stack_size = None;
         if (header & 0x00002000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_max_stack_size = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MaxStackSize", position = pos).entered()
+            };
             max_stack_size = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_max_stack_size);
         }
         let mut container_id = None;
         if (header & 0x00004000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_container_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ContainerId", position = pos).entered()
+            };
             container_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_container_id);
         }
         let mut wielder_id = None;
         if (header & 0x00008000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_wielder_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "WielderId", position = pos).entered()
+            };
             wielder_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_wielder_id);
         }
         let mut valid_slots = None;
         if (header & 0x00010000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_valid_slots = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ValidSlots", position = pos).entered()
+            };
             valid_slots = Some(Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_valid_slots);
         }
         let mut slots = None;
         if (header & 0x00020000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_slots = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Slots", position = pos).entered()
+            };
             slots = Some(Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_slots);
         }
         let mut priority = None;
         if (header & 0x00040000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_priority = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Priority", position = pos).entered()
+            };
             priority = Some(Ok::<_, Box<dyn std::error::Error>>(CoverageMask::from_bits_retain(read_u32(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_priority);
         }
         let mut blip_color = None;
         if (header & 0x00100000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_blip_color = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "BlipColor", position = pos).entered()
+            };
             blip_color = Some(RadarColor::try_from(read_u8(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_blip_color);
         }
         let mut radar_enum = None;
         if (header & 0x00800000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_radar_enum = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "RadarEnum", position = pos).entered()
+            };
             radar_enum = Some(RadarBehavior::try_from(read_u8(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_radar_enum);
         }
         let mut obvious_distance = None;
         if (header & 0x01000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_obvious_distance = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ObviousDistance", position = pos).entered()
+            };
             obvious_distance = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_obvious_distance);
         }
         let mut vndwcid = None;
         if (header & 0x00200000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_vndwcid = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Vndwcid", position = pos).entered()
+            };
             vndwcid = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_vndwcid);
         }
         let mut spell_id = None;
         if (header & 0x00400000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_spell_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SpellId", position = pos).entered()
+            };
             spell_id = Some(SpellId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_spell_id);
         }
         let mut house_owner_id = None;
         if (header & 0x02000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_house_owner_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "HouseOwnerId", position = pos).entered()
+            };
             house_owner_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_house_owner_id);
         }
         let mut physics_script = None;
         if (header & 0x08000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_physics_script = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PhysicsScript", position = pos).entered()
+            };
             physics_script = Some(read_u16(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_physics_script);
         }
         let mut restrictions = None;
         if (header & 0x04000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_restrictions = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Restrictions", position = pos).entered()
+            };
             restrictions = Some(RestrictionDB::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_restrictions);
         }
         let mut hook_type = None;
         if (header & 0x10000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_hook_type = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "HookType", position = pos).entered()
+            };
             hook_type = Some(Ok::<_, Box<dyn std::error::Error>>(HookType::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_hook_type);
         }
         let mut hook_item_types = None;
         if (header & 0x20000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_hook_item_types = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "HookItemTypes", position = pos).entered()
+            };
             hook_item_types = Some(Ok::<_, Box<dyn std::error::Error>>(HookType::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_hook_item_types);
         }
         let mut monarch_id = None;
         if (header & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_monarch_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MonarchId", position = pos).entered()
+            };
             monarch_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_monarch_id);
         }
         let mut icon_overlay = None;
         if (header & 0x40000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_icon_overlay = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "IconOverlay", position = pos).entered()
+            };
             icon_overlay = Some(PackedDWORD::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_icon_overlay);
         }
         let mut material = None;
         if (header & 0x80000000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_material = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Material", position = pos).entered()
+            };
             material = Some(MaterialType::try_from(read_u32(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_material);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             header,
@@ -5182,12 +7969,57 @@ impl crate::readers::ACDataType for OldPublicWeenieDesc {
 
 impl crate::readers::ACDataType for Trade {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Trade").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_partner_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PartnerId", position = pos).entered()
+        };
         let partner_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_partner_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Sequence", position = pos).entered()
+        };
         let sequence = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_status = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Status", position = pos).entered()
+        };
         let status = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_status);
+        #[cfg(feature = "tracing")]
+        let _field_span_initiator_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "InitiatorId", position = pos).entered()
+        };
         let initiator_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_initiator_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_accepted = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Accepted", position = pos).entered()
+        };
         let accepted = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_accepted);
+        #[cfg(feature = "tracing")]
+        let _field_span_partner_accepted = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PartnerAccepted", position = pos).entered()
+        };
         let partner_accepted = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_partner_accepted);
 
         Ok(Self {
             partner_id,
@@ -5202,13 +8034,65 @@ impl crate::readers::ACDataType for Trade {
 
 impl crate::readers::ACDataType for JumpPack {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "JumpPack").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_extent = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Extent", position = pos).entered()
+        };
         let extent = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_extent);
+        #[cfg(feature = "tracing")]
+        let _field_span_velocity = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Velocity", position = pos).entered()
+        };
         let velocity = Vector3::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_velocity);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_instance_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectInstanceSequence", position = pos).entered()
+        };
         let object_instance_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_instance_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_server_control_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectServerControlSequence", position = pos).entered()
+        };
         let object_server_control_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_server_control_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_teleport_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectTeleportSequence", position = pos).entered()
+        };
         let object_teleport_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_teleport_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_force_position_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectForcePositionSequence", position = pos).entered()
+        };
         let object_force_position_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_force_position_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             extent,
@@ -5223,14 +8107,73 @@ impl crate::readers::ACDataType for JumpPack {
 
 impl crate::readers::ACDataType for MoveToStatePack {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MoveToStatePack").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_raw_motion_state = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "RawMotionState", position = pos).entered()
+        };
         let raw_motion_state = RawMotionState::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_raw_motion_state);
+        #[cfg(feature = "tracing")]
+        let _field_span_position = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Position", position = pos).entered()
+        };
         let position = Position::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_position);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_instance_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectInstanceSequence", position = pos).entered()
+        };
         let object_instance_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_instance_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_server_control_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectServerControlSequence", position = pos).entered()
+        };
         let object_server_control_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_server_control_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_teleport_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectTeleportSequence", position = pos).entered()
+        };
         let object_teleport_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_teleport_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_force_position_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectForcePositionSequence", position = pos).entered()
+        };
         let object_force_position_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_force_position_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_contact = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Contact", position = pos).entered()
+        };
         let contact = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_contact);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             raw_motion_state,
@@ -5246,13 +8189,37 @@ impl crate::readers::ACDataType for MoveToStatePack {
 
 impl crate::readers::ACDataType for PackedMotionCommand {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "PackedMotionCommand").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_command_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CommandId", position = pos).entered()
+        };
         let command_id = Command::try_from(read_u16(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_command_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_packed_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PackedSequence", position = pos).entered()
+        };
         let packed_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_packed_sequence);
         #[allow(unused_variables)]
         let server_action_sequence = (packed_sequence & 0x7fff) as u16;
         #[allow(unused_variables)]
         let autonomous = ((packed_sequence >> 15) & 0x1) as u16;
+        #[cfg(feature = "tracing")]
+        let _field_span_speed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Speed", position = pos).entered()
+        };
         let speed = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_speed);
 
         Ok(Self {
             command_id,
@@ -5264,53 +8231,147 @@ impl crate::readers::ACDataType for PackedMotionCommand {
 
 impl crate::readers::ACDataType for RawMotionState {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "RawMotionState").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
         let command_list_length = ((flags >> 11) & 0x_f8) as u16;
         let mut current_holdkey = None;
         if (flags & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_current_holdkey = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CurrentHoldkey", position = pos).entered()
+            };
             current_holdkey = Some(HoldKey::try_from(read_u32(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_current_holdkey);
         }
         let mut current_style = None;
         if (flags & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_current_style = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CurrentStyle", position = pos).entered()
+            };
             current_style = Some(StanceMode::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_current_style);
         }
         let mut forward_command = None;
         if (flags & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_forward_command = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ForwardCommand", position = pos).entered()
+            };
             forward_command = Some(Command::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_forward_command);
         }
         let mut forward_holdkey = None;
         if (flags & 0x0000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_forward_holdkey = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ForwardHoldkey", position = pos).entered()
+            };
             forward_holdkey = Some(HoldKey::try_from(read_u32(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_forward_holdkey);
         }
         let mut forward_speed = None;
         if (flags & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_forward_speed = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ForwardSpeed", position = pos).entered()
+            };
             forward_speed = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_forward_speed);
         }
         let mut sidestep_command = None;
         if (flags & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_sidestep_command = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SidestepCommand", position = pos).entered()
+            };
             sidestep_command = Some(Command::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_sidestep_command);
         }
         let mut sidestep_holdkey = None;
         if (flags & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_sidestep_holdkey = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SidestepHoldkey", position = pos).entered()
+            };
             sidestep_holdkey = Some(HoldKey::try_from(read_u32(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_sidestep_holdkey);
         }
         let mut sidestep_speed = None;
         if (flags & 0x00000080) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_sidestep_speed = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SidestepSpeed", position = pos).entered()
+            };
             sidestep_speed = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_sidestep_speed);
         }
         let mut turn_command = None;
         if (flags & 0x00000100) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_turn_command = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TurnCommand", position = pos).entered()
+            };
             turn_command = Some(Command::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_turn_command);
         }
         let mut turn_holdkey = None;
         if (flags & 0x00000200) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_turn_holdkey = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TurnHoldkey", position = pos).entered()
+            };
             turn_holdkey = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_turn_holdkey);
         }
         let mut turn_speed = None;
         if (flags & 0x00000400) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_turn_speed = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TurnSpeed", position = pos).entered()
+            };
             turn_speed = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_turn_speed);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_commands = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Commands", position = pos).entered()
+        };
         let commands = read_vec::<PackedMotionCommand>(reader, command_list_length as usize)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_commands);
 
         Ok(Self {
             flags,
@@ -5332,13 +8393,65 @@ impl crate::readers::ACDataType for RawMotionState {
 
 impl crate::readers::ACDataType for AutonomousPositionPack {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AutonomousPositionPack").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_position = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Position", position = pos).entered()
+        };
         let position = Position::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_position);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_instance_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectInstanceSequence", position = pos).entered()
+        };
         let object_instance_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_instance_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_server_control_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectServerControlSequence", position = pos).entered()
+        };
         let object_server_control_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_server_control_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_teleport_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectTeleportSequence", position = pos).entered()
+        };
         let object_teleport_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_teleport_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_force_position_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectForcePositionSequence", position = pos).entered()
+        };
         let object_force_position_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_force_position_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_contact = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Contact", position = pos).entered()
+        };
         let contact = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_contact);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             position,
@@ -5353,36 +8466,123 @@ impl crate::readers::ACDataType for AutonomousPositionPack {
 
 impl crate::readers::ACDataType for PositionPack {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "PositionPack").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = Ok::<_, Box<dyn std::error::Error>>(PositionFlags::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_origin = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Origin", position = pos).entered()
+        };
         let origin = Origin::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_origin);
         let mut w_quat = None;
         if (flags.bits() & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_w_quat = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "WQuat", position = pos).entered()
+            };
             w_quat = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_w_quat);
         }
         let mut x_quat = None;
         if (flags.bits() & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_x_quat = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "XQuat", position = pos).entered()
+            };
             x_quat = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_x_quat);
         }
         let mut y_quat = None;
         if (flags.bits() & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_y_quat = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "YQuat", position = pos).entered()
+            };
             y_quat = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_y_quat);
         }
         let mut z_quat = None;
         if (flags.bits() & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_z_quat = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ZQuat", position = pos).entered()
+            };
             z_quat = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_z_quat);
         }
         let mut velocity = None;
         if (flags.bits() & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_velocity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Velocity", position = pos).entered()
+            };
             velocity = Some(Vector3::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_velocity);
         }
         let mut placement_id = None;
         if (flags.bits() & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_placement_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PlacementId", position = pos).entered()
+            };
             placement_id = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_placement_id);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_object_instance_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectInstanceSequence", position = pos).entered()
+        };
         let object_instance_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_instance_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_position_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectPositionSequence", position = pos).entered()
+        };
         let object_position_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_position_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_teleport_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectTeleportSequence", position = pos).entered()
+        };
         let object_teleport_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_teleport_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_force_position_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectForcePositionSequence", position = pos).entered()
+        };
         let object_force_position_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_force_position_sequence);
 
         Ok(Self {
             flags,
@@ -5404,6 +8604,9 @@ impl crate::readers::ACDataType for PositionPack {
 impl MovementDataType0 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MovementDataType0").entered();
+
         let state = InterpretedMotionState::read(reader)?;
         let sticky_object = if (option_flags.clone() as u32 & 0x01) != 0 { ObjectId::read(reader).map(Some) } else { Ok(None) }?;
 
@@ -5422,6 +8625,9 @@ impl MovementDataType0 {
 impl MovementDataType6 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MovementDataType6").entered();
+
         let target = ObjectId::read(reader)?;
         let origin = Origin::read(reader)?;
         let move_to_params = MoveToMovementParameters::read(reader)?;
@@ -5444,6 +8650,9 @@ impl MovementDataType6 {
 impl MovementDataType7 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MovementDataType7").entered();
+
         let origin = Origin::read(reader)?;
         let move_to_params = MoveToMovementParameters::read(reader)?;
         let my_run_rate = read_f32(reader)?;
@@ -5464,6 +8673,9 @@ impl MovementDataType7 {
 impl MovementDataType8 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MovementDataType8").entered();
+
         let target_id = ObjectId::read(reader)?;
         let desired_heading = read_f32(reader)?;
         let turn_to_params = TurnToMovementParameters::read(reader)?;
@@ -5484,6 +8696,9 @@ impl MovementDataType8 {
 impl MovementDataType9 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, object_movement_sequence: ushort, object_server_control_sequence: ushort, autonomous: ushort, option_flags: MovementOption, stance: StanceMode) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MovementDataType9").entered();
+
         let turn_to_params = TurnToMovementParameters::read(reader)?;
 
         Ok(Self {
@@ -5499,6 +8714,9 @@ impl MovementDataType9 {
 
 impl MovementData {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MovementData").entered();
+
         let object_movement_sequence = read_u16(reader)?;
         let object_server_control_sequence = read_u16(reader)?;
         let autonomous = read_u16(reader)?;
@@ -5539,38 +8757,111 @@ impl crate::readers::ACDataType for MovementData {
 
 impl crate::readers::ACDataType for InterpretedMotionState {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "InterpretedMotionState").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
         let command_list_length = ((flags >> 7) & 0x7f) as u32;
         let mut current_style = None;
         if (flags & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_current_style = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "CurrentStyle", position = pos).entered()
+            };
             current_style = Some(StanceMode::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_current_style);
         }
         let mut forward_command = None;
         if (flags & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_forward_command = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ForwardCommand", position = pos).entered()
+            };
             forward_command = Some(Command::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_forward_command);
         }
         let mut sidestep_command = None;
         if (flags & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_sidestep_command = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SidestepCommand", position = pos).entered()
+            };
             sidestep_command = Some(Command::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_sidestep_command);
         }
         let mut turn_command = None;
         if (flags & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_turn_command = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TurnCommand", position = pos).entered()
+            };
             turn_command = Some(Command::try_from(read_u16(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_turn_command);
         }
         let mut forward_speed = None;
         if (flags & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_forward_speed = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ForwardSpeed", position = pos).entered()
+            };
             forward_speed = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_forward_speed);
         }
         let mut sidestep_speed = None;
         if (flags & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_sidestep_speed = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SidestepSpeed", position = pos).entered()
+            };
             sidestep_speed = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_sidestep_speed);
         }
         let mut turn_speed = None;
         if (flags & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_turn_speed = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "TurnSpeed", position = pos).entered()
+            };
             turn_speed = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_turn_speed);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_commands = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Commands", position = pos).entered()
+        };
         let commands = read_vec::<PackedMotionCommand>(reader, command_list_length as usize)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_commands);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             flags,
@@ -5588,12 +8879,43 @@ impl crate::readers::ACDataType for InterpretedMotionState {
 
 impl crate::readers::ACDataType for DDDRevision {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "DDDRevision").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_id_dat_file = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IdDatFile", position = pos).entered()
+        };
         let id_dat_file = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_id_dat_file);
         #[allow(unused_variables)]
         let dat_file_type = (id_dat_file >> 32) as u32;
+        #[cfg(feature = "tracing")]
+        let _field_span_iteration = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Iteration", position = pos).entered()
+        };
         let iteration = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_iteration);
+        #[cfg(feature = "tracing")]
+        let _field_span_ids_to_download = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IdsToDownload", position = pos).entered()
+        };
         let ids_to_download = read_packable_list::<DataId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_ids_to_download);
+        #[cfg(feature = "tracing")]
+        let _field_span_ids_to_purge = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IdsToPurge", position = pos).entered()
+        };
         let ids_to_purge = read_packable_list::<DataId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_ids_to_purge);
 
         Ok(Self {
             id_dat_file,
@@ -5606,13 +8928,65 @@ impl crate::readers::ACDataType for DDDRevision {
 
 impl crate::readers::ACDataType for MoveToMovementParameters {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "MoveToMovementParameters").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_bitmember = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Bitmember", position = pos).entered()
+        };
         let bitmember = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bitmember);
+        #[cfg(feature = "tracing")]
+        let _field_span_distance_to_object = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DistanceToObject", position = pos).entered()
+        };
         let distance_to_object = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_distance_to_object);
+        #[cfg(feature = "tracing")]
+        let _field_span_min_distance = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MinDistance", position = pos).entered()
+        };
         let min_distance = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_min_distance);
+        #[cfg(feature = "tracing")]
+        let _field_span_fail_distance = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "FailDistance", position = pos).entered()
+        };
         let fail_distance = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_fail_distance);
+        #[cfg(feature = "tracing")]
+        let _field_span_animation_speed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AnimationSpeed", position = pos).entered()
+        };
         let animation_speed = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_animation_speed);
+        #[cfg(feature = "tracing")]
+        let _field_span_walk_run_threshold = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WalkRunThreshold", position = pos).entered()
+        };
         let walk_run_threshold = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_walk_run_threshold);
+        #[cfg(feature = "tracing")]
+        let _field_span_desired_heading = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DesiredHeading", position = pos).entered()
+        };
         let desired_heading = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_desired_heading);
 
         Ok(Self {
             bitmember,
@@ -5628,9 +9002,33 @@ impl crate::readers::ACDataType for MoveToMovementParameters {
 
 impl crate::readers::ACDataType for TurnToMovementParameters {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "TurnToMovementParameters").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_bitmember = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Bitmember", position = pos).entered()
+        };
         let bitmember = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bitmember);
+        #[cfg(feature = "tracing")]
+        let _field_span_animation_speed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AnimationSpeed", position = pos).entered()
+        };
         let animation_speed = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_animation_speed);
+        #[cfg(feature = "tracing")]
+        let _field_span_desired_heading = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DesiredHeading", position = pos).entered()
+        };
         let desired_heading = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_desired_heading);
 
         Ok(Self {
             bitmember,
@@ -5642,18 +9040,84 @@ impl crate::readers::ACDataType for TurnToMovementParameters {
 
 impl crate::readers::ACDataType for ObjDesc {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ObjDesc").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_version = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Version", position = pos).entered()
+        };
         let version = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_version);
+        #[cfg(feature = "tracing")]
+        let _field_span_palette_count = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PaletteCount", position = pos).entered()
+        };
         let palette_count = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_palette_count);
+        #[cfg(feature = "tracing")]
+        let _field_span_texture_count = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TextureCount", position = pos).entered()
+        };
         let texture_count = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_texture_count);
+        #[cfg(feature = "tracing")]
+        let _field_span_model_count = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ModelCount", position = pos).entered()
+        };
         let model_count = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_model_count);
         let mut palette = None;
         if palette_count > 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_palette = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Palette", position = pos).entered()
+            };
             palette = if palette_count > 0 { read_packed_dword(reader).map(DataId).map(Some) } else { Ok(None) }?;
+            #[cfg(feature = "tracing")]
+            drop(_field_span_palette);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_subpalettes = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Subpalettes", position = pos).entered()
+        };
         let subpalettes = read_vec::<Subpalette>(reader, palette_count as usize)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_subpalettes);
+        #[cfg(feature = "tracing")]
+        let _field_span_tm_changes = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TMChanges", position = pos).entered()
+        };
         let tm_changes = read_vec::<TextureMapChange>(reader, texture_count as usize)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tm_changes);
+        #[cfg(feature = "tracing")]
+        let _field_span_ap_changes = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "APChanges", position = pos).entered()
+        };
         let ap_changes = read_vec::<AnimPartChange>(reader, model_count as usize)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_ap_changes);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             version,
@@ -5670,9 +9134,33 @@ impl crate::readers::ACDataType for ObjDesc {
 
 impl crate::readers::ACDataType for Subpalette {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Subpalette").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_palette = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Palette", position = pos).entered()
+        };
         let palette = read_packed_dword(reader).map(DataId)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_palette);
+        #[cfg(feature = "tracing")]
+        let _field_span_offset = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Offset", position = pos).entered()
+        };
         let offset = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_offset);
+        #[cfg(feature = "tracing")]
+        let _field_span_num_colors = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NumColors", position = pos).entered()
+        };
         let num_colors = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_num_colors);
 
         Ok(Self {
             palette,
@@ -5684,9 +9172,33 @@ impl crate::readers::ACDataType for Subpalette {
 
 impl crate::readers::ACDataType for TextureMapChange {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "TextureMapChange").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_part_index = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PartIndex", position = pos).entered()
+        };
         let part_index = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_part_index);
+        #[cfg(feature = "tracing")]
+        let _field_span_old_tex_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OldTexId", position = pos).entered()
+        };
         let old_tex_id = read_packed_dword(reader).map(DataId)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_old_tex_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_new_tex_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NewTexId", position = pos).entered()
+        };
         let new_tex_id = read_packed_dword(reader).map(DataId)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_new_tex_id);
 
         Ok(Self {
             part_index,
@@ -5698,8 +9210,25 @@ impl crate::readers::ACDataType for TextureMapChange {
 
 impl crate::readers::ACDataType for AnimPartChange {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AnimPartChange").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_part_index = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PartIndex", position = pos).entered()
+        };
         let part_index = read_u8(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_part_index);
+        #[cfg(feature = "tracing")]
+        let _field_span_part_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PartId", position = pos).entered()
+        };
         let part_id = read_packed_dword(reader).map(DataId)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_part_id);
 
         Ok(Self {
             part_index,
@@ -5710,45 +9239,321 @@ impl crate::readers::ACDataType for AnimPartChange {
 
 impl crate::readers::ACDataType for CharGenResult {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CharGenResult").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_account = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Account", position = pos).entered()
+        };
         let account = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_account);
+        #[cfg(feature = "tracing")]
+        let _field_span_one = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "One", position = pos).entered()
+        };
         let one = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_one);
+        #[cfg(feature = "tracing")]
+        let _field_span_heritage_group = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HeritageGroup", position = pos).entered()
+        };
         let heritage_group = HeritageGroup::try_from(read_u8(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_heritage_group);
+        #[cfg(feature = "tracing")]
+        let _field_span_gender = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Gender", position = pos).entered()
+        };
         let gender = Gender::try_from(read_u8(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_gender);
+        #[cfg(feature = "tracing")]
+        let _field_span_eyes_strip = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "EyesStrip", position = pos).entered()
+        };
         let eyes_strip = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_eyes_strip);
+        #[cfg(feature = "tracing")]
+        let _field_span_nose_strip = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NoseStrip", position = pos).entered()
+        };
         let nose_strip = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_nose_strip);
+        #[cfg(feature = "tracing")]
+        let _field_span_mouth_strip = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MouthStrip", position = pos).entered()
+        };
         let mouth_strip = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_mouth_strip);
+        #[cfg(feature = "tracing")]
+        let _field_span_hair_color = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HairColor", position = pos).entered()
+        };
         let hair_color = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hair_color);
+        #[cfg(feature = "tracing")]
+        let _field_span_eye_color = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "EyeColor", position = pos).entered()
+        };
         let eye_color = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_eye_color);
+        #[cfg(feature = "tracing")]
+        let _field_span_hair_style = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HairStyle", position = pos).entered()
+        };
         let hair_style = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hair_style);
+        #[cfg(feature = "tracing")]
+        let _field_span_headgear_style = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HeadgearStyle", position = pos).entered()
+        };
         let headgear_style = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_headgear_style);
+        #[cfg(feature = "tracing")]
+        let _field_span_headgear_color = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HeadgearColor", position = pos).entered()
+        };
         let headgear_color = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_headgear_color);
+        #[cfg(feature = "tracing")]
+        let _field_span_shirt_style = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ShirtStyle", position = pos).entered()
+        };
         let shirt_style = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shirt_style);
+        #[cfg(feature = "tracing")]
+        let _field_span_shirt_color = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ShirtColor", position = pos).entered()
+        };
         let shirt_color = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shirt_color);
+        #[cfg(feature = "tracing")]
+        let _field_span_trousers_style = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TrousersStyle", position = pos).entered()
+        };
         let trousers_style = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_trousers_style);
+        #[cfg(feature = "tracing")]
+        let _field_span_trousers_color = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TrousersColor", position = pos).entered()
+        };
         let trousers_color = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_trousers_color);
+        #[cfg(feature = "tracing")]
+        let _field_span_footwear_style = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "FootwearStyle", position = pos).entered()
+        };
         let footwear_style = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_footwear_style);
+        #[cfg(feature = "tracing")]
+        let _field_span_footwear_color = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "FootwearColor", position = pos).entered()
+        };
         let footwear_color = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_footwear_color);
+        #[cfg(feature = "tracing")]
+        let _field_span_skin_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SkinShade", position = pos).entered()
+        };
         let skin_shade = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_skin_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_hair_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HairShade", position = pos).entered()
+        };
         let hair_shade = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_hair_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_headgear_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HeadgearShade", position = pos).entered()
+        };
         let headgear_shade = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_headgear_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_shirt_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ShirtShade", position = pos).entered()
+        };
         let shirt_shade = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_shirt_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_trousers_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TrousersShade", position = pos).entered()
+        };
         let trousers_shade = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_trousers_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_tootwear_shade = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TootwearShade", position = pos).entered()
+        };
         let tootwear_shade = read_u64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_tootwear_shade);
+        #[cfg(feature = "tracing")]
+        let _field_span_template_num = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TemplateNum", position = pos).entered()
+        };
         let template_num = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_template_num);
+        #[cfg(feature = "tracing")]
+        let _field_span_strength = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Strength", position = pos).entered()
+        };
         let strength = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_strength);
+        #[cfg(feature = "tracing")]
+        let _field_span_endurance = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Endurance", position = pos).entered()
+        };
         let endurance = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_endurance);
+        #[cfg(feature = "tracing")]
+        let _field_span_coordination = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Coordination", position = pos).entered()
+        };
         let coordination = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_coordination);
+        #[cfg(feature = "tracing")]
+        let _field_span_quickness = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Quickness", position = pos).entered()
+        };
         let quickness = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_quickness);
+        #[cfg(feature = "tracing")]
+        let _field_span_focus = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Focus", position = pos).entered()
+        };
         let focus = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_focus);
+        #[cfg(feature = "tracing")]
+        let _field_span_self_ = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Self", position = pos).entered()
+        };
         let self_ = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_self_);
+        #[cfg(feature = "tracing")]
+        let _field_span_slot = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Slot", position = pos).entered()
+        };
         let slot = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_slot);
+        #[cfg(feature = "tracing")]
+        let _field_span_class_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ClassId", position = pos).entered()
+        };
         let class_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_class_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_skills = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Skills", position = pos).entered()
+        };
         let skills = read_packable_list::<SkillAdvancementClass>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_skills);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_start_area = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "StartArea", position = pos).entered()
+        };
         let start_area = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_start_area);
+        #[cfg(feature = "tracing")]
+        let _field_span_is_admin = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IsAdmin", position = pos).entered()
+        };
         let is_admin = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_is_admin);
+        #[cfg(feature = "tracing")]
+        let _field_span_is_envoy = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "IsEnvoy", position = pos).entered()
+        };
         let is_envoy = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_is_envoy);
+        #[cfg(feature = "tracing")]
+        let _field_span_validation = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Validation", position = pos).entered()
+        };
         let validation = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_validation);
 
         Ok(Self {
             account,
@@ -5796,10 +9601,41 @@ impl crate::readers::ACDataType for CharGenResult {
 
 impl crate::readers::ACDataType for CharacterIdentity {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CharacterIdentity").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_character_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CharacterId", position = pos).entered()
+        };
         let character_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_character_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_seconds_greyed_out = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SecondsGreyedOut", position = pos).entered()
+        };
         let seconds_greyed_out = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_seconds_greyed_out);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             character_id,
@@ -5811,8 +9647,25 @@ impl crate::readers::ACDataType for CharacterIdentity {
 
 impl crate::readers::ACDataType for EquipLocation {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "EquipLocation").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_object_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectId", position = pos).entered()
+        };
         let object_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_slot = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Slot", position = pos).entered()
+        };
         let slot = Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_slot);
 
         Ok(Self {
             object_id,
@@ -5823,94 +9676,321 @@ impl crate::readers::ACDataType for EquipLocation {
 
 impl crate::readers::ACDataType for PhysicsDesc {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "PhysicsDesc").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_state = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "State", position = pos).entered()
+        };
         let state = Ok::<_, Box<dyn std::error::Error>>(PhysicsState::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_state);
         let mut movement_buffer = None;
         let mut autonomous = None;
         if (flags & 0x00010000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_movement_buffer = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MovementBuffer", position = pos).entered()
+            };
             movement_buffer = Some(read_packable_list::<u8>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_movement_buffer);
+            #[cfg(feature = "tracing")]
+            let _field_span_autonomous = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Autonomous", position = pos).entered()
+            };
             autonomous = Some(read_bool(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_autonomous);
         }
         let mut animation_frame = None;
         if (flags & 0x00020000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_animation_frame = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "AnimationFrame", position = pos).entered()
+            };
             animation_frame = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_animation_frame);
         }
         let mut position = None;
         if (flags & 0x00008000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_position = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Position", position = pos).entered()
+            };
             position = Some(Position::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_position);
         }
         let mut motion_id = None;
         if (flags & 0x00000002) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_motion_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "MotionId", position = pos).entered()
+            };
             motion_id = Some(DataId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_motion_id);
         }
         let mut sound_id = None;
         if (flags & 0x00000800) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_sound_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SoundId", position = pos).entered()
+            };
             sound_id = Some(DataId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_sound_id);
         }
         let mut physics_script_id = None;
         if (flags & 0x00001000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_physics_script_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "PhysicsScriptId", position = pos).entered()
+            };
             physics_script_id = Some(DataId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_physics_script_id);
         }
         let mut setup_id = None;
         if (flags & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_setup_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "SetupId", position = pos).entered()
+            };
             setup_id = Some(DataId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_setup_id);
         }
         let mut parent_id = None;
         let mut parent_location = None;
         if (flags & 0x00000020) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_parent_id = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ParentId", position = pos).entered()
+            };
             parent_id = Some(ObjectId::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_parent_id);
+            #[cfg(feature = "tracing")]
+            let _field_span_parent_location = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ParentLocation", position = pos).entered()
+            };
             parent_location = Some(ParentLocation::try_from(read_u32(reader)?)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_parent_location);
         }
         let mut children = None;
         if (flags & 0x00000040) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_children = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Children", position = pos).entered()
+            };
             children = Some(read_packable_list::<EquipLocation>(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_children);
         }
         let mut scale = None;
         if (flags & 0x00000080) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_scale = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Scale", position = pos).entered()
+            };
             scale = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_scale);
         }
         let mut friction = None;
         if (flags & 0x00000100) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_friction = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Friction", position = pos).entered()
+            };
             friction = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_friction);
         }
         let mut elasticity = None;
         if (flags & 0x00000200) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_elasticity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Elasticity", position = pos).entered()
+            };
             elasticity = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_elasticity);
         }
         let mut translucency = None;
         if (flags & 0x00040000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_translucency = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Translucency", position = pos).entered()
+            };
             translucency = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_translucency);
         }
         let mut velocity = None;
         if (flags & 0x00000004) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_velocity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Velocity", position = pos).entered()
+            };
             velocity = Some(Vector3::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_velocity);
         }
         let mut acceleration = None;
         if (flags & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_acceleration = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Acceleration", position = pos).entered()
+            };
             acceleration = Some(Vector3::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_acceleration);
         }
         let mut omega = None;
         if (flags & 0x00000010) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_omega = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Omega", position = pos).entered()
+            };
             omega = Some(Vector3::read(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_omega);
         }
         let mut default_script = None;
         if (flags & 0x00002000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_default_script = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "DefaultScript", position = pos).entered()
+            };
             default_script = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_default_script);
         }
         let mut default_script_intensity = None;
         if (flags & 0x00004000) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_default_script_intensity = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "DefaultScriptIntensity", position = pos).entered()
+            };
             default_script_intensity = Some(read_f32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_default_script_intensity);
         }
+        #[cfg(feature = "tracing")]
+        let _field_span_object_position_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectPositionSequence", position = pos).entered()
+        };
         let object_position_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_position_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_movement_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectMovementSequence", position = pos).entered()
+        };
         let object_movement_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_movement_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_state_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectStateSequence", position = pos).entered()
+        };
         let object_state_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_state_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_vector_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectVectorSequence", position = pos).entered()
+        };
         let object_vector_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_vector_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_teleport_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectTeleportSequence", position = pos).entered()
+        };
         let object_teleport_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_teleport_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_server_control_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectServerControlSequence", position = pos).entered()
+        };
         let object_server_control_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_server_control_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_force_position_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectForcePositionSequence", position = pos).entered()
+        };
         let object_force_position_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_force_position_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_visual_desc_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectVisualDescSequence", position = pos).entered()
+        };
         let object_visual_desc_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_visual_desc_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span_object_instance_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ObjectInstanceSequence", position = pos).entered()
+        };
         let object_instance_sequence = read_u16(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_object_instance_sequence);
+        #[cfg(feature = "tracing")]
+        let _field_span___alignment_marker_align_dword = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "__alignment_marker_align_dword", position = pos).entered()
+        };
         align_dword(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span___alignment_marker_align_dword);
 
         Ok(Self {
             flags,
@@ -5950,8 +10030,25 @@ impl crate::readers::ACDataType for PhysicsDesc {
 
 impl crate::readers::ACDataType for AdminAccountData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AdminAccountData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_account_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AccountName", position = pos).entered()
+        };
         let account_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_account_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_bookie_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BookieId", position = pos).entered()
+        };
         let bookie_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bookie_id);
 
         Ok(Self {
             account_name,
@@ -5962,8 +10059,25 @@ impl crate::readers::ACDataType for AdminAccountData {
 
 impl crate::readers::ACDataType for AdminPlayerData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "AdminPlayerData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_bookie_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "bookieId", position = pos).entered()
+        };
         let bookie_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bookie_id);
 
         Ok(Self {
             name,
@@ -5974,15 +10088,81 @@ impl crate::readers::ACDataType for AdminPlayerData {
 
 impl crate::readers::ACDataType for VendorProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "VendorProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_categories = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Categories", position = pos).entered()
+        };
         let categories = Ok::<_, Box<dyn std::error::Error>>(ItemType::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_categories);
+        #[cfg(feature = "tracing")]
+        let _field_span_min_value = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MinValue", position = pos).entered()
+        };
         let min_value = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_min_value);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_value = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxValue", position = pos).entered()
+        };
         let max_value = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_value);
+        #[cfg(feature = "tracing")]
+        let _field_span_deals_magic = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DealsMagic", position = pos).entered()
+        };
         let deals_magic = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_deals_magic);
+        #[cfg(feature = "tracing")]
+        let _field_span_buy_price = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BuyPrice", position = pos).entered()
+        };
         let buy_price = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_buy_price);
+        #[cfg(feature = "tracing")]
+        let _field_span_sell_price = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SellPrice", position = pos).entered()
+        };
         let sell_price = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_sell_price);
+        #[cfg(feature = "tracing")]
+        let _field_span_currency_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CurrencyId", position = pos).entered()
+        };
         let currency_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_currency_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_currency_amount = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CurrencyAmount", position = pos).entered()
+        };
         let currency_amount = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_currency_amount);
+        #[cfg(feature = "tracing")]
+        let _field_span_currency_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CurrencyName", position = pos).entered()
+        };
         let currency_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_currency_name);
 
         Ok(Self {
             categories,
@@ -6000,14 +10180,73 @@ impl crate::readers::ACDataType for VendorProfile {
 
 impl crate::readers::ACDataType for ArmorProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ArmorProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_slashing = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtSlashing", position = pos).entered()
+        };
         let prot_slashing = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_slashing);
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_piercing = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtPiercing", position = pos).entered()
+        };
         let prot_piercing = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_piercing);
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_bludgeoning = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtBludgeoning", position = pos).entered()
+        };
         let prot_bludgeoning = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_bludgeoning);
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_cold = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtCold", position = pos).entered()
+        };
         let prot_cold = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_cold);
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_fire = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtFire", position = pos).entered()
+        };
         let prot_fire = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_fire);
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_acid = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtAcid", position = pos).entered()
+        };
         let prot_acid = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_acid);
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_nether = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtNether", position = pos).entered()
+        };
         let prot_nether = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_nether);
+        #[cfg(feature = "tracing")]
+        let _field_span_prot_lightning = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ProtLightning", position = pos).entered()
+        };
         let prot_lightning = read_f32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_prot_lightning);
 
         Ok(Self {
             prot_slashing,
@@ -6024,9 +10263,33 @@ impl crate::readers::ACDataType for ArmorProfile {
 
 impl crate::readers::ACDataType for CreatureAppraisalProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "CreatureAppraisalProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_health = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Health", position = pos).entered()
+        };
         let health = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_health);
+        #[cfg(feature = "tracing")]
+        let _field_span_health_max = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HealthMax", position = pos).entered()
+        };
         let health_max = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_health_max);
         let mut strength = None;
         let mut endurance = None;
         let mut quickness = None;
@@ -6038,22 +10301,106 @@ impl crate::readers::ACDataType for CreatureAppraisalProfile {
         let mut stamina_max = None;
         let mut mana_max = None;
         if (flags & 0x00000008) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_strength = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Strength", position = pos).entered()
+            };
             strength = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_strength);
+            #[cfg(feature = "tracing")]
+            let _field_span_endurance = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Endurance", position = pos).entered()
+            };
             endurance = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_endurance);
+            #[cfg(feature = "tracing")]
+            let _field_span_quickness = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Quickness", position = pos).entered()
+            };
             quickness = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_quickness);
+            #[cfg(feature = "tracing")]
+            let _field_span_coordination = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Coordination", position = pos).entered()
+            };
             coordination = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_coordination);
+            #[cfg(feature = "tracing")]
+            let _field_span_focus = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Focus", position = pos).entered()
+            };
             focus = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_focus);
+            #[cfg(feature = "tracing")]
+            let _field_span_self_ = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Self", position = pos).entered()
+            };
             self_ = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_self_);
+            #[cfg(feature = "tracing")]
+            let _field_span_stamina = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Stamina", position = pos).entered()
+            };
             stamina = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_stamina);
+            #[cfg(feature = "tracing")]
+            let _field_span_mana = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "Mana", position = pos).entered()
+            };
             mana = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_mana);
+            #[cfg(feature = "tracing")]
+            let _field_span_stamina_max = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "StaminaMax", position = pos).entered()
+            };
             stamina_max = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_stamina_max);
+            #[cfg(feature = "tracing")]
+            let _field_span_mana_max = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "ManaMax", position = pos).entered()
+            };
             mana_max = Some(read_u32(reader)?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_mana_max);
         }
         let mut attr_highlight = None;
         let mut attr_color = None;
         if (flags & 0x00000001) != 0 {
+            #[cfg(feature = "tracing")]
+            let _field_span_attr_highlight = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "AttrHighlight", position = pos).entered()
+            };
             attr_highlight = Some(Ok::<_, Box<dyn std::error::Error>>(AttributeMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_attr_highlight);
+            #[cfg(feature = "tracing")]
+            let _field_span_attr_color = {
+                let pos = reader.stream_position().unwrap_or(0);
+                tracing::span!(tracing::Level::TRACE, "field", name = "AttrColor", position = pos).entered()
+            };
             attr_color = Some(Ok::<_, Box<dyn std::error::Error>>(AttributeMask::from_bits_retain(read_u16(reader)?))?);
+            #[cfg(feature = "tracing")]
+            drop(_field_span_attr_color);
         }
 
         Ok(Self {
@@ -6078,16 +10425,89 @@ impl crate::readers::ACDataType for CreatureAppraisalProfile {
 
 impl crate::readers::ACDataType for WeaponProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "WeaponProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_damage_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DamageType", position = pos).entered()
+        };
         let damage_type = Ok::<_, Box<dyn std::error::Error>>(DamageType::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_damage_type);
+        #[cfg(feature = "tracing")]
+        let _field_span_speed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Speed", position = pos).entered()
+        };
         let speed = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_speed);
+        #[cfg(feature = "tracing")]
+        let _field_span_skill = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Skill", position = pos).entered()
+        };
         let skill = SkillId::try_from(read_i32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_skill);
+        #[cfg(feature = "tracing")]
+        let _field_span_damage = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Damage", position = pos).entered()
+        };
         let damage = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_damage);
+        #[cfg(feature = "tracing")]
+        let _field_span_variance = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Variance", position = pos).entered()
+        };
         let variance = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_variance);
+        #[cfg(feature = "tracing")]
+        let _field_span_modifier = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Modifier", position = pos).entered()
+        };
         let modifier = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_modifier);
+        #[cfg(feature = "tracing")]
+        let _field_span_length = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Length", position = pos).entered()
+        };
         let length = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_length);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_velocity = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxVelocity", position = pos).entered()
+        };
         let max_velocity = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_velocity);
+        #[cfg(feature = "tracing")]
+        let _field_span_offsense = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Offsense", position = pos).entered()
+        };
         let offsense = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_offsense);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_velocity_estimated = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxVelocityEstimated", position = pos).entered()
+        };
         let max_velocity_estimated = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_velocity_estimated);
 
         Ok(Self {
             damage_type,
@@ -6106,9 +10526,33 @@ impl crate::readers::ACDataType for WeaponProfile {
 
 impl crate::readers::ACDataType for HookAppraisalProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "HookAppraisalProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = Ok::<_, Box<dyn std::error::Error>>(HookAppraisalFlags::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_valid_locations = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ValidLocations", position = pos).entered()
+        };
         let valid_locations = Ok::<_, Box<dyn std::error::Error>>(EquipMask::from_bits_retain(read_u32(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_valid_locations);
+        #[cfg(feature = "tracing")]
+        let _field_span_ammo_type = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AmmoType", position = pos).entered()
+        };
         let ammo_type = Ok::<_, Box<dyn std::error::Error>>(AmmoType::from_bits_retain(read_u16(reader)?))?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_ammo_type);
 
         Ok(Self {
             flags,
@@ -6120,9 +10564,33 @@ impl crate::readers::ACDataType for HookAppraisalProfile {
 
 impl crate::readers::ACDataType for SquelchDB {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SquelchDB").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_account_hash = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AccountHash", position = pos).entered()
+        };
         let account_hash = read_packable_hash_table::<String, u32>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_account_hash);
+        #[cfg(feature = "tracing")]
+        let _field_span_character_hash = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CharacterHash", position = pos).entered()
+        };
         let character_hash = read_packable_hash_table::<ObjectId, SquelchInfo>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_character_hash);
+        #[cfg(feature = "tracing")]
+        let _field_span_global_info = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "GlobalInfo", position = pos).entered()
+        };
         let global_info = SquelchInfo::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_global_info);
 
         Ok(Self {
             account_hash,
@@ -6134,9 +10602,33 @@ impl crate::readers::ACDataType for SquelchDB {
 
 impl crate::readers::ACDataType for SquelchInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SquelchInfo").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_filters = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Filters", position = pos).entered()
+        };
         let filters = read_packable_list::<LogTextType>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_filters);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_account = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Account", position = pos).entered()
+        };
         let account = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_account);
 
         Ok(Self {
             filters,
@@ -6148,18 +10640,105 @@ impl crate::readers::ACDataType for SquelchInfo {
 
 impl crate::readers::ACDataType for HouseProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "HouseProfile").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_dwelling_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "DwellingId", position = pos).entered()
+        };
         let dwelling_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_dwelling_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_owner_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OwnerId", position = pos).entered()
+        };
         let owner_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_owner_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_flags = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Flags", position = pos).entered()
+        };
         let flags = HouseBitfield::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_flags);
+        #[cfg(feature = "tracing")]
+        let _field_span_min_level = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MinLevel", position = pos).entered()
+        };
         let min_level = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_min_level);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_level = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxLevel", position = pos).entered()
+        };
         let max_level = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_level);
+        #[cfg(feature = "tracing")]
+        let _field_span_min_alleg_rank = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MinAllegRank", position = pos).entered()
+        };
         let min_alleg_rank = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_min_alleg_rank);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_alleg_rank = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxAllegRank", position = pos).entered()
+        };
         let max_alleg_rank = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_alleg_rank);
+        #[cfg(feature = "tracing")]
+        let _field_span_maintenance_free = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaintenanceFree", position = pos).entered()
+        };
         let maintenance_free = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_maintenance_free);
+        #[cfg(feature = "tracing")]
+        let _field_span_type_ = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Type", position = pos).entered()
+        };
         let type_ = HouseType::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_type_);
+        #[cfg(feature = "tracing")]
+        let _field_span_owner_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "OwnerName", position = pos).entered()
+        };
         let owner_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_owner_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_buy = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Buy", position = pos).entered()
+        };
         let buy = read_packable_list::<HousePayment>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_buy);
+        #[cfg(feature = "tracing")]
+        let _field_span_rent = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Rent", position = pos).entered()
+        };
         let rent = read_packable_list::<HousePayment>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_rent);
 
         Ok(Self {
             dwelling_id,
@@ -6180,11 +10759,49 @@ impl crate::readers::ACDataType for HouseProfile {
 
 impl crate::readers::ACDataType for HousePayment {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "HousePayment").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_required = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Required", position = pos).entered()
+        };
         let required = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_required);
+        #[cfg(feature = "tracing")]
+        let _field_span_paid = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Paid", position = pos).entered()
+        };
         let paid = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_paid);
+        #[cfg(feature = "tracing")]
+        let _field_span_weenie_class_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "WeenieClassId", position = pos).entered()
+        };
         let weenie_class_id = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_weenie_class_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_plural_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "PluralName", position = pos).entered()
+        };
         let plural_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_plural_name);
 
         Ok(Self {
             required,
@@ -6198,13 +10815,65 @@ impl crate::readers::ACDataType for HousePayment {
 
 impl crate::readers::ACDataType for HouseData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "HouseData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_buy_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "BuyTime", position = pos).entered()
+        };
         let buy_time = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_buy_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_rent_time = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "RentTime", position = pos).entered()
+        };
         let rent_time = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_rent_time);
+        #[cfg(feature = "tracing")]
+        let _field_span_type_ = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Type", position = pos).entered()
+        };
         let type_ = HouseType::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_type_);
+        #[cfg(feature = "tracing")]
+        let _field_span_maintenance_free = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaintenanceFree", position = pos).entered()
+        };
         let maintenance_free = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_maintenance_free);
+        #[cfg(feature = "tracing")]
+        let _field_span_buy = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Buy", position = pos).entered()
+        };
         let buy = read_packable_list::<HousePayment>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_buy);
+        #[cfg(feature = "tracing")]
+        let _field_span_rent = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Rent", position = pos).entered()
+        };
         let rent = read_packable_list::<HousePayment>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_rent);
+        #[cfg(feature = "tracing")]
+        let _field_span_position = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Position", position = pos).entered()
+        };
         let position = Position::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_position);
 
         Ok(Self {
             buy_time,
@@ -6220,11 +10889,49 @@ impl crate::readers::ACDataType for HouseData {
 
 impl crate::readers::ACDataType for HAR {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "HAR").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_version = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Version", position = pos).entered()
+        };
         let version = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_version);
+        #[cfg(feature = "tracing")]
+        let _field_span_bitmask = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Bitmask", position = pos).entered()
+        };
         let bitmask = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_bitmask);
+        #[cfg(feature = "tracing")]
+        let _field_span_monarch_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MonarchId", position = pos).entered()
+        };
         let monarch_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_monarch_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_guest_list = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "GuestList", position = pos).entered()
+        };
         let guest_list = read_packable_hash_table::<ObjectId, GuestInfo>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_guest_list);
+        #[cfg(feature = "tracing")]
+        let _field_span_roommate_list = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "RoommateList", position = pos).entered()
+        };
         let roommate_list = read_packable_list::<ObjectId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_roommate_list);
 
         Ok(Self {
             version,
@@ -6238,8 +10945,25 @@ impl crate::readers::ACDataType for HAR {
 
 impl crate::readers::ACDataType for GuestInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GuestInfo").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_has_storage_permission = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "HasStoragePermission", position = pos).entered()
+        };
         let has_storage_permission = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_has_storage_permission);
+        #[cfg(feature = "tracing")]
+        let _field_span_guest_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "GuestName", position = pos).entered()
+        };
         let guest_name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_guest_name);
 
         Ok(Self {
             has_storage_permission,
@@ -6251,6 +10975,9 @@ impl crate::readers::ACDataType for GuestInfo {
 impl GameMoveDataType4 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GameMoveDataType4").entered();
+
         let id_piece_to_move = read_i32(reader)?;
         let y_grid = read_i32(reader)?;
 
@@ -6266,6 +10993,9 @@ impl GameMoveDataType4 {
 impl GameMoveDataType5 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GameMoveDataType5").entered();
+
         let id_piece_to_move = read_i32(reader)?;
         let y_grid = read_i32(reader)?;
         let x_to = read_i32(reader)?;
@@ -6285,6 +11015,9 @@ impl GameMoveDataType5 {
 impl GameMoveDataType6 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, player_id: ObjectId, team: int) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GameMoveDataType6").entered();
+
         let id_piece_to_move = read_i32(reader)?;
 
         Ok(Self {
@@ -6297,6 +11030,9 @@ impl GameMoveDataType6 {
 
 impl GameMoveData {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "GameMoveData").entered();
+
         let type_ = read_i32(reader)?;
         let player_id = ObjectId::read(reader)?;
         let team = read_i32(reader)?;
@@ -6327,10 +11063,41 @@ impl crate::readers::ACDataType for GameMoveData {
 
 impl crate::readers::ACDataType for SalvageOperationsResultData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SalvageOperationsResultData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_skill_used = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SkillUsed", position = pos).entered()
+        };
         let skill_used = SkillId::try_from(read_i32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_skill_used);
+        #[cfg(feature = "tracing")]
+        let _field_span_not_salvagable = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "NotSalvagable", position = pos).entered()
+        };
         let not_salvagable = read_packable_list::<ObjectId>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_not_salvagable);
+        #[cfg(feature = "tracing")]
+        let _field_span_salvage_results = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "SalvageResults", position = pos).entered()
+        };
         let salvage_results = read_packable_list::<SalvageResult>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_salvage_results);
+        #[cfg(feature = "tracing")]
+        let _field_span_aug_bonus = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "AugBonus", position = pos).entered()
+        };
         let aug_bonus = read_i32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_aug_bonus);
 
         Ok(Self {
             skill_used,
@@ -6343,9 +11110,33 @@ impl crate::readers::ACDataType for SalvageOperationsResultData {
 
 impl crate::readers::ACDataType for SalvageResult {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "SalvageResult").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_material = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Material", position = pos).entered()
+        };
         let material = MaterialType::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_material);
+        #[cfg(feature = "tracing")]
+        let _field_span_workmanship = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Workmanship", position = pos).entered()
+        };
         let workmanship = read_f64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_workmanship);
+        #[cfg(feature = "tracing")]
+        let _field_span_units = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Units", position = pos).entered()
+        };
         let units = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_units);
 
         Ok(Self {
             material,
@@ -6357,11 +11148,49 @@ impl crate::readers::ACDataType for SalvageResult {
 
 impl crate::readers::ACDataType for FellowshipLockData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "FellowshipLockData").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_unknown1 = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Unknown1", position = pos).entered()
+        };
         let unknown1 = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_unknown1);
+        #[cfg(feature = "tracing")]
+        let _field_span_unknown2 = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Unknown2", position = pos).entered()
+        };
         let unknown2 = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_unknown2);
+        #[cfg(feature = "tracing")]
+        let _field_span_unknown3 = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Unknown3", position = pos).entered()
+        };
         let unknown3 = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_unknown3);
+        #[cfg(feature = "tracing")]
+        let _field_span_timestamp = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Timestamp", position = pos).entered()
+        };
         let timestamp = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_timestamp);
+        #[cfg(feature = "tracing")]
+        let _field_span_sequence = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Sequence", position = pos).entered()
+        };
         let sequence = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_sequence);
 
         Ok(Self {
             unknown1,
@@ -6375,15 +11204,81 @@ impl crate::readers::ACDataType for FellowshipLockData {
 
 impl crate::readers::ACDataType for Fellowship {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Fellowship").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_members = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Members", position = pos).entered()
+        };
         let members = read_packable_hash_table::<ObjectId, Fellow>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_members);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
+        #[cfg(feature = "tracing")]
+        let _field_span_leader_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LeaderId", position = pos).entered()
+        };
         let leader_id = ObjectId::read(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_leader_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_share_xp = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ShareXP", position = pos).entered()
+        };
         let share_xp = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_share_xp);
+        #[cfg(feature = "tracing")]
+        let _field_span_even_xp_split = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "EvenXPSplit", position = pos).entered()
+        };
         let even_xp_split = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_even_xp_split);
+        #[cfg(feature = "tracing")]
+        let _field_span_open = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Open", position = pos).entered()
+        };
         let open = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_open);
+        #[cfg(feature = "tracing")]
+        let _field_span_locked = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Locked", position = pos).entered()
+        };
         let locked = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_locked);
+        #[cfg(feature = "tracing")]
+        let _field_span_recently_departed = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "RecentlyDeparted", position = pos).entered()
+        };
         let recently_departed = read_packable_hash_table::<ObjectId, i32>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_recently_departed);
+        #[cfg(feature = "tracing")]
+        let _field_span_locks = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Locks", position = pos).entered()
+        };
         let locks = read_packable_hash_table::<String, FellowshipLockData>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_locks);
 
         Ok(Self {
             members,
@@ -6401,17 +11296,97 @@ impl crate::readers::ACDataType for Fellowship {
 
 impl crate::readers::ACDataType for Fellow {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "Fellow").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_xp_cached = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "XPCached", position = pos).entered()
+        };
         let xp_cached = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_xp_cached);
+        #[cfg(feature = "tracing")]
+        let _field_span_lum_cached = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "LumCached", position = pos).entered()
+        };
         let lum_cached = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_lum_cached);
+        #[cfg(feature = "tracing")]
+        let _field_span_level = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Level", position = pos).entered()
+        };
         let level = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_level);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_health = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxHealth", position = pos).entered()
+        };
         let max_health = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_health);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_stamina = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxStamina", position = pos).entered()
+        };
         let max_stamina = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_stamina);
+        #[cfg(feature = "tracing")]
+        let _field_span_max_mana = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "MaxMana", position = pos).entered()
+        };
         let max_mana = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_max_mana);
+        #[cfg(feature = "tracing")]
+        let _field_span_current_health = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CurrentHealth", position = pos).entered()
+        };
         let current_health = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_current_health);
+        #[cfg(feature = "tracing")]
+        let _field_span_current_stamina = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CurrentStamina", position = pos).entered()
+        };
         let current_stamina = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_current_stamina);
+        #[cfg(feature = "tracing")]
+        let _field_span_current_mana = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "CurrentMana", position = pos).entered()
+        };
         let current_mana = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_current_mana);
+        #[cfg(feature = "tracing")]
+        let _field_span_share_loot = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ShareLoot", position = pos).entered()
+        };
         let share_loot = read_bool(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_share_loot);
+        #[cfg(feature = "tracing")]
+        let _field_span_name = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Name", position = pos).entered()
+        };
         let name = read_string(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_name);
 
         Ok(Self {
             xp_cached,
@@ -6431,11 +11406,49 @@ impl crate::readers::ACDataType for Fellow {
 
 impl crate::readers::ACDataType for ContractTracker {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ContractTracker").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_version = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "Version", position = pos).entered()
+        };
         let version = read_u32(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_version);
+        #[cfg(feature = "tracing")]
+        let _field_span_contract_id = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ContractId", position = pos).entered()
+        };
         let contract_id = ContractId::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_contract_id);
+        #[cfg(feature = "tracing")]
+        let _field_span_contract_stage = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ContractStage", position = pos).entered()
+        };
         let contract_stage = ContractStage::try_from(read_u32(reader)?)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_contract_stage);
+        #[cfg(feature = "tracing")]
+        let _field_span_time_when_done = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TimeWhenDone", position = pos).entered()
+        };
         let time_when_done = read_i64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_time_when_done);
+        #[cfg(feature = "tracing")]
+        let _field_span_time_when_repeats = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "TimeWhenRepeats", position = pos).entered()
+        };
         let time_when_repeats = read_i64(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_time_when_repeats);
 
         Ok(Self {
             version,
@@ -6449,7 +11462,17 @@ impl crate::readers::ACDataType for ContractTracker {
 
 impl crate::readers::ACDataType for ContractTrackerTable {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "read", r#type = "ContractTrackerTable").entered();
+
+        #[cfg(feature = "tracing")]
+        let _field_span_contact_trackers = {
+            let pos = reader.stream_position().unwrap_or(0);
+            tracing::span!(tracing::Level::TRACE, "field", name = "ContactTrackers", position = pos).entered()
+        };
         let contact_trackers = read_packable_hash_table::<u32, ContractTracker>(reader)?;
+        #[cfg(feature = "tracing")]
+        drop(_field_span_contact_trackers);
 
         Ok(Self {
             contact_trackers,
