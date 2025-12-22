@@ -7,11 +7,7 @@ use crate::{
 
 /// Route a field to the appropriate collection based on context (if/switch/common)
 /// This handles if-true/if-false branches as well as switch cases and common fields
-pub fn route_field(
-    field: Field,
-    current_field_set: &mut Option<FieldSet>,
-    ctx: &mut FieldContext,
-) {
+pub fn route_field(field: Field, current_field_set: &mut Option<FieldSet>, ctx: &mut FieldContext) {
     // If we're in an <if> block, collect fields separately
     if ctx.in_if_true {
         ctx.if_true_fields.push(field);
