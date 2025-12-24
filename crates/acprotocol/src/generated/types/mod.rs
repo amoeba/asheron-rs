@@ -3721,46 +3721,38 @@ impl crate::writers::ACWritable for ACBaseQualities {
 
         write_u32(writer, self.flags.bits())?;
         write_u32(writer, self.weenie_type.clone() as u32)?;
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT.bits()) != 0 {
-            if let Some(ref value) = self.int_properties {
-                write_packable_hash_table::<PropertyInt, i32>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT.bits()) != 0
+            && let Some(ref value) = self.int_properties {
+                write_packable_hash_table::<PropertyInt, i32>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT64.bits()) != 0 {
-            if let Some(ref value) = self.int64_properties {
-                write_packable_hash_table::<PropertyInt64, i64>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT64.bits()) != 0
+            && let Some(ref value) = self.int64_properties {
+                write_packable_hash_table::<PropertyInt64, i64>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_BOOL.bits()) != 0 {
-            if let Some(ref value) = self.bool_properties {
-                write_packable_hash_table::<PropertyBool, bool>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_BOOL.bits()) != 0
+            && let Some(ref value) = self.bool_properties {
+                write_packable_hash_table::<PropertyBool, bool>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_FLOAT.bits()) != 0 {
-            if let Some(ref value) = self.float_properties {
-                write_packable_hash_table::<PropertyFloat, f64>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_FLOAT.bits()) != 0
+            && let Some(ref value) = self.float_properties {
+                write_packable_hash_table::<PropertyFloat, f64>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_STRING.bits()) != 0 {
-            if let Some(ref value) = self.string_properties {
-                write_packable_hash_table::<PropertyString, String>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_STRING.bits()) != 0
+            && let Some(ref value) = self.string_properties {
+                write_packable_hash_table::<PropertyString, String>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_DATA_ID.bits()) != 0 {
-            if let Some(ref value) = self.data_properties {
-                write_packable_hash_table::<PropertyDataId, DataId>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_DATA_ID.bits()) != 0
+            && let Some(ref value) = self.data_properties {
+                write_packable_hash_table::<PropertyDataId, DataId>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INSTANCE_ID.bits()) != 0 {
-            if let Some(ref value) = self.instance_properties {
-                write_packable_hash_table::<PropertyInstanceId, ObjectId>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INSTANCE_ID.bits()) != 0
+            && let Some(ref value) = self.instance_properties {
+                write_packable_hash_table::<PropertyInstanceId, ObjectId>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_POSITION.bits()) != 0 {
-            if let Some(ref value) = self.position_properties {
-                write_packable_hash_table::<PropertyPosition, Position>(writer, &value)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_POSITION.bits()) != 0
+            && let Some(ref value) = self.position_properties {
+                write_packable_hash_table::<PropertyPosition, Position>(writer, value)?;
             }
-        }
         Ok(())
     }
 }
@@ -3945,66 +3937,54 @@ impl crate::writers::ACWritable for ACQualities {
 
         write_u32(writer, self.flags.bits())?;
         write_bool(writer, self.has_health)?;
-        if (self.flags.bits() & ACQualitiesFlags::ATTRIBUTES.bits()) != 0 {
-            if let Some(ref value) = self.attributes {
+        if (self.flags.bits() & ACQualitiesFlags::ATTRIBUTES.bits()) != 0
+            && let Some(ref value) = self.attributes {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::SKILLS.bits()) != 0 {
-            if let Some(ref value) = self.skills {
-                write_packable_hash_table::<SkillId, Skill>(writer, &value)?;
+        if (self.flags.bits() & ACQualitiesFlags::SKILLS.bits()) != 0
+            && let Some(ref value) = self.skills {
+                write_packable_hash_table::<SkillId, Skill>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::BODY.bits()) != 0 {
-            if let Some(ref value) = self.body {
+        if (self.flags.bits() & ACQualitiesFlags::BODY.bits()) != 0
+            && let Some(ref value) = self.body {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::SPELL_BOOK.bits()) != 0 {
-            if let Some(ref value) = self.spell_book {
-                write_packable_hash_table::<LayeredSpellId, SpellBookPage>(writer, &value)?;
+        if (self.flags.bits() & ACQualitiesFlags::SPELL_BOOK.bits()) != 0
+            && let Some(ref value) = self.spell_book {
+                write_packable_hash_table::<LayeredSpellId, SpellBookPage>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::ENCHANTMENTS.bits()) != 0 {
-            if let Some(ref value) = self.enchantments {
+        if (self.flags.bits() & ACQualitiesFlags::ENCHANTMENTS.bits()) != 0
+            && let Some(ref value) = self.enchantments {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::EVENT_FILTER.bits()) != 0 {
-            if let Some(ref value) = self.event_filter {
+        if (self.flags.bits() & ACQualitiesFlags::EVENT_FILTER.bits()) != 0
+            && let Some(ref value) = self.event_filter {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::EMOTES.bits()) != 0 {
-            if let Some(ref value) = self.emotes {
+        if (self.flags.bits() & ACQualitiesFlags::EMOTES.bits()) != 0
+            && let Some(ref value) = self.emotes {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::CREATION_PROFILE.bits()) != 0 {
-            if let Some(ref value) = self.creation_profile {
-                write_packable_list::<CreationProfile>(writer, &value)?;
+        if (self.flags.bits() & ACQualitiesFlags::CREATION_PROFILE.bits()) != 0
+            && let Some(ref value) = self.creation_profile {
+                write_packable_list::<CreationProfile>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::PAGE_DATA.bits()) != 0 {
-            if let Some(ref value) = self.page_data {
+        if (self.flags.bits() & ACQualitiesFlags::PAGE_DATA.bits()) != 0
+            && let Some(ref value) = self.page_data {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::GENERATORS.bits()) != 0 {
-            if let Some(ref value) = self.generators {
+        if (self.flags.bits() & ACQualitiesFlags::GENERATORS.bits()) != 0
+            && let Some(ref value) = self.generators {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::GENERATOR_REGISTRY.bits()) != 0 {
-            if let Some(ref value) = self.generator_registry {
+        if (self.flags.bits() & ACQualitiesFlags::GENERATOR_REGISTRY.bits()) != 0
+            && let Some(ref value) = self.generator_registry {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & ACQualitiesFlags::GENERATOR_QUEUE.bits()) != 0 {
-            if let Some(ref value) = self.generator_queue {
+        if (self.flags.bits() & ACQualitiesFlags::GENERATOR_QUEUE.bits()) != 0
+            && let Some(ref value) = self.generator_queue {
                 value.write(writer)?;
             }
-        }
         Ok(())
     }
 }
@@ -4143,51 +4123,42 @@ impl crate::writers::ACWritable for AttributeCache {
         let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AttributeCache").entered();
 
         write_u32(writer, self.flags)?;
-        if (self.flags & 0x00000001) != 0 {
-            if let Some(ref value) = self.strength {
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.strength {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000002) != 0 {
-            if let Some(ref value) = self.endurance {
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.endurance {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000004) != 0 {
-            if let Some(ref value) = self.quickness {
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.quickness {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.coordination {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.coordination {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000010) != 0 {
-            if let Some(ref value) = self.focus {
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.focus {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000020) != 0 {
-            if let Some(ref value) = self.self_ {
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.self_ {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000040) != 0 {
-            if let Some(ref value) = self.health {
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.health {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000080) != 0 {
-            if let Some(ref value) = self.stamina {
+        if (self.flags & 0x00000080) != 0
+            && let Some(ref value) = self.stamina {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000100) != 0 {
-            if let Some(ref value) = self.mana {
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.mana {
                 value.write(writer)?;
             }
-        }
         Ok(())
     }
 }
@@ -4490,11 +4461,10 @@ impl crate::writers::ACWritable for BodyPart {
         write_i32(writer, self.damage_var)?;
         self.armor_cache.write(writer)?;
         write_i32(writer, self.bh)?;
-        if (self.has_bpsd & 0x00000001) != 0 {
-            if let Some(ref value) = self.bpsd {
+        if (self.has_bpsd & 0x00000001) != 0
+            && let Some(ref value) = self.bpsd {
                 value.write(writer)?;
             }
-        }
         Ok(())
     }
 }
@@ -4797,16 +4767,14 @@ impl crate::writers::ACWritable for SpellBookPage {
         let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SpellBookPage").entered();
 
         write_f32(writer, self.casting_likelihood)?;
-        if self.casting_likelihood < 2.0 {
-            if let Some(ref value) = self.casting_likelihood2 {
+        if self.casting_likelihood < 2.0
+            && let Some(ref value) = self.casting_likelihood2 {
                 write_f32(writer, *value)?;
             }
-        }
-        if self.casting_likelihood < 2.0 {
-            if let Some(ref value) = self.unknown {
+        if self.casting_likelihood < 2.0
+            && let Some(ref value) = self.unknown {
                 write_i32(writer, *value)?;
             }
-        }
         Ok(())
     }
 }
@@ -4885,26 +4853,22 @@ impl crate::writers::ACWritable for EnchantmentRegistry {
         let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EnchantmentRegistry").entered();
 
         write_u32(writer, self.flags.bits())?;
-        if (self.flags.bits() & EnchantmentRegistryFlags::LIFE_SPELLS.bits()) != 0 {
-            if let Some(ref value) = self.life_spells {
-                write_packable_list::<Enchantment>(writer, &value)?;
+        if (self.flags.bits() & EnchantmentRegistryFlags::LIFE_SPELLS.bits()) != 0
+            && let Some(ref value) = self.life_spells {
+                write_packable_list::<Enchantment>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & EnchantmentRegistryFlags::CREATURE_SPELLS.bits()) != 0 {
-            if let Some(ref value) = self.creature_spells {
-                write_packable_list::<Enchantment>(writer, &value)?;
+        if (self.flags.bits() & EnchantmentRegistryFlags::CREATURE_SPELLS.bits()) != 0
+            && let Some(ref value) = self.creature_spells {
+                write_packable_list::<Enchantment>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & EnchantmentRegistryFlags::VITAE.bits()) != 0 {
-            if let Some(ref value) = self.vitae {
+        if (self.flags.bits() & EnchantmentRegistryFlags::VITAE.bits()) != 0
+            && let Some(ref value) = self.vitae {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & EnchantmentRegistryFlags::COOLDOWNS.bits()) != 0 {
-            if let Some(ref value) = self.cooldowns {
-                write_packable_list::<Enchantment>(writer, &value)?;
+        if (self.flags.bits() & EnchantmentRegistryFlags::COOLDOWNS.bits()) != 0
+            && let Some(ref value) = self.cooldowns {
+                write_packable_list::<Enchantment>(writer, value)?;
             }
-        }
         Ok(())
     }
 }
@@ -5047,11 +5011,10 @@ impl crate::writers::ACWritable for Enchantment {
         write_f32(writer, self.degrade_limit)?;
         write_f64(writer, self.last_time_degraded)?;
         self.stat_mod.write(writer)?;
-        if self.has_equipment_set > 0 {
-            if let Some(ref value) = self.equipment_set {
+        if self.has_equipment_set > 0
+            && let Some(ref value) = self.equipment_set {
                 write_u32(writer, value.clone() as u32)?;
             }
-        }
         Ok(())
     }
 }
@@ -6822,11 +6785,10 @@ impl crate::writers::ACWritable for PageData {
         write_u32(writer, self.version)?;
         write_bool(writer, self.text_included)?;
         write_bool(writer, self.ignore_author)?;
-        if self.text_included {
-            if let Some(ref value) = self.page_text {
-                write_string(writer, &value)?;
+        if self.text_included
+            && let Some(ref value) = self.page_text {
+                write_string(writer, value)?;
             }
-        }
         Ok(())
     }
 }
@@ -8161,11 +8123,10 @@ impl crate::writers::ACWritable for PlayerModule {
 
         write_u32(writer, self.flags)?;
         write_u32(writer, self.options.bits())?;
-        if (self.flags & 0x00000001) != 0 {
-            if let Some(ref value) = self.shortcuts {
-                write_packable_list::<ShortCutData>(writer, &value)?;
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.shortcuts {
+                write_packable_list::<ShortCutData>(writer, value)?;
             }
-        }
         write_packable_list::<LayeredSpellId>(writer, &self.tab1_spells)?;
         write_packable_list::<LayeredSpellId>(writer, &self.tab2_spells)?;
         write_packable_list::<LayeredSpellId>(writer, &self.tab3_spells)?;
@@ -8174,36 +8135,30 @@ impl crate::writers::ACWritable for PlayerModule {
         write_packable_list::<LayeredSpellId>(writer, &self.tab6_spells)?;
         write_packable_list::<LayeredSpellId>(writer, &self.tab7_spells)?;
         write_packable_list::<LayeredSpellId>(writer, &self.tab8_spells)?;
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.fill_comps {
-                write_packable_hash_table::<u32, u32>(writer, &value)?;
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.fill_comps {
+                write_packable_hash_table::<u32, u32>(writer, value)?;
             }
-        }
-        if (self.flags & 0x00000020) != 0 {
-            if let Some(ref value) = self.spell_book_filters {
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.spell_book_filters {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000040) != 0 {
-            if let Some(ref value) = self.option_flags {
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.option_flags {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000100) != 0 {
-            if let Some(ref value) = self.unknown100_1 {
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.unknown100_1 {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000100) != 0 {
-            if let Some(ref value) = self.option_strings {
-                write_packable_hash_table::<u32, String>(writer, &value)?;
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.option_strings {
+                write_packable_hash_table::<u32, String>(writer, value)?;
             }
-        }
-        if (self.flags & 0x00000200) != 0 {
-            if let Some(ref value) = self.gameplay_options {
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.gameplay_options {
                 value.write(writer)?;
             }
-        }
         Ok(())
     }
 }
@@ -8695,11 +8650,10 @@ impl crate::writers::ACWritable for AllegianceHierarchy {
         write_u32(writer, self.name_last_set_time)?;
         write_bool(writer, self.is_locked)?;
         write_i32(writer, self.approved_vassal)?;
-        if self.record_count > 0 {
-            if let Some(ref value) = self.monarch_data {
+        if self.record_count > 0
+            && let Some(ref value) = self.monarch_data {
                 value.write(writer)?;
             }
-        }
         write_vec::<AllegianceRecord>(writer, &self.records)?;
         Ok(())
     }
@@ -8861,23 +8815,20 @@ impl crate::writers::ACWritable for AllegianceData {
         write_u8(writer, self.gender.clone() as u8)?;
         write_u8(writer, self.heritage.clone() as u8)?;
         write_u16(writer, self.rank)?;
-        if (self.flags & 0x8) != 0 {
-            if let Some(ref value) = self.level {
+        if (self.flags & 0x8) != 0
+            && let Some(ref value) = self.level {
                 write_u32(writer, *value)?;
             }
-        }
         write_u16(writer, self.loyalty)?;
         write_u16(writer, self.leadership)?;
-        if self.flags == 0x4 {
-            if let Some(ref value) = self.allegiance_age {
+        if self.flags == 0x4
+            && let Some(ref value) = self.allegiance_age {
                 write_u32(writer, *value)?;
             }
-        }
-        if self.flags == 0x4 {
-            if let Some(ref value) = self.time_online {
+        if self.flags == 0x4
+            && let Some(ref value) = self.time_online {
                 write_u64(writer, *value)?;
             }
-        }
         write_string(writer, &self.name)?;
         Ok(())
     }
@@ -9621,191 +9572,154 @@ impl crate::writers::ACWritable for PublicWeenieDesc {
         write_u32(writer, self.type_.bits())?;
         write_u32(writer, self.behavior.bits())?;
         align_dword_write(writer)?;
-        if (self.behavior.bits() & 0x04000000) != 0 {
-            if let Some(ref value) = self.header2 {
+        if (self.behavior.bits() & 0x04000000) != 0
+            && let Some(ref value) = self.header2 {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000001) != 0 {
-            if let Some(ref value) = self.plural_name {
-                write_string(writer, &value)?;
+        if (self.header & 0x00000001) != 0
+            && let Some(ref value) = self.plural_name {
+                write_string(writer, value)?;
             }
-        }
-        if (self.header & 0x00000002) != 0 {
-            if let Some(ref value) = self.items_capacity {
+        if (self.header & 0x00000002) != 0
+            && let Some(ref value) = self.items_capacity {
                 write_u8(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000004) != 0 {
-            if let Some(ref value) = self.container_capacity {
+        if (self.header & 0x00000004) != 0
+            && let Some(ref value) = self.container_capacity {
                 write_u8(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000100) != 0 {
-            if let Some(ref value) = self.ammunition_type {
+        if (self.header & 0x00000100) != 0
+            && let Some(ref value) = self.ammunition_type {
                 write_u16(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000008) != 0 {
-            if let Some(ref value) = self.value {
+        if (self.header & 0x00000008) != 0
+            && let Some(ref value) = self.value {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000010) != 0 {
-            if let Some(ref value) = self.useability {
+        if (self.header & 0x00000010) != 0
+            && let Some(ref value) = self.useability {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000020) != 0 {
-            if let Some(ref value) = self.use_radius {
+        if (self.header & 0x00000020) != 0
+            && let Some(ref value) = self.use_radius {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.header & 0x00080000) != 0 {
-            if let Some(ref value) = self.target_type {
+        if (self.header & 0x00080000) != 0
+            && let Some(ref value) = self.target_type {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000080) != 0 {
-            if let Some(ref value) = self.effects {
+        if (self.header & 0x00000080) != 0
+            && let Some(ref value) = self.effects {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000200) != 0 {
-            if let Some(ref value) = self.combat_use {
+        if (self.header & 0x00000200) != 0
+            && let Some(ref value) = self.combat_use {
                 write_u8(writer, value.clone() as u8)?;
             }
-        }
-        if (self.header & 0x00000400) != 0 {
-            if let Some(ref value) = self.structure {
+        if (self.header & 0x00000400) != 0
+            && let Some(ref value) = self.structure {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000800) != 0 {
-            if let Some(ref value) = self.max_structure {
+        if (self.header & 0x00000800) != 0
+            && let Some(ref value) = self.max_structure {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00001000) != 0 {
-            if let Some(ref value) = self.stack_size {
+        if (self.header & 0x00001000) != 0
+            && let Some(ref value) = self.stack_size {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00002000) != 0 {
-            if let Some(ref value) = self.max_stack_size {
+        if (self.header & 0x00002000) != 0
+            && let Some(ref value) = self.max_stack_size {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00004000) != 0 {
-            if let Some(ref value) = self.container_id {
+        if (self.header & 0x00004000) != 0
+            && let Some(ref value) = self.container_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x00008000) != 0 {
-            if let Some(ref value) = self.wielder_id {
+        if (self.header & 0x00008000) != 0
+            && let Some(ref value) = self.wielder_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x00010000) != 0 {
-            if let Some(ref value) = self.valid_slots {
+        if (self.header & 0x00010000) != 0
+            && let Some(ref value) = self.valid_slots {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00020000) != 0 {
-            if let Some(ref value) = self.slot {
+        if (self.header & 0x00020000) != 0
+            && let Some(ref value) = self.slot {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00040000) != 0 {
-            if let Some(ref value) = self.priority {
+        if (self.header & 0x00040000) != 0
+            && let Some(ref value) = self.priority {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00100000) != 0 {
-            if let Some(ref value) = self.blip_color {
+        if (self.header & 0x00100000) != 0
+            && let Some(ref value) = self.blip_color {
                 write_u8(writer, value.clone() as u8)?;
             }
-        }
-        if (self.header & 0x00800000) != 0 {
-            if let Some(ref value) = self.radar_enum {
+        if (self.header & 0x00800000) != 0
+            && let Some(ref value) = self.radar_enum {
                 write_u8(writer, value.clone() as u8)?;
             }
-        }
-        if (self.header & 0x08000000) != 0 {
-            if let Some(ref value) = self.physics_script {
+        if (self.header & 0x08000000) != 0
+            && let Some(ref value) = self.physics_script {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x01000000) != 0 {
-            if let Some(ref value) = self.workmanship {
+        if (self.header & 0x01000000) != 0
+            && let Some(ref value) = self.workmanship {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.header & 0x00200000) != 0 {
-            if let Some(ref value) = self.burden {
+        if (self.header & 0x00200000) != 0
+            && let Some(ref value) = self.burden {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00400000) != 0 {
-            if let Some(ref value) = self.spell_id {
+        if (self.header & 0x00400000) != 0
+            && let Some(ref value) = self.spell_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x02000000) != 0 {
-            if let Some(ref value) = self.owner_id {
+        if (self.header & 0x02000000) != 0
+            && let Some(ref value) = self.owner_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x04000000) != 0 {
-            if let Some(ref value) = self.restrictions {
+        if (self.header & 0x04000000) != 0
+            && let Some(ref value) = self.restrictions {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x20000000) != 0 {
-            if let Some(ref value) = self.hook_item_types {
+        if (self.header & 0x20000000) != 0
+            && let Some(ref value) = self.hook_item_types {
                 write_u16(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000040) != 0 {
-            if let Some(ref value) = self.monarch_id {
+        if (self.header & 0x00000040) != 0
+            && let Some(ref value) = self.monarch_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x10000000) != 0 {
-            if let Some(ref value) = self.hook_type {
+        if (self.header & 0x10000000) != 0
+            && let Some(ref value) = self.hook_type {
                 write_u16(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x40000000) != 0 {
-            if let Some(ref value) = self.icon_overlay {
+        if (self.header & 0x40000000) != 0
+            && let Some(ref value) = self.icon_overlay {
                 value.write(writer)?;
             }
-        }
-        if (self.header2.unwrap_or(0) & 0x00000001) != 0 {
-            if let Some(ref value) = self.icon_underlay {
+        if (self.header2.unwrap_or(0) & 0x00000001) != 0
+            && let Some(ref value) = self.icon_underlay {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x80000000) != 0 {
-            if let Some(ref value) = self.material {
+        if (self.header & 0x80000000) != 0
+            && let Some(ref value) = self.material {
                 write_u32(writer, value.clone() as u32)?;
             }
-        }
-        if (self.header2.unwrap_or(0) & 0x00000002) != 0 {
-            if let Some(ref value) = self.cooldown_id {
+        if (self.header2.unwrap_or(0) & 0x00000002) != 0
+            && let Some(ref value) = self.cooldown_id {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.header2.unwrap_or(0) & 0x00000004) != 0 {
-            if let Some(ref value) = self.cooldown_duration {
+        if (self.header2.unwrap_or(0) & 0x00000004) != 0
+            && let Some(ref value) = self.cooldown_duration {
                 write_u64(writer, *value)?;
             }
-        }
-        if (self.header2.unwrap_or(0) & 0x00000008) != 0 {
-            if let Some(ref value) = self.pet_owner_id {
+        if (self.header2.unwrap_or(0) & 0x00000008) != 0
+            && let Some(ref value) = self.pet_owner_id {
                 value.write(writer)?;
             }
-        }
         align_dword_write(writer)?;
         Ok(())
     }
@@ -10339,166 +10253,134 @@ impl crate::writers::ACWritable for OldPublicWeenieDesc {
         self.icon.write(writer)?;
         write_u32(writer, self.type_.bits())?;
         write_u32(writer, self.bitfield.bits())?;
-        if (self.header & 0x00000001) != 0 {
-            if let Some(ref value) = self.plural_name {
-                write_string(writer, &value)?;
+        if (self.header & 0x00000001) != 0
+            && let Some(ref value) = self.plural_name {
+                write_string(writer, value)?;
             }
-        }
-        if (self.header & 0x00000002) != 0 {
-            if let Some(ref value) = self.items_capacity {
+        if (self.header & 0x00000002) != 0
+            && let Some(ref value) = self.items_capacity {
                 write_u8(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000004) != 0 {
-            if let Some(ref value) = self.container_capacity {
+        if (self.header & 0x00000004) != 0
+            && let Some(ref value) = self.container_capacity {
                 write_u8(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000008) != 0 {
-            if let Some(ref value) = self.value {
+        if (self.header & 0x00000008) != 0
+            && let Some(ref value) = self.value {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000010) != 0 {
-            if let Some(ref value) = self.useability {
+        if (self.header & 0x00000010) != 0
+            && let Some(ref value) = self.useability {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000020) != 0 {
-            if let Some(ref value) = self.use_radius {
+        if (self.header & 0x00000020) != 0
+            && let Some(ref value) = self.use_radius {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.header & 0x00080000) != 0 {
-            if let Some(ref value) = self.t_target_type {
+        if (self.header & 0x00080000) != 0
+            && let Some(ref value) = self.t_target_type {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000080) != 0 {
-            if let Some(ref value) = self.effects {
+        if (self.header & 0x00000080) != 0
+            && let Some(ref value) = self.effects {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000100) != 0 {
-            if let Some(ref value) = self.ammunition_type {
+        if (self.header & 0x00000100) != 0
+            && let Some(ref value) = self.ammunition_type {
                 write_u16(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000200) != 0 {
-            if let Some(ref value) = self.combat_use {
+        if (self.header & 0x00000200) != 0
+            && let Some(ref value) = self.combat_use {
                 write_u8(writer, value.clone() as u8)?;
             }
-        }
-        if (self.header & 0x00000400) != 0 {
-            if let Some(ref value) = self.structure {
+        if (self.header & 0x00000400) != 0
+            && let Some(ref value) = self.structure {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00000800) != 0 {
-            if let Some(ref value) = self.max_structure {
+        if (self.header & 0x00000800) != 0
+            && let Some(ref value) = self.max_structure {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00001000) != 0 {
-            if let Some(ref value) = self.stack_size {
+        if (self.header & 0x00001000) != 0
+            && let Some(ref value) = self.stack_size {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00002000) != 0 {
-            if let Some(ref value) = self.max_stack_size {
+        if (self.header & 0x00002000) != 0
+            && let Some(ref value) = self.max_stack_size {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00004000) != 0 {
-            if let Some(ref value) = self.container_id {
+        if (self.header & 0x00004000) != 0
+            && let Some(ref value) = self.container_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x00008000) != 0 {
-            if let Some(ref value) = self.wielder_id {
+        if (self.header & 0x00008000) != 0
+            && let Some(ref value) = self.wielder_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x00010000) != 0 {
-            if let Some(ref value) = self.valid_slots {
+        if (self.header & 0x00010000) != 0
+            && let Some(ref value) = self.valid_slots {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00020000) != 0 {
-            if let Some(ref value) = self.slots {
+        if (self.header & 0x00020000) != 0
+            && let Some(ref value) = self.slots {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00040000) != 0 {
-            if let Some(ref value) = self.priority {
+        if (self.header & 0x00040000) != 0
+            && let Some(ref value) = self.priority {
                 write_u32(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00100000) != 0 {
-            if let Some(ref value) = self.blip_color {
+        if (self.header & 0x00100000) != 0
+            && let Some(ref value) = self.blip_color {
                 write_u8(writer, value.clone() as u8)?;
             }
-        }
-        if (self.header & 0x00800000) != 0 {
-            if let Some(ref value) = self.radar_enum {
+        if (self.header & 0x00800000) != 0
+            && let Some(ref value) = self.radar_enum {
                 write_u8(writer, value.clone() as u8)?;
             }
-        }
-        if (self.header & 0x01000000) != 0 {
-            if let Some(ref value) = self.obvious_distance {
+        if (self.header & 0x01000000) != 0
+            && let Some(ref value) = self.obvious_distance {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.header & 0x00200000) != 0 {
-            if let Some(ref value) = self.vndwcid {
+        if (self.header & 0x00200000) != 0
+            && let Some(ref value) = self.vndwcid {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x00400000) != 0 {
-            if let Some(ref value) = self.spell_id {
+        if (self.header & 0x00400000) != 0
+            && let Some(ref value) = self.spell_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x02000000) != 0 {
-            if let Some(ref value) = self.house_owner_id {
+        if (self.header & 0x02000000) != 0
+            && let Some(ref value) = self.house_owner_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x08000000) != 0 {
-            if let Some(ref value) = self.physics_script {
+        if (self.header & 0x08000000) != 0
+            && let Some(ref value) = self.physics_script {
                 write_u16(writer, *value)?;
             }
-        }
-        if (self.header & 0x04000000) != 0 {
-            if let Some(ref value) = self.restrictions {
+        if (self.header & 0x04000000) != 0
+            && let Some(ref value) = self.restrictions {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x10000000) != 0 {
-            if let Some(ref value) = self.hook_type {
+        if (self.header & 0x10000000) != 0
+            && let Some(ref value) = self.hook_type {
                 write_u16(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x20000000) != 0 {
-            if let Some(ref value) = self.hook_item_types {
+        if (self.header & 0x20000000) != 0
+            && let Some(ref value) = self.hook_item_types {
                 write_u16(writer, value.bits())?;
             }
-        }
-        if (self.header & 0x00000040) != 0 {
-            if let Some(ref value) = self.monarch_id {
+        if (self.header & 0x00000040) != 0
+            && let Some(ref value) = self.monarch_id {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x40000000) != 0 {
-            if let Some(ref value) = self.icon_overlay {
+        if (self.header & 0x40000000) != 0
+            && let Some(ref value) = self.icon_overlay {
                 value.write(writer)?;
             }
-        }
-        if (self.header & 0x80000000) != 0 {
-            if let Some(ref value) = self.material {
+        if (self.header & 0x80000000) != 0
+            && let Some(ref value) = self.material {
                 write_u32(writer, value.clone() as u32)?;
             }
-        }
         align_dword_write(writer)?;
         Ok(())
     }
@@ -10994,61 +10876,50 @@ impl crate::writers::ACWritable for RawMotionState {
         let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "RawMotionState").entered();
 
         write_u32(writer, self.flags)?;
-        if (self.flags & 0x00000001) != 0 {
-            if let Some(ref value) = self.current_holdkey {
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.current_holdkey {
                 write_u32(writer, value.clone() as u32)?;
             }
-        }
-        if (self.flags & 0x00000002) != 0 {
-            if let Some(ref value) = self.current_style {
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.current_style {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x00000004) != 0 {
-            if let Some(ref value) = self.forward_command {
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.forward_command {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x0000008) != 0 {
-            if let Some(ref value) = self.forward_holdkey {
+        if (self.flags & 0x0000008) != 0
+            && let Some(ref value) = self.forward_holdkey {
                 write_u32(writer, value.clone() as u32)?;
             }
-        }
-        if (self.flags & 0x00000010) != 0 {
-            if let Some(ref value) = self.forward_speed {
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.forward_speed {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000020) != 0 {
-            if let Some(ref value) = self.sidestep_command {
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.sidestep_command {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x00000040) != 0 {
-            if let Some(ref value) = self.sidestep_holdkey {
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.sidestep_holdkey {
                 write_u32(writer, value.clone() as u32)?;
             }
-        }
-        if (self.flags & 0x00000080) != 0 {
-            if let Some(ref value) = self.sidestep_speed {
+        if (self.flags & 0x00000080) != 0
+            && let Some(ref value) = self.sidestep_speed {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000100) != 0 {
-            if let Some(ref value) = self.turn_command {
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.turn_command {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x00000200) != 0 {
-            if let Some(ref value) = self.turn_holdkey {
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.turn_holdkey {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000400) != 0 {
-            if let Some(ref value) = self.turn_speed {
+        if (self.flags & 0x00000400) != 0
+            && let Some(ref value) = self.turn_speed {
                 write_f32(writer, *value)?;
             }
-        }
         write_vec::<PackedMotionCommand>(writer, &self.commands)?;
         Ok(())
     }
@@ -11287,36 +11158,30 @@ impl crate::writers::ACWritable for PositionPack {
 
         write_u32(writer, self.flags.bits())?;
         self.origin.write(writer)?;
-        if (self.flags.bits() & 0x00000008) != 0 {
-            if let Some(ref value) = self.w_quat {
+        if (self.flags.bits() & 0x00000008) != 0
+            && let Some(ref value) = self.w_quat {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & 0x00000010) != 0 {
-            if let Some(ref value) = self.x_quat {
+        if (self.flags.bits() & 0x00000010) != 0
+            && let Some(ref value) = self.x_quat {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & 0x00000020) != 0 {
-            if let Some(ref value) = self.y_quat {
+        if (self.flags.bits() & 0x00000020) != 0
+            && let Some(ref value) = self.y_quat {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & 0x00000040) != 0 {
-            if let Some(ref value) = self.z_quat {
+        if (self.flags.bits() & 0x00000040) != 0
+            && let Some(ref value) = self.z_quat {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & 0x00000001) != 0 {
-            if let Some(ref value) = self.velocity {
+        if (self.flags.bits() & 0x00000001) != 0
+            && let Some(ref value) = self.velocity {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & 0x00000002) != 0 {
-            if let Some(ref value) = self.placement_id {
+        if (self.flags.bits() & 0x00000002) != 0
+            && let Some(ref value) = self.placement_id {
                 write_u32(writer, *value)?;
             }
-        }
         write_u16(writer, self.object_instance_sequence)?;
         write_u16(writer, self.object_position_sequence)?;
         write_u16(writer, self.object_teleport_sequence)?;
@@ -11486,11 +11351,10 @@ impl MovementDataType0 {
         let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementDataType0").entered();
 
         self.state.write(writer)?;
-        if (self.option_flags.clone() as u32 & 0x01) != 0 {
-            if let Some(ref value) = self.sticky_object {
+        if (self.option_flags.clone() as u32 & 0x01) != 0
+            && let Some(ref value) = self.sticky_object {
                 value.write(writer)?;
             }
-        }
         Ok(())
     }
 }
@@ -11737,41 +11601,34 @@ impl crate::writers::ACWritable for InterpretedMotionState {
         let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "InterpretedMotionState").entered();
 
         write_u32(writer, self.flags)?;
-        if (self.flags & 0x00000001) != 0 {
-            if let Some(ref value) = self.current_style {
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.current_style {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x00000002) != 0 {
-            if let Some(ref value) = self.forward_command {
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.forward_command {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.sidestep_command {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.sidestep_command {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x00000020) != 0 {
-            if let Some(ref value) = self.turn_command {
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.turn_command {
                 write_u16(writer, value.clone() as u16)?;
             }
-        }
-        if (self.flags & 0x00000004) != 0 {
-            if let Some(ref value) = self.forward_speed {
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.forward_speed {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000010) != 0 {
-            if let Some(ref value) = self.sidestep_speed {
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.sidestep_speed {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000040) != 0 {
-            if let Some(ref value) = self.turn_speed {
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.turn_speed {
                 write_f32(writer, *value)?;
             }
-        }
         write_vec::<PackedMotionCommand>(writer, &self.commands)?;
         align_dword_write(writer)?;
         Ok(())
@@ -12083,11 +11940,10 @@ impl crate::writers::ACWritable for ObjDesc {
         write_u8(writer, self.palette_count)?;
         write_u8(writer, self.texture_count)?;
         write_u8(writer, self.model_count)?;
-        if self.palette_count > 0 {
-            if let Some(ref value) = self.palette {
+        if self.palette_count > 0
+            && let Some(ref value) = self.palette {
                 write_packed_dword(writer, value.0)?;
             }
-        }
         write_vec::<Subpalette>(writer, &self.subpalettes)?;
         write_vec::<TextureMapChange>(writer, &self.tm_changes)?;
         write_vec::<AnimPartChange>(writer, &self.ap_changes)?;
@@ -13106,106 +12962,86 @@ impl crate::writers::ACWritable for PhysicsDesc {
 
         write_u32(writer, self.flags)?;
         write_u32(writer, self.state.bits())?;
-        if (self.flags & 0x00010000) != 0 {
-            if let Some(ref value) = self.movement_buffer {
-                write_packable_list::<u8>(writer, &value)?;
+        if (self.flags & 0x00010000) != 0
+            && let Some(ref value) = self.movement_buffer {
+                write_packable_list::<u8>(writer, value)?;
             }
-        }
-        if (self.flags & 0x00010000) != 0 {
-            if let Some(ref value) = self.autonomous {
+        if (self.flags & 0x00010000) != 0
+            && let Some(ref value) = self.autonomous {
                 write_bool(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00020000) != 0 {
-            if let Some(ref value) = self.animation_frame {
+        if (self.flags & 0x00020000) != 0
+            && let Some(ref value) = self.animation_frame {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00008000) != 0 {
-            if let Some(ref value) = self.position {
+        if (self.flags & 0x00008000) != 0
+            && let Some(ref value) = self.position {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000002) != 0 {
-            if let Some(ref value) = self.motion_id {
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.motion_id {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000800) != 0 {
-            if let Some(ref value) = self.sound_id {
+        if (self.flags & 0x00000800) != 0
+            && let Some(ref value) = self.sound_id {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00001000) != 0 {
-            if let Some(ref value) = self.physics_script_id {
+        if (self.flags & 0x00001000) != 0
+            && let Some(ref value) = self.physics_script_id {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000001) != 0 {
-            if let Some(ref value) = self.setup_id {
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.setup_id {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000020) != 0 {
-            if let Some(ref value) = self.parent_id {
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.parent_id {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000020) != 0 {
-            if let Some(ref value) = self.parent_location {
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.parent_location {
                 write_u32(writer, value.clone() as u32)?;
             }
-        }
-        if (self.flags & 0x00000040) != 0 {
-            if let Some(ref value) = self.children {
-                write_packable_list::<EquipLocation>(writer, &value)?;
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.children {
+                write_packable_list::<EquipLocation>(writer, value)?;
             }
-        }
-        if (self.flags & 0x00000080) != 0 {
-            if let Some(ref value) = self.scale {
+        if (self.flags & 0x00000080) != 0
+            && let Some(ref value) = self.scale {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000100) != 0 {
-            if let Some(ref value) = self.friction {
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.friction {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000200) != 0 {
-            if let Some(ref value) = self.elasticity {
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.elasticity {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00040000) != 0 {
-            if let Some(ref value) = self.translucency {
+        if (self.flags & 0x00040000) != 0
+            && let Some(ref value) = self.translucency {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000004) != 0 {
-            if let Some(ref value) = self.velocity {
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.velocity {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.acceleration {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.acceleration {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00000010) != 0 {
-            if let Some(ref value) = self.omega {
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.omega {
                 value.write(writer)?;
             }
-        }
-        if (self.flags & 0x00002000) != 0 {
-            if let Some(ref value) = self.default_script {
+        if (self.flags & 0x00002000) != 0
+            && let Some(ref value) = self.default_script {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00004000) != 0 {
-            if let Some(ref value) = self.default_script_intensity {
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.default_script_intensity {
                 write_f32(writer, *value)?;
             }
-        }
         write_u16(writer, self.object_position_sequence)?;
         write_u16(writer, self.object_movement_sequence)?;
         write_u16(writer, self.object_state_sequence)?;
@@ -13680,66 +13516,54 @@ impl crate::writers::ACWritable for CreatureAppraisalProfile {
         write_u32(writer, self.flags)?;
         write_u32(writer, self.health)?;
         write_u32(writer, self.health_max)?;
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.strength {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.strength {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.endurance {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.endurance {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.quickness {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.quickness {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.coordination {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.coordination {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.focus {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.focus {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.self_ {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.self_ {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.stamina {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.stamina {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.mana {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.mana {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.stamina_max {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.stamina_max {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000008) != 0 {
-            if let Some(ref value) = self.mana_max {
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.mana_max {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags & 0x00000001) != 0 {
-            if let Some(ref value) = self.attr_highlight {
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.attr_highlight {
                 write_u16(writer, value.bits())?;
             }
-        }
-        if (self.flags & 0x00000001) != 0 {
-            if let Some(ref value) = self.attr_color {
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.attr_color {
                 write_u16(writer, value.bits())?;
             }
-        }
         Ok(())
     }
 }

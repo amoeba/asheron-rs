@@ -20,16 +20,19 @@ pub fn generate_write_call(ctx: &ReaderContext, field: &Field, all_fields: &[Fie
     if field.is_optional {
         // For optional fields, need to handle dereferencing for primitives
         let value_expr = get_value_expr_for_optional(&field.field_type);
-        let write_with_value = base_write.replace(&format!("self.{}", field_name), &value_expr);
+        // Replace both `&self.field` and `self.field` patterns to handle collection types
+        let write_with_value = base_write
+            .replace(&format!("&self.{}", field_name), &value_expr)
+            .replace(&format!("self.{}", field_name), &value_expr);
 
         // Generate conditional write based on the test condition or mask
         if let Some(condition) = &field.optional_condition {
             // <if test="..."> condition
             // Convert the condition to Rust code
             let rust_condition = convert_condition_expression(condition, all_fields);
-            // Only write if condition is true and field is Some
+            // Only write if condition is true and field is Some (using let-chain)
             format!(
-                "if {} {{\n            if let Some(ref value) = self.{} {{\n                {};\n            }}\n        }}",
+                "if {}\n            && let Some(ref value) = self.{} {{\n                {};\n            }}",
                 rust_condition, field_name, write_with_value
             )
         } else if let (Some(mask_field), Some(mask_value)) = (&field.mask_field, &field.mask_value)
@@ -78,9 +81,9 @@ pub fn generate_write_call(ctx: &ReaderContext, field: &Field, all_fields: &[Fie
             let mask_field_expr =
                 generate_mask_field_expr(ctx, mask_field, &mask_field_safe, all_fields);
 
-            // Generate: if (flags.bits() & mask) != 0 { if let Some(ref value) = field { write(value) } }
+            // Generate: if (flags.bits() & mask) != 0 && let Some(ref value) = field { write(value) }
             format!(
-                "if ({} & {}) != 0 {{\n            if let Some(ref value) = self.{} {{\n                {};\n            }}\n        }}",
+                "if ({} & {}) != 0\n            && let Some(ref value) = self.{} {{\n                {};\n            }}",
                 mask_field_expr, mask_value_code, field_name, write_with_value
             )
         } else {

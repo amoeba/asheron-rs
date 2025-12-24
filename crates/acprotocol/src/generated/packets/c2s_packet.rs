@@ -289,66 +289,54 @@ impl crate::writers::ACWritable for C2SPacket {
         write_u16(writer, self.time_since_last_packet)?;
         write_u16(writer, self.size)?;
         write_u16(writer, self.iteration)?;
-        if (self.flags.bits() & PacketHeaderFlags::SERVER_SWITCH.bits()) != 0 {
-            if let Some(ref value) = self.server_switch {
+        if (self.flags.bits() & PacketHeaderFlags::SERVER_SWITCH.bits()) != 0
+            && let Some(ref value) = self.server_switch {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::REQUEST_RETRANSMIT.bits()) != 0 {
-            if let Some(ref value) = self.retransmit_sequences {
-                write_packable_list::<u32>(writer, &value)?;
+        if (self.flags.bits() & PacketHeaderFlags::REQUEST_RETRANSMIT.bits()) != 0
+            && let Some(ref value) = self.retransmit_sequences {
+                write_packable_list::<u32>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::REJECT_RETRANSMIT.bits()) != 0 {
-            if let Some(ref value) = self.reject_sequences {
-                write_packable_list::<u32>(writer, &value)?;
+        if (self.flags.bits() & PacketHeaderFlags::REJECT_RETRANSMIT.bits()) != 0
+            && let Some(ref value) = self.reject_sequences {
+                write_packable_list::<u32>(writer, value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::ACK_SEQUENCE.bits()) != 0 {
-            if let Some(ref value) = self.ack_sequence {
+        if (self.flags.bits() & PacketHeaderFlags::ACK_SEQUENCE.bits()) != 0
+            && let Some(ref value) = self.ack_sequence {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::LOGIN_REQUEST.bits()) != 0 {
-            if let Some(ref value) = self.login_request {
+        if (self.flags.bits() & PacketHeaderFlags::LOGIN_REQUEST.bits()) != 0
+            && let Some(ref value) = self.login_request {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::WORLD_LOGIN_REQUEST.bits()) != 0 {
-            if let Some(ref value) = self.world_login_request {
+        if (self.flags.bits() & PacketHeaderFlags::WORLD_LOGIN_REQUEST.bits()) != 0
+            && let Some(ref value) = self.world_login_request {
                 write_u64(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::CONNECT_RESPONSE.bits()) != 0 {
-            if let Some(ref value) = self.connect_response {
+        if (self.flags.bits() & PacketHeaderFlags::CONNECT_RESPONSE.bits()) != 0
+            && let Some(ref value) = self.connect_response {
                 write_u64(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::CICMDCOMMAND.bits()) != 0 {
-            if let Some(ref value) = self.cicmd_command {
+        if (self.flags.bits() & PacketHeaderFlags::CICMDCOMMAND.bits()) != 0
+            && let Some(ref value) = self.cicmd_command {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::TIME_SYNC.bits()) != 0 {
-            if let Some(ref value) = self.time {
+        if (self.flags.bits() & PacketHeaderFlags::TIME_SYNC.bits()) != 0
+            && let Some(ref value) = self.time {
                 write_u64(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::ECHO_REQUEST.bits()) != 0 {
-            if let Some(ref value) = self.echo_time {
+        if (self.flags.bits() & PacketHeaderFlags::ECHO_REQUEST.bits()) != 0
+            && let Some(ref value) = self.echo_time {
                 write_f32(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::FLOW.bits()) != 0 {
-            if let Some(ref value) = self.flow {
+        if (self.flags.bits() & PacketHeaderFlags::FLOW.bits()) != 0
+            && let Some(ref value) = self.flow {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::BLOB_FRAGMENTS.bits()) != 0 {
-            if let Some(ref value) = self.fragments {
+        if (self.flags.bits() & PacketHeaderFlags::BLOB_FRAGMENTS.bits()) != 0
+            && let Some(ref value) = self.fragments {
                 value.write(writer)?;
             }
-        }
         Ok(())
     }
 }

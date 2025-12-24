@@ -233,46 +233,38 @@ impl crate::writers::ACWritable for S2CPacket {
         write_u16(writer, self.time_since_last_packet)?;
         write_u16(writer, self.size)?;
         write_u16(writer, self.iteration)?;
-        if (self.flags.bits() & PacketHeaderFlags::ACK_SEQUENCE.bits()) != 0 {
-            if let Some(ref value) = self.ack_sequence {
+        if (self.flags.bits() & PacketHeaderFlags::ACK_SEQUENCE.bits()) != 0
+            && let Some(ref value) = self.ack_sequence {
                 write_u32(writer, *value)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::LOGON_SERVER_ADDR.bits()) != 0 {
-            if let Some(ref value) = self.logon_server_addr {
+        if (self.flags.bits() & PacketHeaderFlags::LOGON_SERVER_ADDR.bits()) != 0
+            && let Some(ref value) = self.logon_server_addr {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::REFERRAL.bits()) != 0 {
-            if let Some(ref value) = self.referral {
+        if (self.flags.bits() & PacketHeaderFlags::REFERRAL.bits()) != 0
+            && let Some(ref value) = self.referral {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::CONNECT_REQUEST.bits()) != 0 {
-            if let Some(ref value) = self.connect_request {
+        if (self.flags.bits() & PacketHeaderFlags::CONNECT_REQUEST.bits()) != 0
+            && let Some(ref value) = self.connect_request {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::NET_ERROR.bits()) != 0 {
-            if let Some(ref value) = self.net_error {
+        if (self.flags.bits() & PacketHeaderFlags::NET_ERROR.bits()) != 0
+            && let Some(ref value) = self.net_error {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::NET_ERROR_DISCONNECT.bits()) != 0 {
-            if let Some(ref value) = self.net_error_disconnect {
+        if (self.flags.bits() & PacketHeaderFlags::NET_ERROR_DISCONNECT.bits()) != 0
+            && let Some(ref value) = self.net_error_disconnect {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::ECHO_RESPONSE.bits()) != 0 {
-            if let Some(ref value) = self.echo_response {
+        if (self.flags.bits() & PacketHeaderFlags::ECHO_RESPONSE.bits()) != 0
+            && let Some(ref value) = self.echo_response {
                 value.write(writer)?;
             }
-        }
-        if (self.flags.bits() & PacketHeaderFlags::BLOB_FRAGMENTS.bits()) != 0 {
-            if let Some(ref value) = self.fragments {
+        if (self.flags.bits() & PacketHeaderFlags::BLOB_FRAGMENTS.bits()) != 0
+            && let Some(ref value) = self.fragments {
                 value.write(writer)?;
             }
-        }
         Ok(())
     }
 }
