@@ -1,6 +1,11 @@
 use serde::{Serialize, Deserialize};
 use num_enum::TryFromPrimitive;
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
+#[allow(unused_imports)]
+use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 
 bitflags::bitflags! {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -38,6 +43,13 @@ impl crate::readers::ACDataType for PacketHeaderFlags {
     }
 }
 
+impl crate::writers::ACWritable for PacketHeaderFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 #[repr(u16)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum FragmentGroup {
@@ -50,6 +62,13 @@ impl crate::readers::ACDataType for FragmentGroup {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(FragmentGroup::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for FragmentGroup {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.clone() as u16)?;
+        Ok(())
     }
 }
 
@@ -79,6 +98,13 @@ impl crate::readers::ACDataType for ServerSwitchType {
     }
 }
 
+impl crate::writers::ACWritable for ServerSwitchType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ServerSwitchType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -102,6 +128,13 @@ impl crate::readers::ACDataType for AuthFlags {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AuthFlags::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for AuthFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -130,6 +163,13 @@ impl crate::readers::ACDataType for NetAuthType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(NetAuthType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for NetAuthType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -164,6 +204,13 @@ impl crate::readers::ACDataType for GameMessageGroup {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GameMessageGroup::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for GameMessageGroup {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -225,6 +272,13 @@ impl crate::readers::ACDataType for C2SMessage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(C2SMessage::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for C2SMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -445,6 +499,13 @@ impl crate::readers::ACDataType for S2CMessage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(S2CMessage::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for S2CMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -758,6 +819,13 @@ impl crate::readers::ACDataType for GameEvent {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GameEvent::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for GameEvent {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -1194,6 +1262,13 @@ impl crate::readers::ACDataType for GameAction {
     }
 }
 
+impl crate::writers::ACWritable for GameAction {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for GameAction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -1443,6 +1518,13 @@ impl crate::readers::ACDataType for WeenieType {
     }
 }
 
+impl crate::writers::ACWritable for WeenieType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for WeenieType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -1543,6 +1625,13 @@ impl crate::readers::ACDataType for ACBaseQualitiesFlags {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ACBaseQualitiesFlags::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for ACBaseQualitiesFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -1732,6 +1821,13 @@ impl crate::readers::ACDataType for WeenieErrorWithString {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeenieErrorWithString::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for WeenieErrorWithString {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -2241,6 +2337,13 @@ impl crate::readers::ACDataType for WeenieError {
     }
 }
 
+impl crate::writers::ACWritable for WeenieError {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for WeenieError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -2639,6 +2742,13 @@ impl crate::readers::ACDataType for PositionFlags {
     }
 }
 
+impl crate::writers::ACWritable for PositionFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 /// Height of the attack.  TODO these need to be verified.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -2652,6 +2762,13 @@ impl crate::readers::ACDataType for AttackHeight {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttackHeight::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for AttackHeight {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -2679,6 +2796,13 @@ impl crate::readers::ACDataType for ContainerProperties {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ContainerProperties::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for ContainerProperties {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -2718,6 +2842,13 @@ impl crate::readers::ACDataType for AttackType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttackType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for AttackType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -2790,6 +2921,13 @@ impl crate::readers::ACDataType for ItemType {
     }
 }
 
+impl crate::writers::ACWritable for ItemType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 /// The Skill identifies a specific Character skill.
 #[repr(i32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive, Hash, Eq)]
@@ -2853,6 +2991,13 @@ impl crate::readers::ACDataType for SkillId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(SkillId::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for SkillId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
     }
 }
 
@@ -2933,6 +3078,13 @@ impl crate::readers::ACDataType for SkillAdvancementClass {
     }
 }
 
+impl crate::writers::ACWritable for SkillAdvancementClass {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for SkillAdvancementClass {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -2960,6 +3112,13 @@ impl crate::readers::ACDataType for PropertyAttribute2nd {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(PropertyAttribute2nd::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for PropertyAttribute2nd {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.clone() as u16)?;
+        Ok(())
     }
 }
 
@@ -3235,6 +3394,13 @@ impl crate::readers::ACDataType for EmoteType {
     }
 }
 
+impl crate::writers::ACWritable for EmoteType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for EmoteType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -3456,6 +3622,13 @@ impl crate::readers::ACDataType for EmoteCategory {
     }
 }
 
+impl crate::writers::ACWritable for EmoteCategory {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for EmoteCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -3548,6 +3721,13 @@ impl crate::readers::ACDataType for CharacterOptions1 {
     }
 }
 
+impl crate::writers::ACWritable for CharacterOptions1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The CharacterOptions2 word contains additional character options.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -3588,6 +3768,13 @@ impl crate::readers::ACDataType for CharacterOptions2 {
     }
 }
 
+impl crate::writers::ACWritable for CharacterOptions2 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The various options for filtering the spellbook
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -3614,6 +3801,13 @@ impl crate::readers::ACDataType for SpellBookFilterOptions {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(SpellBookFilterOptions::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for SpellBookFilterOptions {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -3656,6 +3850,13 @@ impl crate::readers::ACDataType for EquipMask {
     }
 }
 
+impl crate::writers::ACWritable for EquipMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The type of the friend change event.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -3674,6 +3875,13 @@ impl crate::readers::ACDataType for FriendsUpdateType {
     }
 }
 
+impl crate::writers::ACWritable for FriendsUpdateType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 /// The permission levels that can be given to an allegiance officer
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -3687,6 +3895,13 @@ impl crate::readers::ACDataType for AllegianceOfficerLevel {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AllegianceOfficerLevel::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for AllegianceOfficerLevel {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -3720,6 +3935,13 @@ impl crate::readers::ACDataType for AllegianceLockAction {
     }
 }
 
+impl crate::writers::ACWritable for AllegianceLockAction {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for AllegianceLockAction {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -3749,6 +3971,13 @@ impl crate::readers::ACDataType for AllegianceHouseAction {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AllegianceHouseAction::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for AllegianceHouseAction {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -3785,6 +4014,13 @@ impl crate::readers::ACDataType for AttributeId {
     }
 }
 
+impl crate::writers::ACWritable for AttributeId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for AttributeId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -3815,6 +4051,13 @@ impl crate::readers::ACDataType for VitalId {
     }
 }
 
+impl crate::writers::ACWritable for VitalId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for VitalId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -3839,6 +4082,13 @@ impl crate::readers::ACDataType for CurVitalId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CurVitalId::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for CurVitalId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -3868,6 +4118,13 @@ impl crate::readers::ACDataType for CombatMode {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CombatMode::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for CombatMode {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -4118,6 +4375,13 @@ impl crate::readers::ACDataType for Sound {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(Sound::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for Sound {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
     }
 }
 
@@ -4373,6 +4637,13 @@ impl crate::readers::ACDataType for ChatFragmentType {
     }
 }
 
+impl crate::writers::ACWritable for ChatFragmentType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ChatFragmentType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -4451,6 +4722,13 @@ impl crate::readers::ACDataType for ObjectDescriptionFlag {
     }
 }
 
+impl crate::writers::ACWritable for ObjectDescriptionFlag {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The AmmoType value describes the type of ammunition a missile weapon uses.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -4466,6 +4744,13 @@ impl crate::readers::ACDataType for AmmoType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(AmmoType::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for AmmoType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -4499,6 +4784,13 @@ impl crate::readers::ACDataType for Usable {
     }
 }
 
+impl crate::writers::ACWritable for Usable {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The CoverageMask value describes what parts of the body an item protects.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -4528,6 +4820,13 @@ impl crate::readers::ACDataType for CoverageMask {
     }
 }
 
+impl crate::writers::ACWritable for CoverageMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The HookType identifies the types of dwelling hooks.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -4544,6 +4843,13 @@ impl crate::readers::ACDataType for HookType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(HookType::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for HookType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -4629,6 +4935,13 @@ impl crate::readers::ACDataType for MaterialType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(MaterialType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for MaterialType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -4732,6 +5045,13 @@ impl crate::readers::ACDataType for ConfirmationType {
     }
 }
 
+impl crate::writers::ACWritable for ConfirmationType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ConfirmationType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -4785,6 +5105,13 @@ impl crate::readers::ACDataType for EnvrionChangeType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EnvrionChangeType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for EnvrionChangeType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -4842,6 +5169,13 @@ impl crate::readers::ACDataType for MovementType {
     }
 }
 
+impl crate::writers::ACWritable for MovementType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for MovementType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -4868,6 +5202,13 @@ impl crate::readers::ACDataType for MovementOption {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(MovementOption::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for MovementOption {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
     }
 }
 
@@ -5301,6 +5642,13 @@ impl crate::readers::ACDataType for Command {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(Command::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for Command {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.clone() as u16)?;
+        Ok(())
     }
 }
 
@@ -5749,6 +6097,13 @@ impl crate::readers::ACDataType for StanceMode {
     }
 }
 
+impl crate::writers::ACWritable for StanceMode {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.clone() as u16)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for StanceMode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -5795,6 +6150,13 @@ impl crate::readers::ACDataType for MovementCommand {
     }
 }
 
+impl crate::writers::ACWritable for MovementCommand {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.clone() as u16)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for MovementCommand {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -5828,6 +6190,13 @@ impl crate::readers::ACDataType for HouseBitfield {
     }
 }
 
+impl crate::writers::ACWritable for HouseBitfield {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for HouseBitfield {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -5856,6 +6225,13 @@ impl crate::readers::ACDataType for CharGenResponseType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharGenResponseType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for CharGenResponseType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -5904,6 +6280,13 @@ impl crate::readers::ACDataType for CharacterErrorType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CharacterErrorType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for CharacterErrorType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -5974,6 +6357,13 @@ impl crate::readers::ACDataType for PhysicsState {
     }
 }
 
+impl crate::writers::ACWritable for PhysicsState {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 /// The TurbineChatType identifies the type of Turbine Chat message.
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -5987,6 +6377,13 @@ impl crate::readers::ACDataType for TurbineChatType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(TurbineChatType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for TurbineChatType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -6020,6 +6417,13 @@ impl crate::readers::ACDataType for DatFileType {
     }
 }
 
+impl crate::writers::ACWritable for DatFileType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i64(writer, self.clone() as i64)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for DatFileType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6043,6 +6447,13 @@ impl crate::readers::ACDataType for CompressionType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(CompressionType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for CompressionType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
     }
 }
 
@@ -6079,6 +6490,13 @@ impl crate::readers::ACDataType for AttributeMask {
     }
 }
 
+impl crate::writers::ACWritable for AttributeMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The DamageType identifies the type of damage.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -6100,6 +6518,13 @@ impl crate::readers::ACDataType for DamageType {
     }
 }
 
+impl crate::writers::ACWritable for DamageType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The HookAppraisalFlags identifies various properties for an item hooked.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -6114,6 +6539,13 @@ impl crate::readers::ACDataType for HookAppraisalFlags {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HookAppraisalFlags::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for HookAppraisalFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -6136,6 +6568,13 @@ impl crate::readers::ACDataType for ArmorHighlightMask {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(ArmorHighlightMask::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for ArmorHighlightMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -6168,6 +6607,13 @@ impl crate::readers::ACDataType for ResistHighlightMask {
     }
 }
 
+impl crate::writers::ACWritable for ResistHighlightMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// The WeaponHighlightMask selects which weapon attributes highlighting is applied to.
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -6188,6 +6634,13 @@ impl crate::readers::ACDataType for WeaponHighlightMask {
     }
 }
 
+impl crate::writers::ACWritable for WeaponHighlightMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// Additional attack information
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -6202,6 +6655,13 @@ impl crate::readers::ACDataType for AttackConditionsMask {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttackConditionsMask::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for AttackConditionsMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -6224,6 +6684,13 @@ impl crate::readers::ACDataType for DamageLocation {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(DamageLocation::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for DamageLocation {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -6283,6 +6750,13 @@ impl crate::readers::ACDataType for LogTextType {
     }
 }
 
+impl crate::writers::ACWritable for LogTextType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for LogTextType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6333,6 +6807,13 @@ impl crate::readers::ACDataType for EndTradeReason {
     }
 }
 
+impl crate::writers::ACWritable for EndTradeReason {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for EndTradeReason {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6360,6 +6841,13 @@ impl crate::readers::ACDataType for TradeSide {
     }
 }
 
+impl crate::writers::ACWritable for TradeSide {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for TradeSide {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6384,6 +6872,13 @@ impl crate::readers::ACDataType for HouseType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HouseType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for HouseType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -6428,6 +6923,13 @@ impl crate::readers::ACDataType for ChessMoveResult {
     }
 }
 
+impl crate::writers::ACWritable for ChessMoveResult {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ChessMoveResult {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6468,6 +6970,13 @@ impl crate::readers::ACDataType for FellowUpdateType {
     }
 }
 
+impl crate::writers::ACWritable for FellowUpdateType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for FellowUpdateType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6495,6 +7004,13 @@ impl crate::readers::ACDataType for ContractStage {
     }
 }
 
+impl crate::writers::ACWritable for ContractStage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ContractStage {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6519,6 +7035,13 @@ impl crate::readers::ACDataType for HoldKey {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HoldKey::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for HoldKey {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -6551,6 +7074,13 @@ impl crate::readers::ACDataType for RadarBehavior {
     }
 }
 
+impl crate::writers::ACWritable for RadarBehavior {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for RadarBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6580,6 +7110,13 @@ impl crate::readers::ACDataType for Gender {
     }
 }
 
+impl crate::writers::ACWritable for Gender {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for Gender {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6605,6 +7142,13 @@ impl crate::readers::ACDataType for FactionBits {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(FactionBits::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for FactionBits {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -6719,6 +7263,13 @@ impl crate::readers::ACDataType for CreatureType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(CreatureType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for CreatureType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -6865,6 +7416,13 @@ impl crate::readers::ACDataType for CombatStyle {
     }
 }
 
+impl crate::writers::ACWritable for CombatStyle {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 bitflags::bitflags! {
     /// Indicates what data is present in the ACQualities data
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -6891,6 +7449,13 @@ impl crate::readers::ACDataType for ACQualitiesFlags {
     }
 }
 
+impl crate::writers::ACWritable for ACQualitiesFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum GeneratorDestruct {
@@ -6904,6 +7469,13 @@ impl crate::readers::ACDataType for GeneratorDestruct {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GeneratorDestruct::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for GeneratorDestruct {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -6937,6 +7509,13 @@ impl crate::readers::ACDataType for GeneratorTimeType {
     }
 }
 
+impl crate::writers::ACWritable for GeneratorTimeType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for GeneratorTimeType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -6963,6 +7542,13 @@ impl crate::readers::ACDataType for GeneratorType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(GeneratorType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for GeneratorType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -7005,6 +7591,13 @@ impl crate::readers::ACDataType for ImbuedEffectType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ImbuedEffectType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for ImbuedEffectType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -7051,6 +7644,13 @@ impl crate::readers::ACDataType for ItemXpStyle {
     }
 }
 
+impl crate::writers::ACWritable for ItemXpStyle {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ItemXpStyle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -7082,6 +7682,13 @@ impl crate::readers::ACDataType for SubscriptionStatus {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(SubscriptionStatus::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for SubscriptionStatus {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -7120,6 +7727,13 @@ impl crate::readers::ACDataType for WeaponType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(WeaponType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for WeaponType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -7163,6 +7777,13 @@ impl crate::readers::ACDataType for ActivationResponse {
     }
 }
 
+impl crate::writers::ACWritable for ActivationResponse {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ActivationResponse {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -7194,6 +7815,13 @@ impl crate::readers::ACDataType for AetheriaBitfield {
     }
 }
 
+impl crate::writers::ACWritable for AetheriaBitfield {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for AetheriaBitfield {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -7222,6 +7850,13 @@ impl crate::readers::ACDataType for HookGroupType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(HookGroupType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for HookGroupType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -7259,6 +7894,13 @@ impl crate::readers::ACDataType for ArmorType {
     }
 }
 
+impl crate::writers::ACWritable for ArmorType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ArmorType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -7286,6 +7928,13 @@ impl crate::readers::ACDataType for AttunedStatus {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(AttunedStatus::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for AttunedStatus {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -7317,6 +7966,13 @@ impl crate::readers::ACDataType for BondedStatus {
     }
 }
 
+impl crate::writers::ACWritable for BondedStatus {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for BondedStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -7342,6 +7998,13 @@ impl crate::readers::ACDataType for HouseStatus {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(HouseStatus::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for HouseStatus {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
     }
 }
 
@@ -7383,6 +8046,13 @@ impl crate::readers::ACDataType for UiEffects {
     }
 }
 
+impl crate::writers::ACWritable for UiEffects {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 #[repr(i32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum PortalBitmask {
@@ -7403,6 +8073,13 @@ impl crate::readers::ACDataType for PortalBitmask {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(PortalBitmask::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for PortalBitmask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
     }
 }
 
@@ -7447,6 +8124,13 @@ impl crate::readers::ACDataType for WieldRequirement {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(WieldRequirement::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for WieldRequirement {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
     }
 }
 
@@ -7577,6 +8261,13 @@ impl crate::readers::ACDataType for PaletteTemplate {
     }
 }
 
+impl crate::writers::ACWritable for PaletteTemplate {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for PaletteTemplate {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -7692,6 +8383,13 @@ impl crate::readers::ACDataType for SummoningMastery {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_i32(reader)?;
         Ok(SummoningMastery::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for SummoningMastery {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_i32(writer, self.clone() as i32)?;
+        Ok(())
     }
 }
 
@@ -8364,6 +9062,13 @@ impl crate::readers::ACDataType for ContractId {
     }
 }
 
+impl crate::writers::ACWritable for ContractId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for ContractId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -8716,6 +9421,13 @@ impl crate::readers::ACDataType for PropertyInt64 {
     }
 }
 
+impl crate::writers::ACWritable for PropertyInt64 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for PropertyInt64 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -8873,6 +9585,13 @@ impl crate::readers::ACDataType for PropertyBool {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyBool::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for PropertyBool {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -9086,6 +9805,13 @@ impl crate::readers::ACDataType for PropertyDataId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyDataId::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for PropertyDataId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -9561,6 +10287,13 @@ impl crate::readers::ACDataType for PropertyInt {
     }
 }
 
+impl crate::writers::ACWritable for PropertyInt {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for PropertyInt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -10017,6 +10750,13 @@ impl crate::readers::ACDataType for PropertyInstanceId {
     }
 }
 
+impl crate::writers::ACWritable for PropertyInstanceId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for PropertyInstanceId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -10107,6 +10847,13 @@ impl crate::readers::ACDataType for PropertyPosition {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyPosition::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for PropertyPosition {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -10207,6 +10954,13 @@ impl crate::readers::ACDataType for PropertyString {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(PropertyString::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for PropertyString {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -10455,6 +11209,13 @@ impl crate::readers::ACDataType for PropertyFloat {
     }
 }
 
+impl crate::writers::ACWritable for PropertyFloat {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for PropertyFloat {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -10684,6 +11445,13 @@ impl crate::readers::ACDataType for Channel {
     }
 }
 
+impl crate::writers::ACWritable for Channel {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 /// Equipment Set Ids
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
@@ -10836,6 +11604,13 @@ impl crate::readers::ACDataType for EquipmentSet {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EquipmentSet::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for EquipmentSet {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -11012,6 +11787,13 @@ impl crate::readers::ACDataType for RadarColor {
     }
 }
 
+impl crate::writers::ACWritable for RadarColor {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for RadarColor {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -11046,6 +11828,13 @@ impl crate::readers::ACDataType for EnchantmentRegistryFlags {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(EnchantmentRegistryFlags::from_bits_retain(value))
+    }
+}
+
+impl crate::writers::ACWritable for EnchantmentRegistryFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
     }
 }
 
@@ -11787,6 +12576,13 @@ impl crate::readers::ACDataType for SpellCategory {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u16(reader)?;
         Ok(SpellCategory::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for SpellCategory {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u16(writer, self.clone() as u16)?;
+        Ok(())
     }
 }
 
@@ -12554,6 +13350,13 @@ impl crate::readers::ACDataType for HeritageGroup {
     }
 }
 
+impl crate::writers::ACWritable for HeritageGroup {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
+    }
+}
+
 impl std::fmt::Display for HeritageGroup {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
@@ -12604,6 +13407,13 @@ impl crate::readers::ACDataType for IconHighlight {
     }
 }
 
+impl crate::writers::ACWritable for IconHighlight {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 #[repr(u8)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum CombatUse {
@@ -12619,6 +13429,13 @@ impl crate::readers::ACDataType for CombatUse {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(CombatUse::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for CombatUse {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
     }
 }
 
@@ -12651,6 +13468,13 @@ impl crate::readers::ACDataType for WieldType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u8(reader)?;
         Ok(WieldType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for WieldType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u8(writer, self.clone() as u8)?;
+        Ok(())
     }
 }
 
@@ -12688,6 +13512,13 @@ impl crate::readers::ACDataType for ChatType {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ChatType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for ChatType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -12732,6 +13563,13 @@ impl crate::readers::ACDataType for ChatDisplayMask {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ChatDisplayMask::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for ChatDisplayMask {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -12789,6 +13627,13 @@ impl crate::readers::ACDataType for EnchantmentTypeFlags {
     }
 }
 
+impl crate::writers::ACWritable for EnchantmentTypeFlags {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.bits())?;
+        Ok(())
+    }
+}
+
 #[repr(u32)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, TryFromPrimitive)]
 pub enum ParentLocation {
@@ -12808,6 +13653,13 @@ impl crate::readers::ACDataType for ParentLocation {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(ParentLocation::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for ParentLocation {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -12876,6 +13728,13 @@ impl crate::readers::ACDataType for Placement {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         let value = crate::readers::read_u32(reader)?;
         Ok(Placement::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for Placement {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, self.clone() as u32)?;
+        Ok(())
     }
 }
 
