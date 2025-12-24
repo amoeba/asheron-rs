@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -69,6 +72,19 @@ impl crate::readers::ACDataType for FragmentHeader {
             count,
             index,
         })
+    }
+}
+
+impl crate::writers::ACWritable for FragmentHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "FragmentHeader").entered();
+
+        write_u32(writer, self.sequence)?;
+        write_u32(writer, self.id)?;
+        write_u16(writer, self.count)?;
+        write_u16(writer, self.index)?;
+        Ok(())
     }
 }
 

@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -92,6 +95,21 @@ impl crate::readers::ACDataType for CommunicationHearDirectSpeech {
             type_,
             secret_flags,
         })
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationHearDirectSpeech {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationHearDirectSpeech").entered();
+
+        write_string(writer, &self.message)?;
+        write_string(writer, &self.sender_name)?;
+        self.sender_id.write(writer)?;
+        self.target_id.write(writer)?;
+        write_u32(writer, self.type_.clone() as u32)?;
+        write_u32(writer, self.secret_flags)?;
+        Ok(())
     }
 }
 

@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -202,6 +205,31 @@ impl crate::readers::ACDataType for CharacterStartBarber {
             option1,
             option2,
         })
+    }
+}
+
+impl crate::writers::ACWritable for CharacterStartBarber {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CharacterStartBarber").entered();
+
+        self.base_palette.write(writer)?;
+        self.head_object.write(writer)?;
+        self.head_texture.write(writer)?;
+        self.default_head_texture.write(writer)?;
+        self.eyes_texture.write(writer)?;
+        self.default_eyes_texture.write(writer)?;
+        self.nose_texture.write(writer)?;
+        self.default_nose_texture.write(writer)?;
+        self.mouth_texture.write(writer)?;
+        self.default_mouth_texture.write(writer)?;
+        self.skin_palette.write(writer)?;
+        self.hair_palette.write(writer)?;
+        self.eyes_palette.write(writer)?;
+        self.setup_id.write(writer)?;
+        write_i32(writer, self.option1)?;
+        write_i32(writer, self.option2)?;
+        Ok(())
     }
 }
 

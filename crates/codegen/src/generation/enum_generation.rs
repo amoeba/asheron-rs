@@ -70,6 +70,11 @@ pub fn generate_bitflags(protocol_enum: &ProtocolEnum) -> String {
             &protocol_enum.parent,
             "from_bits_retain",
         ));
+        out.push_str(&super::helpers::generate_acwritable_impl(
+            enum_name,
+            &protocol_enum.parent,
+            true, // is_bitflags
+        ));
     }
 
     out
@@ -184,6 +189,11 @@ pub fn generate_enum(protocol_enum: &ProtocolEnum) -> String {
             enum_name,
             &protocol_enum.parent,
             "try_from",
+        ));
+        out.push_str(&super::helpers::generate_acwritable_impl(
+            enum_name,
+            &protocol_enum.parent,
+            false, // is_bitflags
         ));
     }
 

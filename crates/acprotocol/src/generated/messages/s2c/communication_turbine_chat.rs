@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -346,6 +349,167 @@ impl CommunicationTurbineChat {
 impl crate::readers::ACDataType for CommunicationTurbineChat {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CommunicationTurbineChat::read(reader)
+    }
+}
+
+impl CommunicationTurbineChatType1 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationTurbineChatType1").entered();
+
+        self.blob_dispatch_type.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationTurbineChatType1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CommunicationTurbineChatType1::write(self, writer)
+    }
+}
+
+impl CommunicationTurbineChatType1BlobDispatchTypeVariant {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationTurbineChatType1BlobDispatchTypeVariant").entered();
+
+        match self {
+            Self::Type1(variant_struct) => {
+                write_u8(writer, 0x01)?;
+                write_u32(writer, variant_struct.room_id)?;
+                write_wstring(writer, &variant_struct.display_name.0)?;
+                write_wstring(writer, &variant_struct.text.0)?;
+                write_u32(writer, variant_struct.extra_data_size)?;
+                variant_struct.speaker_id.write(writer)?;
+                write_i32(writer, variant_struct.h_result)?;
+                write_u32(writer, variant_struct.chat_type.clone() as u32)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationTurbineChatType1BlobDispatchTypeVariant {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CommunicationTurbineChatType1BlobDispatchTypeVariant::write(self, writer)
+    }
+}
+
+
+impl CommunicationTurbineChatType3 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationTurbineChatType3").entered();
+
+        self.blob_dispatch_type.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationTurbineChatType3 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CommunicationTurbineChatType3::write(self, writer)
+    }
+}
+
+impl CommunicationTurbineChatType3BlobDispatchTypeVariant {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationTurbineChatType3BlobDispatchTypeVariant").entered();
+
+        match self {
+            Self::Type2(variant_struct) => {
+                write_u8(writer, 0x02)?;
+                write_u32(writer, variant_struct.context_id)?;
+                write_u32(writer, variant_struct.response_id)?;
+                write_u32(writer, variant_struct.method_id)?;
+                write_u32(writer, variant_struct.room_id)?;
+                write_wstring(writer, &variant_struct.text.0)?;
+                write_u32(writer, variant_struct.extra_data_size)?;
+                variant_struct.speaker_id.write(writer)?;
+                write_i32(writer, variant_struct.h_result)?;
+                write_u32(writer, variant_struct.chat_type.clone() as u32)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationTurbineChatType3BlobDispatchTypeVariant {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CommunicationTurbineChatType3BlobDispatchTypeVariant::write(self, writer)
+    }
+}
+
+
+impl CommunicationTurbineChatType5 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationTurbineChatType5").entered();
+
+        self.blob_dispatch_type.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationTurbineChatType5 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CommunicationTurbineChatType5::write(self, writer)
+    }
+}
+
+impl CommunicationTurbineChatType5BlobDispatchTypeVariant {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationTurbineChatType5BlobDispatchTypeVariant").entered();
+
+        match self {
+            Self::Type1(variant_struct) => {
+                write_u8(writer, 0x01)?;
+                write_u32(writer, variant_struct.context_id)?;
+                write_u32(writer, variant_struct.response_id)?;
+                write_u32(writer, variant_struct.method_id)?;
+                write_i32(writer, variant_struct.h_result)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationTurbineChatType5BlobDispatchTypeVariant {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CommunicationTurbineChatType5BlobDispatchTypeVariant::write(self, writer)
+    }
+}
+
+
+impl CommunicationTurbineChat {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationTurbineChat").entered();
+
+
+        match self {
+            Self::Type1(variant_struct) => {
+                CommunicationTurbineChatType1::write(variant_struct, writer)?;
+            },
+            Self::Type3(variant_struct) => {
+                CommunicationTurbineChatType3::write(variant_struct, writer)?;
+            },
+            Self::Type5(variant_struct) => {
+                CommunicationTurbineChatType5::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationTurbineChat {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CommunicationTurbineChat::write(self, writer)
     }
 }
 

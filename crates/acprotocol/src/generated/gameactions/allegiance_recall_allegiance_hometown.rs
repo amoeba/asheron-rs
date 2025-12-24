@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -26,6 +29,18 @@ impl AllegianceRecallAllegianceHometown {
 impl crate::readers::ACDataType for AllegianceRecallAllegianceHometown {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         AllegianceRecallAllegianceHometown::read(reader)
+    }
+}
+
+impl AllegianceRecallAllegianceHometown {
+    pub fn write(&self, _writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for AllegianceRecallAllegianceHometown {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        AllegianceRecallAllegianceHometown::write(self, writer)
     }
 }
 

@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -92,6 +95,21 @@ impl crate::readers::ACDataType for WritingBookOpen {
             scribe_id,
             scribe_name,
         })
+    }
+}
+
+impl crate::writers::ACWritable for WritingBookOpen {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WritingBookOpen").entered();
+
+        self.book_id.write(writer)?;
+        write_u32(writer, self.max_num_pages)?;
+        self.page_data.write(writer)?;
+        write_string(writer, &self.inscription)?;
+        self.scribe_id.write(writer)?;
+        write_string(writer, &self.scribe_name)?;
+        Ok(())
     }
 }
 

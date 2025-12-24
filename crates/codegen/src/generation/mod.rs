@@ -6,6 +6,8 @@ pub mod read_generation;
 pub mod reader_generation;
 pub mod type_generation;
 pub mod types;
+pub mod write_generation;
+pub mod writer_generation;
 
 use std::collections::BTreeMap;
 
@@ -120,7 +122,12 @@ pub fn generate_with_source(xml: &str, source: GenerateSource) -> GeneratedCode 
     let mut enums_out = String::new();
     enums_out.push_str("use serde::{Serialize, Deserialize};\n");
     enums_out.push_str("use num_enum::TryFromPrimitive;\n");
-    enums_out.push_str("use crate::readers::ACReader;\n\n");
+    enums_out.push_str("use crate::readers::ACReader;\n");
+    enums_out.push_str("use crate::writers::ACWriter;\n");
+    enums_out.push_str("#[allow(unused_imports)]\n");
+    enums_out.push_str("use crate::readers::*;\n");
+    enums_out.push_str("#[allow(unused_imports)]\n");
+    enums_out.push_str("use crate::writers::*;\n\n");
 
     for protocol_enum in &enum_types {
         if protocol_enum.is_mask {
@@ -140,12 +147,19 @@ pub fn generate_with_source(xml: &str, source: GenerateSource) -> GeneratedCode 
         ));
     }
 
-    // Generate common types - will add readers after building reader context
+    // Generate common types - will add readers and writers after building reader context
     let mut common_types_out = String::new();
     common_types_out.push_str("use serde::{Serialize, Deserialize};\n");
     common_types_out.push_str("use crate::readers::ACReader;\n");
+    common_types_out.push_str("use crate::writers::ACWriter;\n");
+    common_types_out.push_str("#[allow(unused_imports)]\n");
     common_types_out.push_str("use crate::readers::*;\n");
-    common_types_out.push_str("use crate::enums::*;\n\n");
+    common_types_out.push_str("#[allow(unused_imports)]\n");
+    common_types_out.push_str("use crate::writers::*;\n");
+    common_types_out.push_str("use crate::enums::*;\n");
+    common_types_out.push_str("#[cfg(feature = \"tracing\")]\n");
+    common_types_out.push_str("#[allow(unused_imports)]\n");
+    common_types_out.push_str("use tracing::{span, Level};\n\n");
 
     for protocol_type in &rectified_common_types {
         if protocol_type.is_primitive {
@@ -194,6 +208,10 @@ pub fn generate_with_source(xml: &str, source: GenerateSource) -> GeneratedCode 
     // Add reader implementations to common types
     for protocol_type in &rectified_common_types {
         common_types_out.push_str(&reader_generation::generate_reader_impl(
+            &reader_ctx,
+            protocol_type,
+        ));
+        common_types_out.push_str(&writer_generation::generate_writer_impl(
             &reader_ctx,
             protocol_type,
         ));

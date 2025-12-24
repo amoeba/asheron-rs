@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -70,6 +73,19 @@ impl crate::readers::ACDataType for ItemSetState {
             object_instance_sequence,
             object_state_sequence,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ItemSetState {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ItemSetState").entered();
+
+        self.object_id.write(writer)?;
+        write_u32(writer, self.new_state.bits())?;
+        write_u16(writer, self.object_instance_sequence)?;
+        write_u16(writer, self.object_state_sequence)?;
+        Ok(())
     }
 }
 

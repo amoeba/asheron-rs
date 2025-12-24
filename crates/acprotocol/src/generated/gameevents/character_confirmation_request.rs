@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -59,6 +62,18 @@ impl crate::readers::ACDataType for CharacterConfirmationRequest {
             context_id,
             text,
         })
+    }
+}
+
+impl crate::writers::ACWritable for CharacterConfirmationRequest {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CharacterConfirmationRequest").entered();
+
+        write_u32(writer, self.confirmation_type.clone() as u32)?;
+        write_u32(writer, self.context_id)?;
+        write_string(writer, &self.text)?;
+        Ok(())
     }
 }
 

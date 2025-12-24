@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -59,6 +62,18 @@ impl crate::readers::ACDataType for SocialSendClientContractTracker {
             delete_contract,
             set_as_display_contract,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SocialSendClientContractTracker {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SocialSendClientContractTracker").entered();
+
+        self.contract_tracker.write(writer)?;
+        write_bool(writer, self.delete_contract)?;
+        write_bool(writer, self.set_as_display_contract)?;
+        Ok(())
     }
 }
 

@@ -52,6 +52,23 @@ pub fn get_reader_function_name(rust_type: &str) -> Option<&'static str> {
     }
 }
 
+/// Get the writer function name for a given Rust type
+pub fn get_writer_function_name(rust_type: &str) -> Option<&'static str> {
+    match rust_type {
+        "u8" => Some("write_u8"),
+        "i8" => Some("write_i8"),
+        "u16" => Some("write_u16"),
+        "i16" => Some("write_i16"),
+        "u32" => Some("write_u32"),
+        "i32" => Some("write_i32"),
+        "u64" => Some("write_u64"),
+        "i64" => Some("write_i64"),
+        "f32" => Some("write_f32"),
+        "f64" => Some("write_f64"),
+        _ => None,
+    }
+}
+
 /// Generate a variant name from a case value
 /// Negative values become TypeNeg{abs}, positive become Type{HEX}
 pub fn generate_variant_name(value: i64) -> String {
@@ -79,6 +96,32 @@ pub fn generate_acdata_type_impl(
 
         format!(
             "impl crate::readers::ACDataType for {type_name} {{\n    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {{\n        let value = crate::readers::{read_fn}(reader)?;\n        Ok({conversion_expr})\n    }}\n}}\n\n"
+        )
+    } else {
+        String::new()
+    }
+}
+
+/// Generate ACWritable implementation for enum/bitflag types
+pub fn generate_acwritable_impl(
+    type_name: &str,
+    parent_type: &str,
+    is_bitflags: bool, // true for bitflags, false for regular enums
+) -> String {
+    let rust_type = get_rust_type(parent_type);
+
+    if let Some(write_fn) = get_writer_function_name(rust_type) {
+        let value_expr = if is_bitflags {
+            // Bitflags: use .bits() to get the underlying value
+            "self.bits()".to_string()
+        } else {
+            // Regular enum: clone and cast to the parent type
+            // We need clone() because enums don't implement Copy
+            format!("self.clone() as {}", rust_type)
+        };
+
+        format!(
+            "impl crate::writers::ACWritable for {type_name} {{\n    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {{\n        crate::writers::{write_fn}(writer, {value_expr})?;\n        Ok(())\n    }}\n}}\n\n"
         )
     } else {
         String::new()

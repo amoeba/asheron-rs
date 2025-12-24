@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -92,6 +95,21 @@ impl crate::readers::ACDataType for AdminQueryPluginResponse {
             plugin_email,
             plugin_webpage,
         })
+    }
+}
+
+impl crate::writers::ACWritable for AdminQueryPluginResponse {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AdminQueryPluginResponse").entered();
+
+        write_u32(writer, self.context)?;
+        write_bool(writer, self.success)?;
+        write_string(writer, &self.plugin_name)?;
+        write_string(writer, &self.plugin_author)?;
+        write_string(writer, &self.plugin_email)?;
+        write_string(writer, &self.plugin_webpage)?;
+        Ok(())
     }
 }
 

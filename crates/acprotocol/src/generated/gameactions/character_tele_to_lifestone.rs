@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -26,6 +29,18 @@ impl CharacterTeleToLifestone {
 impl crate::readers::ACDataType for CharacterTeleToLifestone {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CharacterTeleToLifestone::read(reader)
+    }
+}
+
+impl CharacterTeleToLifestone {
+    pub fn write(&self, _writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CharacterTeleToLifestone {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CharacterTeleToLifestone::write(self, writer)
     }
 }
 

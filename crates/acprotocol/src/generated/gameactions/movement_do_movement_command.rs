@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -59,6 +62,18 @@ impl crate::readers::ACDataType for MovementDoMovementCommand {
             speed,
             hold_key,
         })
+    }
+}
+
+impl crate::writers::ACWritable for MovementDoMovementCommand {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementDoMovementCommand").entered();
+
+        write_u32(writer, self.motion)?;
+        write_f32(writer, self.speed)?;
+        write_u32(writer, self.hold_key.clone() as u32)?;
+        Ok(())
     }
 }
 

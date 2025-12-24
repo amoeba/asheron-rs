@@ -1,7 +1,14 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
+#[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 use crate::enums::*;
+#[cfg(feature = "tracing")]
+#[allow(unused_imports)]
+use tracing::{span, Level};
 
 #[allow(non_camel_case_types)]
 pub type byte = u8;
@@ -2621,6 +2628,19 @@ impl crate::readers::ACDataType for WString {
     }
 }
 
+impl WString {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        write_wstring(writer, &self.0)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WString {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WString::write(self, writer)
+    }
+}
+
 impl PackedWORD {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         crate::readers::read_packed_word(reader)?;
@@ -2631,6 +2651,18 @@ impl PackedWORD {
 impl crate::readers::ACDataType for PackedWORD {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         PackedWORD::read(reader)
+    }
+}
+
+impl PackedWORD {
+    pub fn write(&self, _writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for PackedWORD {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        PackedWORD::write(self, writer)
     }
 }
 
@@ -2647,6 +2679,18 @@ impl crate::readers::ACDataType for PackedDWORD {
     }
 }
 
+impl PackedDWORD {
+    pub fn write(&self, _writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for PackedDWORD {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        PackedDWORD::write(self, writer)
+    }
+}
+
 impl ObjectId {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self(read_u32(reader)?))
@@ -2656,6 +2700,19 @@ impl ObjectId {
 impl crate::readers::ACDataType for ObjectId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ObjectId::read(reader)
+    }
+}
+
+impl ObjectId {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        write_u32(writer, self.0)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for ObjectId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        ObjectId::write(self, writer)
     }
 }
 
@@ -2671,6 +2728,19 @@ impl crate::readers::ACDataType for LandcellId {
     }
 }
 
+impl LandcellId {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        write_u32(writer, self.0)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for LandcellId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        LandcellId::write(self, writer)
+    }
+}
+
 impl SpellId {
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self(read_u16(reader)?))
@@ -2680,6 +2750,32 @@ impl SpellId {
 impl crate::readers::ACDataType for SpellId {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         SpellId::read(reader)
+    }
+}
+
+impl SpellId {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        write_u16(writer, self.0)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for SpellId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        SpellId::write(self, writer)
+    }
+}
+
+impl DataId {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        write_u32(writer, self.0)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for DataId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        DataId::write(self, writer)
     }
 }
 
@@ -2709,6 +2805,17 @@ impl crate::readers::ACDataType for LayeredSpellId {
             id,
             layer,
         })
+    }
+}
+
+impl crate::writers::ACWritable for LayeredSpellId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "LayeredSpellId").entered();
+
+        self.id.write(writer)?;
+        write_u16(writer, self.layer)?;
+        Ok(())
     }
 }
 
@@ -2747,6 +2854,18 @@ impl crate::readers::ACDataType for Vector3 {
             y,
             z,
         })
+    }
+}
+
+impl crate::writers::ACWritable for Vector3 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Vector3").entered();
+
+        write_f32(writer, self.x)?;
+        write_f32(writer, self.y)?;
+        write_f32(writer, self.z)?;
+        Ok(())
     }
 }
 
@@ -2797,6 +2916,19 @@ impl crate::readers::ACDataType for Quaternion {
     }
 }
 
+impl crate::writers::ACWritable for Quaternion {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Quaternion").entered();
+
+        write_f32(writer, self.w)?;
+        write_f32(writer, self.x)?;
+        write_f32(writer, self.y)?;
+        write_f32(writer, self.z)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for Origin {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -2823,6 +2955,17 @@ impl crate::readers::ACDataType for Origin {
             landcell,
             location,
         })
+    }
+}
+
+impl crate::writers::ACWritable for Origin {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Origin").entered();
+
+        self.landcell.write(writer)?;
+        self.location.write(writer)?;
+        Ok(())
     }
 }
 
@@ -2855,6 +2998,17 @@ impl crate::readers::ACDataType for Position {
     }
 }
 
+impl crate::writers::ACWritable for Position {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Position").entered();
+
+        self.landcell.write(writer)?;
+        self.frame.write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for Frame {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -2881,6 +3035,17 @@ impl crate::readers::ACDataType for Frame {
             origin,
             orientation,
         })
+    }
+}
+
+impl crate::writers::ACWritable for Frame {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Frame").entered();
+
+        self.origin.write(writer)?;
+        self.orientation.write(writer)?;
+        Ok(())
     }
 }
 
@@ -2913,6 +3078,17 @@ impl crate::readers::ACDataType for ServerSwitchHeader {
     }
 }
 
+impl crate::writers::ACWritable for ServerSwitchHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ServerSwitchHeader").entered();
+
+        write_u32(writer, self.sequence)?;
+        write_u32(writer, self.type_.clone() as u32)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for CICMDCommandHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -2942,6 +3118,17 @@ impl crate::readers::ACDataType for CICMDCommandHeader {
     }
 }
 
+impl crate::writers::ACWritable for CICMDCommandHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CICMDCommandHeader").entered();
+
+        write_u32(writer, self.command)?;
+        write_u32(writer, self.parameter)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for FlowHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -2968,6 +3155,17 @@ impl crate::readers::ACDataType for FlowHeader {
             bytes,
             interval,
         })
+    }
+}
+
+impl crate::writers::ACWritable for FlowHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "FlowHeader").entered();
+
+        write_u32(writer, self.bytes)?;
+        write_u16(writer, self.interval)?;
+        Ok(())
     }
 }
 
@@ -3015,6 +3213,19 @@ impl crate::readers::ACDataType for SocketAddress {
             address,
             empty,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SocketAddress {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SocketAddress").entered();
+
+        write_i16(writer, self.family)?;
+        write_u16(writer, self.port)?;
+        write_u32(writer, self.address)?;
+        write_u64(writer, self.empty)?;
+        Ok(())
     }
 }
 
@@ -3091,6 +3302,64 @@ impl crate::readers::ACDataType for LoginRequestHeader {
     }
 }
 
+impl LoginRequestHeaderType2 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "LoginRequestHeaderType2").entered();
+
+        write_wstring(writer, &self.password.0)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for LoginRequestHeaderType2 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        LoginRequestHeaderType2::write(self, writer)
+    }
+}
+
+impl LoginRequestHeaderType40000002 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "LoginRequestHeaderType40000002").entered();
+
+        write_string(writer, &self.gls_ticket)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for LoginRequestHeaderType40000002 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        LoginRequestHeaderType40000002::write(self, writer)
+    }
+}
+
+impl LoginRequestHeader {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "LoginRequestHeader").entered();
+
+
+        match self {
+            Self::Type2(variant_struct) => {
+                LoginRequestHeaderType2::write(variant_struct, writer)?;
+            },
+            Self::Type40000002(variant_struct) => {
+                LoginRequestHeaderType40000002::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for LoginRequestHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        LoginRequestHeader::write(self, writer)
+    }
+}
+
 impl crate::readers::ACDataType for ReferralHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -3143,6 +3412,20 @@ impl crate::readers::ACDataType for ReferralHeader {
             id_server,
             unknown,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ReferralHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ReferralHeader").entered();
+
+        write_u64(writer, self.cookie)?;
+        self.address.write(writer)?;
+        write_u16(writer, self.id_server)?;
+        align_dword_write(writer)?;
+        self.unknown.write(writer)?;
+        Ok(())
     }
 }
 
@@ -3211,6 +3494,21 @@ impl crate::readers::ACDataType for ConnectRequestHeader {
     }
 }
 
+impl crate::writers::ACWritable for ConnectRequestHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ConnectRequestHeader").entered();
+
+        write_f64(writer, self.server_time)?;
+        write_u64(writer, self.cookie)?;
+        write_i32(writer, self.net_id)?;
+        write_u32(writer, self.outgoing_seed)?;
+        write_u32(writer, self.incoming_seed)?;
+        self.unknown.write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for NetError {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -3240,6 +3538,17 @@ impl crate::readers::ACDataType for NetError {
     }
 }
 
+impl crate::writers::ACWritable for NetError {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "NetError").entered();
+
+        self.string_id.write(writer)?;
+        self.table_id.write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for EchoResponseHeader {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -3266,6 +3575,17 @@ impl crate::readers::ACDataType for EchoResponseHeader {
             local_time,
             holding_time,
         })
+    }
+}
+
+impl crate::writers::ACWritable for EchoResponseHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EchoResponseHeader").entered();
+
+        write_f32(writer, self.local_time)?;
+        write_f32(writer, self.holding_time)?;
+        Ok(())
     }
 }
 
@@ -3391,6 +3711,49 @@ impl crate::readers::ACDataType for ACBaseQualities {
             instance_properties,
             position_properties,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ACBaseQualities {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ACBaseQualities").entered();
+
+        write_u32(writer, self.flags.bits())?;
+        write_u32(writer, self.weenie_type.clone() as u32)?;
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT.bits()) != 0
+            && let Some(ref value) = self.int_properties {
+                write_packable_hash_table::<PropertyInt, i32>(writer, value)?;
+            }
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INT64.bits()) != 0
+            && let Some(ref value) = self.int64_properties {
+                write_packable_hash_table::<PropertyInt64, i64>(writer, value)?;
+            }
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_BOOL.bits()) != 0
+            && let Some(ref value) = self.bool_properties {
+                write_packable_hash_table::<PropertyBool, bool>(writer, value)?;
+            }
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_FLOAT.bits()) != 0
+            && let Some(ref value) = self.float_properties {
+                write_packable_hash_table::<PropertyFloat, f64>(writer, value)?;
+            }
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_STRING.bits()) != 0
+            && let Some(ref value) = self.string_properties {
+                write_packable_hash_table::<PropertyString, String>(writer, value)?;
+            }
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_DATA_ID.bits()) != 0
+            && let Some(ref value) = self.data_properties {
+                write_packable_hash_table::<PropertyDataId, DataId>(writer, value)?;
+            }
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_INSTANCE_ID.bits()) != 0
+            && let Some(ref value) = self.instance_properties {
+                write_packable_hash_table::<PropertyInstanceId, ObjectId>(writer, value)?;
+            }
+        if (self.flags.bits() & ACBaseQualitiesFlags::PROPERTY_POSITION.bits()) != 0
+            && let Some(ref value) = self.position_properties {
+                write_packable_hash_table::<PropertyPosition, Position>(writer, value)?;
+            }
+        Ok(())
     }
 }
 
@@ -3567,6 +3930,65 @@ impl crate::readers::ACDataType for ACQualities {
     }
 }
 
+impl crate::writers::ACWritable for ACQualities {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ACQualities").entered();
+
+        write_u32(writer, self.flags.bits())?;
+        write_bool(writer, self.has_health)?;
+        if (self.flags.bits() & ACQualitiesFlags::ATTRIBUTES.bits()) != 0
+            && let Some(ref value) = self.attributes {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::SKILLS.bits()) != 0
+            && let Some(ref value) = self.skills {
+                write_packable_hash_table::<SkillId, Skill>(writer, value)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::BODY.bits()) != 0
+            && let Some(ref value) = self.body {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::SPELL_BOOK.bits()) != 0
+            && let Some(ref value) = self.spell_book {
+                write_packable_hash_table::<LayeredSpellId, SpellBookPage>(writer, value)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::ENCHANTMENTS.bits()) != 0
+            && let Some(ref value) = self.enchantments {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::EVENT_FILTER.bits()) != 0
+            && let Some(ref value) = self.event_filter {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::EMOTES.bits()) != 0
+            && let Some(ref value) = self.emotes {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::CREATION_PROFILE.bits()) != 0
+            && let Some(ref value) = self.creation_profile {
+                write_packable_list::<CreationProfile>(writer, value)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::PAGE_DATA.bits()) != 0
+            && let Some(ref value) = self.page_data {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::GENERATORS.bits()) != 0
+            && let Some(ref value) = self.generators {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::GENERATOR_REGISTRY.bits()) != 0
+            && let Some(ref value) = self.generator_registry {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & ACQualitiesFlags::GENERATOR_QUEUE.bits()) != 0
+            && let Some(ref value) = self.generator_queue {
+                value.write(writer)?;
+            }
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AttributeCache {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -3695,6 +4117,52 @@ impl crate::readers::ACDataType for AttributeCache {
     }
 }
 
+impl crate::writers::ACWritable for AttributeCache {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AttributeCache").entered();
+
+        write_u32(writer, self.flags)?;
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.strength {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.endurance {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.quickness {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.coordination {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.focus {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.self_ {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.health {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000080) != 0
+            && let Some(ref value) = self.stamina {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.mana {
+                value.write(writer)?;
+            }
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AttributeInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -3733,6 +4201,18 @@ impl crate::readers::ACDataType for AttributeInfo {
     }
 }
 
+impl crate::writers::ACWritable for AttributeInfo {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AttributeInfo").entered();
+
+        write_u32(writer, self.points_raised)?;
+        write_u32(writer, self.innate_points)?;
+        write_u32(writer, self.experience_spent)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for SecondaryAttributeInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -3759,6 +4239,17 @@ impl crate::readers::ACDataType for SecondaryAttributeInfo {
             attribute,
             current,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SecondaryAttributeInfo {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SecondaryAttributeInfo").entered();
+
+        self.attribute.write(writer)?;
+        write_u32(writer, self.current)?;
+        Ok(())
     }
 }
 
@@ -3836,6 +4327,22 @@ impl crate::readers::ACDataType for Skill {
     }
 }
 
+impl crate::writers::ACWritable for Skill {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Skill").entered();
+
+        write_u16(writer, self.points_raised)?;
+        write_u16(writer, self.adjust_pp)?;
+        write_u32(writer, self.training_level.clone() as u32)?;
+        write_u32(writer, self.experience_spent)?;
+        write_u32(writer, self.innate_points)?;
+        write_u32(writer, self.resistance_of_last_check)?;
+        write_f64(writer, self.last_used_time)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for Body {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -3853,6 +4360,16 @@ impl crate::readers::ACDataType for Body {
         Ok(Self {
             body_parts,
         })
+    }
+}
+
+impl crate::writers::ACWritable for Body {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Body").entered();
+
+        write_packable_hash_table::<u32, BodyPart>(writer, &self.body_parts)?;
+        Ok(())
     }
 }
 
@@ -3930,6 +4447,25 @@ impl crate::readers::ACDataType for BodyPart {
             bh,
             bpsd,
         })
+    }
+}
+
+impl crate::writers::ACWritable for BodyPart {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "BodyPart").entered();
+
+        write_i32(writer, self.has_bpsd)?;
+        write_u32(writer, self.damage_type.bits())?;
+        write_i32(writer, self.damage_val)?;
+        write_i32(writer, self.damage_var)?;
+        self.armor_cache.write(writer)?;
+        write_i32(writer, self.bh)?;
+        if (self.has_bpsd & 0x00000001) != 0
+            && let Some(ref value) = self.bpsd {
+                value.write(writer)?;
+            }
+        Ok(())
     }
 }
 
@@ -4022,6 +4558,24 @@ impl crate::readers::ACDataType for ArmorCache {
             armor_vs_electric,
             armor_vs_nether,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ArmorCache {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ArmorCache").entered();
+
+        write_i32(writer, self.base_armor)?;
+        write_i32(writer, self.armor_vs_slash)?;
+        write_i32(writer, self.armor_vs_pierce)?;
+        write_i32(writer, self.armor_vs_bludgeon)?;
+        write_i32(writer, self.armor_vs_cold)?;
+        write_i32(writer, self.armor_vs_fire)?;
+        write_i32(writer, self.armor_vs_acid)?;
+        write_i32(writer, self.armor_vs_electric)?;
+        write_i32(writer, self.armor_vs_nether)?;
+        Ok(())
     }
 }
 
@@ -4144,6 +4698,27 @@ impl crate::readers::ACDataType for BodyPartSelectionData {
     }
 }
 
+impl crate::writers::ACWritable for BodyPartSelectionData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "BodyPartSelectionData").entered();
+
+        write_i32(writer, self.hlf)?;
+        write_i32(writer, self.mlf)?;
+        write_i32(writer, self.llf)?;
+        write_i32(writer, self.hrf)?;
+        write_i32(writer, self.mrf)?;
+        write_i32(writer, self.lrf)?;
+        write_i32(writer, self.hlb)?;
+        write_i32(writer, self.mlb)?;
+        write_i32(writer, self.llb)?;
+        write_i32(writer, self.hrb)?;
+        write_i32(writer, self.mrb)?;
+        write_i32(writer, self.lrb)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for SpellBookPage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -4183,6 +4758,24 @@ impl crate::readers::ACDataType for SpellBookPage {
             casting_likelihood2,
             unknown,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SpellBookPage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SpellBookPage").entered();
+
+        write_f32(writer, self.casting_likelihood)?;
+        if self.casting_likelihood < 2.0
+            && let Some(ref value) = self.casting_likelihood2 {
+                write_f32(writer, *value)?;
+            }
+        if self.casting_likelihood < 2.0
+            && let Some(ref value) = self.unknown {
+                write_i32(writer, *value)?;
+            }
+        Ok(())
     }
 }
 
@@ -4251,6 +4844,32 @@ impl crate::readers::ACDataType for EnchantmentRegistry {
             vitae,
             cooldowns,
         })
+    }
+}
+
+impl crate::writers::ACWritable for EnchantmentRegistry {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EnchantmentRegistry").entered();
+
+        write_u32(writer, self.flags.bits())?;
+        if (self.flags.bits() & EnchantmentRegistryFlags::LIFE_SPELLS.bits()) != 0
+            && let Some(ref value) = self.life_spells {
+                write_packable_list::<Enchantment>(writer, value)?;
+            }
+        if (self.flags.bits() & EnchantmentRegistryFlags::CREATURE_SPELLS.bits()) != 0
+            && let Some(ref value) = self.creature_spells {
+                write_packable_list::<Enchantment>(writer, value)?;
+            }
+        if (self.flags.bits() & EnchantmentRegistryFlags::VITAE.bits()) != 0
+            && let Some(ref value) = self.vitae {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & EnchantmentRegistryFlags::COOLDOWNS.bits()) != 0
+            && let Some(ref value) = self.cooldowns {
+                write_packable_list::<Enchantment>(writer, value)?;
+            }
+        Ok(())
     }
 }
 
@@ -4376,6 +4995,30 @@ impl crate::readers::ACDataType for Enchantment {
     }
 }
 
+impl crate::writers::ACWritable for Enchantment {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Enchantment").entered();
+
+        self.id.write(writer)?;
+        write_u16(writer, self.has_equipment_set)?;
+        write_u16(writer, self.spell_category.clone() as u16)?;
+        write_u32(writer, self.power_level)?;
+        write_f64(writer, self.start_time)?;
+        write_f64(writer, self.duration)?;
+        self.caster_id.write(writer)?;
+        write_f32(writer, self.degrade_modifier)?;
+        write_f32(writer, self.degrade_limit)?;
+        write_f64(writer, self.last_time_degraded)?;
+        self.stat_mod.write(writer)?;
+        if self.has_equipment_set > 0
+            && let Some(ref value) = self.equipment_set {
+                write_u32(writer, value.clone() as u32)?;
+            }
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for StatMod {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -4414,6 +5057,18 @@ impl crate::readers::ACDataType for StatMod {
     }
 }
 
+impl crate::writers::ACWritable for StatMod {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "StatMod").entered();
+
+        write_u32(writer, self.type_.bits())?;
+        write_u32(writer, self.key)?;
+        write_f32(writer, self.value)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for EventFilter {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -4431,6 +5086,16 @@ impl crate::readers::ACDataType for EventFilter {
         Ok(Self {
             events,
         })
+    }
+}
+
+impl crate::writers::ACWritable for EventFilter {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EventFilter").entered();
+
+        write_packable_list::<u32>(writer, &self.events)?;
+        Ok(())
     }
 }
 
@@ -4454,6 +5119,16 @@ impl crate::readers::ACDataType for EmoteTable {
     }
 }
 
+impl crate::writers::ACWritable for EmoteTable {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteTable").entered();
+
+        write_packable_hash_table::<EmoteCategory, EmoteSetList>(writer, &self.emotes)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for EmoteSetList {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -4471,6 +5146,16 @@ impl crate::readers::ACDataType for EmoteSetList {
         Ok(Self {
             emotes,
         })
+    }
+}
+
+impl crate::writers::ACWritable for EmoteSetList {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteSetList").entered();
+
+        write_packable_list::<EmoteSet>(writer, &self.emotes)?;
+        Ok(())
     }
 }
 
@@ -4596,6 +5281,126 @@ impl EmoteSet {
 impl crate::readers::ACDataType for EmoteSet {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         EmoteSet::read(reader)
+    }
+}
+
+impl EmoteSetType1 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteSetType1").entered();
+
+        write_u32(writer, self.class_id)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteSetType1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteSetType1::write(self, writer)
+    }
+}
+
+impl EmoteSetType2 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteSetType2").entered();
+
+        write_u32(writer, self.vendor_type)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteSetType2 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteSetType2::write(self, writer)
+    }
+}
+
+impl EmoteSetType5 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteSetType5").entered();
+
+        write_u32(writer, self.style)?;
+        write_u32(writer, self.substyle)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteSetType5 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteSetType5::write(self, writer)
+    }
+}
+
+impl EmoteSetTypeC {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteSetTypeC").entered();
+
+        write_string(writer, &self.quest)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteSetTypeC {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteSetTypeC::write(self, writer)
+    }
+}
+
+impl EmoteSetTypeF {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteSetTypeF").entered();
+
+        write_f32(writer, self.min_health)?;
+        write_f32(writer, self.max_health)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteSetTypeF {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteSetTypeF::write(self, writer)
+    }
+}
+
+impl EmoteSet {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteSet").entered();
+
+
+        match self {
+            Self::Type1(variant_struct) => {
+                EmoteSetType1::write(variant_struct, writer)?;
+            },
+            Self::Type2(variant_struct) => {
+                EmoteSetType2::write(variant_struct, writer)?;
+            },
+            Self::Type5(variant_struct) => {
+                EmoteSetType5::write(variant_struct, writer)?;
+            },
+            Self::TypeC(variant_struct) => {
+                EmoteSetTypeC::write(variant_struct, writer)?;
+            },
+            Self::TypeF(variant_struct) => {
+                EmoteSetTypeF::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteSet {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteSet::write(self, writer)
     }
 }
 
@@ -5196,6 +6001,572 @@ impl crate::readers::ACDataType for Emote {
     }
 }
 
+impl EmoteType1 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType1").entered();
+
+        write_string(writer, &self.message)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType1::write(self, writer)
+    }
+}
+
+impl EmoteType2 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType2").entered();
+
+        write_u64(writer, self.amount64)?;
+        write_u64(writer, self.hero_xp64)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType2 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType2::write(self, writer)
+    }
+}
+
+impl EmoteType3 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType3").entered();
+
+        self.c_profile.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType3 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType3::write(self, writer)
+    }
+}
+
+impl EmoteType4 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType4").entered();
+
+        self.frame.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType4 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType4::write(self, writer)
+    }
+}
+
+impl EmoteType5 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType5").entered();
+
+        write_u32(writer, self.motion)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType5 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType5::write(self, writer)
+    }
+}
+
+impl EmoteType7 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType7").entered();
+
+        write_u32(writer, self.physics_script)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType7 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType7::write(self, writer)
+    }
+}
+
+impl EmoteType9 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType9").entered();
+
+        write_u32(writer, self.sound)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType9 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType9::write(self, writer)
+    }
+}
+
+impl EmoteTypeE {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteTypeE").entered();
+
+        write_u32(writer, self.spell_id)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteTypeE {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteTypeE::write(self, writer)
+    }
+}
+
+impl EmoteType1C {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType1C").entered();
+
+        write_u32(writer, self.amount)?;
+        write_u32(writer, self.stat)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType1C {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType1C::write(self, writer)
+    }
+}
+
+impl EmoteType1E {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType1E").entered();
+
+        write_string(writer, &self.message)?;
+        write_u32(writer, self.min)?;
+        write_u32(writer, self.max)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType1E {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType1E::write(self, writer)
+    }
+}
+
+impl EmoteType20 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType20").entered();
+
+        write_string(writer, &self.message)?;
+        write_u32(writer, self.amount)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType20 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType20::write(self, writer)
+    }
+}
+
+impl EmoteType22 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType22").entered();
+
+        write_u32(writer, self.amount)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType22 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType22::write(self, writer)
+    }
+}
+
+impl EmoteType23 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType23").entered();
+
+        write_string(writer, &self.message)?;
+        write_u32(writer, self.stat)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType23 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType23::write(self, writer)
+    }
+}
+
+impl EmoteType24 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType24").entered();
+
+        write_string(writer, &self.message)?;
+        write_u32(writer, self.min)?;
+        write_u32(writer, self.max)?;
+        write_u32(writer, self.stat)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType24 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType24::write(self, writer)
+    }
+}
+
+impl EmoteType25 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType25").entered();
+
+        write_string(writer, &self.message)?;
+        write_f64(writer, self.f_min)?;
+        write_f64(writer, self.f_max)?;
+        write_u32(writer, self.stat)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType25 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType25::write(self, writer)
+    }
+}
+
+impl EmoteType26 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType26").entered();
+
+        write_string(writer, &self.message)?;
+        write_string(writer, &self.test_string)?;
+        write_u32(writer, self.stat)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType26 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType26::write(self, writer)
+    }
+}
+
+impl EmoteType31 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType31").entered();
+
+        write_f64(writer, self.percent)?;
+        write_u64(writer, self.min64)?;
+        write_u64(writer, self.max64)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType31 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType31::write(self, writer)
+    }
+}
+
+impl EmoteType32 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType32").entered();
+
+        write_u32(writer, self.stat)?;
+        write_f64(writer, self.percent)?;
+        write_u32(writer, self.min)?;
+        write_u32(writer, self.max)?;
+        write_bool(writer, self.display)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType32 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType32::write(self, writer)
+    }
+}
+
+impl EmoteType35 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType35").entered();
+
+        write_u32(writer, self.stat)?;
+        write_u32(writer, self.amount)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType35 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType35::write(self, writer)
+    }
+}
+
+impl EmoteType38 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType38").entered();
+
+        write_i32(writer, self.wealth_rating)?;
+        write_i32(writer, self.treasure_class)?;
+        write_i32(writer, self.treasure_type)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType38 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType38::write(self, writer)
+    }
+}
+
+impl EmoteType3F {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType3F").entered();
+
+        self.position.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType3F {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType3F::write(self, writer)
+    }
+}
+
+impl EmoteType4C {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType4C").entered();
+
+        write_string(writer, &self.msg)?;
+        self.c_profile.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType4C {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType4C::write(self, writer)
+    }
+}
+
+impl EmoteType6E {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType6E").entered();
+
+        write_u32(writer, self.stat)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType6E {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType6E::write(self, writer)
+    }
+}
+
+impl EmoteType70 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType70").entered();
+
+        write_u64(writer, self.amount64)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType70 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType70::write(self, writer)
+    }
+}
+
+impl EmoteType72 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType72").entered();
+
+        write_string(writer, &self.message)?;
+        write_u64(writer, self.min64)?;
+        write_u64(writer, self.max64)?;
+        write_u32(writer, self.stat)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType72 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType72::write(self, writer)
+    }
+}
+
+impl EmoteType76 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EmoteType76").entered();
+
+        write_u32(writer, self.stat)?;
+        write_f64(writer, self.percent)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for EmoteType76 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        EmoteType76::write(self, writer)
+    }
+}
+
+impl Emote {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Emote").entered();
+
+
+        match self {
+            Self::Type1(variant_struct) => {
+                EmoteType1::write(variant_struct, writer)?;
+            },
+            Self::Type2(variant_struct) => {
+                EmoteType2::write(variant_struct, writer)?;
+            },
+            Self::Type3(variant_struct) => {
+                EmoteType3::write(variant_struct, writer)?;
+            },
+            Self::Type4(variant_struct) => {
+                EmoteType4::write(variant_struct, writer)?;
+            },
+            Self::Type5(variant_struct) => {
+                EmoteType5::write(variant_struct, writer)?;
+            },
+            Self::Type7(variant_struct) => {
+                EmoteType7::write(variant_struct, writer)?;
+            },
+            Self::Type9(variant_struct) => {
+                EmoteType9::write(variant_struct, writer)?;
+            },
+            Self::TypeE(variant_struct) => {
+                EmoteTypeE::write(variant_struct, writer)?;
+            },
+            Self::Type1C(variant_struct) => {
+                EmoteType1C::write(variant_struct, writer)?;
+            },
+            Self::Type1E(variant_struct) => {
+                EmoteType1E::write(variant_struct, writer)?;
+            },
+            Self::Type20(variant_struct) => {
+                EmoteType20::write(variant_struct, writer)?;
+            },
+            Self::Type22(variant_struct) => {
+                EmoteType22::write(variant_struct, writer)?;
+            },
+            Self::Type23(variant_struct) => {
+                EmoteType23::write(variant_struct, writer)?;
+            },
+            Self::Type24(variant_struct) => {
+                EmoteType24::write(variant_struct, writer)?;
+            },
+            Self::Type25(variant_struct) => {
+                EmoteType25::write(variant_struct, writer)?;
+            },
+            Self::Type26(variant_struct) => {
+                EmoteType26::write(variant_struct, writer)?;
+            },
+            Self::Type31(variant_struct) => {
+                EmoteType31::write(variant_struct, writer)?;
+            },
+            Self::Type32(variant_struct) => {
+                EmoteType32::write(variant_struct, writer)?;
+            },
+            Self::Type35(variant_struct) => {
+                EmoteType35::write(variant_struct, writer)?;
+            },
+            Self::Type38(variant_struct) => {
+                EmoteType38::write(variant_struct, writer)?;
+            },
+            Self::Type3F(variant_struct) => {
+                EmoteType3F::write(variant_struct, writer)?;
+            },
+            Self::Type4C(variant_struct) => {
+                EmoteType4C::write(variant_struct, writer)?;
+            },
+            Self::Type6E(variant_struct) => {
+                EmoteType6E::write(variant_struct, writer)?;
+            },
+            Self::Type70(variant_struct) => {
+                EmoteType70::write(variant_struct, writer)?;
+            },
+            Self::Type72(variant_struct) => {
+                EmoteType72::write(variant_struct, writer)?;
+            },
+            Self::Type76(variant_struct) => {
+                EmoteType76::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for Emote {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        Emote::write(self, writer)
+    }
+}
+
 impl crate::readers::ACDataType for CreationProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -5261,6 +6632,21 @@ impl crate::readers::ACDataType for CreationProfile {
     }
 }
 
+impl crate::writers::ACWritable for CreationProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CreationProfile").entered();
+
+        write_u32(writer, self.weenie_class_id)?;
+        write_u32(writer, self.palette)?;
+        write_f32(writer, self.shade)?;
+        write_u32(writer, self.destination)?;
+        write_i32(writer, self.stack_size)?;
+        write_bool(writer, self.try_to_bond)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for PageDataList {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -5296,6 +6682,18 @@ impl crate::readers::ACDataType for PageDataList {
             max_num_chars_per_page,
             pages,
         })
+    }
+}
+
+impl crate::writers::ACWritable for PageDataList {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "PageDataList").entered();
+
+        write_u32(writer, self.max_num_pages)?;
+        write_u32(writer, self.max_num_chars_per_page)?;
+        write_packable_list::<PageData>(writer, &self.pages)?;
+        Ok(())
     }
 }
 
@@ -5376,6 +6774,25 @@ impl crate::readers::ACDataType for PageData {
     }
 }
 
+impl crate::writers::ACWritable for PageData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "PageData").entered();
+
+        self.author_id.write(writer)?;
+        write_string(writer, &self.author_name)?;
+        write_string(writer, &self.author_account)?;
+        write_u32(writer, self.version)?;
+        write_bool(writer, self.text_included)?;
+        write_bool(writer, self.ignore_author)?;
+        if self.text_included
+            && let Some(ref value) = self.page_text {
+                write_string(writer, value)?;
+            }
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for BlobFragments {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -5451,6 +6868,22 @@ impl crate::readers::ACDataType for BlobFragments {
     }
 }
 
+impl crate::writers::ACWritable for BlobFragments {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "BlobFragments").entered();
+
+        write_u32(writer, self.sequence)?;
+        write_u32(writer, self.id)?;
+        write_u16(writer, self.count)?;
+        write_u16(writer, self.size)?;
+        write_u16(writer, self.index)?;
+        write_u16(writer, self.group.clone() as u16)?;
+        write_vec::<u8>(writer, &self.data)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for GeneratorTable {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -5468,6 +6901,16 @@ impl crate::readers::ACDataType for GeneratorTable {
         Ok(Self {
             generators,
         })
+    }
+}
+
+impl crate::writers::ACWritable for GeneratorTable {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GeneratorTable").entered();
+
+        write_packable_list::<GeneratorProfile>(writer, &self.generators)?;
+        Ok(())
     }
 }
 
@@ -5590,6 +7033,27 @@ impl crate::readers::ACDataType for GeneratorProfile {
     }
 }
 
+impl crate::writers::ACWritable for GeneratorProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GeneratorProfile").entered();
+
+        write_f32(writer, self.probability)?;
+        write_u32(writer, self.type_id)?;
+        write_f64(writer, self.delay)?;
+        write_u32(writer, self.init_create)?;
+        write_u32(writer, self.max_num)?;
+        write_u32(writer, self.when_create)?;
+        write_u32(writer, self.where_create)?;
+        write_u32(writer, self.stack_size)?;
+        write_u32(writer, self.ptid)?;
+        write_f32(writer, self.shade)?;
+        self.pos_val.write(writer)?;
+        write_u32(writer, self.slot)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for GeneratorRegistry {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -5607,6 +7071,16 @@ impl crate::readers::ACDataType for GeneratorRegistry {
         Ok(Self {
             registry,
         })
+    }
+}
+
+impl crate::writers::ACWritable for GeneratorRegistry {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GeneratorRegistry").entered();
+
+        write_packable_hash_table::<u32, GeneratorRegistryNode>(writer, &self.registry)?;
+        Ok(())
     }
 }
 
@@ -5684,6 +7158,22 @@ impl crate::readers::ACDataType for GeneratorRegistryNode {
     }
 }
 
+impl crate::writers::ACWritable for GeneratorRegistryNode {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GeneratorRegistryNode").entered();
+
+        write_u32(writer, self.wcid_or_type)?;
+        write_f64(writer, self.ts)?;
+        write_u32(writer, self.treasure_type)?;
+        write_u32(writer, self.slot)?;
+        write_u32(writer, self.checkpointed)?;
+        write_u32(writer, self.shop)?;
+        write_u32(writer, self.amount)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for GeneratorQueue {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -5701,6 +7191,16 @@ impl crate::readers::ACDataType for GeneratorQueue {
         Ok(Self {
             queue,
         })
+    }
+}
+
+impl crate::writers::ACWritable for GeneratorQueue {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GeneratorQueue").entered();
+
+        write_packable_list::<GeneratorQueueNode>(writer, &self.queue)?;
+        Ok(())
     }
 }
 
@@ -5730,6 +7230,17 @@ impl crate::readers::ACDataType for GeneratorQueueNode {
             slot,
             when,
         })
+    }
+}
+
+impl crate::writers::ACWritable for GeneratorQueueNode {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GeneratorQueueNode").entered();
+
+        write_u32(writer, self.slot)?;
+        write_f64(writer, self.when)?;
+        Ok(())
     }
 }
 
@@ -5920,6 +7431,198 @@ impl crate::readers::ACDataType for WindowProperty {
     }
 }
 
+impl WindowPropertyType1000007F {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType1000007F").entered();
+
+        write_u32(writer, self.unknown_j)?;
+        write_u64(writer, self.value_j)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType1000007F {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType1000007F::write(self, writer)
+    }
+}
+
+impl WindowPropertyType10000086 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType10000086").entered();
+
+        write_u32(writer, self.unknown_i)?;
+        write_u32(writer, self.value_i)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType10000086 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType10000086::write(self, writer)
+    }
+}
+
+impl WindowPropertyType10000087 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType10000087").entered();
+
+        write_u32(writer, self.unknown_h)?;
+        write_u32(writer, self.value_h)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType10000087 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType10000087::write(self, writer)
+    }
+}
+
+impl WindowPropertyType10000088 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType10000088").entered();
+
+        write_u32(writer, self.unknown_f)?;
+        write_u32(writer, self.value_f)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType10000088 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType10000088::write(self, writer)
+    }
+}
+
+impl WindowPropertyType10000089 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType10000089").entered();
+
+        write_u32(writer, self.unknown_e)?;
+        write_u32(writer, self.value_e)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType10000089 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType10000089::write(self, writer)
+    }
+}
+
+impl WindowPropertyType1000008A {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType1000008A").entered();
+
+        write_u32(writer, self.unknown_d)?;
+        write_u8(writer, self.value_d)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType1000008A {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType1000008A::write(self, writer)
+    }
+}
+
+impl WindowPropertyType1000008D {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType1000008D").entered();
+
+        write_u32(writer, self.unknown_c)?;
+        self.title_source.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType1000008D {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType1000008D::write(self, writer)
+    }
+}
+
+impl WindowPropertyType1000008DTitleSourceVariant {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowPropertyType1000008DTitleSourceVariant").entered();
+
+        match self {
+            Self::Type0(variant_struct) => {
+                write_u8(writer, 0x00)?;
+                write_u32(writer, variant_struct.string_id)?;
+                write_u32(writer, variant_struct.file_id)?;
+            },
+            Self::Type1(variant_struct) => {
+                write_u8(writer, 0x01)?;
+                write_wstring(writer, &variant_struct.value_a.0)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowPropertyType1000008DTitleSourceVariant {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowPropertyType1000008DTitleSourceVariant::write(self, writer)
+    }
+}
+
+
+impl WindowProperty {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowProperty").entered();
+
+
+        match self {
+            Self::Type1000007F(variant_struct) => {
+                WindowPropertyType1000007F::write(variant_struct, writer)?;
+            },
+            Self::Type10000086(variant_struct) => {
+                WindowPropertyType10000086::write(variant_struct, writer)?;
+            },
+            Self::Type10000087(variant_struct) => {
+                WindowPropertyType10000087::write(variant_struct, writer)?;
+            },
+            Self::Type10000088(variant_struct) => {
+                WindowPropertyType10000088::write(variant_struct, writer)?;
+            },
+            Self::Type10000089(variant_struct) => {
+                WindowPropertyType10000089::write(variant_struct, writer)?;
+            },
+            Self::Type1000008A(variant_struct) => {
+                WindowPropertyType1000008A::write(variant_struct, writer)?;
+            },
+            Self::Type1000008D(variant_struct) => {
+                WindowPropertyType1000008D::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowProperty {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowProperty::write(self, writer)
+    }
+}
+
 impl WindowOptionType1000008B {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
@@ -5958,6 +7661,46 @@ impl WindowOption {
 impl crate::readers::ACDataType for WindowOption {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         WindowOption::read(reader)
+    }
+}
+
+impl WindowOptionType1000008B {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowOptionType1000008B").entered();
+
+        write_u8(writer, self.unknown_b)?;
+        write_u8(writer, self.property_count)?;
+        write_vec::<WindowProperty>(writer, &self.properties)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowOptionType1000008B {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowOptionType1000008B::write(self, writer)
+    }
+}
+
+impl WindowOption {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WindowOption").entered();
+
+
+        match self {
+            Self::Type1000008B(variant_struct) => {
+                WindowOptionType1000008B::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for WindowOption {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        WindowOption::write(self, writer)
     }
 }
 
@@ -6040,6 +7783,87 @@ impl crate::readers::ACDataType for OptionProperty {
     }
 }
 
+impl OptionPropertyType10000080 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "OptionPropertyType10000080").entered();
+
+        write_u32(writer, self.unknown_l)?;
+        write_f32(writer, self.inactive_opacity)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for OptionPropertyType10000080 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        OptionPropertyType10000080::write(self, writer)
+    }
+}
+
+impl OptionPropertyType10000081 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "OptionPropertyType10000081").entered();
+
+        write_u32(writer, self.unknown_k)?;
+        write_f32(writer, self.active_opacity)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for OptionPropertyType10000081 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        OptionPropertyType10000081::write(self, writer)
+    }
+}
+
+impl OptionPropertyType1000008C {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "OptionPropertyType1000008C").entered();
+
+        write_u32(writer, self.unknown_a)?;
+        write_packable_list::<WindowOption>(writer, &self.window_options)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for OptionPropertyType1000008C {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        OptionPropertyType1000008C::write(self, writer)
+    }
+}
+
+impl OptionProperty {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "OptionProperty").entered();
+
+
+        match self {
+            Self::Type10000080(variant_struct) => {
+                OptionPropertyType10000080::write(variant_struct, writer)?;
+            },
+            Self::Type10000081(variant_struct) => {
+                OptionPropertyType10000081::write(variant_struct, writer)?;
+            },
+            Self::Type1000008C(variant_struct) => {
+                OptionPropertyType1000008C::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for OptionProperty {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        OptionProperty::write(self, writer)
+    }
+}
+
 impl crate::readers::ACDataType for GameplayOptions {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -6092,6 +7916,20 @@ impl crate::readers::ACDataType for GameplayOptions {
             option_property_count,
             option_properties,
         })
+    }
+}
+
+impl crate::writers::ACWritable for GameplayOptions {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GameplayOptions").entered();
+
+        write_u32(writer, self.size)?;
+        write_u8(writer, self.unknown200_2)?;
+        write_u8(writer, self.option_property_count)?;
+        write_vec::<OptionProperty>(writer, &self.option_properties)?;
+        align_dword_write(writer)?;
+        Ok(())
     }
 }
 
@@ -6278,6 +8116,53 @@ impl crate::readers::ACDataType for PlayerModule {
     }
 }
 
+impl crate::writers::ACWritable for PlayerModule {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "PlayerModule").entered();
+
+        write_u32(writer, self.flags)?;
+        write_u32(writer, self.options.bits())?;
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.shortcuts {
+                write_packable_list::<ShortCutData>(writer, value)?;
+            }
+        write_packable_list::<LayeredSpellId>(writer, &self.tab1_spells)?;
+        write_packable_list::<LayeredSpellId>(writer, &self.tab2_spells)?;
+        write_packable_list::<LayeredSpellId>(writer, &self.tab3_spells)?;
+        write_packable_list::<LayeredSpellId>(writer, &self.tab4_spells)?;
+        write_packable_list::<LayeredSpellId>(writer, &self.tab5_spells)?;
+        write_packable_list::<LayeredSpellId>(writer, &self.tab6_spells)?;
+        write_packable_list::<LayeredSpellId>(writer, &self.tab7_spells)?;
+        write_packable_list::<LayeredSpellId>(writer, &self.tab8_spells)?;
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.fill_comps {
+                write_packable_hash_table::<u32, u32>(writer, value)?;
+            }
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.spell_book_filters {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.option_flags {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.unknown100_1 {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.option_strings {
+                write_packable_hash_table::<u32, String>(writer, value)?;
+            }
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.gameplay_options {
+                value.write(writer)?;
+            }
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for ShortCutManager {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -6295,6 +8180,16 @@ impl crate::readers::ACDataType for ShortCutManager {
         Ok(Self {
             shortcuts,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ShortCutManager {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ShortCutManager").entered();
+
+        write_packable_list::<ShortCutData>(writer, &self.shortcuts)?;
+        Ok(())
     }
 }
 
@@ -6336,6 +8231,18 @@ impl crate::readers::ACDataType for ShortCutData {
     }
 }
 
+impl crate::writers::ACWritable for ShortCutData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ShortCutData").entered();
+
+        write_u32(writer, self.index)?;
+        self.object_id.write(writer)?;
+        self.spell_id.write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for SpellTab {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -6353,6 +8260,16 @@ impl crate::readers::ACDataType for SpellTab {
         Ok(Self {
             spells,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SpellTab {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SpellTab").entered();
+
+        write_packable_list::<LayeredSpellId>(writer, &self.spells)?;
+        Ok(())
     }
 }
 
@@ -6382,6 +8299,17 @@ impl crate::readers::ACDataType for ContentProfile {
             object_id,
             container_type,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ContentProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ContentProfile").entered();
+
+        self.object_id.write(writer)?;
+        write_u32(writer, self.container_type.clone() as u32)?;
+        Ok(())
     }
 }
 
@@ -6423,6 +8351,18 @@ impl crate::readers::ACDataType for InventoryPlacement {
     }
 }
 
+impl crate::writers::ACWritable for InventoryPlacement {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "InventoryPlacement").entered();
+
+        self.object_id.write(writer)?;
+        write_u32(writer, self.location.bits())?;
+        write_u32(writer, self.priority.bits())?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AllegianceProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -6461,6 +8401,18 @@ impl crate::readers::ACDataType for AllegianceProfile {
     }
 }
 
+impl crate::writers::ACWritable for AllegianceProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AllegianceProfile").entered();
+
+        write_u32(writer, self.total_members)?;
+        write_u32(writer, self.total_vassals)?;
+        self.hierarchy.write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AllegianceRecord {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -6487,6 +8439,17 @@ impl crate::readers::ACDataType for AllegianceRecord {
             tree_parent,
             allegiance_data,
         })
+    }
+}
+
+impl crate::writers::ACWritable for AllegianceRecord {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AllegianceRecord").entered();
+
+        self.tree_parent.write(writer)?;
+        self.allegiance_data.write(writer)?;
+        Ok(())
     }
 }
 
@@ -6666,6 +8629,36 @@ impl crate::readers::ACDataType for AllegianceHierarchy {
     }
 }
 
+impl crate::writers::ACWritable for AllegianceHierarchy {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AllegianceHierarchy").entered();
+
+        write_u16(writer, self.record_count)?;
+        write_u16(writer, self.old_version)?;
+        write_phash_table::<ObjectId, AllegianceOfficerLevel>(writer, &self.officers)?;
+        write_packable_list::<String>(writer, &self.officer_titles)?;
+        write_u32(writer, self.monarch_broadcast_time)?;
+        write_u32(writer, self.monarch_broadcasts_today)?;
+        write_u32(writer, self.spokes_broadcast_time)?;
+        write_u32(writer, self.spokes_broadcasts_today)?;
+        write_string(writer, &self.motd)?;
+        write_string(writer, &self.motd_set_by)?;
+        write_u32(writer, self.chat_room_id)?;
+        self.bindpoint.write(writer)?;
+        write_string(writer, &self.allegiance_name)?;
+        write_u32(writer, self.name_last_set_time)?;
+        write_bool(writer, self.is_locked)?;
+        write_i32(writer, self.approved_vassal)?;
+        if self.record_count > 0
+            && let Some(ref value) = self.monarch_data {
+                value.write(writer)?;
+            }
+        write_vec::<AllegianceRecord>(writer, &self.records)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AllegianceData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -6810,6 +8803,37 @@ impl crate::readers::ACDataType for AllegianceData {
     }
 }
 
+impl crate::writers::ACWritable for AllegianceData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AllegianceData").entered();
+
+        self.character_id.write(writer)?;
+        write_u32(writer, self.xp_cached)?;
+        write_u32(writer, self.xp_tithed)?;
+        write_u32(writer, self.flags)?;
+        write_u8(writer, self.gender.clone() as u8)?;
+        write_u8(writer, self.heritage.clone() as u8)?;
+        write_u16(writer, self.rank)?;
+        if (self.flags & 0x8) != 0
+            && let Some(ref value) = self.level {
+                write_u32(writer, *value)?;
+            }
+        write_u16(writer, self.loyalty)?;
+        write_u16(writer, self.leadership)?;
+        if self.flags == 0x4
+            && let Some(ref value) = self.allegiance_age {
+                write_u32(writer, *value)?;
+            }
+        if self.flags == 0x4
+            && let Some(ref value) = self.time_online {
+                write_u64(writer, *value)?;
+            }
+        write_string(writer, &self.name)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for FriendData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -6875,6 +8899,21 @@ impl crate::readers::ACDataType for FriendData {
     }
 }
 
+impl crate::writers::ACWritable for FriendData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "FriendData").entered();
+
+        self.friend_id.write(writer)?;
+        write_bool(writer, self.online)?;
+        write_bool(writer, self.appear_offline)?;
+        write_string(writer, &self.name)?;
+        write_packable_list::<ObjectId>(writer, &self.out_friends)?;
+        write_packable_list::<ObjectId>(writer, &self.in_friends)?;
+        Ok(())
+    }
+}
+
 impl ItemProfileTypeNeg1 {
     #[allow(clippy::too_many_arguments)]
     pub fn read(reader: &mut dyn ACReader, packed_amount: uint, object_id: ObjectId) -> Result<Self, Box<dyn std::error::Error>> {
@@ -6914,7 +8953,7 @@ impl ItemProfile {
 
         let packed_amount = read_u32(reader)?;
         #[allow(unused_variables)]
-        let amount = (packed_amount & 0x_ffffff) as i32;
+        let amount = (packed_amount & 0xFFFFFF) as i32;
         let pwd_type = (packed_amount >> 24) as i32;
         let object_id = ObjectId::read(reader)?;
 
@@ -6935,6 +8974,64 @@ impl ItemProfile {
 impl crate::readers::ACDataType for ItemProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         ItemProfile::read(reader)
+    }
+}
+
+impl ItemProfileTypeNeg1 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ItemProfileTypeNeg1").entered();
+
+        self.weenie_description.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for ItemProfileTypeNeg1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        ItemProfileTypeNeg1::write(self, writer)
+    }
+}
+
+impl ItemProfileType1 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ItemProfileType1").entered();
+
+        self.old_weenie_description.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for ItemProfileType1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        ItemProfileType1::write(self, writer)
+    }
+}
+
+impl ItemProfile {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ItemProfile").entered();
+
+
+        match self {
+            Self::TypeNeg1(variant_struct) => {
+                ItemProfileTypeNeg1::write(variant_struct, writer)?;
+            },
+            Self::Type1(variant_struct) => {
+                ItemProfileType1::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for ItemProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        ItemProfile::write(self, writer)
     }
 }
 
@@ -7463,6 +9560,171 @@ impl crate::readers::ACDataType for PublicWeenieDesc {
     }
 }
 
+impl crate::writers::ACWritable for PublicWeenieDesc {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "PublicWeenieDesc").entered();
+
+        write_u32(writer, self.header)?;
+        write_string(writer, &self.name)?;
+        self.weenie_class_id.write(writer)?;
+        self.icon.write(writer)?;
+        write_u32(writer, self.type_.bits())?;
+        write_u32(writer, self.behavior.bits())?;
+        align_dword_write(writer)?;
+        if (self.behavior.bits() & 0x04000000) != 0
+            && let Some(ref value) = self.header2 {
+                write_u32(writer, *value)?;
+            }
+        if (self.header & 0x00000001) != 0
+            && let Some(ref value) = self.plural_name {
+                write_string(writer, value)?;
+            }
+        if (self.header & 0x00000002) != 0
+            && let Some(ref value) = self.items_capacity {
+                write_u8(writer, *value)?;
+            }
+        if (self.header & 0x00000004) != 0
+            && let Some(ref value) = self.container_capacity {
+                write_u8(writer, *value)?;
+            }
+        if (self.header & 0x00000100) != 0
+            && let Some(ref value) = self.ammunition_type {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.header & 0x00000008) != 0
+            && let Some(ref value) = self.value {
+                write_u32(writer, *value)?;
+            }
+        if (self.header & 0x00000010) != 0
+            && let Some(ref value) = self.useability {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00000020) != 0
+            && let Some(ref value) = self.use_radius {
+                write_f32(writer, *value)?;
+            }
+        if (self.header & 0x00080000) != 0
+            && let Some(ref value) = self.target_type {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00000080) != 0
+            && let Some(ref value) = self.effects {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00000200) != 0
+            && let Some(ref value) = self.combat_use {
+                write_u8(writer, value.clone() as u8)?;
+            }
+        if (self.header & 0x00000400) != 0
+            && let Some(ref value) = self.structure {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00000800) != 0
+            && let Some(ref value) = self.max_structure {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00001000) != 0
+            && let Some(ref value) = self.stack_size {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00002000) != 0
+            && let Some(ref value) = self.max_stack_size {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00004000) != 0
+            && let Some(ref value) = self.container_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x00008000) != 0
+            && let Some(ref value) = self.wielder_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x00010000) != 0
+            && let Some(ref value) = self.valid_slots {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00020000) != 0
+            && let Some(ref value) = self.slot {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00040000) != 0
+            && let Some(ref value) = self.priority {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00100000) != 0
+            && let Some(ref value) = self.blip_color {
+                write_u8(writer, value.clone() as u8)?;
+            }
+        if (self.header & 0x00800000) != 0
+            && let Some(ref value) = self.radar_enum {
+                write_u8(writer, value.clone() as u8)?;
+            }
+        if (self.header & 0x08000000) != 0
+            && let Some(ref value) = self.physics_script {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x01000000) != 0
+            && let Some(ref value) = self.workmanship {
+                write_f32(writer, *value)?;
+            }
+        if (self.header & 0x00200000) != 0
+            && let Some(ref value) = self.burden {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00400000) != 0
+            && let Some(ref value) = self.spell_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x02000000) != 0
+            && let Some(ref value) = self.owner_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x04000000) != 0
+            && let Some(ref value) = self.restrictions {
+                value.write(writer)?;
+            }
+        if (self.header & 0x20000000) != 0
+            && let Some(ref value) = self.hook_item_types {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.header & 0x00000040) != 0
+            && let Some(ref value) = self.monarch_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x10000000) != 0
+            && let Some(ref value) = self.hook_type {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.header & 0x40000000) != 0
+            && let Some(ref value) = self.icon_overlay {
+                value.write(writer)?;
+            }
+        if (self.header2.unwrap_or(0) & 0x00000001) != 0
+            && let Some(ref value) = self.icon_underlay {
+                value.write(writer)?;
+            }
+        if (self.header & 0x80000000) != 0
+            && let Some(ref value) = self.material {
+                write_u32(writer, value.clone() as u32)?;
+            }
+        if (self.header2.unwrap_or(0) & 0x00000002) != 0
+            && let Some(ref value) = self.cooldown_id {
+                write_u32(writer, *value)?;
+            }
+        if (self.header2.unwrap_or(0) & 0x00000004) != 0
+            && let Some(ref value) = self.cooldown_duration {
+                write_u64(writer, *value)?;
+            }
+        if (self.header2.unwrap_or(0) & 0x00000008) != 0
+            && let Some(ref value) = self.pet_owner_id {
+                value.write(writer)?;
+            }
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for RestrictionDB {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -7507,6 +9769,19 @@ impl crate::readers::ACDataType for RestrictionDB {
             monarch_id,
             permissions,
         })
+    }
+}
+
+impl crate::writers::ACWritable for RestrictionDB {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "RestrictionDB").entered();
+
+        write_u32(writer, self.version)?;
+        write_u32(writer, self.flags)?;
+        self.monarch_id.write(writer)?;
+        write_phash_table::<ObjectId, u32>(writer, &self.permissions)?;
+        Ok(())
     }
 }
 
@@ -7967,6 +10242,150 @@ impl crate::readers::ACDataType for OldPublicWeenieDesc {
     }
 }
 
+impl crate::writers::ACWritable for OldPublicWeenieDesc {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "OldPublicWeenieDesc").entered();
+
+        write_u32(writer, self.header)?;
+        write_string(writer, &self.name)?;
+        self.weenie_class_id.write(writer)?;
+        self.icon.write(writer)?;
+        write_u32(writer, self.type_.bits())?;
+        write_u32(writer, self.bitfield.bits())?;
+        if (self.header & 0x00000001) != 0
+            && let Some(ref value) = self.plural_name {
+                write_string(writer, value)?;
+            }
+        if (self.header & 0x00000002) != 0
+            && let Some(ref value) = self.items_capacity {
+                write_u8(writer, *value)?;
+            }
+        if (self.header & 0x00000004) != 0
+            && let Some(ref value) = self.container_capacity {
+                write_u8(writer, *value)?;
+            }
+        if (self.header & 0x00000008) != 0
+            && let Some(ref value) = self.value {
+                write_u32(writer, *value)?;
+            }
+        if (self.header & 0x00000010) != 0
+            && let Some(ref value) = self.useability {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00000020) != 0
+            && let Some(ref value) = self.use_radius {
+                write_f32(writer, *value)?;
+            }
+        if (self.header & 0x00080000) != 0
+            && let Some(ref value) = self.t_target_type {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00000080) != 0
+            && let Some(ref value) = self.effects {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00000100) != 0
+            && let Some(ref value) = self.ammunition_type {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.header & 0x00000200) != 0
+            && let Some(ref value) = self.combat_use {
+                write_u8(writer, value.clone() as u8)?;
+            }
+        if (self.header & 0x00000400) != 0
+            && let Some(ref value) = self.structure {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00000800) != 0
+            && let Some(ref value) = self.max_structure {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00001000) != 0
+            && let Some(ref value) = self.stack_size {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00002000) != 0
+            && let Some(ref value) = self.max_stack_size {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00004000) != 0
+            && let Some(ref value) = self.container_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x00008000) != 0
+            && let Some(ref value) = self.wielder_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x00010000) != 0
+            && let Some(ref value) = self.valid_slots {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00020000) != 0
+            && let Some(ref value) = self.slots {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00040000) != 0
+            && let Some(ref value) = self.priority {
+                write_u32(writer, value.bits())?;
+            }
+        if (self.header & 0x00100000) != 0
+            && let Some(ref value) = self.blip_color {
+                write_u8(writer, value.clone() as u8)?;
+            }
+        if (self.header & 0x00800000) != 0
+            && let Some(ref value) = self.radar_enum {
+                write_u8(writer, value.clone() as u8)?;
+            }
+        if (self.header & 0x01000000) != 0
+            && let Some(ref value) = self.obvious_distance {
+                write_f32(writer, *value)?;
+            }
+        if (self.header & 0x00200000) != 0
+            && let Some(ref value) = self.vndwcid {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x00400000) != 0
+            && let Some(ref value) = self.spell_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x02000000) != 0
+            && let Some(ref value) = self.house_owner_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x08000000) != 0
+            && let Some(ref value) = self.physics_script {
+                write_u16(writer, *value)?;
+            }
+        if (self.header & 0x04000000) != 0
+            && let Some(ref value) = self.restrictions {
+                value.write(writer)?;
+            }
+        if (self.header & 0x10000000) != 0
+            && let Some(ref value) = self.hook_type {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.header & 0x20000000) != 0
+            && let Some(ref value) = self.hook_item_types {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.header & 0x00000040) != 0
+            && let Some(ref value) = self.monarch_id {
+                value.write(writer)?;
+            }
+        if (self.header & 0x40000000) != 0
+            && let Some(ref value) = self.icon_overlay {
+                value.write(writer)?;
+            }
+        if (self.header & 0x80000000) != 0
+            && let Some(ref value) = self.material {
+                write_u32(writer, value.clone() as u32)?;
+            }
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for Trade {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -8029,6 +10448,21 @@ impl crate::readers::ACDataType for Trade {
             accepted,
             partner_accepted,
         })
+    }
+}
+
+impl crate::writers::ACWritable for Trade {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Trade").entered();
+
+        self.partner_id.write(writer)?;
+        write_u64(writer, self.sequence)?;
+        write_u32(writer, self.status)?;
+        self.initiator_id.write(writer)?;
+        write_bool(writer, self.accepted)?;
+        write_bool(writer, self.partner_accepted)?;
+        Ok(())
     }
 }
 
@@ -8102,6 +10536,22 @@ impl crate::readers::ACDataType for JumpPack {
             object_teleport_sequence,
             object_force_position_sequence,
         })
+    }
+}
+
+impl crate::writers::ACWritable for JumpPack {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "JumpPack").entered();
+
+        write_f32(writer, self.extent)?;
+        self.velocity.write(writer)?;
+        write_u16(writer, self.object_instance_sequence)?;
+        write_u16(writer, self.object_server_control_sequence)?;
+        write_u16(writer, self.object_teleport_sequence)?;
+        write_u16(writer, self.object_force_position_sequence)?;
+        align_dword_write(writer)?;
+        Ok(())
     }
 }
 
@@ -8187,6 +10637,23 @@ impl crate::readers::ACDataType for MoveToStatePack {
     }
 }
 
+impl crate::writers::ACWritable for MoveToStatePack {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MoveToStatePack").entered();
+
+        self.raw_motion_state.write(writer)?;
+        self.position.write(writer)?;
+        write_u16(writer, self.object_instance_sequence)?;
+        write_u16(writer, self.object_server_control_sequence)?;
+        write_u16(writer, self.object_teleport_sequence)?;
+        write_u16(writer, self.object_force_position_sequence)?;
+        write_u8(writer, self.contact)?;
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for PackedMotionCommand {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -8209,7 +10676,7 @@ impl crate::readers::ACDataType for PackedMotionCommand {
         #[cfg(feature = "tracing")]
         drop(_field_span_packed_sequence);
         #[allow(unused_variables)]
-        let server_action_sequence = (packed_sequence & 0x7fff) as u16;
+        let server_action_sequence = (packed_sequence & 0x7FFF) as u16;
         #[allow(unused_variables)]
         let autonomous = ((packed_sequence >> 15) & 0x1) as u16;
         #[cfg(feature = "tracing")]
@@ -8229,6 +10696,18 @@ impl crate::readers::ACDataType for PackedMotionCommand {
     }
 }
 
+impl crate::writers::ACWritable for PackedMotionCommand {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "PackedMotionCommand").entered();
+
+        write_u16(writer, self.command_id.clone() as u16)?;
+        write_u16(writer, self.packed_sequence)?;
+        write_f32(writer, self.speed)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for RawMotionState {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -8242,7 +10721,7 @@ impl crate::readers::ACDataType for RawMotionState {
         let flags = read_u32(reader)?;
         #[cfg(feature = "tracing")]
         drop(_field_span_flags);
-        let command_list_length = ((flags >> 11) & 0x_f8) as u16;
+        let command_list_length = ((flags >> 11) & 0xF8) as u16;
         let mut current_holdkey = None;
         if (flags & 0x00000001) != 0 {
             #[cfg(feature = "tracing")]
@@ -8391,6 +10870,61 @@ impl crate::readers::ACDataType for RawMotionState {
     }
 }
 
+impl crate::writers::ACWritable for RawMotionState {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "RawMotionState").entered();
+
+        write_u32(writer, self.flags)?;
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.current_holdkey {
+                write_u32(writer, value.clone() as u32)?;
+            }
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.current_style {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.forward_command {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x0000008) != 0
+            && let Some(ref value) = self.forward_holdkey {
+                write_u32(writer, value.clone() as u32)?;
+            }
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.forward_speed {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.sidestep_command {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.sidestep_holdkey {
+                write_u32(writer, value.clone() as u32)?;
+            }
+        if (self.flags & 0x00000080) != 0
+            && let Some(ref value) = self.sidestep_speed {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.turn_command {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.turn_holdkey {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000400) != 0
+            && let Some(ref value) = self.turn_speed {
+                write_f32(writer, *value)?;
+            }
+        write_vec::<PackedMotionCommand>(writer, &self.commands)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AutonomousPositionPack {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -8461,6 +10995,22 @@ impl crate::readers::ACDataType for AutonomousPositionPack {
             object_force_position_sequence,
             contact,
         })
+    }
+}
+
+impl crate::writers::ACWritable for AutonomousPositionPack {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AutonomousPositionPack").entered();
+
+        self.position.write(writer)?;
+        write_u16(writer, self.object_instance_sequence)?;
+        write_u16(writer, self.object_server_control_sequence)?;
+        write_u16(writer, self.object_teleport_sequence)?;
+        write_u16(writer, self.object_force_position_sequence)?;
+        write_u8(writer, self.contact)?;
+        align_dword_write(writer)?;
+        Ok(())
     }
 }
 
@@ -8598,6 +11148,45 @@ impl crate::readers::ACDataType for PositionPack {
             object_teleport_sequence,
             object_force_position_sequence,
         })
+    }
+}
+
+impl crate::writers::ACWritable for PositionPack {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "PositionPack").entered();
+
+        write_u32(writer, self.flags.bits())?;
+        self.origin.write(writer)?;
+        if (self.flags.bits() & 0x00000008) != 0
+            && let Some(ref value) = self.w_quat {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags.bits() & 0x00000010) != 0
+            && let Some(ref value) = self.x_quat {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags.bits() & 0x00000020) != 0
+            && let Some(ref value) = self.y_quat {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags.bits() & 0x00000040) != 0
+            && let Some(ref value) = self.z_quat {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags.bits() & 0x00000001) != 0
+            && let Some(ref value) = self.velocity {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & 0x00000002) != 0
+            && let Some(ref value) = self.placement_id {
+                write_u32(writer, *value)?;
+            }
+        write_u16(writer, self.object_instance_sequence)?;
+        write_u16(writer, self.object_position_sequence)?;
+        write_u16(writer, self.object_teleport_sequence)?;
+        write_u16(writer, self.object_force_position_sequence)?;
+        Ok(())
     }
 }
 
@@ -8755,6 +11344,135 @@ impl crate::readers::ACDataType for MovementData {
     }
 }
 
+impl MovementDataType0 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementDataType0").entered();
+
+        self.state.write(writer)?;
+        if (self.option_flags.clone() as u32 & 0x01) != 0
+            && let Some(ref value) = self.sticky_object {
+                value.write(writer)?;
+            }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for MovementDataType0 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        MovementDataType0::write(self, writer)
+    }
+}
+
+impl MovementDataType6 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementDataType6").entered();
+
+        self.target.write(writer)?;
+        self.origin.write(writer)?;
+        self.move_to_params.write(writer)?;
+        write_f32(writer, self.my_run_rate)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for MovementDataType6 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        MovementDataType6::write(self, writer)
+    }
+}
+
+impl MovementDataType7 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementDataType7").entered();
+
+        self.origin.write(writer)?;
+        self.move_to_params.write(writer)?;
+        write_f32(writer, self.my_run_rate)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for MovementDataType7 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        MovementDataType7::write(self, writer)
+    }
+}
+
+impl MovementDataType8 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementDataType8").entered();
+
+        self.target_id.write(writer)?;
+        write_f32(writer, self.desired_heading)?;
+        self.turn_to_params.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for MovementDataType8 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        MovementDataType8::write(self, writer)
+    }
+}
+
+impl MovementDataType9 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementDataType9").entered();
+
+        self.turn_to_params.write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for MovementDataType9 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        MovementDataType9::write(self, writer)
+    }
+}
+
+impl MovementData {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MovementData").entered();
+
+
+        match self {
+            Self::Type0(variant_struct) => {
+                MovementDataType0::write(variant_struct, writer)?;
+            },
+            Self::Type6(variant_struct) => {
+                MovementDataType6::write(variant_struct, writer)?;
+            },
+            Self::Type7(variant_struct) => {
+                MovementDataType7::write(variant_struct, writer)?;
+            },
+            Self::Type8(variant_struct) => {
+                MovementDataType8::write(variant_struct, writer)?;
+            },
+            Self::Type9(variant_struct) => {
+                MovementDataType9::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for MovementData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        MovementData::write(self, writer)
+    }
+}
+
 impl crate::readers::ACDataType for InterpretedMotionState {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -8768,7 +11486,7 @@ impl crate::readers::ACDataType for InterpretedMotionState {
         let flags = read_u32(reader)?;
         #[cfg(feature = "tracing")]
         drop(_field_span_flags);
-        let command_list_length = ((flags >> 7) & 0x7f) as u32;
+        let command_list_length = ((flags >> 7) & 0x7F) as u32;
         let mut current_style = None;
         if (flags & 0x00000001) != 0 {
             #[cfg(feature = "tracing")]
@@ -8877,6 +11595,46 @@ impl crate::readers::ACDataType for InterpretedMotionState {
     }
 }
 
+impl crate::writers::ACWritable for InterpretedMotionState {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "InterpretedMotionState").entered();
+
+        write_u32(writer, self.flags)?;
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.current_style {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.forward_command {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.sidestep_command {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.turn_command {
+                write_u16(writer, value.clone() as u16)?;
+            }
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.forward_speed {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.sidestep_speed {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.turn_speed {
+                write_f32(writer, *value)?;
+            }
+        write_vec::<PackedMotionCommand>(writer, &self.commands)?;
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for DDDRevision {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -8923,6 +11681,19 @@ impl crate::readers::ACDataType for DDDRevision {
             ids_to_download,
             ids_to_purge,
         })
+    }
+}
+
+impl crate::writers::ACWritable for DDDRevision {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "DDDRevision").entered();
+
+        write_u64(writer, self.id_dat_file)?;
+        write_u32(writer, self.iteration)?;
+        write_packable_list::<DataId>(writer, &self.ids_to_download)?;
+        write_packable_list::<DataId>(writer, &self.ids_to_purge)?;
+        Ok(())
     }
 }
 
@@ -9000,6 +11771,22 @@ impl crate::readers::ACDataType for MoveToMovementParameters {
     }
 }
 
+impl crate::writers::ACWritable for MoveToMovementParameters {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "MoveToMovementParameters").entered();
+
+        write_u32(writer, self.bitmember)?;
+        write_f32(writer, self.distance_to_object)?;
+        write_f32(writer, self.min_distance)?;
+        write_f32(writer, self.fail_distance)?;
+        write_f32(writer, self.animation_speed)?;
+        write_f32(writer, self.walk_run_threshold)?;
+        write_f32(writer, self.desired_heading)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for TurnToMovementParameters {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -9035,6 +11822,18 @@ impl crate::readers::ACDataType for TurnToMovementParameters {
             animation_speed,
             desired_heading,
         })
+    }
+}
+
+impl crate::writers::ACWritable for TurnToMovementParameters {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "TurnToMovementParameters").entered();
+
+        write_u32(writer, self.bitmember)?;
+        write_f32(writer, self.animation_speed)?;
+        write_f32(writer, self.desired_heading)?;
+        Ok(())
     }
 }
 
@@ -9132,6 +11931,27 @@ impl crate::readers::ACDataType for ObjDesc {
     }
 }
 
+impl crate::writers::ACWritable for ObjDesc {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ObjDesc").entered();
+
+        write_u8(writer, self.version)?;
+        write_u8(writer, self.palette_count)?;
+        write_u8(writer, self.texture_count)?;
+        write_u8(writer, self.model_count)?;
+        if self.palette_count > 0
+            && let Some(ref value) = self.palette {
+                write_packed_dword(writer, value.0)?;
+            }
+        write_vec::<Subpalette>(writer, &self.subpalettes)?;
+        write_vec::<TextureMapChange>(writer, &self.tm_changes)?;
+        write_vec::<AnimPartChange>(writer, &self.ap_changes)?;
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for Subpalette {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -9167,6 +11987,18 @@ impl crate::readers::ACDataType for Subpalette {
             offset,
             num_colors,
         })
+    }
+}
+
+impl crate::writers::ACWritable for Subpalette {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Subpalette").entered();
+
+        write_packed_dword(writer, self.palette.0)?;
+        write_u8(writer, self.offset)?;
+        write_u8(writer, self.num_colors)?;
+        Ok(())
     }
 }
 
@@ -9208,6 +12040,18 @@ impl crate::readers::ACDataType for TextureMapChange {
     }
 }
 
+impl crate::writers::ACWritable for TextureMapChange {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "TextureMapChange").entered();
+
+        write_u8(writer, self.part_index)?;
+        write_packed_dword(writer, self.old_tex_id.0)?;
+        write_packed_dword(writer, self.new_tex_id.0)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AnimPartChange {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -9234,6 +12078,17 @@ impl crate::readers::ACDataType for AnimPartChange {
             part_index,
             part_id,
         })
+    }
+}
+
+impl crate::writers::ACWritable for AnimPartChange {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AnimPartChange").entered();
+
+        write_u8(writer, self.part_index)?;
+        write_packed_dword(writer, self.part_id.0)?;
+        Ok(())
     }
 }
 
@@ -9599,6 +12454,54 @@ impl crate::readers::ACDataType for CharGenResult {
     }
 }
 
+impl crate::writers::ACWritable for CharGenResult {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CharGenResult").entered();
+
+        write_string(writer, &self.account)?;
+        write_u32(writer, self.one)?;
+        write_u8(writer, self.heritage_group.clone() as u8)?;
+        write_u8(writer, self.gender.clone() as u8)?;
+        write_u32(writer, self.eyes_strip)?;
+        write_u32(writer, self.nose_strip)?;
+        write_u32(writer, self.mouth_strip)?;
+        write_u32(writer, self.hair_color)?;
+        write_u32(writer, self.eye_color)?;
+        write_u32(writer, self.hair_style)?;
+        write_u32(writer, self.headgear_style)?;
+        write_u32(writer, self.headgear_color)?;
+        write_u32(writer, self.shirt_style)?;
+        write_u32(writer, self.shirt_color)?;
+        write_u32(writer, self.trousers_style)?;
+        write_u32(writer, self.trousers_color)?;
+        write_u32(writer, self.footwear_style)?;
+        write_u32(writer, self.footwear_color)?;
+        write_u64(writer, self.skin_shade)?;
+        write_u64(writer, self.hair_shade)?;
+        write_u64(writer, self.headgear_shade)?;
+        write_u64(writer, self.shirt_shade)?;
+        write_u64(writer, self.trousers_shade)?;
+        write_u64(writer, self.tootwear_shade)?;
+        write_u32(writer, self.template_num)?;
+        write_u32(writer, self.strength)?;
+        write_u32(writer, self.endurance)?;
+        write_u32(writer, self.coordination)?;
+        write_u32(writer, self.quickness)?;
+        write_u32(writer, self.focus)?;
+        write_u32(writer, self.self_)?;
+        write_u32(writer, self.slot)?;
+        write_u32(writer, self.class_id)?;
+        write_packable_list::<SkillAdvancementClass>(writer, &self.skills)?;
+        write_string(writer, &self.name)?;
+        write_u32(writer, self.start_area)?;
+        write_u32(writer, self.is_admin)?;
+        write_u32(writer, self.is_envoy)?;
+        write_u32(writer, self.validation)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for CharacterIdentity {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -9645,6 +12548,19 @@ impl crate::readers::ACDataType for CharacterIdentity {
     }
 }
 
+impl crate::writers::ACWritable for CharacterIdentity {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CharacterIdentity").entered();
+
+        self.character_id.write(writer)?;
+        write_string(writer, &self.name)?;
+        write_u32(writer, self.seconds_greyed_out)?;
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for EquipLocation {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -9671,6 +12587,17 @@ impl crate::readers::ACDataType for EquipLocation {
             object_id,
             slot,
         })
+    }
+}
+
+impl crate::writers::ACWritable for EquipLocation {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "EquipLocation").entered();
+
+        self.object_id.write(writer)?;
+        write_u32(writer, self.slot.bits())?;
+        Ok(())
     }
 }
 
@@ -10028,6 +12955,107 @@ impl crate::readers::ACDataType for PhysicsDesc {
     }
 }
 
+impl crate::writers::ACWritable for PhysicsDesc {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "PhysicsDesc").entered();
+
+        write_u32(writer, self.flags)?;
+        write_u32(writer, self.state.bits())?;
+        if (self.flags & 0x00010000) != 0
+            && let Some(ref value) = self.movement_buffer {
+                write_packable_list::<u8>(writer, value)?;
+            }
+        if (self.flags & 0x00010000) != 0
+            && let Some(ref value) = self.autonomous {
+                write_bool(writer, *value)?;
+            }
+        if (self.flags & 0x00020000) != 0
+            && let Some(ref value) = self.animation_frame {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00008000) != 0
+            && let Some(ref value) = self.position {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.motion_id {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000800) != 0
+            && let Some(ref value) = self.sound_id {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00001000) != 0
+            && let Some(ref value) = self.physics_script_id {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.setup_id {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.parent_id {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.parent_location {
+                write_u32(writer, value.clone() as u32)?;
+            }
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.children {
+                write_packable_list::<EquipLocation>(writer, value)?;
+            }
+        if (self.flags & 0x00000080) != 0
+            && let Some(ref value) = self.scale {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.friction {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.elasticity {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00040000) != 0
+            && let Some(ref value) = self.translucency {
+                write_f32(writer, *value)?;
+            }
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.velocity {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.acceleration {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.omega {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00002000) != 0
+            && let Some(ref value) = self.default_script {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.default_script_intensity {
+                write_f32(writer, *value)?;
+            }
+        write_u16(writer, self.object_position_sequence)?;
+        write_u16(writer, self.object_movement_sequence)?;
+        write_u16(writer, self.object_state_sequence)?;
+        write_u16(writer, self.object_vector_sequence)?;
+        write_u16(writer, self.object_teleport_sequence)?;
+        write_u16(writer, self.object_server_control_sequence)?;
+        write_u16(writer, self.object_force_position_sequence)?;
+        write_u16(writer, self.object_visual_desc_sequence)?;
+        write_u16(writer, self.object_instance_sequence)?;
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AdminAccountData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10057,6 +13085,17 @@ impl crate::readers::ACDataType for AdminAccountData {
     }
 }
 
+impl crate::writers::ACWritable for AdminAccountData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AdminAccountData").entered();
+
+        write_string(writer, &self.account_name)?;
+        write_u32(writer, self.bookie_id)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for AdminPlayerData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10083,6 +13122,17 @@ impl crate::readers::ACDataType for AdminPlayerData {
             name,
             bookie_id,
         })
+    }
+}
+
+impl crate::writers::ACWritable for AdminPlayerData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "AdminPlayerData").entered();
+
+        write_string(writer, &self.name)?;
+        write_u32(writer, self.bookie_id)?;
+        Ok(())
     }
 }
 
@@ -10178,6 +13228,24 @@ impl crate::readers::ACDataType for VendorProfile {
     }
 }
 
+impl crate::writers::ACWritable for VendorProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "VendorProfile").entered();
+
+        write_u32(writer, self.categories.bits())?;
+        write_u32(writer, self.min_value)?;
+        write_u32(writer, self.max_value)?;
+        write_bool(writer, self.deals_magic)?;
+        write_f32(writer, self.buy_price)?;
+        write_f32(writer, self.sell_price)?;
+        write_u32(writer, self.currency_id)?;
+        write_u32(writer, self.currency_amount)?;
+        write_string(writer, &self.currency_name)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for ArmorProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10258,6 +13326,23 @@ impl crate::readers::ACDataType for ArmorProfile {
             prot_nether,
             prot_lightning,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ArmorProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ArmorProfile").entered();
+
+        write_f32(writer, self.prot_slashing)?;
+        write_f32(writer, self.prot_piercing)?;
+        write_f32(writer, self.prot_bludgeoning)?;
+        write_f32(writer, self.prot_cold)?;
+        write_f32(writer, self.prot_fire)?;
+        write_f32(writer, self.prot_acid)?;
+        write_f32(writer, self.prot_nether)?;
+        write_f32(writer, self.prot_lightning)?;
+        Ok(())
     }
 }
 
@@ -10423,6 +13508,66 @@ impl crate::readers::ACDataType for CreatureAppraisalProfile {
     }
 }
 
+impl crate::writers::ACWritable for CreatureAppraisalProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CreatureAppraisalProfile").entered();
+
+        write_u32(writer, self.flags)?;
+        write_u32(writer, self.health)?;
+        write_u32(writer, self.health_max)?;
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.strength {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.endurance {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.quickness {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.coordination {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.focus {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.self_ {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.stamina {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.mana {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.stamina_max {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.mana_max {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.attr_highlight {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.attr_color {
+                write_u16(writer, value.bits())?;
+            }
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for WeaponProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10524,6 +13669,25 @@ impl crate::readers::ACDataType for WeaponProfile {
     }
 }
 
+impl crate::writers::ACWritable for WeaponProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "WeaponProfile").entered();
+
+        write_u32(writer, self.damage_type.bits())?;
+        write_u32(writer, self.speed)?;
+        write_i32(writer, self.skill.clone() as i32)?;
+        write_u32(writer, self.damage)?;
+        write_f64(writer, self.variance)?;
+        write_f64(writer, self.modifier)?;
+        write_f64(writer, self.length)?;
+        write_f64(writer, self.max_velocity)?;
+        write_f64(writer, self.offsense)?;
+        write_u32(writer, self.max_velocity_estimated)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for HookAppraisalProfile {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10559,6 +13723,18 @@ impl crate::readers::ACDataType for HookAppraisalProfile {
             valid_locations,
             ammo_type,
         })
+    }
+}
+
+impl crate::writers::ACWritable for HookAppraisalProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "HookAppraisalProfile").entered();
+
+        write_u32(writer, self.flags.bits())?;
+        write_u32(writer, self.valid_locations.bits())?;
+        write_u16(writer, self.ammo_type.bits())?;
+        Ok(())
     }
 }
 
@@ -10600,6 +13776,18 @@ impl crate::readers::ACDataType for SquelchDB {
     }
 }
 
+impl crate::writers::ACWritable for SquelchDB {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SquelchDB").entered();
+
+        write_packable_hash_table::<String, u32>(writer, &self.account_hash)?;
+        write_packable_hash_table::<ObjectId, SquelchInfo>(writer, &self.character_hash)?;
+        self.global_info.write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for SquelchInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10635,6 +13823,18 @@ impl crate::readers::ACDataType for SquelchInfo {
             name,
             account,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SquelchInfo {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SquelchInfo").entered();
+
+        write_packable_list::<LogTextType>(writer, &self.filters)?;
+        write_string(writer, &self.name)?;
+        write_bool(writer, self.account)?;
+        Ok(())
     }
 }
 
@@ -10757,6 +13957,27 @@ impl crate::readers::ACDataType for HouseProfile {
     }
 }
 
+impl crate::writers::ACWritable for HouseProfile {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "HouseProfile").entered();
+
+        write_u32(writer, self.dwelling_id)?;
+        self.owner_id.write(writer)?;
+        write_u32(writer, self.flags.clone() as u32)?;
+        write_i32(writer, self.min_level)?;
+        write_i32(writer, self.max_level)?;
+        write_i32(writer, self.min_alleg_rank)?;
+        write_i32(writer, self.max_alleg_rank)?;
+        write_bool(writer, self.maintenance_free)?;
+        write_u32(writer, self.type_.clone() as u32)?;
+        write_string(writer, &self.owner_name)?;
+        write_packable_list::<HousePayment>(writer, &self.buy)?;
+        write_packable_list::<HousePayment>(writer, &self.rent)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for HousePayment {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10810,6 +14031,20 @@ impl crate::readers::ACDataType for HousePayment {
             name,
             plural_name,
         })
+    }
+}
+
+impl crate::writers::ACWritable for HousePayment {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "HousePayment").entered();
+
+        write_u32(writer, self.required)?;
+        write_u32(writer, self.paid)?;
+        write_u32(writer, self.weenie_class_id)?;
+        write_string(writer, &self.name)?;
+        write_string(writer, &self.plural_name)?;
+        Ok(())
     }
 }
 
@@ -10887,6 +14122,22 @@ impl crate::readers::ACDataType for HouseData {
     }
 }
 
+impl crate::writers::ACWritable for HouseData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "HouseData").entered();
+
+        write_u32(writer, self.buy_time)?;
+        write_u32(writer, self.rent_time)?;
+        write_u32(writer, self.type_.clone() as u32)?;
+        write_bool(writer, self.maintenance_free)?;
+        write_packable_list::<HousePayment>(writer, &self.buy)?;
+        write_packable_list::<HousePayment>(writer, &self.rent)?;
+        self.position.write(writer)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for HAR {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10943,6 +14194,20 @@ impl crate::readers::ACDataType for HAR {
     }
 }
 
+impl crate::writers::ACWritable for HAR {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "HAR").entered();
+
+        write_u32(writer, self.version)?;
+        write_u32(writer, self.bitmask)?;
+        self.monarch_id.write(writer)?;
+        write_packable_hash_table::<ObjectId, GuestInfo>(writer, &self.guest_list)?;
+        write_packable_list::<ObjectId>(writer, &self.roommate_list)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for GuestInfo {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -10969,6 +14234,17 @@ impl crate::readers::ACDataType for GuestInfo {
             has_storage_permission,
             guest_name,
         })
+    }
+}
+
+impl crate::writers::ACWritable for GuestInfo {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GuestInfo").entered();
+
+        write_bool(writer, self.has_storage_permission)?;
+        write_string(writer, &self.guest_name)?;
+        Ok(())
     }
 }
 
@@ -11061,6 +14337,88 @@ impl crate::readers::ACDataType for GameMoveData {
     }
 }
 
+impl GameMoveDataType4 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GameMoveDataType4").entered();
+
+        write_i32(writer, self.id_piece_to_move)?;
+        write_i32(writer, self.y_grid)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for GameMoveDataType4 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        GameMoveDataType4::write(self, writer)
+    }
+}
+
+impl GameMoveDataType5 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GameMoveDataType5").entered();
+
+        write_i32(writer, self.id_piece_to_move)?;
+        write_i32(writer, self.y_grid)?;
+        write_i32(writer, self.x_to)?;
+        write_i32(writer, self.y_to)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for GameMoveDataType5 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        GameMoveDataType5::write(self, writer)
+    }
+}
+
+impl GameMoveDataType6 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GameMoveDataType6").entered();
+
+        write_i32(writer, self.id_piece_to_move)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for GameMoveDataType6 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        GameMoveDataType6::write(self, writer)
+    }
+}
+
+impl GameMoveData {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "GameMoveData").entered();
+
+
+        match self {
+            Self::Type4(variant_struct) => {
+                GameMoveDataType4::write(variant_struct, writer)?;
+            },
+            Self::Type5(variant_struct) => {
+                GameMoveDataType5::write(variant_struct, writer)?;
+            },
+            Self::Type6(variant_struct) => {
+                GameMoveDataType6::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for GameMoveData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        GameMoveData::write(self, writer)
+    }
+}
+
 impl crate::readers::ACDataType for SalvageOperationsResultData {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -11108,6 +14466,19 @@ impl crate::readers::ACDataType for SalvageOperationsResultData {
     }
 }
 
+impl crate::writers::ACWritable for SalvageOperationsResultData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SalvageOperationsResultData").entered();
+
+        write_i32(writer, self.skill_used.clone() as i32)?;
+        write_packable_list::<ObjectId>(writer, &self.not_salvagable)?;
+        write_packable_list::<SalvageResult>(writer, &self.salvage_results)?;
+        write_i32(writer, self.aug_bonus)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for SalvageResult {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -11143,6 +14514,18 @@ impl crate::readers::ACDataType for SalvageResult {
             workmanship,
             units,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SalvageResult {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SalvageResult").entered();
+
+        write_u32(writer, self.material.clone() as u32)?;
+        write_f64(writer, self.workmanship)?;
+        write_u32(writer, self.units)?;
+        Ok(())
     }
 }
 
@@ -11199,6 +14582,20 @@ impl crate::readers::ACDataType for FellowshipLockData {
             timestamp,
             sequence,
         })
+    }
+}
+
+impl crate::writers::ACWritable for FellowshipLockData {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "FellowshipLockData").entered();
+
+        write_u32(writer, self.unknown1)?;
+        write_u32(writer, self.unknown2)?;
+        write_u32(writer, self.unknown3)?;
+        write_u32(writer, self.timestamp)?;
+        write_u32(writer, self.sequence)?;
+        Ok(())
     }
 }
 
@@ -11291,6 +14688,24 @@ impl crate::readers::ACDataType for Fellowship {
             recently_departed,
             locks,
         })
+    }
+}
+
+impl crate::writers::ACWritable for Fellowship {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Fellowship").entered();
+
+        write_packable_hash_table::<ObjectId, Fellow>(writer, &self.members)?;
+        write_string(writer, &self.name)?;
+        self.leader_id.write(writer)?;
+        write_bool(writer, self.share_xp)?;
+        write_bool(writer, self.even_xp_split)?;
+        write_bool(writer, self.open)?;
+        write_bool(writer, self.locked)?;
+        write_packable_hash_table::<ObjectId, i32>(writer, &self.recently_departed)?;
+        write_packable_hash_table::<String, FellowshipLockData>(writer, &self.locks)?;
+        Ok(())
     }
 }
 
@@ -11404,6 +14819,26 @@ impl crate::readers::ACDataType for Fellow {
     }
 }
 
+impl crate::writers::ACWritable for Fellow {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "Fellow").entered();
+
+        write_u32(writer, self.xp_cached)?;
+        write_u32(writer, self.lum_cached)?;
+        write_u32(writer, self.level)?;
+        write_u32(writer, self.max_health)?;
+        write_u32(writer, self.max_stamina)?;
+        write_u32(writer, self.max_mana)?;
+        write_u32(writer, self.current_health)?;
+        write_u32(writer, self.current_stamina)?;
+        write_u32(writer, self.current_mana)?;
+        write_bool(writer, self.share_loot)?;
+        write_string(writer, &self.name)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for ContractTracker {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -11460,6 +14895,20 @@ impl crate::readers::ACDataType for ContractTracker {
     }
 }
 
+impl crate::writers::ACWritable for ContractTracker {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ContractTracker").entered();
+
+        write_u32(writer, self.version)?;
+        write_u32(writer, self.contract_id.clone() as u32)?;
+        write_u32(writer, self.contract_stage.clone() as u32)?;
+        write_i64(writer, self.time_when_done)?;
+        write_i64(writer, self.time_when_repeats)?;
+        Ok(())
+    }
+}
+
 impl crate::readers::ACDataType for ContractTrackerTable {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         #[cfg(feature = "tracing")]
@@ -11477,6 +14926,16 @@ impl crate::readers::ACDataType for ContractTrackerTable {
         Ok(Self {
             contact_trackers,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ContractTrackerTable {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ContractTrackerTable").entered();
+
+        write_packable_hash_table::<u32, ContractTracker>(writer, &self.contact_trackers)?;
+        Ok(())
     }
 }
 

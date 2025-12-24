@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -136,6 +139,25 @@ impl crate::readers::ACDataType for CommunicationChatRoomTracker {
             society_eldrich_web_chat_room_id,
             society_radiant_blood_chat_room_id,
         })
+    }
+}
+
+impl crate::writers::ACWritable for CommunicationChatRoomTracker {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CommunicationChatRoomTracker").entered();
+
+        write_u32(writer, self.allegiance_room_id)?;
+        write_u32(writer, self.general_chat_room_id)?;
+        write_u32(writer, self.trade_chat_room_id)?;
+        write_u32(writer, self.lfg_chat_room_id)?;
+        write_u32(writer, self.roleplay_chat_room_id)?;
+        write_u32(writer, self.olthoi_chat_room_id)?;
+        write_u32(writer, self.society_chat_room_id)?;
+        write_u32(writer, self.society_celestial_hand_chat_room_id)?;
+        write_u32(writer, self.society_eldrich_web_chat_room_id)?;
+        write_u32(writer, self.society_radiant_blood_chat_room_id)?;
+        Ok(())
     }
 }
 

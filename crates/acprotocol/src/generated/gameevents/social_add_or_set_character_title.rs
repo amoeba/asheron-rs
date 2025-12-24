@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -48,6 +51,17 @@ impl crate::readers::ACDataType for SocialAddOrSetCharacterTitle {
             new_title,
             set_as_display_title,
         })
+    }
+}
+
+impl crate::writers::ACWritable for SocialAddOrSetCharacterTitle {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "SocialAddOrSetCharacterTitle").entered();
+
+        write_u32(writer, self.new_title)?;
+        write_bool(writer, self.set_as_display_title)?;
+        Ok(())
     }
 }
 

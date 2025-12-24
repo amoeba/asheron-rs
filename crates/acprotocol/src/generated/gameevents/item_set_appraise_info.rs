@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -401,6 +404,122 @@ impl crate::readers::ACDataType for ItemSetAppraiseInfo {
             base_armor_shin,
             base_armor_foot,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ItemSetAppraiseInfo {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ItemSetAppraiseInfo").entered();
+
+        self.object_id.write(writer)?;
+        write_u32(writer, self.flags)?;
+        write_bool(writer, self.success)?;
+        if (self.flags & 0x00000001) != 0
+            && let Some(ref value) = self.int_properties {
+                write_packable_hash_table::<PropertyInt, i32>(writer, value)?;
+            }
+        if (self.flags & 0x00002000) != 0
+            && let Some(ref value) = self.int64_properties {
+                write_packable_hash_table::<PropertyInt64, i64>(writer, value)?;
+            }
+        if (self.flags & 0x00000002) != 0
+            && let Some(ref value) = self.bool_properties {
+                write_packable_hash_table::<PropertyBool, bool>(writer, value)?;
+            }
+        if (self.flags & 0x00000004) != 0
+            && let Some(ref value) = self.float_properties {
+                write_packable_hash_table::<PropertyFloat, f64>(writer, value)?;
+            }
+        if (self.flags & 0x00000008) != 0
+            && let Some(ref value) = self.string_properties {
+                write_packable_hash_table::<PropertyString, String>(writer, value)?;
+            }
+        if (self.flags & 0x00001000) != 0
+            && let Some(ref value) = self.data_id_properties {
+                write_packable_hash_table::<PropertyDataId, DataId>(writer, value)?;
+            }
+        if (self.flags & 0x00000010) != 0
+            && let Some(ref value) = self.spell_book {
+                write_packable_list::<LayeredSpellId>(writer, value)?;
+            }
+        if (self.flags & 0x00000080) != 0
+            && let Some(ref value) = self.armor_profile {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000100) != 0
+            && let Some(ref value) = self.creature_profile {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000020) != 0
+            && let Some(ref value) = self.weapon_profile {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000040) != 0
+            && let Some(ref value) = self.hook_profile {
+                value.write(writer)?;
+            }
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.armor_highlight {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.flags & 0x00000200) != 0
+            && let Some(ref value) = self.armor_color {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.flags & 0x00000800) != 0
+            && let Some(ref value) = self.weapon_highlight {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.flags & 0x00000800) != 0
+            && let Some(ref value) = self.weapon_color {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.flags & 0x00000400) != 0
+            && let Some(ref value) = self.resist_highlight {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.flags & 0x00000400) != 0
+            && let Some(ref value) = self.resist_color {
+                write_u16(writer, value.bits())?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_head {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_chest {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_groin {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_bicep {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_wrist {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_hand {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_thigh {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_shin {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags & 0x00004000) != 0
+            && let Some(ref value) = self.base_armor_foot {
+                write_u32(writer, *value)?;
+            }
+        Ok(())
     }
 }
 

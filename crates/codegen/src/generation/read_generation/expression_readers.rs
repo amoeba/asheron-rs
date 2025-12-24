@@ -3,6 +3,34 @@ use crate::{
     types::Field,
 };
 
+/// Check if a token is a numeric literal (integer, float, or hex)
+fn is_numeric_literal(token: &str) -> bool {
+    if token.is_empty() {
+        return false;
+    }
+
+    // Check for hex literal (0x... or 0X...)
+    if token.len() > 2 && (token.starts_with("0x") || token.starts_with("0X")) {
+        return token[2..].chars().all(|c| c.is_ascii_hexdigit());
+    }
+
+    // Check for decimal integer or float
+    // Valid formats: "123", "123.456", ".456"
+    let mut has_dot = false;
+    for ch in token.chars() {
+        if ch == '.' {
+            if has_dot {
+                return false; // Multiple dots
+            }
+            has_dot = true;
+        } else if !ch.is_numeric() {
+            return false;
+        }
+    }
+
+    true
+}
+
 /// Generic expression parser that tokenizes an expression and applies formatting
 ///
 /// # Arguments
@@ -11,7 +39,7 @@ use crate::{
 /// * `is_separator` - Predicate to determine if a character is a separator/operator
 /// * `format_token` - Function to format resolved tokens (fields or literals)
 /// * `format_separator` - Function to format separator characters
-fn parse_expression<F, G, H>(
+pub fn parse_expression<F, G, H>(
     expr: &str,
     all_fields: &[Field],
     is_separator: F,
@@ -35,8 +63,8 @@ where
                     if let Some(field) = all_fields.iter().find(|f| f.name == current_token) {
                         let safe_name = safe_identifier(&field.name, IdentifierType::Field).name;
                         format_token(&current_token, &safe_name)
-                    } else if current_token.chars().all(|c| c.is_numeric()) {
-                        // It's a number
+                    } else if is_numeric_literal(&current_token) {
+                        // It's a numeric literal (integer, float, or hex)
                         current_token.clone()
                     } else {
                         // Unknown token - keep as-is but make it snake_case
@@ -58,7 +86,7 @@ where
         let formatted = if let Some(field) = all_fields.iter().find(|f| f.name == current_token) {
             let safe_name = safe_identifier(&field.name, IdentifierType::Field).name;
             format_token(&current_token, &safe_name)
-        } else if current_token.chars().all(|c| c.is_numeric()) {
+        } else if is_numeric_literal(&current_token) {
             current_token.clone()
         } else {
             let safe_name = safe_identifier(&current_token, IdentifierType::Field).name;

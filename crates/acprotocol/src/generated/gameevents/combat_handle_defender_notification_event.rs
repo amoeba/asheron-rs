@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -103,6 +106,22 @@ impl crate::readers::ACDataType for CombatHandleDefenderNotificationEvent {
             critical,
             attack_conditions,
         })
+    }
+}
+
+impl crate::writers::ACWritable for CombatHandleDefenderNotificationEvent {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CombatHandleDefenderNotificationEvent").entered();
+
+        write_string(writer, &self.attacker_name)?;
+        write_u32(writer, self.type_.bits())?;
+        write_f32(writer, self.damage_percent)?;
+        write_u32(writer, self.damage)?;
+        write_u32(writer, self.location.clone() as u32)?;
+        write_bool(writer, self.critical)?;
+        write_u32(writer, self.attack_conditions.bits())?;
+        Ok(())
     }
 }
 

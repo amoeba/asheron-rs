@@ -17,8 +17,11 @@ pub fn generate_type_and_reader_file(
     // Add imports
     out.push_str("use serde::{Serialize, Deserialize};\n");
     out.push_str("use crate::readers::ACReader;\n");
+    out.push_str("use crate::writers::ACWriter;\n");
     out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::readers::*;\n");
+    out.push_str("#[allow(unused_imports)]\n");
+    out.push_str("use crate::writers::*;\n");
     out.push_str("#[allow(unused_imports)]\n");
     out.push_str("use crate::types::*;\n");
     out.push_str("#[allow(unused_imports)]\n");
@@ -46,6 +49,10 @@ pub fn generate_type_and_reader_file(
     }
 
     out.push_str(&generate_reader_impl(reader_ctx, protocol_type));
+    out.push_str(&super::writer_generation::generate_writer_impl(
+        reader_ctx,
+        protocol_type,
+    ));
 
     out
 }

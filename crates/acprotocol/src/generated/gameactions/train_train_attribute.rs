@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -48,6 +51,17 @@ impl crate::readers::ACDataType for TrainTrainAttribute {
             type_,
             experience,
         })
+    }
+}
+
+impl crate::writers::ACWritable for TrainTrainAttribute {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "TrainTrainAttribute").entered();
+
+        write_u32(writer, self.type_.clone() as u32)?;
+        write_u32(writer, self.experience)?;
+        Ok(())
     }
 }
 

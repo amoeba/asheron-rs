@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -70,6 +73,19 @@ impl crate::readers::ACDataType for ItemServerSaysContainId {
             slot_index,
             container_type,
         })
+    }
+}
+
+impl crate::writers::ACWritable for ItemServerSaysContainId {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "ItemServerSaysContainId").entered();
+
+        self.object_id.write(writer)?;
+        self.container_id.write(writer)?;
+        write_u32(writer, self.slot_index)?;
+        write_u32(writer, self.container_type.clone() as u32)?;
+        Ok(())
     }
 }
 

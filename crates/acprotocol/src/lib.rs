@@ -15,6 +15,7 @@ pub mod dat;
 pub mod filter;
 pub mod network;
 pub mod readers;
+pub mod writers;
 
 #[cfg(feature = "cli")]
 pub mod cli;

@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -59,6 +62,18 @@ impl crate::readers::ACDataType for CharacterAddSpellFavorite {
             index,
             spell_bar,
         })
+    }
+}
+
+impl crate::writers::ACWritable for CharacterAddSpellFavorite {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CharacterAddSpellFavorite").entered();
+
+        self.spell_id.write(writer)?;
+        write_u32(writer, self.index)?;
+        write_u32(writer, self.spell_bar)?;
+        Ok(())
     }
 }
 

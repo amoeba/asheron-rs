@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -215,6 +218,54 @@ impl crate::readers::ACDataType for S2CPacket {
             echo_response,
             fragments,
         })
+    }
+}
+
+impl crate::writers::ACWritable for S2CPacket {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "S2CPacket").entered();
+
+        write_u32(writer, self.sequence)?;
+        write_u32(writer, self.flags.bits())?;
+        write_u32(writer, self.checksum)?;
+        write_u16(writer, self.recipient_id)?;
+        write_u16(writer, self.time_since_last_packet)?;
+        write_u16(writer, self.size)?;
+        write_u16(writer, self.iteration)?;
+        if (self.flags.bits() & PacketHeaderFlags::ACK_SEQUENCE.bits()) != 0
+            && let Some(ref value) = self.ack_sequence {
+                write_u32(writer, *value)?;
+            }
+        if (self.flags.bits() & PacketHeaderFlags::LOGON_SERVER_ADDR.bits()) != 0
+            && let Some(ref value) = self.logon_server_addr {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & PacketHeaderFlags::REFERRAL.bits()) != 0
+            && let Some(ref value) = self.referral {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & PacketHeaderFlags::CONNECT_REQUEST.bits()) != 0
+            && let Some(ref value) = self.connect_request {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & PacketHeaderFlags::NET_ERROR.bits()) != 0
+            && let Some(ref value) = self.net_error {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & PacketHeaderFlags::NET_ERROR_DISCONNECT.bits()) != 0
+            && let Some(ref value) = self.net_error_disconnect {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & PacketHeaderFlags::ECHO_RESPONSE.bits()) != 0
+            && let Some(ref value) = self.echo_response {
+                value.write(writer)?;
+            }
+        if (self.flags.bits() & PacketHeaderFlags::BLOB_FRAGMENTS.bits()) != 0
+            && let Some(ref value) = self.fragments {
+                value.write(writer)?;
+            }
+        Ok(())
     }
 }
 

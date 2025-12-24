@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -69,6 +72,47 @@ impl CharacterCharGenVerificationResponse {
 impl crate::readers::ACDataType for CharacterCharGenVerificationResponse {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         CharacterCharGenVerificationResponse::read(reader)
+    }
+}
+
+impl CharacterCharGenVerificationResponseType1 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CharacterCharGenVerificationResponseType1").entered();
+
+        self.character_id.write(writer)?;
+        write_string(writer, &self.name)?;
+        write_u32(writer, self.seconds_until_deletion)?;
+        align_dword_write(writer)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CharacterCharGenVerificationResponseType1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CharacterCharGenVerificationResponseType1::write(self, writer)
+    }
+}
+
+impl CharacterCharGenVerificationResponse {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "CharacterCharGenVerificationResponse").entered();
+
+
+        match self {
+            Self::Type1(variant_struct) => {
+                CharacterCharGenVerificationResponseType1::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for CharacterCharGenVerificationResponse {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        CharacterCharGenVerificationResponse::write(self, writer)
     }
 }
 

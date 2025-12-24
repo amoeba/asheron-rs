@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -48,6 +51,17 @@ impl crate::readers::ACDataType for FellowshipUpdateFellow {
             fellow,
             update_type,
         })
+    }
+}
+
+impl crate::writers::ACWritable for FellowshipUpdateFellow {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "FellowshipUpdateFellow").entered();
+
+        self.fellow.write(writer)?;
+        write_u32(writer, self.update_type.clone() as u32)?;
+        Ok(())
     }
 }
 

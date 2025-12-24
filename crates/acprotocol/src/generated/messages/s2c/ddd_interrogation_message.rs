@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -70,6 +73,19 @@ impl crate::readers::ACDataType for DDDInterrogationMessage {
             product_id,
             supported_languages,
         })
+    }
+}
+
+impl crate::writers::ACWritable for DDDInterrogationMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "DDDInterrogationMessage").entered();
+
+        write_u32(writer, self.servers_region)?;
+        write_u32(writer, self.name_rule_language)?;
+        write_u32(writer, self.product_id)?;
+        write_packable_list::<u32>(writer, &self.supported_languages)?;
+        Ok(())
     }
 }
 

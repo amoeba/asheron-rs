@@ -1,7 +1,10 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::ACReader;
+use crate::writers::ACWriter;
 #[allow(unused_imports)]
 use crate::readers::*;
+#[allow(unused_imports)]
+use crate::writers::*;
 #[allow(unused_imports)]
 use crate::types::*;
 #[allow(unused_imports)]
@@ -129,6 +132,65 @@ impl DDDDataMessage {
 impl crate::readers::ACDataType for DDDDataMessage {
     fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
         DDDDataMessage::read(reader)
+    }
+}
+
+impl DDDDataMessageType0 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "DDDDataMessageType0").entered();
+
+        write_vec::<u8>(writer, &self.data)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for DDDDataMessageType0 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        DDDDataMessageType0::write(self, writer)
+    }
+}
+
+impl DDDDataMessageType1 {
+    #[allow(clippy::too_many_arguments)]
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "DDDDataMessageType1").entered();
+
+        write_u32(writer, self.file_size)?;
+        write_vec::<u8>(writer, &self.data)?;
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for DDDDataMessageType1 {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        DDDDataMessageType1::write(self, writer)
+    }
+}
+
+impl DDDDataMessage {
+    pub fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        #[cfg(feature = "tracing")]
+        let _span = tracing::span!(tracing::Level::DEBUG, "write", r#type = "DDDDataMessage").entered();
+
+
+        match self {
+            Self::Type0(variant_struct) => {
+                DDDDataMessageType0::write(variant_struct, writer)?;
+            },
+            Self::Type1(variant_struct) => {
+                DDDDataMessageType1::write(variant_struct, writer)?;
+            },
+        }
+        Ok(())
+    }
+}
+
+impl crate::writers::ACWritable for DDDDataMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        DDDDataMessage::write(self, writer)
     }
 }
 
