@@ -51,8 +51,8 @@ impl FragmentAssembler {
             let start_pos = reader.position();
 
             // Parse packet header
-            let header = PacketHeader::read(&mut reader)
-                .map_err(|e| io::Error::other(e.to_string()))?;
+            let header =
+                PacketHeader::read(&mut reader).map_err(|e| io::Error::other(e.to_string()))?;
 
             // Calculate packet boundaries (header is always 20 bytes + variable size payload)
             let packet_end = start_pos + PacketHeader::BASE_SIZE + header.size as usize;
