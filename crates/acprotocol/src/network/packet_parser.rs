@@ -2,10 +2,12 @@ use std::collections::HashMap;
 use std::io;
 
 use crate::generated::network::Fragment;
+use crate::readers::ACDataType;
 
-use super::packet::{PacketHeader, PacketHeaderFlags};
+use super::packet::PacketHeader;
 use super::packet_reader::PacketReader;
 use super::raw_message::RawMessage;
+use crate::enums::PacketHeaderFlags;
 
 /// Information about a fragment extracted from a packet
 #[derive(Debug, Clone)]
@@ -49,7 +51,8 @@ impl FragmentAssembler {
             let start_pos = reader.position();
 
             // Parse packet header
-            let header = PacketHeader::parse(&mut reader)?;
+            let header = PacketHeader::read(&mut reader)
+                .map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
 
             // Calculate packet boundaries (header is always 20 bytes + variable size payload)
             let packet_end = start_pos + PacketHeader::BASE_SIZE + header.size as usize;
@@ -123,7 +126,7 @@ impl FragmentAssembler {
                 reader.read_u32()?; // StringId
                 reader.read_u32()?; // TableId
             }
-            if header.flags.contains(PacketHeaderFlags::CICMD_COMMAND) {
+            if header.flags.contains(PacketHeaderFlags::CICMDCOMMAND) {
                 // CICMDCommand: Command (u32) + Param (u32)
                 reader.read_u32()?; // Command
                 reader.read_u32()?; // Param

@@ -1,37 +1,12 @@
 use serde::Serialize;
-use std::io::{self, Read, Seek};
+use std::error::Error;
 
 #[cfg(test)]
 use std::io::Cursor;
 
-bitflags::bitflags! {
-    #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-    pub struct PacketHeaderFlags: u32 {
-        const NONE = 0x00000000;
-        const RETRANSMISSION = 0x00000001;
-        const ENCRYPTED_CHECKSUM = 0x00000002;
-        const BLOB_FRAGMENTS = 0x00000004;
-        const SERVER_SWITCH = 0x00000100;
-        const LOGON_SERVER_ADDR = 0x00000200;
-        const EMPTY_HEADER1 = 0x00000400;
-        const REFERRAL = 0x00000800;
-        const REQUEST_RETRANSMIT = 0x00001000;
-        const REJECT_RETRANSMIT = 0x00002000;
-        const ACK_SEQUENCE = 0x00004000;
-        const DISCONNECT = 0x00008000;
-        const LOGIN_REQUEST = 0x00010000;
-        const WORLD_LOGIN_REQUEST = 0x00020000;
-        const CONNECT_REQUEST = 0x00040000;
-        const CONNECT_RESPONSE = 0x00080000;
-        const NET_ERROR = 0x00100000;
-        const NET_ERROR_DISCONNECT = 0x00200000;
-        const CICMD_COMMAND = 0x00400000;
-        const TIME_SYNC = 0x01000000;
-        const ECHO_REQUEST = 0x02000000;
-        const ECHO_RESPONSE = 0x04000000;
-        const FLOW = 0x08000000;
-    }
-}
+use crate::enums::PacketHeaderFlags;
+use crate::readers::{read_u16, read_u32, ACDataType, ACReader};
+use crate::writers::{write_u16, write_u32, ACWritable, ACWriter};
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PacketHeader {
@@ -47,30 +22,28 @@ pub struct PacketHeader {
 impl PacketHeader {
     pub const BASE_SIZE: usize = 20;
 
-    pub fn parse(reader: &mut (impl Read + Seek)) -> io::Result<Self> {
-        let mut buf = [0u8; 4];
-        reader.read_exact(&mut buf)?;
-        let sequence = u32::from_le_bytes(buf);
+    pub fn with_flags(flags: PacketHeaderFlags) -> Self {
+        Self {
+            sequence: 0,
+            flags,
+            checksum: 0,
+            id: 0,
+            time: 0,
+            size: 0,
+            iteration: 0,
+        }
+    }
+}
 
-        reader.read_exact(&mut buf)?;
-        let flags_raw = u32::from_le_bytes(buf);
-        let flags = PacketHeaderFlags::from_bits_truncate(flags_raw);
-
-        reader.read_exact(&mut buf)?;
-        let checksum = u32::from_le_bytes(buf);
-
-        let mut buf = [0u8; 2];
-        reader.read_exact(&mut buf)?;
-        let id = u16::from_le_bytes(buf);
-
-        reader.read_exact(&mut buf)?;
-        let time = u16::from_le_bytes(buf);
-
-        reader.read_exact(&mut buf)?;
-        let size = u16::from_le_bytes(buf);
-
-        reader.read_exact(&mut buf)?;
-        let iteration = u16::from_le_bytes(buf);
+impl ACDataType for PacketHeader {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn Error>> {
+        let sequence = read_u32(reader)?;
+        let flags = PacketHeaderFlags::read(reader)?;
+        let checksum = read_u32(reader)?;
+        let id = read_u16(reader)?;
+        let time = read_u16(reader)?;
+        let size = read_u16(reader)?;
+        let iteration = read_u16(reader)?;
 
         Ok(Self {
             sequence,
@@ -81,6 +54,19 @@ impl PacketHeader {
             size,
             iteration,
         })
+    }
+}
+
+impl ACWritable for PacketHeader {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn Error>> {
+        write_u32(writer, self.sequence)?;
+        self.flags.write(writer)?;
+        write_u32(writer, self.checksum)?;
+        write_u16(writer, self.id)?;
+        write_u16(writer, self.time)?;
+        write_u16(writer, self.size)?;
+        write_u16(writer, self.iteration)?;
+        Ok(())
     }
 }
 
@@ -117,7 +103,7 @@ mod tests {
         ];
 
         let mut cursor = Cursor::new(&data[..]);
-        let header = PacketHeader::parse(&mut cursor).unwrap();
+        let header = PacketHeader::read(&mut cursor).unwrap();
 
         assert_eq!(header.sequence, 1);
         assert_eq!(header.flags, PacketHeaderFlags::BLOB_FRAGMENTS);
@@ -142,7 +128,7 @@ mod tests {
         ];
 
         let mut cursor = Cursor::new(&data[..]);
-        let header = PacketHeader::parse(&mut cursor).unwrap();
+        let header = PacketHeader::read(&mut cursor).unwrap();
 
         assert!(header.flags.contains(PacketHeaderFlags::BLOB_FRAGMENTS));
         assert!(header.flags.contains(PacketHeaderFlags::ACK_SEQUENCE));
@@ -155,13 +141,55 @@ mod tests {
         let data = vec![0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A];
 
         let mut cursor = Cursor::new(&data[..]);
-        let result = PacketHeader::parse(&mut cursor);
+        let result = PacketHeader::read(&mut cursor);
 
         assert!(result.is_err());
     }
 
     #[test]
-    fn test_packet_header_base_size() {
-        assert_eq!(PacketHeader::BASE_SIZE, 20);
+    fn test_packet_header_write_read_roundtrip() {
+        use crate::writers::ACWritable;
+
+        // Create a test header
+        let original = PacketHeader {
+            sequence: 42,
+            flags: PacketHeaderFlags::BLOB_FRAGMENTS | PacketHeaderFlags::ACK_SEQUENCE,
+            checksum: 0xDEADBEEF,
+            id: 0x1234,
+            time: 0x5678,
+            size: 1024,
+            iteration: 7,
+        };
+
+        // Write to buffer
+        let mut buffer = Cursor::new(Vec::new());
+        original.write(&mut buffer).unwrap();
+
+        // Read back
+        buffer.set_position(0);
+        let read_back = PacketHeader::read(&mut buffer).unwrap();
+
+        // Verify all fields match
+        assert_eq!(read_back.sequence, original.sequence);
+        assert_eq!(read_back.flags, original.flags);
+        assert_eq!(read_back.checksum, original.checksum);
+        assert_eq!(read_back.id, original.id);
+        assert_eq!(read_back.time, original.time);
+        assert_eq!(read_back.size, original.size);
+        assert_eq!(read_back.iteration, original.iteration);
+    }
+
+    #[test]
+    fn test_packet_header_with_flags() {
+        let flags = PacketHeaderFlags::BLOB_FRAGMENTS | PacketHeaderFlags::RETRANSMISSION;
+        let header = PacketHeader::with_flags(flags);
+
+        assert_eq!(header.flags, flags);
+        assert_eq!(header.sequence, 0);
+        assert_eq!(header.checksum, 0);
+        assert_eq!(header.id, 0);
+        assert_eq!(header.time, 0);
+        assert_eq!(header.size, 0);
+        assert_eq!(header.iteration, 0);
     }
 }
