@@ -203,7 +203,9 @@ fn generate_c2s_message_enum(
     }
 
     out.push_str("            C2SMessage::OrderedGameAction { sequence, action } => {\n");
-    out.push_str("                write_u32(writer, crate::enums::C2SMessage::OrderedGameAction as u32)?;\n");
+    out.push_str(
+        "                write_u32(writer, crate::enums::C2SMessage::OrderedGameAction as u32)?;\n",
+    );
     out.push_str("                write_u32(writer, *sequence)?;\n");
     out.push_str("                write_item(writer, action)?;\n");
     out.push_str("                Ok(())\n");
@@ -335,7 +337,9 @@ fn generate_s2c_message_enum(
     }
 
     out.push_str("            S2CMessage::OrderedGameEvent { object_id, sequence, event } => {\n");
-    out.push_str("                write_u32(writer, crate::enums::S2CMessage::OrderedGameEvent as u32)?;\n");
+    out.push_str(
+        "                write_u32(writer, crate::enums::S2CMessage::OrderedGameEvent as u32)?;\n",
+    );
     out.push_str("                write_u32(writer, *object_id)?;\n");
     out.push_str("                write_u32(writer, *sequence)?;\n");
     out.push_str("                write_item(writer, event.as_ref())?;\n");

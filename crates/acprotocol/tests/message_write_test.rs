@@ -1,15 +1,15 @@
-use acprotocol::messages::s2c;
-use acprotocol::message::{C2SMessage, S2CMessage, GameActionMessage};
 use acprotocol::gameactions;
-use acprotocol::writers::ACWritable;
+use acprotocol::message::{C2SMessage, GameActionMessage, S2CMessage};
+use acprotocol::messages::s2c;
 use acprotocol::types;
+use acprotocol::writers::ACWritable;
 use std::io::Cursor;
 
 #[test]
 fn test_s2c_message_ddd_begin_write_roundtrip() {
     // Test 1: Simple S2CMessage with DDDBeginDDDMessage (no inner opcodes)
     // This demonstrates writing a basic S2C message with the new ACWritable impl
-    
+
     let ddd_message = s2c::DDDBeginDDDMessage {
         data_expected: 42u32,
         revisions: types::PackableList {
@@ -31,17 +31,19 @@ fn test_s2c_message_ddd_begin_write_roundtrip() {
     // The ACWritable impl should have written:
     // - Bytes 0-3: S2CMessage opcode (DDDBeginDDDMessage = 0xF7E7)
     // - Bytes 4+: The DDDBeginDDDMessage data (data_expected + revisions)
-    
+
     assert!(
         buffer.len() >= 8,
         "Buffer should have at least 8 bytes (opcode + data_expected)"
     );
 
     let opcode = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-    assert_eq!(opcode, 0xF7E7, "First 4 bytes should be DDDBeginDDDMessage opcode");
+    assert_eq!(
+        opcode, 0xF7E7,
+        "First 4 bytes should be DDDBeginDDDMessage opcode"
+    );
 
-    let data_expected =
-        u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
+    let data_expected = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
     assert_eq!(
         data_expected, 42,
         "data_expected should be 42 in the message body"
@@ -68,7 +70,7 @@ fn test_c2s_message_ordered_game_action_write_roundtrip() {
     // - sequence number
     // - GameAction opcode (CharacterLoginCompleteNotification)
     // - GameAction payload (empty in this case)
-    
+
     let action = gameactions::CharacterLoginCompleteNotification {};
     let game_action = GameActionMessage::CharacterLoginCompleteNotification(action);
 
@@ -95,8 +97,7 @@ fn test_c2s_message_ordered_game_action_write_roundtrip() {
 
     let c2s_opcode = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
     let sequence = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
-    let game_action_opcode =
-        u32::from_le_bytes([buffer[8], buffer[9], buffer[10], buffer[11]]);
+    let game_action_opcode = u32::from_le_bytes([buffer[8], buffer[9], buffer[10], buffer[11]]);
 
     // OrderedGameAction = 0xF7B1 in the C2SMessage enum
     assert_eq!(
