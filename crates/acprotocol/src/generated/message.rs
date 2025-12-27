@@ -1,6 +1,7 @@
 use serde::{Serialize, Deserialize};
 use crate::readers::*;
 use crate::enums::*;
+use crate::writers::{ACWritable, ACWriter, write_u32, write_item};
 use crate::messages::c2s;
 use crate::messages::s2c;
 use crate::gameactions;
@@ -527,6 +528,793 @@ impl GameActionMessage {
     }
 }
 
+impl ACWritable for GameActionMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        match self {
+            GameActionMessage::CharacterPlayerOptionChangedEvent(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterPlayerOptionChangedEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CombatTargetedMeleeAttack(msg) => {
+                write_u32(writer, crate::enums::GameAction::CombatTargetedMeleeAttack as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CombatTargetedMissileAttack(msg) => {
+                write_u32(writer, crate::enums::GameAction::CombatTargetedMissileAttack as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationSetAFKMode(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationSetAFKMode as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationSetAFKMessage(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationSetAFKMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationTalk(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationTalk as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::SocialRemoveFriend(msg) => {
+                write_u32(writer, crate::enums::GameAction::SocialRemoveFriend as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::SocialAddFriend(msg) => {
+                write_u32(writer, crate::enums::GameAction::SocialAddFriend as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryPutItemInContainer(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryPutItemInContainer as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryGetAndWieldItem(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryGetAndWieldItem as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryDropItem(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryDropItem as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceSwearAllegiance(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceSwearAllegiance as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceBreakAllegiance(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceBreakAllegiance as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceUpdateRequest(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceUpdateRequest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::SocialClearFriends(msg) => {
+                write_u32(writer, crate::enums::GameAction::SocialClearFriends as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterTeleToPKLArena(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterTeleToPKLArena as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterTeleToPKArena(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterTeleToPKArena as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::SocialSetDisplayCharacterTitle(msg) => {
+                write_u32(writer, crate::enums::GameAction::SocialSetDisplayCharacterTitle as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceQueryAllegianceName(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceQueryAllegianceName as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceClearAllegianceName(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceClearAllegianceName as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationTalkDirect(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationTalkDirect as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceSetAllegianceName(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceSetAllegianceName as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryUseWithTargetEvent(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryUseWithTargetEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryUseEvent(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryUseEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceSetAllegianceOfficer(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceSetAllegianceOfficer as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceSetAllegianceOfficerTitle(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceSetAllegianceOfficerTitle as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceListAllegianceOfficerTitles(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceListAllegianceOfficerTitles as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceClearAllegianceOfficerTitles(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceClearAllegianceOfficerTitles as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceDoAllegianceLockAction(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceDoAllegianceLockAction as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceSetAllegianceApprovedVassal(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceSetAllegianceApprovedVassal as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceAllegianceChatGag(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceAllegianceChatGag as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceDoAllegianceHouseAction(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceDoAllegianceHouseAction as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TrainTrainAttribute2nd(msg) => {
+                write_u32(writer, crate::enums::GameAction::TrainTrainAttribute2nd as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TrainTrainAttribute(msg) => {
+                write_u32(writer, crate::enums::GameAction::TrainTrainAttribute as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TrainTrainSkill(msg) => {
+                write_u32(writer, crate::enums::GameAction::TrainTrainSkill as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TrainTrainSkillAdvancementClass(msg) => {
+                write_u32(writer, crate::enums::GameAction::TrainTrainSkillAdvancementClass as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MagicCastUntargetedSpell(msg) => {
+                write_u32(writer, crate::enums::GameAction::MagicCastUntargetedSpell as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MagicCastTargetedSpell(msg) => {
+                write_u32(writer, crate::enums::GameAction::MagicCastTargetedSpell as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CombatChangeCombatMode(msg) => {
+                write_u32(writer, crate::enums::GameAction::CombatChangeCombatMode as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryStackableMerge(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryStackableMerge as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryStackableSplitToContainer(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryStackableSplitToContainer as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryStackableSplitTo3D(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryStackableSplitTo3D as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationModifyCharacterSquelch(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationModifyCharacterSquelch as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationModifyAccountSquelch(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationModifyAccountSquelch as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationModifyGlobalSquelch(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationModifyGlobalSquelch as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationTalkDirectByName(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationTalkDirectByName as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::VendorBuy(msg) => {
+                write_u32(writer, crate::enums::GameAction::VendorBuy as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::VendorSell(msg) => {
+                write_u32(writer, crate::enums::GameAction::VendorSell as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterTeleToLifestone(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterTeleToLifestone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterLoginCompleteNotification(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterLoginCompleteNotification as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::FellowshipCreate(msg) => {
+                write_u32(writer, crate::enums::GameAction::FellowshipCreate as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::FellowshipQuit(msg) => {
+                write_u32(writer, crate::enums::GameAction::FellowshipQuit as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::FellowshipDismiss(msg) => {
+                write_u32(writer, crate::enums::GameAction::FellowshipDismiss as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::FellowshipRecruit(msg) => {
+                write_u32(writer, crate::enums::GameAction::FellowshipRecruit as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::FellowshipUpdateRequest(msg) => {
+                write_u32(writer, crate::enums::GameAction::FellowshipUpdateRequest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::WritingBookAddPage(msg) => {
+                write_u32(writer, crate::enums::GameAction::WritingBookAddPage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::WritingBookModifyPage(msg) => {
+                write_u32(writer, crate::enums::GameAction::WritingBookModifyPage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::WritingBookData(msg) => {
+                write_u32(writer, crate::enums::GameAction::WritingBookData as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::WritingBookDeletePage(msg) => {
+                write_u32(writer, crate::enums::GameAction::WritingBookDeletePage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::WritingBookPageData(msg) => {
+                write_u32(writer, crate::enums::GameAction::WritingBookPageData as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::WritingSetInscription(msg) => {
+                write_u32(writer, crate::enums::GameAction::WritingSetInscription as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::ItemAppraise(msg) => {
+                write_u32(writer, crate::enums::GameAction::ItemAppraise as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryGiveObjectRequest(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryGiveObjectRequest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AdvocateTeleport(msg) => {
+                write_u32(writer, crate::enums::GameAction::AdvocateTeleport as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterAbuseLogRequest(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterAbuseLogRequest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationAddToChannel(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationAddToChannel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationRemoveFromChannel(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationRemoveFromChannel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationChannelBroadcast(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationChannelBroadcast as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationChannelList(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationChannelList as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationChannelIndex(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationChannelIndex as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryNoLongerViewingContents(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryNoLongerViewingContents as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryStackableSplitToWield(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryStackableSplitToWield as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterAddShortCut(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterAddShortCut as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterRemoveShortCut(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterRemoveShortCut as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterCharacterOptionsEvent(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterCharacterOptionsEvent as u32)?;
+                write_item(writer, msg.as_ref())?;
+                Ok(())
+            }
+            GameActionMessage::MagicRemoveSpell(msg) => {
+                write_u32(writer, crate::enums::GameAction::MagicRemoveSpell as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CombatCancelAttack(msg) => {
+                write_u32(writer, crate::enums::GameAction::CombatCancelAttack as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CombatQueryHealth(msg) => {
+                write_u32(writer, crate::enums::GameAction::CombatQueryHealth as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterQueryAge(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterQueryAge as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterQueryBirth(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterQueryBirth as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationEmote(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationEmote as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CommunicationSoulEmote(msg) => {
+                write_u32(writer, crate::enums::GameAction::CommunicationSoulEmote as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterAddSpellFavorite(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterAddSpellFavorite as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterRemoveSpellFavorite(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterRemoveSpellFavorite as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterRequestPing(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterRequestPing as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TradeOpenTradeNegotiations(msg) => {
+                write_u32(writer, crate::enums::GameAction::TradeOpenTradeNegotiations as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TradeCloseTradeNegotiations(msg) => {
+                write_u32(writer, crate::enums::GameAction::TradeCloseTradeNegotiations as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TradeAddToTrade(msg) => {
+                write_u32(writer, crate::enums::GameAction::TradeAddToTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TradeAcceptTrade(msg) => {
+                write_u32(writer, crate::enums::GameAction::TradeAcceptTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TradeDeclineTrade(msg) => {
+                write_u32(writer, crate::enums::GameAction::TradeDeclineTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::TradeResetTrade(msg) => {
+                write_u32(writer, crate::enums::GameAction::TradeResetTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterClearPlayerConsentList(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterClearPlayerConsentList as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterDisplayPlayerConsentList(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterDisplayPlayerConsentList as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterRemoveFromPlayerConsentList(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterRemoveFromPlayerConsentList as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterAddPlayerPermission(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterAddPlayerPermission as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseBuyHouse(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseBuyHouse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseQueryHouse(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseQueryHouse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseAbandonHouse(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseAbandonHouse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterRemovePlayerPermission(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterRemovePlayerPermission as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseRentHouse(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseRentHouse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterSetDesiredComponentLevel(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterSetDesiredComponentLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseAddPermanentGuest(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseAddPermanentGuest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseRemovePermanentGuest(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseRemovePermanentGuest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseSetOpenHouseStatus(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseSetOpenHouseStatus as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseChangeStoragePermission(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseChangeStoragePermission as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseBootSpecificHouseGuest(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseBootSpecificHouseGuest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseRemoveAllStoragePermission(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseRemoveAllStoragePermission as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseRequestFullGuestList(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseRequestFullGuestList as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceSetMotd(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceSetMotd as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceQueryMotd(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceQueryMotd as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceClearMotd(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceClearMotd as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseQueryLord(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseQueryLord as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseAddAllStoragePermission(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseAddAllStoragePermission as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseRemoveAllPermanentGuests(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseRemoveAllPermanentGuests as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseBootEveryone(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseBootEveryone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseTeleToHouse(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseTeleToHouse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::ItemQueryItemMana(msg) => {
+                write_u32(writer, crate::enums::GameAction::ItemQueryItemMana as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseSetHooksVisibility(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseSetHooksVisibility as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseModifyAllegianceGuestPermission(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseModifyAllegianceGuestPermission as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseModifyAllegianceStoragePermission(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseModifyAllegianceStoragePermission as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::GameJoin(msg) => {
+                write_u32(writer, crate::enums::GameAction::GameJoin as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::GameQuit(msg) => {
+                write_u32(writer, crate::enums::GameAction::GameQuit as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::GameMove(msg) => {
+                write_u32(writer, crate::enums::GameAction::GameMove as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::GameMovePass(msg) => {
+                write_u32(writer, crate::enums::GameAction::GameMovePass as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::GameStalemate(msg) => {
+                write_u32(writer, crate::enums::GameAction::GameStalemate as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseListAvailableHouses(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseListAvailableHouses as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterConfirmationResponse(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterConfirmationResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceBreakAllegianceBoot(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceBreakAllegianceBoot as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::HouseTeleToMansion(msg) => {
+                write_u32(writer, crate::enums::GameAction::HouseTeleToMansion as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterSuicide(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterSuicide as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceAllegianceInfoRequest(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceAllegianceInfoRequest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::InventoryCreateTinkeringTool(msg) => {
+                write_u32(writer, crate::enums::GameAction::InventoryCreateTinkeringTool as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterSpellbookFilterEvent(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterSpellbookFilterEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterTeleToMarketplace(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterTeleToMarketplace as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterEnterPKLite(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterEnterPKLite as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::FellowshipAssignNewLeader(msg) => {
+                write_u32(writer, crate::enums::GameAction::FellowshipAssignNewLeader as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::FellowshipChangeFellowOpeness(msg) => {
+                write_u32(writer, crate::enums::GameAction::FellowshipChangeFellowOpeness as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceAllegianceChatBoot(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceAllegianceChatBoot as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceAddAllegianceBan(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceAddAllegianceBan as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceRemoveAllegianceBan(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceRemoveAllegianceBan as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceListAllegianceBans(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceListAllegianceBans as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceRemoveAllegianceOfficer(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceRemoveAllegianceOfficer as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceListAllegianceOfficers(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceListAllegianceOfficers as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceClearAllegianceOfficers(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceClearAllegianceOfficers as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AllegianceRecallAllegianceHometown(msg) => {
+                write_u32(writer, crate::enums::GameAction::AllegianceRecallAllegianceHometown as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AdminQueryPluginListResponse(msg) => {
+                write_u32(writer, crate::enums::GameAction::AdminQueryPluginListResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::AdminQueryPluginResponse(msg) => {
+                write_u32(writer, crate::enums::GameAction::AdminQueryPluginResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::CharacterFinishBarber(msg) => {
+                write_u32(writer, crate::enums::GameAction::CharacterFinishBarber as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::SocialAbandonContract(msg) => {
+                write_u32(writer, crate::enums::GameAction::SocialAbandonContract as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MovementJump(msg) => {
+                write_u32(writer, crate::enums::GameAction::MovementJump as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MovementMoveToState(msg) => {
+                write_u32(writer, crate::enums::GameAction::MovementMoveToState as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MovementDoMovementCommand(msg) => {
+                write_u32(writer, crate::enums::GameAction::MovementDoMovementCommand as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MovementStopMovementCommand(msg) => {
+                write_u32(writer, crate::enums::GameAction::MovementStopMovementCommand as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MovementAutonomyLevel(msg) => {
+                write_u32(writer, crate::enums::GameAction::MovementAutonomyLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MovementAutonomousPosition(msg) => {
+                write_u32(writer, crate::enums::GameAction::MovementAutonomousPosition as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameActionMessage::MovementJumpNonAutonomous(msg) => {
+                write_u32(writer, crate::enums::GameAction::MovementJumpNonAutonomous as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+        }
+    }
+}
+
 /// GameEventMessage enum with message data
 #[derive(Debug, Serialize, Deserialize)]
 pub enum GameEventMessage {
@@ -848,6 +1636,513 @@ impl GameEventMessage {
     }
 }
 
+impl ACWritable for GameEventMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        match self {
+            GameEventMessage::AllegianceAllegianceUpdateAborted(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AllegianceAllegianceUpdateAborted as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationPopUpString(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationPopUpString as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::LoginPlayerDescription(msg) => {
+                write_u32(writer, crate::enums::GameEvent::LoginPlayerDescription as u32)?;
+                write_item(writer, msg.as_ref())?;
+                Ok(())
+            }
+            GameEventMessage::AllegianceAllegianceUpdate(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AllegianceAllegianceUpdate as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::SocialFriendsUpdate(msg) => {
+                write_u32(writer, crate::enums::GameEvent::SocialFriendsUpdate as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemServerSaysContainId(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemServerSaysContainId as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemWearItem(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemWearItem as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::SocialCharacterTitleTable(msg) => {
+                write_u32(writer, crate::enums::GameEvent::SocialCharacterTitleTable as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::SocialAddOrSetCharacterTitle(msg) => {
+                write_u32(writer, crate::enums::GameEvent::SocialAddOrSetCharacterTitle as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemStopViewingObjectContents(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemStopViewingObjectContents as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::VendorVendorInfo(msg) => {
+                write_u32(writer, crate::enums::GameEvent::VendorVendorInfo as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CharacterStartBarber(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CharacterStartBarber as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::FellowshipQuit(msg) => {
+                write_u32(writer, crate::enums::GameEvent::FellowshipQuit as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::FellowshipDismiss(msg) => {
+                write_u32(writer, crate::enums::GameEvent::FellowshipDismiss as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::WritingBookOpen(msg) => {
+                write_u32(writer, crate::enums::GameEvent::WritingBookOpen as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::WritingBookAddPageResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::WritingBookAddPageResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::WritingBookDeletePageResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::WritingBookDeletePageResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::WritingBookPageDataResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::WritingBookPageDataResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemGetInscriptionResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemGetInscriptionResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemSetAppraiseInfo(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemSetAppraiseInfo as u32)?;
+                write_item(writer, msg.as_ref())?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationChannelBroadcast(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationChannelBroadcast as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationChannelList(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationChannelList as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationChannelIndex(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationChannelIndex as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemOnViewContents(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemOnViewContents as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemServerSaysMoveItem(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemServerSaysMoveItem as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleAttackDoneEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleAttackDoneEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicRemoveSpell(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicRemoveSpell as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleVictimNotificationEventSelf(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleVictimNotificationEventSelf as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleVictimNotificationEventOther(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleVictimNotificationEventOther as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleAttackerNotificationEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleAttackerNotificationEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleDefenderNotificationEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleDefenderNotificationEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleEvasionAttackerNotificationEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleEvasionAttackerNotificationEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleEvasionDefenderNotificationEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleEvasionDefenderNotificationEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatHandleCommenceAttackEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatHandleCommenceAttackEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CombatQueryHealthResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CombatQueryHealthResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CharacterQueryAgeResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CharacterQueryAgeResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemUseDone(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemUseDone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::AllegianceAllegianceUpdateDone(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AllegianceAllegianceUpdateDone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::FellowshipFellowUpdateDone(msg) => {
+                write_u32(writer, crate::enums::GameEvent::FellowshipFellowUpdateDone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::FellowshipFellowStatsDone(msg) => {
+                write_u32(writer, crate::enums::GameEvent::FellowshipFellowStatsDone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemAppraiseDone(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemAppraiseDone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CharacterReturnPing(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CharacterReturnPing as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationSetSquelchDB(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationSetSquelchDB as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeRegisterTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeRegisterTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeOpenTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeOpenTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeCloseTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeCloseTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeAddToTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeAddToTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeRemoveFromTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeRemoveFromTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeAcceptTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeAcceptTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeDeclineTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeDeclineTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeResetTrade(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeResetTrade as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeTradeFailure(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeTradeFailure as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::TradeClearTradeAcceptance(msg) => {
+                write_u32(writer, crate::enums::GameEvent::TradeClearTradeAcceptance as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseHouseProfile(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseHouseProfile as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseHouseData(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseHouseData as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseHouseStatus(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseHouseStatus as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseUpdateRentTime(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseUpdateRentTime as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseUpdateRentPayment(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseUpdateRentPayment as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseUpdateRestrictions(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseUpdateRestrictions as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseUpdateHAR(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseUpdateHAR as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseHouseTransaction(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseHouseTransaction as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::ItemQueryItemManaResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::ItemQueryItemManaResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::HouseAvailableHouses(msg) => {
+                write_u32(writer, crate::enums::GameEvent::HouseAvailableHouses as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CharacterConfirmationRequest(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CharacterConfirmationRequest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CharacterConfirmationDone(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CharacterConfirmationDone as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::AllegianceAllegianceLoginNotificationEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AllegianceAllegianceLoginNotificationEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::AllegianceAllegianceInfoResponseEvent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AllegianceAllegianceInfoResponseEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::GameJoinGameResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::GameJoinGameResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::GameStartGame(msg) => {
+                write_u32(writer, crate::enums::GameEvent::GameStartGame as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::GameMoveResponse(msg) => {
+                write_u32(writer, crate::enums::GameEvent::GameMoveResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::GameOpponentTurn(msg) => {
+                write_u32(writer, crate::enums::GameEvent::GameOpponentTurn as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::GameOpponentStalemateState(msg) => {
+                write_u32(writer, crate::enums::GameEvent::GameOpponentStalemateState as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationWeenieError(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationWeenieError as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationWeenieErrorWithString(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationWeenieErrorWithString as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::GameGameOver(msg) => {
+                write_u32(writer, crate::enums::GameEvent::GameGameOver as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationChatRoomTracker(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationChatRoomTracker as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::AdminQueryPluginList(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AdminQueryPluginList as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::AdminQueryPlugin(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AdminQueryPlugin as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::AdminQueryPluginResponse2(msg) => {
+                write_u32(writer, crate::enums::GameEvent::AdminQueryPluginResponse2 as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::InventorySalvageOperationsResultData(msg) => {
+                write_u32(writer, crate::enums::GameEvent::InventorySalvageOperationsResultData as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationHearDirectSpeech(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationHearDirectSpeech as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::FellowshipFullUpdate(msg) => {
+                write_u32(writer, crate::enums::GameEvent::FellowshipFullUpdate as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::FellowshipDisband(msg) => {
+                write_u32(writer, crate::enums::GameEvent::FellowshipDisband as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::FellowshipUpdateFellow(msg) => {
+                write_u32(writer, crate::enums::GameEvent::FellowshipUpdateFellow as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicUpdateSpell(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicUpdateSpell as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicUpdateEnchantment(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicUpdateEnchantment as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicRemoveEnchantment(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicRemoveEnchantment as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicUpdateMultipleEnchantments(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicUpdateMultipleEnchantments as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicRemoveMultipleEnchantments(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicRemoveMultipleEnchantments as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicPurgeEnchantments(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicPurgeEnchantments as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicDispelEnchantment(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicDispelEnchantment as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicDispelMultipleEnchantments(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicDispelMultipleEnchantments as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MiscPortalStormBrewing(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MiscPortalStormBrewing as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MiscPortalStormImminent(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MiscPortalStormImminent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MiscPortalStorm(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MiscPortalStorm as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MiscPortalStormSubsided(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MiscPortalStormSubsided as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::CommunicationTransientString(msg) => {
+                write_u32(writer, crate::enums::GameEvent::CommunicationTransientString as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::MagicPurgeBadEnchantments(msg) => {
+                write_u32(writer, crate::enums::GameEvent::MagicPurgeBadEnchantments as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::SocialSendClientContractTrackerTable(msg) => {
+                write_u32(writer, crate::enums::GameEvent::SocialSendClientContractTrackerTable as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            GameEventMessage::SocialSendClientContractTracker(msg) => {
+                write_u32(writer, crate::enums::GameEvent::SocialSendClientContractTracker as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+        }
+    }
+}
+
 /// C2SMessage enum with message data
 #[derive(Debug, Serialize, Deserialize)]
 pub enum C2SMessage {
@@ -917,6 +2212,89 @@ impl C2SMessage {
             C2SMessage::DDDEndDDDMessage(_) => Some(MessageQueue::CLCache),
             C2SMessage::DDDOnEndDDD(_) => Some(MessageQueue::CLCache),
             C2SMessage::OrderedGameAction { action, .. } => action.queue(),
+        }
+    }
+}
+
+impl ACWritable for C2SMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        match self {
+            C2SMessage::LoginLogOffCharacter(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::LoginLogOffCharacter as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::CharacterCharacterDelete(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::CharacterCharacterDelete as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::CharacterSendCharGenResult(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::CharacterSendCharGenResult as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::LoginSendEnterWorld(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::LoginSendEnterWorld as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::ObjectSendForceObjdesc(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::ObjectSendForceObjdesc as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::LoginSendEnterWorldRequest(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::LoginSendEnterWorldRequest as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::AdminSendAdminGetServerVersion(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::AdminSendAdminGetServerVersion as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::SocialSendFriendsCommand(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::SocialSendFriendsCommand as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::AdminSendAdminRestoreCharacter(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::AdminSendAdminRestoreCharacter as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::CommunicationTurbineChat(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::CommunicationTurbineChat as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::DDDRequestDataMessage(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::DDDRequestDataMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::DDDInterrogationResponseMessage(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::DDDInterrogationResponseMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::DDDEndDDDMessage(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::DDDEndDDDMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::DDDOnEndDDD(msg) => {
+                write_u32(writer, crate::enums::C2SMessage::DDDOnEndDDD as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            C2SMessage::OrderedGameAction { sequence, action } => {
+                write_u32(writer, crate::enums::C2SMessage::OrderedGameAction as u32)?;
+                write_u32(writer, *sequence)?;
+                write_item(writer, action)?;
+                Ok(())
+            }
         }
     }
 }
@@ -1223,6 +2601,475 @@ impl S2CMessage {
             S2CMessage::DDDInterrogationMessage(_) => Some(MessageQueue::CLCache),
             S2CMessage::DDDOnEndDDD(_) => Some(MessageQueue::CLCache),
             S2CMessage::OrderedGameEvent { event, .. } => event.queue(),
+        }
+    }
+}
+
+impl ACWritable for S2CMessage {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        match self {
+            S2CMessage::ItemServerSaysRemove(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemServerSaysRemove as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CharacterServerSaysAttemptFailed(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CharacterServerSaysAttemptFailed as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::ItemUpdateStackSize(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemUpdateStackSize as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CombatHandlePlayerDeathEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CombatHandlePlayerDeathEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemoveIntEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemoveIntEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemoveIntEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemoveIntEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemoveBoolEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemoveBoolEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemoveBoolEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemoveBoolEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemoveFloatEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemoveFloatEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemoveFloatEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemoveFloatEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemoveStringEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemoveStringEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemoveStringEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemoveStringEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemoveDataIdEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemoveDataIdEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemoveDataIdEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemoveDataIdEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemoveInstanceIdEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemoveInstanceIdEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemoveInstanceIdEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemoveInstanceIdEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemovePositionEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemovePositionEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemovePositionEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemovePositionEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateRemoveInt64Event(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateRemoveInt64Event as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesRemoveInt64Event(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesRemoveInt64Event as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateInt(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateInt as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateInt(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateInt as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateInt64(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateInt64 as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateInt64(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateInt64 as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateBool(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateBool as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateBool(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateBool as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateFloat(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateFloat as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateFloat(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateFloat as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateString(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateString as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateString(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateString as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateDataId(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateDataId as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateDataId(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateDataId as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateInstanceId(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateInstanceId as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateInstanceId(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateInstanceId as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdatePosition(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdatePosition as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdatePosition(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdatePosition as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateSkill(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateSkill as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateSkill(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateSkill as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateSkillLevel(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateSkillLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateSkillLevel(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateSkillLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateSkillAC(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateSkillAC as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateSkillAC(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateSkillAC as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateAttribute(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateAttribute as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateAttribute(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateAttribute as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateAttributeLevel(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateAttributeLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateAttributeLevel(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateAttributeLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateAttribute2nd(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateAttribute2nd as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateAttribute2nd(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateAttribute2nd as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesPrivateUpdateAttribute2ndLevel(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesPrivateUpdateAttribute2ndLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::QualitiesUpdateAttribute2ndLevel(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::QualitiesUpdateAttribute2ndLevel as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CommunicationHearEmote(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CommunicationHearEmote as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CommunicationHearSoulEmote(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CommunicationHearSoulEmote as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CommunicationHearSpeech(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CommunicationHearSpeech as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CommunicationHearRangedSpeech(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CommunicationHearRangedSpeech as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::AdminEnvirons(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::AdminEnvirons as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::MovementPositionAndMovementEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::MovementPositionAndMovementEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::ItemObjDescEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemObjDescEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CharacterSetPlayerVisualDesc(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CharacterSetPlayerVisualDesc as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CharacterCharGenVerificationResponse(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CharacterCharGenVerificationResponse as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginAwaitingSubscriptionExpiration(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginAwaitingSubscriptionExpiration as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginLogOffCharacter(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginLogOffCharacter as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CharacterCharacterDelete(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CharacterCharacterDelete as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginLoginCharacterSet(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginLoginCharacterSet as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CharacterCharacterError(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CharacterCharacterError as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::ItemCreateObject(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemCreateObject as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginCreatePlayer(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginCreatePlayer as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::ItemDeleteObject(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemDeleteObject as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::MovementPositionEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::MovementPositionEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::ItemParentEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemParentEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::InventoryPickupEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::InventoryPickupEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::ItemSetState(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemSetState as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::MovementSetObjectMovement(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::MovementSetObjectMovement as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::MovementVectorUpdate(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::MovementVectorUpdate as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::EffectsSoundEvent(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::EffectsSoundEvent as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::EffectsPlayerTeleport(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::EffectsPlayerTeleport as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::EffectsPlayScriptId(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::EffectsPlayScriptId as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::EffectsPlayScriptType(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::EffectsPlayScriptType as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginAccountBanned(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginAccountBanned as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::AdminReceiveAccountData(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::AdminReceiveAccountData as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::AdminReceivePlayerData(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::AdminReceivePlayerData as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::ItemUpdateObject(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::ItemUpdateObject as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginAccountBooted(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginAccountBooted as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CommunicationTurbineChat(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CommunicationTurbineChat as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginEnterGameServerReady(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginEnterGameServerReady as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::CommunicationTextboxString(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::CommunicationTextboxString as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::LoginWorldInfo(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::LoginWorldInfo as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::DDDDataMessage(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::DDDDataMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::DDDErrorMessage(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::DDDErrorMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::DDDBeginDDDMessage(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::DDDBeginDDDMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::DDDInterrogationMessage(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::DDDInterrogationMessage as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::DDDOnEndDDD(msg) => {
+                write_u32(writer, crate::enums::S2CMessage::DDDOnEndDDD as u32)?;
+                write_item(writer, msg)?;
+                Ok(())
+            }
+            S2CMessage::OrderedGameEvent { object_id, sequence, event } => {
+                write_u32(writer, crate::enums::S2CMessage::OrderedGameEvent as u32)?;
+                write_u32(writer, *object_id)?;
+                write_u32(writer, *sequence)?;
+                write_item(writer, event.as_ref())?;
+                Ok(())
+            }
         }
     }
 }

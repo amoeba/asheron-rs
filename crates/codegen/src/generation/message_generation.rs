@@ -17,6 +17,7 @@ pub fn generate_message_types(
     out.push_str("use serde::{Serialize, Deserialize};\n");
     out.push_str("use crate::readers::*;\n");
     out.push_str("use crate::enums::*;\n");
+    out.push_str("use crate::writers::{ACWritable, ACWriter, write_u32, write_item};\n");
     out.push_str("use crate::messages::c2s;\n");
     out.push_str("use crate::messages::s2c;\n");
     out.push_str("use crate::gameactions;\n");
@@ -179,6 +180,39 @@ fn generate_c2s_message_enum(
     out.push_str("    }\n");
     out.push_str("}\n\n");
 
+    // Generate ACWritable implementation
+    out.push_str("impl ACWritable for C2SMessage {\n");
+    out.push_str("    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {\n");
+    out.push_str("        match self {\n");
+
+    for protocol_type in message_types {
+        if !protocol_type.is_primitive {
+            let name = ProtocolIdentifier::new(&protocol_type.name);
+            out.push_str(&format!(
+                "            C2SMessage::{}(msg) => {{\n",
+                name.no_underscores()
+            ));
+            out.push_str(&format!(
+                "                write_u32(writer, crate::enums::C2SMessage::{} as u32)?;\n",
+                name.no_underscores()
+            ));
+            out.push_str("                write_item(writer, msg)?;\n");
+            out.push_str("                Ok(())\n");
+            out.push_str("            }\n");
+        }
+    }
+
+    out.push_str("            C2SMessage::OrderedGameAction { sequence, action } => {\n");
+    out.push_str("                write_u32(writer, crate::enums::C2SMessage::OrderedGameAction as u32)?;\n");
+    out.push_str("                write_u32(writer, *sequence)?;\n");
+    out.push_str("                write_item(writer, action)?;\n");
+    out.push_str("                Ok(())\n");
+    out.push_str("            }\n");
+
+    out.push_str("        }\n");
+    out.push_str("    }\n");
+    out.push_str("}\n\n");
+
     out
 }
 
@@ -274,6 +308,40 @@ fn generate_s2c_message_enum(
     }
 
     out.push_str("            S2CMessage::OrderedGameEvent { event, .. } => event.queue(),\n");
+    out.push_str("        }\n");
+    out.push_str("    }\n");
+    out.push_str("}\n\n");
+
+    // Generate ACWritable implementation
+    out.push_str("impl ACWritable for S2CMessage {\n");
+    out.push_str("    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {\n");
+    out.push_str("        match self {\n");
+
+    for protocol_type in message_types {
+        if !protocol_type.is_primitive {
+            let name = ProtocolIdentifier::new(&protocol_type.name);
+            out.push_str(&format!(
+                "            S2CMessage::{}(msg) => {{\n",
+                name.no_underscores()
+            ));
+            out.push_str(&format!(
+                "                write_u32(writer, crate::enums::S2CMessage::{} as u32)?;\n",
+                name.no_underscores()
+            ));
+            out.push_str("                write_item(writer, msg)?;\n");
+            out.push_str("                Ok(())\n");
+            out.push_str("            }\n");
+        }
+    }
+
+    out.push_str("            S2CMessage::OrderedGameEvent { object_id, sequence, event } => {\n");
+    out.push_str("                write_u32(writer, crate::enums::S2CMessage::OrderedGameEvent as u32)?;\n");
+    out.push_str("                write_u32(writer, *object_id)?;\n");
+    out.push_str("                write_u32(writer, *sequence)?;\n");
+    out.push_str("                write_item(writer, event.as_ref())?;\n");
+    out.push_str("                Ok(())\n");
+    out.push_str("            }\n");
+
     out.push_str("        }\n");
     out.push_str("    }\n");
     out.push_str("}\n\n");
@@ -410,6 +478,59 @@ fn generate_message_enum(
                 name.no_underscores(),
                 queue_name.pascal_case()
             ));
+        }
+    }
+
+    out.push_str("        }\n");
+    out.push_str("    }\n");
+    out.push_str("}\n\n");
+
+    // Generate ACWritable implementation for GameActionMessage and GameEventMessage
+    let enum_type_name = if enum_name == "GameActionMessage" {
+        "GameAction"
+    } else if enum_name == "GameEventMessage" {
+        "GameEvent"
+    } else {
+        enum_name
+    };
+
+    out.push_str(&format!("impl ACWritable for {} {{\n", enum_name));
+    out.push_str("    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {\n");
+    out.push_str("        match self {\n");
+
+    for protocol_type in message_types {
+        if !protocol_type.is_primitive {
+            let name = ProtocolIdentifier::new(&protocol_type.name);
+
+            // Check if this variant should be boxed
+            let large_types = match enum_name {
+                "GameEventMessage" => vec!["Login_PlayerDescription", "Item_SetAppraiseInfo"],
+                "GameActionMessage" => vec!["Character_CharacterOptionsEvent"],
+                _ => vec![],
+            };
+
+            let is_boxed = large_types.contains(&name.original());
+
+            out.push_str(&format!(
+                "            {}::{}(msg) => {{\n",
+                enum_name,
+                name.no_underscores()
+            ));
+
+            out.push_str(&format!(
+                "                write_u32(writer, crate::enums::{}::{} as u32)?;\n",
+                enum_type_name,
+                name.no_underscores()
+            ));
+
+            if is_boxed {
+                out.push_str("                write_item(writer, msg.as_ref())?;\n");
+            } else {
+                out.push_str("                write_item(writer, msg)?;\n");
+            }
+
+            out.push_str("                Ok(())\n");
+            out.push_str("            }\n");
         }
     }
 
