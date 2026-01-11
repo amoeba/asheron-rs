@@ -1,6 +1,6 @@
 use std::{error::Error, io::Cursor};
 
-use acprotocol::dat::{find_file_by_id, DatDatabase, DatFile, DatFileType, Texture, ExportOptions};
+use acprotocol::dat::{find_file_by_id, DatDatabase, DatFile, DatFileType, Texture, IconExportOptions};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -284,7 +284,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             }
 
             println!("Compositing icon with white-to-black conversion");
-            let options = ExportOptions {
+            let options = IconExportOptions {
                 convert_white_to_black: true,
             };
             let buf = icon.export_with_options(&options)?;
