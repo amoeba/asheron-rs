@@ -1,20 +1,24 @@
 use std::error::Error;
 
+#[cfg(feature = "dat-cloudflare")]
 use worker::{Bucket, Range};
 
 use crate::dat::reader::range_reader::RangeReader;
 
+#[cfg(feature = "dat-cloudflare")]
 pub struct WorkerR2RangeReader {
     bucket: Bucket,
     key: String,
 }
 
+#[cfg(feature = "dat-cloudflare")]
 impl WorkerR2RangeReader {
     pub fn new(bucket: Bucket, key: String) -> Self {
         Self { bucket, key }
     }
 }
 
+#[cfg(feature = "dat-cloudflare")]
 impl RangeReader for WorkerR2RangeReader {
     fn read_range(
         &mut self,
