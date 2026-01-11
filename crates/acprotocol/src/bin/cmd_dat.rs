@@ -1,6 +1,8 @@
 use std::{error::Error, io::Cursor};
 
-use acprotocol::dat::{find_file_by_id, DatDatabase, DatFile, DatFileType, Texture, IconExportOptions};
+use acprotocol::dat::{
+    DatDatabase, DatFile, DatFileType, IconExportOptions, Texture, find_file_by_id,
+};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -24,7 +26,12 @@ enum Commands {
         object_id: String,
         #[arg(short, long, default_value = "./")]
         output_dir: String,
-        #[arg(short, long, default_value = "1", help = "Scale factor for exported textures (1-10)")]
+        #[arg(
+            short,
+            long,
+            default_value = "1",
+            help = "Scale factor for exported textures (1-10)"
+        )]
         scale: u32,
     },
     Read {
@@ -126,14 +133,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     let outer_file: DatFile<Texture> = DatFile::read(&mut buf_reader)?;
                     let bytes_read = buf_reader.position();
                     let texture = outer_file.inner;
-                    println!("Texture format: {:?}, size: {}x{}", texture.format, texture.width, texture.height);
+                    println!(
+                        "Texture format: {:?}, size: {}x{}",
+                        texture.format, texture.width, texture.height
+                    );
                     println!("Unknown field: {}", texture.unknown);
-                    println!("Data length: {} bytes (expected: {} for {}x{})",
+                    println!(
+                        "Data length: {} bytes (expected: {} for {}x{})",
                         texture.data.len(),
                         texture.width * texture.height * 4,
                         texture.width,
-                        texture.height);
-                    println!("Bytes read from buffer: {}, remaining: {}", bytes_read, buf.len() - bytes_read as usize);
+                        texture.height
+                    );
+                    println!(
+                        "Bytes read from buffer: {}, remaining: {}",
+                        bytes_read,
+                        buf.len() - bytes_read as usize
+                    );
 
                     let output_path = format!("{}.png", object_id);
                     texture.to_png(&output_path, scale)?;
@@ -219,8 +235,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 dat: &DatDatabase,
                 texture_id: &str,
             ) -> Result<Texture, Box<dyn std::error::Error>> {
-                use acprotocol::dat::reader::file_reader::FileRangeReader;
                 use acprotocol::dat::reader::dat_file_reader::DatFileReader;
+                use acprotocol::dat::reader::file_reader::FileRangeReader;
 
                 let found_file = find_file_by_id(dat, texture_id).await?;
 
@@ -289,7 +305,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             };
             let buf = icon.export_with_options(&options)?;
             std::fs::write(&output, buf)?;
-            println!("Saved composited icon to {} ({}x{} @ {}x scale)", output, width, height, scale);
+            println!(
+                "Saved composited icon to {} ({}x{} @ {}x scale)",
+                output, width, height, scale
+            );
         }
     }
 
@@ -378,7 +397,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             output: _,
             scale: _,
         } => {
-            eprintln!("Icon compositing requires the 'dat-tokio' feature. Please rebuild with --features=\"dat-tokio dat-export\"");
+            eprintln!(
+                "Icon compositing requires the 'dat-tokio' feature. Please rebuild with --features=\"dat-tokio dat-export\""
+            );
             std::process::exit(1);
         }
     }

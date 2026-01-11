@@ -74,7 +74,10 @@ impl Icon {
         }
     }
 
-    pub fn blend(&self, options: &IconExportOptions) -> Result<ImageBuffer<Rgba<u8>, Vec<u8>>, std::io::Error> {
+    pub fn blend(
+        &self,
+        options: &IconExportOptions,
+    ) -> Result<ImageBuffer<Rgba<u8>, Vec<u8>>, std::io::Error> {
         // TODO: Remove clones
 
         let mut texture_stack: Vec<Texture> = vec![];
@@ -141,7 +144,10 @@ impl Icon {
         self.export_with_options(&IconExportOptions::default())
     }
 
-    pub fn export_with_options(&self, options: &IconExportOptions) -> Result<Vec<u8>, std::io::Error> {
+    pub fn export_with_options(
+        &self,
+        options: &IconExportOptions,
+    ) -> Result<Vec<u8>, std::io::Error> {
         let blended = self.blend(options)?;
 
         let image = DynamicImage::ImageRgba8(blended).resize(
