@@ -19,4 +19,4 @@ pub use reader::{
 pub use utils::find_file_by_id;
 
 #[cfg(feature = "dat-export")]
-pub use icon::Icon;
+pub use icon::{Icon, IconExportOptions};

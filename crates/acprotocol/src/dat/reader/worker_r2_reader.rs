@@ -1,13 +1,10 @@
-#[cfg(feature = "dat-cloudflare")]
 use std::error::Error;
+
 #[cfg(feature = "dat-cloudflare")]
 use worker::{Bucket, Range};
 
-#[cfg(feature = "dat-cloudflare")]
 use crate::dat::reader::range_reader::RangeReader;
 
-/// Cloudflare Worker R2 implementation of RangeReader
-/// Uses the Worker runtime's R2 API through environment bindings
 #[cfg(feature = "dat-cloudflare")]
 pub struct WorkerR2RangeReader {
     bucket: Bucket,

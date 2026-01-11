@@ -17,7 +17,7 @@ required-features = ["cli"]
 [[bin]]
 name = "dat"
 path = "src/bin/cmd_dat.rs"
-required-features = ["dat-tokio", "dat-export"]
+required-features = ["dat-export", "dat-tokio"]
 
 [dependencies]
 anyhow = { workspace = true }
@@ -38,16 +38,25 @@ reqwest = { version = "0.12.15", optional = true }
 serde = { workspace = true }
 serde_json = { workspace = true, optional = true }
 strum = { version = "0.27.1", features = ["derive"] }
+tokio-util = { version = "0.7.15", default-features = false, features = ["compat"], optional = true }
+tracing = { version = "0.1", optional = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"], optional = true }
+worker = { version = "0.7.2", optional = true }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { version = "1.44.1", features = [
   "fs",
   "io-util",
   "macros",
   "rt-multi-thread"
-], optional = true }
-tokio-util = { version = "0.7.15", features = ["compat"], optional = true }
-tracing = { version = "0.1", optional = true }
-tracing-subscriber = { version = "0.3", features = ["env-filter"], optional = true }
-worker = { version = "0.6.1", optional = true }
+], default-features = false, optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+tokio = { version = "1.44.1", features = [
+  "io-util",
+  "macros",
+  "rt"
+], default-features = false, optional = true }
 
 [build-dependencies]
 codegen = { path = "../codegen" }
@@ -55,8 +64,14 @@ env_logger = { workspace = true }
 
 [features]
 default = []
-cli = ["dep:clap", "dep:crossterm", "dep:ratatui", "dep:serde_json", "dep:tracing-subscriber"]
-tracing = ["dep:tracing"]
+cli = [
+  "dep:clap",
+  "dep:crossterm",
+  "dep:ratatui",
+  "dep:serde_json",
+  "tracing",
+  "dep:tracing-subscriber"
+]
 # TODO: Not sure about these yet
 dat = ["dat-tokio"]
 dat-cloudflare = ["dat-tokio", "dep:worker"]
@@ -64,3 +79,4 @@ dat-core = ["dep:clap", "dep:futures", "dep:futures-util"]
 dat-export = ["dep:image"]
 dat-http = ["dat-tokio", "dep:reqwest"]
 dat-tokio = ["dat-core", "dep:tokio", "dep:tokio-util"]
+tracing = ["dep:tracing"]

@@ -1,6 +1,8 @@
 use std::{error::Error, io::Cursor};
 
-use acprotocol::dat::{find_file_by_id, DatDatabase, DatFile, DatFileType, Texture};
+use acprotocol::dat::{
+    DatDatabase, DatFile, DatFileType, IconExportOptions, Texture, find_file_by_id,
+};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -24,7 +26,12 @@ enum Commands {
         object_id: String,
         #[arg(short, long, default_value = "./")]
         output_dir: String,
-        #[arg(short, long, default_value = "1", help = "Scale factor for exported textures (1-10)")]
+        #[arg(
+            short,
+            long,
+            default_value = "1",
+            help = "Scale factor for exported textures (1-10)"
+        )]
         scale: u32,
     },
     Read {
@@ -126,14 +133,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     let outer_file: DatFile<Texture> = DatFile::read(&mut buf_reader)?;
                     let bytes_read = buf_reader.position();
                     let texture = outer_file.inner;
-                    println!("Texture format: {:?}, size: {}x{}", texture.format, texture.width, texture.height);
+                    println!(
+                        "Texture format: {:?}, size: {}x{}",
+                        texture.format, texture.width, texture.height
+                    );
                     println!("Unknown field: {}", texture.unknown);
-                    println!("Data length: {} bytes (expected: {} for {}x{})",
+                    println!(
+                        "Data length: {} bytes (expected: {} for {}x{})",
                         texture.data.len(),
                         texture.width * texture.height * 4,
                         texture.width,
-                        texture.height);
-                    println!("Bytes read from buffer: {}, remaining: {}", bytes_read, buf.len() - bytes_read as usize);
+                        texture.height
+                    );
+                    println!(
+                        "Bytes read from buffer: {}, remaining: {}",
+                        bytes_read,
+                        buf.len() - bytes_read as usize
+                    );
 
                     let output_path = format!("{}.png", object_id);
                     texture.to_png(&output_path, scale)?;
@@ -211,7 +227,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             output,
             scale,
         } => {
-            use image::{ImageBuffer, Pixel, RgbaImage};
+            use acprotocol::dat::Icon;
 
             // Helper function to load a texture by ID
             async fn load_texture(
@@ -219,8 +235,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 dat: &DatDatabase,
                 texture_id: &str,
             ) -> Result<Texture, Box<dyn std::error::Error>> {
-                use acprotocol::dat::reader::file_reader::FileRangeReader;
                 use acprotocol::dat::reader::dat_file_reader::DatFileReader;
+                use acprotocol::dat::reader::file_reader::FileRangeReader;
 
                 let found_file = find_file_by_id(dat, texture_id).await?;
 
@@ -245,90 +261,54 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let mut range_reader = FileRangeReader::new(compat_file);
             let dat = DatDatabase::read_async(&mut range_reader).await?;
 
-            // Build layers in proper order: underlay -> icon_id -> overlay -> overlay2 -> ui_effect
-            let mut layers = Vec::new();
-
-            if let Some(ref underlay_id) = underlay {
-                println!("Loading underlay: {}", underlay_id);
-                layers.push(load_texture(&dat_file, &dat, underlay_id).await?);
-            }
-
+            // Load the base icon texture
             println!("Loading icon: {}", icon_id);
             let icon_texture = load_texture(&dat_file, &dat, &icon_id).await?;
             let width = icon_texture.width as u32;
             let height = icon_texture.height as u32;
-            layers.push(icon_texture);
+
+            // Build icon with optional layers
+            let mut icon = Icon {
+                width,
+                height,
+                scale,
+                base: icon_texture,
+                underlay: None,
+                overlay: None,
+                overlay2: None,
+                effect: None,
+            };
+
+            if let Some(ref underlay_id) = underlay {
+                println!("Loading underlay: {}", underlay_id);
+                icon.underlay = Some(load_texture(&dat_file, &dat, underlay_id).await?);
+            }
 
             if let Some(ref overlay_id) = overlay {
                 println!("Loading overlay: {}", overlay_id);
-                layers.push(load_texture(&dat_file, &dat, overlay_id).await?);
+                icon.overlay = Some(load_texture(&dat_file, &dat, overlay_id).await?);
             }
 
             if let Some(ref overlay2_id) = overlay2 {
                 println!("Loading overlay2: {}", overlay2_id);
-                layers.push(load_texture(&dat_file, &dat, overlay2_id).await?);
+                icon.overlay2 = Some(load_texture(&dat_file, &dat, overlay2_id).await?);
             }
 
             if let Some(ref effect_id) = ui_effect {
                 println!("Loading ui_effect: {}", effect_id);
-                layers.push(load_texture(&dat_file, &dat, effect_id).await?);
+                icon.effect = Some(load_texture(&dat_file, &dat, effect_id).await?);
             }
 
-            println!("Compositing {} layer(s)", layers.len());
-
-            // Start with first layer as base
-            let base_buf = layers[0].export()?;
-            let mut base_img: RgbaImage = ImageBuffer::from_raw(width, height, base_buf)
-                .expect("Failed to create ImageBuffer from first texture");
-
-            // Replace white with black (simple game rendering behavior)
-            for pixel in base_img.pixels_mut() {
-                if pixel[0] == 255 && pixel[1] == 255 && pixel[2] == 255 {
-                    pixel[0] = 0;
-                    pixel[1] = 0;
-                    pixel[2] = 0;
-                }
-            }
-
-            let mut blended_image = base_img;
-
-            // Blend remaining layers on top
-            for layer in layers.iter().skip(1) {
-                let layer_buf = layer.export()?;
-                let mut layer_img: RgbaImage = ImageBuffer::from_raw(width, height, layer_buf)
-                    .expect("Failed to create ImageBuffer from layer");
-
-                // Replace white with black in this layer too
-                for pixel in layer_img.pixels_mut() {
-                    if pixel[0] == 255 && pixel[1] == 255 && pixel[2] == 255 {
-                        pixel[0] = 0;
-                        pixel[1] = 0;
-                        pixel[2] = 0;
-                    }
-                }
-
-                for x in 0..width {
-                    for y in 0..height {
-                        let target_pixel = blended_image.get_pixel_mut(x, y);
-                        let new_pixel = layer_img.get_pixel(x, y);
-                        target_pixel.blend(new_pixel);
-                    }
-                }
-            }
-
-            // Apply scaling if needed
-            let final_image = if scale > 1 {
-                image::DynamicImage::ImageRgba8(blended_image).resize(
-                    width * scale,
-                    height * scale,
-                    image::imageops::FilterType::Lanczos3,
-                )
-            } else {
-                image::DynamicImage::ImageRgba8(blended_image)
+            println!("Compositing icon with white-to-black conversion");
+            let options = IconExportOptions {
+                convert_white_to_black: true,
             };
-
-            final_image.save(&output)?;
-            println!("Saved composited icon to {} ({}x{} @ {}x scale)", output, width, height, scale);
+            let buf = icon.export_with_options(&options)?;
+            std::fs::write(&output, buf)?;
+            println!(
+                "Saved composited icon to {} ({}x{} @ {}x scale)",
+                output, width, height, scale
+            );
         }
     }
 
@@ -417,7 +397,9 @@ fn main() -> Result<(), Box<dyn Error>> {
             output: _,
             scale: _,
         } => {
-            eprintln!("Icon compositing requires the 'dat-tokio' feature. Please rebuild with --features=\"dat-tokio dat-export\"");
+            eprintln!(
+                "Icon compositing requires the 'dat-tokio' feature. Please rebuild with --features=\"dat-tokio dat-export\""
+            );
             std::process::exit(1);
         }
     }
