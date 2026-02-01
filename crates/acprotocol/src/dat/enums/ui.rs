@@ -1,7 +1,7 @@
 // from trevis. not hooked up yet but these come from the dats.
 use num_derive::FromPrimitive;
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, dead_code)]
 #[derive(Clone, Debug, PartialEq, FromPrimitive)]
 #[repr(u32)]
 pub enum UIAttributeIcons {
@@ -14,7 +14,7 @@ pub enum UIAttributeIcons {
     SelfAttr = 0x060002C7,
 }
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, dead_code)]
 #[derive(Clone, Debug, PartialEq, FromPrimitive)]
 #[repr(u32)]
 pub enum UIAttribute2ndIcons {
@@ -25,12 +25,15 @@ pub enum UIAttribute2ndIcons {
 }
 
 impl UIAttribute2ndIcons {
+    #[allow(dead_code)]
     pub const HEALTH: u32 = 0x06004C3B;
+    #[allow(dead_code)]
     pub const STAMINA: u32 = 0x06004C3C;
+    #[allow(dead_code)]
     pub const MANA: u32 = 0x06004C3D;
 }
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, dead_code, clippy::upper_case_acronyms)]
 #[derive(Clone, Debug, PartialEq, FromPrimitive)]
 #[repr(u32)]
 pub enum UIIconBackgrounds {
@@ -53,28 +56,47 @@ pub enum UIIconBackgrounds {
 
 impl UIIconBackgrounds {
     // Aliases with value 0x060011D4 (same as Default)
+    #[allow(dead_code)]
     pub const CRAFT_COOKING_BASE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const CRAFT_ALCHEMY_BASE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const CRAFT_FLETCHING_BASE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const NOT_USED: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const CRAFT_ALCHEMY_INTERMEDIATE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const CRAFT_FLETCHING_INTERMEDIATE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const LIFESTONE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const TINKERING_TOOL: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const TINKERING_MATERIAL: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const MISC: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const GAMEBOARD: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const WRITABLE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const KEY: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const CASTER: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const PORTAL: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const LOCKABLE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const PROMISSORY_NOTE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const MANASTONE: u32 = 0x060011D4;
+    #[allow(dead_code)]
     pub const MAGIC_WIELDABLE: u32 = 0x060011D4;
 }
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, dead_code, clippy::upper_case_acronyms)]
 #[derive(Clone, Debug, PartialEq, FromPrimitive)]
 #[repr(u32)]
 pub enum UIEffectIcons {
@@ -94,10 +116,11 @@ pub enum UIEffectIcons {
 }
 
 impl UIEffectIcons {
+    #[allow(dead_code)]
     pub const BOOST_MANA: u32 = 0x060011CA;
 }
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, dead_code, clippy::upper_case_acronyms)]
 #[derive(Clone, Debug, PartialEq, FromPrimitive)]
 #[repr(u32)]
 pub enum UISpellBackgrounds {
@@ -114,11 +137,13 @@ pub enum UISpellBackgrounds {
 }
 
 impl UISpellBackgrounds {
+    #[allow(dead_code)]
     pub const DIAMOND_SCARAB: u32 = 0x060013F6;
+    #[allow(dead_code)]
     pub const DARK_SCARAB: u32 = 0x060013F6;
 }
 
-#[allow(non_camel_case_types)]
+#[allow(non_camel_case_types, dead_code, clippy::upper_case_acronyms)]
 #[derive(Clone, Debug, PartialEq, FromPrimitive)]
 #[repr(u32)]
 pub enum UISpellOverlays {
