@@ -5,3 +5,5 @@ test-harness/csharp-tester/bin
 test-harness/csharp-tester/obj
 test-harness/data
 test-harness/pcaps
+export
+*.dat
