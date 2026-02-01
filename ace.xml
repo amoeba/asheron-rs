@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema text="Treasure system enums for loot generation. Based on ACEmulator's treasure enums.">
+	<enums>
+		<enum name="TreasureItemType" parent="uint">
+			<value value="0" name="Undef" />
+			<value value="1" name="Pyreal" />
+			<value value="2" name="Gem" />
+			<value value="3" name="Jewelry" />
+			<value value="4" name="ArtObject" />
+			<value value="5" name="Weapon" />
+			<value value="6" name="Armor" />
+			<value value="7" name="Clothing" />
+			<value value="8" name="Scroll" />
+			<value value="9" name="Caster" />
+			<value value="10" name="ManaStone" />
+			<value value="11" name="Consumable" />
+			<value value="12" name="HealKit" />
+			<value value="13" name="Lockpick" />
+			<value value="14" name="SpellComponent" />
+			<value value="15" name="SocietyArmor" text="Society armor (introduced 08-2008 - Balance of Power)" />
+			<value value="16" name="SocietyBreastplate" />
+			<value value="17" name="SocietyGauntlets" />
+			<value value="18" name="SocietyGirth" />
+			<value value="19" name="SocietyGreaves" />
+			<value value="20" name="SocietyHelm" />
+			<value value="21" name="SocietyPauldrons" />
+			<value value="22" name="SocietyTassets" />
+			<value value="23" name="SocietyVambraces" />
+			<value value="24" name="SocietySollerets" />
+			<value value="25" name="Cloak" text="Cloak (introduced 10-2011 - Cloak of Darkness)" />
+			<value value="26" name="PetDevice" text="Pet devices and encapsulated spirits (introduced 02-2013 - Balance of Power)" />
+			<value value="27" name="EncapsulatedSpirit" />
+			<value value="28" name="Aetheria" text="Aetheria" />
+		</enum>
+		<enum name="TreasureWeaponType" parent="uint">
+			<value value="0" name="Undef" />
+			<value value="1" name="MeleeWeapon" text="Melee weapon types" />
+			<value value="2" name="Axe" />
+			<value value="3" name="Dagger" />
+			<value value="4" name="DaggerMS" />
+			<value value="5" name="Mace" />
+			<value value="6" name="MaceJitte" />
+			<value value="7" name="Spear" />
+			<value value="8" name="Staff" />
+			<value value="9" name="Sword" />
+			<value value="10" name="SwordMS" />
+			<value value="11" name="Unarmed" />
+			<value value="12" name="MissileWeapon" text="Missile weapon types" />
+			<value value="13" name="Bow" />
+			<value value="14" name="Crossbow" />
+			<value value="15" name="Atlatl" />
+			<value value="16" name="Caster" text="Caster" />
+			<value value="17" name="TwoHandedWeapon" text="Two-handed weapons" />
+			<value value="18" name="TwoHandedAxe" />
+			<value value="19" name="TwoHandedMace" />
+			<value value="20" name="TwoHandedSpear" />
+			<value value="21" name="TwoHandedSword" />
+		</enum>
+	</enums>
+</schema>
