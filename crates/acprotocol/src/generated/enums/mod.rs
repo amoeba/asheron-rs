@@ -13795,3 +13795,94 @@ pub enum MessageQueue {
     Weenie,
 }
 
+/// Treasure item type for loot generation.
+/// Based on ACEmulator's TreasureItemType enum.
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, TryFromPrimitive)]
+pub enum TreasureItemType {
+    Undef = 0,
+    Pyreal = 1,
+    Gem = 2,
+    Jewelry = 3,
+    ArtObject = 4,
+    Weapon = 5,
+    Armor = 6,
+    Clothing = 7,
+    Scroll = 8,
+    Caster = 9,
+    ManaStone = 10,
+    Consumable = 11,
+    HealKit = 12,
+    Lockpick = 13,
+    SpellComponent = 14,
+    // Society armor (introduced 08-2008 - Balance of Power)
+    SocietyArmor = 15,
+    SocietyBreastplate = 16,
+    SocietyGauntlets = 17,
+    SocietyGirth = 18,
+    SocietyGreaves = 19,
+    SocietyHelm = 20,
+    SocietyPauldrons = 21,
+    SocietyTassets = 22,
+    SocietyVambraces = 23,
+    SocietySollerets = 24,
+    // Cloak (introduced 10-2011 - Cloak of Darkness)
+    Cloak = 25,
+    // Pet devices and encapsulated spirits (introduced 02-2013 - Balance of Power)
+    PetDevice = 26,
+    EncapsulatedSpirit = 27,
+    // Aetheria
+    Aetheria = 28,
+}
+
+impl crate::readers::ACDataType for TreasureItemType {
+    fn read(reader: &mut dyn ACReader) -> Result<Self, Box<dyn std::error::Error>> {
+        let value = crate::readers::read_u32(reader)?;
+        Ok(TreasureItemType::try_from(value)?)
+    }
+}
+
+impl crate::writers::ACWritable for TreasureItemType {
+    fn write(&self, writer: &mut dyn ACWriter) -> Result<(), Box<dyn std::error::Error>> {
+        crate::writers::write_u32(writer, *self as u32)?;
+        Ok(())
+    }
+}
+
+impl std::fmt::Display for TreasureItemType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            TreasureItemType::Undef => "Undef",
+            TreasureItemType::Pyreal => "Pyreal",
+            TreasureItemType::Gem => "Gem",
+            TreasureItemType::Jewelry => "Jewelry",
+            TreasureItemType::ArtObject => "ArtObject",
+            TreasureItemType::Weapon => "Weapon",
+            TreasureItemType::Armor => "Armor",
+            TreasureItemType::Clothing => "Clothing",
+            TreasureItemType::Scroll => "Scroll",
+            TreasureItemType::Caster => "Caster",
+            TreasureItemType::ManaStone => "ManaStone",
+            TreasureItemType::Consumable => "Consumable",
+            TreasureItemType::HealKit => "HealKit",
+            TreasureItemType::Lockpick => "Lockpick",
+            TreasureItemType::SpellComponent => "SpellComponent",
+            TreasureItemType::SocietyArmor => "SocietyArmor",
+            TreasureItemType::SocietyBreastplate => "SocietyBreastplate",
+            TreasureItemType::SocietyGauntlets => "SocietyGauntlets",
+            TreasureItemType::SocietyGirth => "SocietyGirth",
+            TreasureItemType::SocietyGreaves => "SocietyGreaves",
+            TreasureItemType::SocietyHelm => "SocietyHelm",
+            TreasureItemType::SocietyPauldrons => "SocietyPauldrons",
+            TreasureItemType::SocietyTassets => "SocietyTassets",
+            TreasureItemType::SocietyVambraces => "SocietyVambraces",
+            TreasureItemType::SocietySollerets => "SocietySollerets",
+            TreasureItemType::Cloak => "Cloak",
+            TreasureItemType::PetDevice => "PetDevice",
+            TreasureItemType::EncapsulatedSpirit => "EncapsulatedSpirit",
+            TreasureItemType::Aetheria => "Aetheria",
+        };
+        write!(f, "{}", s)
+    }
+}
+
