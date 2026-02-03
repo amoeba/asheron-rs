@@ -70,7 +70,7 @@ impl DatFileType {
 #[repr(u32)]
 pub enum DatFileSubtype {
     Icon,
-    Unknown,
+    None,
 }
 
 impl DatFileSubtype {

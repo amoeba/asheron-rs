@@ -39,6 +39,6 @@ impl DatDirectoryEntry {
     // WIP: Use this to let datfiles be specialized things like icons
     pub fn file_subtype(&self) -> DatFileSubtype {
         // TODO
-        DatFileSubtype::Unknown
+        DatFileSubtype::None
     }
 }
