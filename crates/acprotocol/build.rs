@@ -1,4 +1,4 @@
-use std::{env, path::PathBuf, fs};
+use std::{env, fs, path::PathBuf};
 
 fn main() {
     env_logger::init();
@@ -23,23 +23,18 @@ fn main() {
 
     // Generate ace enums from ace.xml
     if ace_path.exists() {
-        let ace_xml = fs::read_to_string(&ace_path)
-            .expect("Failed to read ace.xml");
-        let generated_ace = codegen::generate_ace(&ace_xml)
-            .expect("ACE code generation failed");
-        
+        let ace_xml = fs::read_to_string(&ace_path).expect("Failed to read ace.xml");
+        let generated_ace = codegen::generate_ace(&ace_xml).expect("ACE code generation failed");
+
         let ace_rs = manifest_dir.join("src/generated/ace.rs");
-        fs::write(&ace_rs, &generated_ace)
-            .expect("Failed to write generated/ace.rs");
-        
+        fs::write(&ace_rs, &generated_ace).expect("Failed to write generated/ace.rs");
+
         // Ensure ace module is in generated/mod.rs
         let mod_rs = manifest_dir.join("src/generated/mod.rs");
-        let mut mod_content = fs::read_to_string(&mod_rs)
-            .unwrap_or_default();
+        let mut mod_content = fs::read_to_string(&mod_rs).unwrap_or_default();
         if !mod_content.contains("pub mod ace;") {
             mod_content.push_str("pub mod ace;\n");
-            fs::write(&mod_rs, &mod_content)
-                .expect("Failed to write generated/mod.rs");
+            fs::write(&mod_rs, &mod_content).expect("Failed to write generated/mod.rs");
         }
     }
 }
