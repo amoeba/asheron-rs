@@ -2,7 +2,8 @@
 name = "asheron-rs"
 version.workspace = true
 edition.workspace = true
-description = "Asheron's Call Protocol"
+description = "Unified Asheron's Call protocol, game data, and CLI tools"
+readme = "../../README.md"
 repository.workspace = true
 license.workspace = true
 
@@ -39,25 +40,27 @@ reqwest = { version = "0.12.15", optional = true }
 serde = { workspace = true }
 serde_json = { workspace = true, optional = true }
 strum = { version = "0.27.1", features = ["derive"] }
-tokio-util = { version = "0.7.15", default-features = false, features = ["compat"], optional = true }
+tokio-util = { version = "0.7.15", default-features = false, features = [
+  "compat"
+], optional = true }
 tracing = { version = "0.1", optional = true }
 tracing-subscriber = { version = "0.3", features = ["env-filter"], optional = true }
 worker = { version = "0.7.2", optional = true }
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-tokio = { version = "1.44.1", features = [
+tokio = { version = "1.44.1", default-features = false, features = [
   "fs",
   "io-util",
   "macros",
   "rt-multi-thread"
-], default-features = false, optional = true }
+], optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-tokio = { version = "1.44.1", features = [
+tokio = { version = "1.44.1", default-features = false, features = [
   "io-util",
   "macros",
   "rt"
-], default-features = false, optional = true }
+], optional = true }
 
 [features]
 default = []
@@ -66,8 +69,8 @@ cli = [
   "dep:crossterm",
   "dep:ratatui",
   "dep:serde_json",
-  "tracing",
-  "dep:tracing-subscriber"
+  "dep:tracing-subscriber",
+  "tracing"
 ]
 # TODO: Not sure about these yet
 dat = ["dat-tokio"]
