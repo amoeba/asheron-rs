@@ -350,8 +350,8 @@ impl Icon {
 ///
 /// # Example
 /// ```no_run
-/// use acprotocol::dat::{DatDatabase, IconBuilder};
-/// use acprotocol::generated::enums::{ItemType, UiEffects};
+/// use asheron_rs::dat::{DatDatabase, IconBuilder};
+/// use asheron_rs::generated::enums::{ItemType, UiEffects};
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// let dat = DatDatabase::read_async(&mut reader).await?;

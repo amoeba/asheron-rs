@@ -1,8 +1,8 @@
-use acprotocol::gameactions;
-use acprotocol::message::{C2SMessage, GameActionMessage, S2CMessage};
-use acprotocol::messages::s2c;
-use acprotocol::types;
-use acprotocol::writers::ACWritable;
+use asheron_rs::gameactions;
+use asheron_rs::message::{C2SMessage, GameActionMessage, S2CMessage};
+use asheron_rs::messages::s2c;
+use asheron_rs::types;
+use asheron_rs::writers::ACWritable;
 use std::io::Cursor;
 
 #[test]

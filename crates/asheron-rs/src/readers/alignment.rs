@@ -8,7 +8,7 @@ use std::io::SeekFrom;
 ///
 /// # Example
 /// ```ignore
-/// # use acprotocol::readers::align;
+/// # use asheron_rs::readers::align;
 /// # use std::io::Cursor;
 /// # let data = vec![1u8, 2, 3, 4, 5, 6, 7, 8];
 /// # let mut cursor = Cursor::new(data);

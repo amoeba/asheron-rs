@@ -1,6 +1,6 @@
 use std::{error::Error, io::Cursor};
 
-use acprotocol::dat::{DatDatabase, DatFile, DatFileType, Texture, find_file_by_id};
+use asheron_rs::dat::{DatDatabase, DatFile, DatFileType, Texture, find_file_by_id};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -102,7 +102,7 @@ enum Commands {
 #[cfg(feature = "dat-tokio")]
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
-    use acprotocol::dat::reader::file_reader::FileRangeReader;
+    use asheron_rs::dat::reader::file_reader::FileRangeReader;
 
     let cli = Cli::parse();
 
@@ -113,7 +113,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             output_dir,
             scale,
         } => {
-            use acprotocol::dat::reader::dat_file_reader::DatFileReader;
+            use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
 
             println!(
                 "cli::extract: {:?}, {:?}, {:?}!",
@@ -200,7 +200,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             count,
             file_type,
         } => {
-            use acprotocol::dat::reader::dat_file_reader::DatFileReader;
+            use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
 
             // Use async database reading with RangeReader
             let file = tokio::fs::File::open(&dat_file).await?;
@@ -314,7 +314,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             output,
             scale,
         } => {
-            use acprotocol::dat::icon::{
+            use asheron_rs::dat::icon::{
                 Icon, get_background_from_item_type, get_ui_effect_texture_id, parse_item_type,
                 parse_ui_effect,
             };
@@ -325,8 +325,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 dat: &DatDatabase,
                 texture_id: &str,
             ) -> Result<Texture, Box<dyn std::error::Error>> {
-                use acprotocol::dat::reader::dat_file_reader::DatFileReader;
-                use acprotocol::dat::reader::file_reader::FileRangeReader;
+                use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
+                use asheron_rs::dat::reader::file_reader::FileRangeReader;
 
                 let found_file = find_file_by_id(dat, texture_id).await?;
 
@@ -444,8 +444,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
             );
         }
         Commands::Export { dat_file, output } => {
-            use acprotocol::dat::Exportable;
-            use acprotocol::dat::reader::dat_file_reader::DatFileReader;
+            use asheron_rs::dat::Exportable;
+            use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
             use std::path::Path;
 
             println!("Exporting all files from {} to {}", dat_file, output);

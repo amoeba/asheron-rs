@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-  "crates/acprotocol",
+  "crates/asheron-rs",
   "crates/codegen",
   "crates/xtask",
 ]
@@ -10,7 +10,7 @@ members = [
 version = "0.1.0"
 edition = "2024"
 description = "Workspace for Asheron's Call potocol parser"
-repository = "https://github.com/amoeba/wip-rust-ac-proto"
+repository = "https://github.com/amoeba/asheron-rs"
 license = "MIT"
 
 [workspace.dependencies]

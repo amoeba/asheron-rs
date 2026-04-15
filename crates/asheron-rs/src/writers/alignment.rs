@@ -7,7 +7,7 @@ use std::error::Error;
 ///
 /// # Example
 /// ```ignore
-/// # use acprotocol::writers::align_write;
+/// # use asheron_rs::writers::align_write;
 /// # use std::io::Cursor;
 /// # let mut buffer = Vec::new();
 /// # let mut cursor = Cursor::new(&mut buffer);

@@ -1,5 +1,5 @@
 [package]
-name = "acprotocol"
+name = "asheron-rs"
 version.workspace = true
 edition.workspace = true
 description = "Asheron's Call Protocol"
@@ -58,10 +58,6 @@ tokio = { version = "1.44.1", features = [
   "macros",
   "rt"
 ], default-features = false, optional = true }
-
-[build-dependencies]
-codegen = { path = "../codegen" }
-env_logger = { workspace = true }
 
 [features]
 default = []

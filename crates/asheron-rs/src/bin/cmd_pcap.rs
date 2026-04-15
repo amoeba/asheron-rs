@@ -1,13 +1,13 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
-use acprotocol::cli::pcap::{
+use asheron_rs::cli::pcap::{
     DirectionFilter, OutputFormat, SortField, format_parsed_messages, format_raw_messages,
     output_messages, print_summary,
 };
-use acprotocol::cli::tui;
-use acprotocol::network::FragmentAssembler;
-use acprotocol::network::pcap;
+use asheron_rs::cli::tui;
+use asheron_rs::network::FragmentAssembler;
+use asheron_rs::network::pcap;
 
 #[derive(Parser)]
 #[command(name = "pcap")]
@@ -83,7 +83,7 @@ fn setup_tracing() {
             fmt::layer()
                 .with_span_events(fmt::format::FmtSpan::ENTER | fmt::format::FmtSpan::CLOSE),
         )
-        .with(EnvFilter::from_default_env().add_directive("acprotocol=trace".parse().unwrap()))
+        .with(EnvFilter::from_default_env().add_directive("asheron_rs=trace".parse().unwrap()))
         .init();
 }
 

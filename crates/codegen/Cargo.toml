@@ -2,7 +2,7 @@
 name = "codegen"
 version.workspace = true
 edition.workspace = true
-description = "codegen crate for acprotocol crate"
+description = "codegen crate for asheron-rs"
 repository.workspace = true
 license.workspace = true
 publish = false

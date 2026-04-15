@@ -1,7 +1,7 @@
-use acprotocol::network::pcap::PcapIterator;
-use acprotocol::network::{Fragment, FragmentHeader};
-use acprotocol::readers::ACDataType;
-use acprotocol::writers::ACWritable;
+use asheron_rs::network::pcap::PcapIterator;
+use asheron_rs::network::{Fragment, FragmentHeader};
+use asheron_rs::readers::ACDataType;
+use asheron_rs::writers::ACWritable;
 use std::fs::File;
 use std::io::{BufReader, Cursor};
 use std::path::Path;
@@ -132,8 +132,8 @@ fn test_fragment_roundtrip_from_pcap() {
 /// Test roundtrip for various primitive types used in fragments
 #[test]
 fn test_primitive_roundtrip_comprehensive() {
-    use acprotocol::readers::*;
-    use acprotocol::writers::*;
+    use asheron_rs::readers::*;
+    use asheron_rs::writers::*;
 
     // Test u32 (used in fragment headers)
     {
