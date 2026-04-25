@@ -1,4 +1,5 @@
 pub mod chargen;
+pub(crate) mod common;
 pub mod dat_file;
 pub mod texture;
 

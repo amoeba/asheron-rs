@@ -1,81 +1,14 @@
 use byteorder::{LittleEndian, ReadBytesExt};
 use std::collections::BTreeMap;
-use std::io::{Read, Result, Seek, SeekFrom};
+use std::io::{Read, Result, Seek};
 
 #[cfg(feature = "dat-export")]
 use serde::Serialize;
 
-// ── low-level reader helpers ──────────────────────────────────────────────────
-
-/// C# `ReadCompressedUInt32`: 1, 2, or 4 bytes depending on high bits.
-fn read_compressed_u32<R: Read>(r: &mut R) -> Result<u32> {
-    let b0 = r.read_u8()?;
-    if (b0 & 0x80) == 0 {
-        return Ok(b0 as u32);
-    }
-    let b1 = r.read_u8()?;
-    if (b0 & 0x40) == 0 {
-        return Ok((((b0 & 0x7F) as u32) << 8) | b1 as u32);
-    }
-    let hi = r.read_u16::<LittleEndian>()? as u32;
-    Ok(((((b0 & 0x3F) as u32) << 8 | b1 as u32) << 16) | hi)
-}
-
-/// C# `BinaryReader.ReadString()`: 7-bit encoded length then UTF-8 bytes.
-fn read_ac_string<R: Read>(r: &mut R) -> Result<String> {
-    let mut len: u32 = 0;
-    let mut shift = 0u32;
-    loop {
-        let b = r.read_u8()?;
-        len |= ((b & 0x7F) as u32) << shift;
-        if (b & 0x80) == 0 {
-            break;
-        }
-        shift += 7;
-    }
-    let mut buf = vec![0u8; len as usize];
-    r.read_exact(&mut buf)?;
-    Ok(String::from_utf8_lossy(&buf).into_owned())
-}
-
-/// C# `ReadAsDataIDOfKnownType`: 2-byte or 4-byte partial ID added to base.
-fn read_data_id_of_known_type<R: Read>(r: &mut R, known_type: u32) -> Result<u32> {
-    let value = r.read_u16::<LittleEndian>()? as u32;
-    if (value & 0x8000) != 0 {
-        let lower = r.read_u16::<LittleEndian>()? as u32;
-        let higher = (value & 0x3FFF) << 16;
-        return Ok(known_type + (higher | lower));
-    }
-    Ok(known_type + value)
-}
-
-/// Align the stream to the next 4-byte boundary (C# `AlignBoundary`).
-fn align_boundary<R: Read + Seek>(r: &mut R) -> Result<()> {
-    let pos = r.stream_position()?;
-    let delta = pos % 4;
-    if delta != 0 {
-        r.seek(SeekFrom::Current((4 - delta) as i64))?;
-    }
-    Ok(())
-}
-
-fn read_smart_array_u32<R: Read>(r: &mut R) -> Result<Vec<u32>> {
-    let count = read_compressed_u32(r)? as usize;
-    let mut out = Vec::with_capacity(count);
-    for _ in 0..count {
-        out.push(r.read_u32::<LittleEndian>()?);
-    }
-    Ok(out)
-}
-
-fn read_smart_array_i32<R: Read>(r: &mut R) -> Result<Vec<i32>> {
-    let count = read_compressed_u32(r)? as usize;
-    let mut out = Vec::with_capacity(count);
-    for _ in 0..count {
-        out.push(r.read_i32::<LittleEndian>()?);
-    }
-    Ok(out)
-}
+use super::common::{
+    align_boundary, read_ac_string, read_compressed_u32, read_data_id_of_known_type,
+    read_smart_array_i32, read_smart_array_u32,
+};
 
 // ── ObjDesc sub-structures (parse-only, no serialization) ────────────────────
 
@@ -320,7 +253,7 @@ pub struct HeritageGroupCG {
     #[cfg_attr(feature = "dat-export", serde(rename = "Skills"))]
     pub skills: BTreeMap<String, SkillCost>,
     #[cfg_attr(feature = "dat-export", serde(rename = "Genders"))]
-    pub genders: BTreeMap<String, serde_json::Value>,
+    pub genders: BTreeMap<String, ()>,
     #[cfg_attr(feature = "dat-export", serde(rename = "Templates"))]
     pub templates: Vec<TemplateCG>,
     #[cfg_attr(feature = "dat-export", serde(rename = "SetupId"))]
