@@ -54,6 +54,7 @@ pub enum DatFileType {
     StringState = 48,
     DbProperties = 49,
     RenderMesh = 67,
+    CharGen = 68,
 }
 
 impl DatFileType {

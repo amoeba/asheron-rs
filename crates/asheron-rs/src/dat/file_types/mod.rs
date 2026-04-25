@@ -1,7 +1,9 @@
+pub mod chargen;
 pub mod dat_file;
 pub mod texture;
 
 // Re-export commonly used types
+pub use chargen::CharGen;
 pub use dat_file::{DatFile, DatFileRead};
 pub use texture::Texture;
 

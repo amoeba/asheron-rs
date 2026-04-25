@@ -1,6 +1,6 @@
 use std::{error::Error, io::Cursor};
 
-use asheron_rs::dat::{DatDatabase, DatFile, DatFileType, Texture, find_file_by_id};
+use asheron_rs::dat::{CharGen, DatDatabase, DatFile, DatFileType, Texture, find_file_by_id};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -179,6 +179,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     let output_path = format!("{}.png", object_id);
                     texture.to_png(&output_path, scale)?;
                     println!("Texture saved to {:?} (scale: {}x)", output_path, scale);
+                }
+                DatFileType::CharGen => {
+                    use asheron_rs::dat::Exportable;
+                    // DatFile wrapper reads 4 bytes (outer ID); the inner data
+                    // begins with the same ID again, so skip it here.
+                    buf_reader.set_position(4);
+                    let chargen = CharGen::read(&mut buf_reader)?;
+                    let output_path = format!("{}.json", object_id);
+                    chargen.export_to_path(&output_path)?;
+                    println!("CharGen saved to {}", output_path);
                 }
                 _ => {
                     println!(
@@ -469,7 +479,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let all_files = dat.list_files(true)?;
             let files: Vec<_> = all_files
                 .iter()
-                .filter(|f| f.file_type() == DatFileType::Texture)
+                .filter(|f| matches!(f.file_type(), DatFileType::Texture | DatFileType::CharGen))
                 .collect();
 
             println!(
@@ -483,10 +493,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             // Create subdirectories for each file type
             let texture_dir = Path::new(&output).join("Texture");
+            let chargen_dir = Path::new(&output).join("CharGen");
             tokio::fs::create_dir_all(&texture_dir).await?;
+            tokio::fs::create_dir_all(&chargen_dir).await?;
 
             // Export each file
             let mut texture_count = 0;
+            let mut chargen_count = 0;
             let mut error_count = 0;
 
             for (index, file_entry) in files.iter().enumerate() {
@@ -545,6 +558,32 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             }
                         }
                     }
+                    DatFileType::CharGen => {
+                        use asheron_rs::dat::Exportable;
+                        let mut buf_reader = Cursor::new(buf);
+                        // Skip outer 4-byte ID; inner data starts with the same ID.
+                        buf_reader.set_position(4);
+                        match CharGen::read(&mut buf_reader) {
+                            Ok(chargen) => {
+                                let output_path = chargen_dir.join(format!(
+                                    "0x{}.{}",
+                                    object_id,
+                                    chargen.file_extension()
+                                ));
+                                match chargen.export_to_path(&output_path.to_string_lossy()) {
+                                    Ok(_) => chargen_count += 1,
+                                    Err(e) => {
+                                        eprintln!("Error exporting chargen {}: {}", object_id, e);
+                                        error_count += 1;
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                eprintln!("Error parsing chargen {}: {}", object_id, e);
+                                error_count += 1;
+                            }
+                        }
+                    }
                     _ => {
                         // This shouldn't happen due to our filter, but handle it anyway
                         eprintln!("Unexpected file type: {:?}", file_type);
@@ -554,8 +593,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             println!("\nExport complete!");
             println!("  Textures exported: {}", texture_count);
+            println!("  CharGen exported: {}", chargen_count);
             println!("  Errors: {}", error_count);
-            println!("  Total: {}", texture_count + error_count);
+            println!("  Total: {}", texture_count + chargen_count + error_count);
         }
     }
 
