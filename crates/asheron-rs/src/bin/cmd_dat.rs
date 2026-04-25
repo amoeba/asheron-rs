@@ -1,7 +1,12 @@
-use std::{error::Error, io::Cursor};
+use std::{
+    error::Error,
+    io::Cursor,
+    path::{Path, PathBuf},
+};
 
 use asheron_rs::dat::{CharGen, DatDatabase, DatFile, DatFileType, Texture, find_file_by_id};
 use clap::{Parser, Subcommand};
+use strum::IntoEnumIterator;
 
 #[derive(Parser)]
 #[command(name = "dat")]
@@ -99,6 +104,132 @@ enum Commands {
     },
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ListFileTypeFilter {
+    DatType(DatFileType),
+    Icon,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ExportHandler {
+    Texture,
+    CharGen,
+    NotImplemented,
+}
+
+fn valid_file_type_filters() -> String {
+    let mut names: Vec<String> = DatFileType::iter()
+        .map(|file_type| file_type.to_string())
+        .collect();
+    names.push("Icon".to_string());
+    names.join(", ")
+}
+
+fn parse_list_file_type_filter(input: &str) -> Result<ListFileTypeFilter, String> {
+    if input.eq_ignore_ascii_case("icon") {
+        return Ok(ListFileTypeFilter::Icon);
+    }
+
+    DatFileType::iter()
+        .find(|file_type| file_type.to_string().eq_ignore_ascii_case(input))
+        .map(ListFileTypeFilter::DatType)
+        .ok_or_else(|| {
+            format!(
+                "Invalid file type: {}. Valid types are: {}",
+                input,
+                valid_file_type_filters()
+            )
+        })
+}
+
+fn export_handler(file_type: DatFileType) -> ExportHandler {
+    match file_type {
+        DatFileType::Texture => ExportHandler::Texture,
+        DatFileType::CharGen | DatFileType::CharacterGenerator => ExportHandler::CharGen,
+        DatFileType::Unknown
+        | DatFileType::LandBlock
+        | DatFileType::LandBlockInfo
+        | DatFileType::EnvCell
+        | DatFileType::LandBlockObjects
+        | DatFileType::Instantiation
+        | DatFileType::GraphicsObject
+        | DatFileType::Setup
+        | DatFileType::Animation
+        | DatFileType::AnimationHook
+        | DatFileType::Palette
+        | DatFileType::SurfaceTexture
+        | DatFileType::Surface
+        | DatFileType::MotionTable
+        | DatFileType::Wave
+        | DatFileType::Environment
+        | DatFileType::ChatPoseTable
+        | DatFileType::ObjectHierarchy
+        | DatFileType::BadData
+        | DatFileType::TabooTable
+        | DatFileType::FileToId
+        | DatFileType::NameFilterTable
+        | DatFileType::MonitoredProperties
+        | DatFileType::PaletteSet
+        | DatFileType::Clothing
+        | DatFileType::DegradeInfo
+        | DatFileType::Scene
+        | DatFileType::Region
+        | DatFileType::KeyMap
+        | DatFileType::RenderTexture
+        | DatFileType::RenderMaterial
+        | DatFileType::MaterialModifier
+        | DatFileType::MaterialInstance
+        | DatFileType::SoundTable
+        | DatFileType::UiLayout
+        | DatFileType::EnumMapper
+        | DatFileType::StringTable
+        | DatFileType::DidMapper
+        | DatFileType::ActionMap
+        | DatFileType::DualDidMapper
+        | DatFileType::String
+        | DatFileType::ParticleEmitter
+        | DatFileType::PhysicsScript
+        | DatFileType::PhysicsScriptTable
+        | DatFileType::MasterProperty
+        | DatFileType::Font
+        | DatFileType::FontLocal
+        | DatFileType::StringState
+        | DatFileType::DbProperties
+        | DatFileType::RenderMesh
+        | DatFileType::WeenieDefaults
+        | DatFileType::SecondaryAttributeTable
+        | DatFileType::SkillTable
+        | DatFileType::SpellTable
+        | DatFileType::SpellComponentTable
+        | DatFileType::TreasureTable
+        | DatFileType::CraftTable
+        | DatFileType::XpTable
+        | DatFileType::Quests
+        | DatFileType::GameEventTable
+        | DatFileType::QualityFilter
+        | DatFileType::CombatTable
+        | DatFileType::ItemMutation
+        | DatFileType::ContractTable => ExportHandler::NotImplemented,
+    }
+}
+
+fn export_not_implemented_error(file_type: DatFileType) -> std::io::Error {
+    std::io::Error::other(format!(
+        "export for DatFileType::{} is not implemented",
+        file_type
+    ))
+}
+
+fn export_output_path(
+    base: &Path,
+    file_type: DatFileType,
+    object_id: &str,
+    extension: &str,
+) -> PathBuf {
+    base.join(file_type.to_string())
+        .join(format!("0x{}.{}", object_id, extension))
+}
+
 #[cfg(feature = "dat-tokio")]
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -153,8 +284,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
             // Step 3: Convert the buffer into our file
             // This is the common part
             let mut buf_reader = Cursor::new(buf.clone());
-            match found_file.file_type() {
-                DatFileType::Texture => {
+            let file_type = found_file.file_type();
+            match export_handler(file_type) {
+                ExportHandler::Texture => {
                     let outer_file: DatFile<Texture> = DatFile::read(&mut buf_reader)?;
                     let bytes_read = buf_reader.position();
                     let texture = outer_file.inner;
@@ -180,21 +312,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     texture.to_png(&output_path, scale)?;
                     println!("Texture saved to {:?} (scale: {}x)", output_path, scale);
                 }
-                DatFileType::CharGen => {
-                    use asheron_rs::dat::Exportable;
+                ExportHandler::CharGen => {
                     // DatFile wrapper reads 4 bytes (outer ID); the inner data
                     // begins with the same ID again, so skip it here.
                     buf_reader.set_position(4);
                     let chargen = CharGen::read(&mut buf_reader)?;
-                    let output_path = format!("{}.json", object_id);
-                    chargen.export_to_path(&output_path)?;
-                    println!("CharGen saved to {}", output_path);
+                    println!("{}", serde_json::to_string_pretty(&chargen)?);
                 }
-                _ => {
-                    println!(
-                        "Unsupported file type for extraction: {:?}",
-                        found_file.file_type()
-                    );
+                ExportHandler::NotImplemented => {
+                    return Err(export_not_implemented_error(file_type).into());
                 }
             }
         }
@@ -227,22 +353,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 .unwrap_or(false);
 
             if let Some(type_str) = &file_type {
-                match type_str.to_lowercase().as_str() {
-                    "texture" => {
+                match parse_list_file_type_filter(type_str) {
+                    Ok(ListFileTypeFilter::DatType(file_type)) => {
+                        files.retain(|file| file.file_type() == file_type);
+                    }
+                    Ok(ListFileTypeFilter::Icon) => {
                         files.retain(|file| file.file_type() == DatFileType::Texture);
                     }
-                    "unknown" => {
-                        files.retain(|file| file.file_type() == DatFileType::Unknown);
-                    }
-                    "icon" => {
-                        // Filter to textures first
-                        files.retain(|file| file.file_type() == DatFileType::Texture);
-                    }
-                    _ => {
-                        eprintln!(
-                            "Invalid file type: {}. Valid types are: Texture, Unknown, Icon",
-                            type_str
-                        );
+                    Err(err) => {
+                        eprintln!("{}", err);
                         return Ok(());
                     }
                 }
@@ -475,31 +594,25 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let mut range_reader = FileRangeReader::new(compat_file);
             let dat = DatDatabase::read_async(&mut range_reader).await?;
 
-            // Get all files and filter by exportable types
+            // Get all files so each known file type gets an explicit export result.
             let all_files = dat.list_files(true)?;
-            let files: Vec<_> = all_files
-                .iter()
-                .filter(|f| matches!(f.file_type(), DatFileType::Texture | DatFileType::CharGen))
-                .collect();
+            let files: Vec<_> = all_files.iter().collect();
 
-            println!(
-                "Found {} exportable files (out of {} total)",
-                files.len(),
-                all_files.len()
-            );
+            println!("Found {} files to export", files.len());
 
             // Create output directory
             tokio::fs::create_dir_all(&output).await?;
 
-            // Create subdirectories for each file type
-            let texture_dir = Path::new(&output).join("Texture");
-            let chargen_dir = Path::new(&output).join("CharGen");
-            tokio::fs::create_dir_all(&texture_dir).await?;
-            tokio::fs::create_dir_all(&chargen_dir).await?;
+            // Create subdirectories for implemented file types.
+            tokio::fs::create_dir_all(Path::new(&output).join(DatFileType::Texture.to_string()))
+                .await?;
+            tokio::fs::create_dir_all(Path::new(&output).join(DatFileType::CharGen.to_string()))
+                .await?;
 
             // Export each file
             let mut texture_count = 0;
             let mut chargen_count = 0;
+            let mut not_implemented_count = 0;
             let mut error_count = 0;
 
             for (index, file_entry) in files.iter().enumerate() {
@@ -509,6 +622,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
                 let file_type = file_entry.file_type();
                 let object_id = format!("{:08X}", file_entry.object_id);
+                let handler = export_handler(file_type);
+
+                if handler == ExportHandler::NotImplemented {
+                    let err = export_not_implemented_error(file_type);
+                    eprintln!("{} (object_id=0x{})", err, object_id);
+                    not_implemented_count += 1;
+                    continue;
+                }
 
                 // Read file data
                 let read_result = async {
@@ -535,15 +656,19 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 };
 
                 // Parse and export based on file type
-                match file_type {
-                    DatFileType::Texture => {
+                match handler {
+                    ExportHandler::Texture => {
                         let mut buf_reader = Cursor::new(buf);
                         match DatFile::<Texture>::read(&mut buf_reader) {
                             Ok(outer_file) => {
                                 let texture = outer_file.inner;
                                 let extension = texture.file_extension();
-                                let output_path =
-                                    texture_dir.join(format!("0x{}.{}", object_id, extension));
+                                let output_path = export_output_path(
+                                    Path::new(&output),
+                                    file_type,
+                                    &object_id,
+                                    extension,
+                                );
                                 match texture.export_to_path(&output_path.to_string_lossy()) {
                                     Ok(_) => texture_count += 1,
                                     Err(e) => {
@@ -558,18 +683,19 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             }
                         }
                     }
-                    DatFileType::CharGen => {
+                    ExportHandler::CharGen => {
                         use asheron_rs::dat::Exportable;
                         let mut buf_reader = Cursor::new(buf);
                         // Skip outer 4-byte ID; inner data starts with the same ID.
                         buf_reader.set_position(4);
                         match CharGen::read(&mut buf_reader) {
                             Ok(chargen) => {
-                                let output_path = chargen_dir.join(format!(
-                                    "0x{}.{}",
-                                    object_id,
-                                    chargen.file_extension()
-                                ));
+                                let output_path = export_output_path(
+                                    Path::new(&output),
+                                    file_type,
+                                    &object_id,
+                                    chargen.file_extension(),
+                                );
                                 match chargen.export_to_path(&output_path.to_string_lossy()) {
                                     Ok(_) => chargen_count += 1,
                                     Err(e) => {
@@ -584,9 +710,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             }
                         }
                     }
-                    _ => {
-                        // This shouldn't happen due to our filter, but handle it anyway
-                        eprintln!("Unexpected file type: {:?}", file_type);
+                    ExportHandler::NotImplemented => {
+                        unreachable!("unsupported handlers should continue before read")
                     }
                 }
             }
@@ -594,8 +719,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
             println!("\nExport complete!");
             println!("  Textures exported: {}", texture_count);
             println!("  CharGen exported: {}", chargen_count);
+            println!("  Not implemented: {}", not_implemented_count);
             println!("  Errors: {}", error_count);
-            println!("  Total: {}", texture_count + chargen_count + error_count);
+            println!(
+                "  Total: {}",
+                texture_count + chargen_count + not_implemented_count + error_count
+            );
         }
     }
 
@@ -642,24 +771,18 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             // Filter by type if specified
             if let Some(type_str) = &file_type {
-                match type_str.to_lowercase().as_str() {
-                    "texture" => {
-                        files.retain(|file| file.file_type() == DatFileType::Texture);
+                match parse_list_file_type_filter(type_str) {
+                    Ok(ListFileTypeFilter::DatType(file_type)) => {
+                        files.retain(|file| file.file_type() == file_type);
                     }
-                    "unknown" => {
-                        files.retain(|file| file.file_type() == DatFileType::Unknown);
-                    }
-                    "icon" => {
+                    Ok(ListFileTypeFilter::Icon) => {
                         eprintln!(
                             "Icon subtype filtering requires the 'dat-tokio' feature. Please rebuild with --features=\"dat-tokio dat-export\""
                         );
                         std::process::exit(1);
                     }
-                    _ => {
-                        eprintln!(
-                            "Invalid file type: {}. Valid types are: Texture, Unknown, Icon",
-                            type_str
-                        );
+                    Err(err) => {
+                        eprintln!("{}", err);
                         return Ok(());
                     }
                 }
@@ -714,4 +837,124 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        ExportHandler, ListFileTypeFilter, export_handler, export_not_implemented_error,
+        parse_list_file_type_filter,
+    };
+    use asheron_rs::dat::DatFileType;
+    use strum::IntoEnumIterator;
+
+    #[test]
+    fn list_filter_parses_every_dat_file_type_variant() {
+        for file_type in DatFileType::iter() {
+            assert_eq!(
+                parse_list_file_type_filter(&file_type.to_string()),
+                Ok(ListFileTypeFilter::DatType(file_type))
+            );
+        }
+
+        assert_eq!(
+            parse_list_file_type_filter("icon"),
+            Ok(ListFileTypeFilter::Icon)
+        );
+    }
+
+    #[test]
+    fn export_handler_support_matrix_is_intentional() {
+        for file_type in DatFileType::iter() {
+            let expected = match file_type {
+                DatFileType::Texture => ExportHandler::Texture,
+                DatFileType::CharGen | DatFileType::CharacterGenerator => ExportHandler::CharGen,
+                DatFileType::Unknown
+                | DatFileType::LandBlock
+                | DatFileType::LandBlockInfo
+                | DatFileType::EnvCell
+                | DatFileType::LandBlockObjects
+                | DatFileType::Instantiation
+                | DatFileType::GraphicsObject
+                | DatFileType::Setup
+                | DatFileType::Animation
+                | DatFileType::AnimationHook
+                | DatFileType::Palette
+                | DatFileType::SurfaceTexture
+                | DatFileType::Surface
+                | DatFileType::MotionTable
+                | DatFileType::Wave
+                | DatFileType::Environment
+                | DatFileType::ChatPoseTable
+                | DatFileType::ObjectHierarchy
+                | DatFileType::BadData
+                | DatFileType::TabooTable
+                | DatFileType::FileToId
+                | DatFileType::NameFilterTable
+                | DatFileType::MonitoredProperties
+                | DatFileType::PaletteSet
+                | DatFileType::Clothing
+                | DatFileType::DegradeInfo
+                | DatFileType::Scene
+                | DatFileType::Region
+                | DatFileType::KeyMap
+                | DatFileType::RenderTexture
+                | DatFileType::RenderMaterial
+                | DatFileType::MaterialModifier
+                | DatFileType::MaterialInstance
+                | DatFileType::SoundTable
+                | DatFileType::UiLayout
+                | DatFileType::EnumMapper
+                | DatFileType::StringTable
+                | DatFileType::DidMapper
+                | DatFileType::ActionMap
+                | DatFileType::DualDidMapper
+                | DatFileType::String
+                | DatFileType::ParticleEmitter
+                | DatFileType::PhysicsScript
+                | DatFileType::PhysicsScriptTable
+                | DatFileType::MasterProperty
+                | DatFileType::Font
+                | DatFileType::FontLocal
+                | DatFileType::StringState
+                | DatFileType::DbProperties
+                | DatFileType::RenderMesh
+                | DatFileType::WeenieDefaults
+                | DatFileType::SecondaryAttributeTable
+                | DatFileType::SkillTable
+                | DatFileType::SpellTable
+                | DatFileType::SpellComponentTable
+                | DatFileType::TreasureTable
+                | DatFileType::CraftTable
+                | DatFileType::XpTable
+                | DatFileType::Quests
+                | DatFileType::GameEventTable
+                | DatFileType::QualityFilter
+                | DatFileType::CombatTable
+                | DatFileType::ItemMutation
+                | DatFileType::ContractTable => ExportHandler::NotImplemented,
+            };
+
+            assert_eq!(
+                export_handler(file_type),
+                expected,
+                "unexpected handler for {}",
+                file_type
+            );
+        }
+    }
+
+    #[test]
+    fn not_implemented_errors_include_the_type_name() {
+        for file_type in DatFileType::iter() {
+            if export_handler(file_type) == ExportHandler::NotImplemented {
+                let message = export_not_implemented_error(file_type).to_string();
+                assert!(
+                    message.contains(&file_type.to_string()),
+                    "missing type name for {}",
+                    file_type
+                );
+            }
+        }
+    }
 }

@@ -30,11 +30,7 @@ impl DatDirectoryEntry {
     }
 
     pub fn file_type(&self) -> DatFileType {
-        match self.object_id {
-            0x06000000..=0x07FFFFFF => DatFileType::Texture,
-            0x0E000000..=0x0EFFFFFF => DatFileType::CharGen,
-            _ => DatFileType::Unknown,
-        }
+        DatFileType::from_object_id(self.object_id)
     }
 
     // WIP: Use this to let datfiles be specialized things like icons
