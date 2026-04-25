@@ -353,10 +353,11 @@ impl Icon {
 /// use asheron_rs::dat::{DatDatabase, IconBuilder};
 /// use asheron_rs::dat::reader::FileRangeReader;
 /// use asheron_rs::enums::{ItemType, UiEffects};
+/// use tokio_util::compat::TokioAsyncReadCompatExt;
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
 /// # let file = tokio::fs::File::open("client_portal.dat").await?;
-/// # let mut reader = FileRangeReader::new(file);
+/// # let mut reader = FileRangeReader::new(file.compat());
 /// let dat = DatDatabase::read_async(&mut reader).await?;
 ///
 /// let icon = IconBuilder::new(0x06001234)
