@@ -220,14 +220,31 @@ fn export_not_implemented_error(file_type: DatFileType) -> std::io::Error {
     ))
 }
 
+fn export_directory_name(file_type: DatFileType) -> &'static str {
+    match file_type {
+        DatFileType::CharGen | DatFileType::CharacterGenerator => "CharGen",
+        _ => unreachable!("directory name is only needed for exportable file types"),
+    }
+}
+
 fn export_output_path(
     base: &Path,
     file_type: DatFileType,
     object_id: &str,
     extension: &str,
 ) -> PathBuf {
-    base.join(file_type.to_string())
+    let dir = match export_handler(file_type) {
+        ExportHandler::Texture => file_type.to_string(),
+        ExportHandler::CharGen => export_directory_name(file_type).to_string(),
+        ExportHandler::NotImplemented => unreachable!("unsupported file types are filtered earlier"),
+    };
+
+    base.join(dir)
         .join(format!("0x{}.{}", object_id, extension))
+}
+
+fn extract_output_path(base: &Path, object_id: &str, extension: &str) -> PathBuf {
+    base.join(format!("{}.{}", object_id, extension))
 }
 
 #[cfg(feature = "dat-tokio")]
@@ -244,6 +261,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             output_dir,
             scale,
         } => {
+            use asheron_rs::dat::Exportable;
             use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
 
             println!(
@@ -283,6 +301,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             // Step 3: Convert the buffer into our file
             // This is the common part
+            tokio::fs::create_dir_all(&output_dir).await?;
+            let output_dir = PathBuf::from(output_dir);
             let mut buf_reader = Cursor::new(buf.clone());
             let file_type = found_file.file_type();
             match export_handler(file_type) {
@@ -308,8 +328,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         buf.len() - bytes_read as usize
                     );
 
-                    let output_path = format!("{}.png", object_id);
-                    texture.to_png(&output_path, scale)?;
+                    let output_path = extract_output_path(&output_dir, &object_id, "png");
+                    texture.to_png(&output_path.to_string_lossy(), scale)?;
                     println!("Texture saved to {:?} (scale: {}x)", output_path, scale);
                 }
                 ExportHandler::CharGen => {
@@ -317,7 +337,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     // begins with the same ID again, so skip it here.
                     buf_reader.set_position(4);
                     let chargen = CharGen::read(&mut buf_reader)?;
-                    println!("{}", serde_json::to_string_pretty(&chargen)?);
+                    let output_path =
+                        extract_output_path(&output_dir, &object_id, chargen.file_extension());
+                    chargen.export_to_path(&output_path.to_string_lossy())?;
+                    println!("CharGen saved to {:?}", output_path);
                 }
                 ExportHandler::NotImplemented => {
                     return Err(export_not_implemented_error(file_type).into());
@@ -606,7 +629,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
             // Create subdirectories for implemented file types.
             tokio::fs::create_dir_all(Path::new(&output).join(DatFileType::Texture.to_string()))
                 .await?;
-            tokio::fs::create_dir_all(Path::new(&output).join(DatFileType::CharGen.to_string()))
+            tokio::fs::create_dir_all(Path::new(&output).join(export_directory_name(
+                DatFileType::CharGen,
+            )))
                 .await?;
 
             // Export each file
@@ -842,10 +867,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use super::{
-        ExportHandler, ListFileTypeFilter, export_handler, export_not_implemented_error,
-        parse_list_file_type_filter,
+        ExportHandler, ListFileTypeFilter, export_handler, export_output_path,
+        extract_output_path, export_not_implemented_error, parse_list_file_type_filter,
     };
     use asheron_rs::dat::DatFileType;
+    use std::path::Path;
     use strum::IntoEnumIterator;
 
     #[test]
@@ -942,6 +968,30 @@ mod tests {
                 file_type
             );
         }
+    }
+
+    #[test]
+    fn export_output_path_normalizes_character_generator_directory() {
+        let base = Path::new("export");
+
+        assert_eq!(
+            export_output_path(base, DatFileType::CharGen, "ABCDEF01", "json"),
+            base.join("CharGen").join("0xABCDEF01.json")
+        );
+        assert_eq!(
+            export_output_path(base, DatFileType::CharacterGenerator, "ABCDEF01", "json"),
+            base.join("CharGen").join("0xABCDEF01.json")
+        );
+    }
+
+    #[test]
+    fn extract_output_path_writes_into_requested_output_directory() {
+        let base = Path::new("tmp/output");
+
+        assert_eq!(
+            extract_output_path(base, "ABCDEF01", "json"),
+            base.join("ABCDEF01.json")
+        );
     }
 
     #[test]
