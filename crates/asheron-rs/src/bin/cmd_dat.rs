@@ -236,7 +236,9 @@ fn export_output_path(
     let dir = match export_handler(file_type) {
         ExportHandler::Texture => file_type.to_string(),
         ExportHandler::CharGen => export_directory_name(file_type).to_string(),
-        ExportHandler::NotImplemented => unreachable!("unsupported file types are filtered earlier"),
+        ExportHandler::NotImplemented => {
+            unreachable!("unsupported file types are filtered earlier")
+        }
     };
 
     base.join(dir)
@@ -629,10 +631,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             // Create subdirectories for implemented file types.
             tokio::fs::create_dir_all(Path::new(&output).join(DatFileType::Texture.to_string()))
                 .await?;
-            tokio::fs::create_dir_all(Path::new(&output).join(export_directory_name(
-                DatFileType::CharGen,
-            )))
-                .await?;
+            tokio::fs::create_dir_all(
+                Path::new(&output).join(export_directory_name(DatFileType::CharGen)),
+            )
+            .await?;
 
             // Export each file
             let mut texture_count = 0;
@@ -867,8 +869,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use super::{
-        ExportHandler, ListFileTypeFilter, export_handler, export_output_path,
-        extract_output_path, export_not_implemented_error, parse_list_file_type_filter,
+        ExportHandler, ListFileTypeFilter, export_handler, export_not_implemented_error,
+        export_output_path, extract_output_path, parse_list_file_type_filter,
     };
     use asheron_rs::dat::DatFileType;
     use std::path::Path;

@@ -302,7 +302,7 @@ pub fn read_packed_word(reader: &mut dyn ACReader) -> Result<i16, Box<dyn Error>
 /// Format: 2 bytes if high bit not set, otherwise 4 bytes
 pub fn read_packed_dword(reader: &mut dyn ACReader) -> Result<u32, Box<dyn Error>> {
     let tmp = read_i16(reader)?;
-    if (tmp as i16) < 0 {
+    if tmp < 0 {
         // Check if high bit is set (negative when interpreted as i16)
         // High bit set: read another 2 bytes
         let high_part = ((tmp as u32) << 16) & 0x7FFF_FFFF;

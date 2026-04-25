@@ -315,12 +315,11 @@ fn run_app(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &mut App)
                             app.tree_scroll_offset = 0;
                             app.tree_focused_line = 0;
                         }
-                        KeyCode::End => {
-                            if !app.packets.is_empty() {
-                                app.selected = app.packets.len() - 1;
-                                app.update_scroll(visible_rows);
-                            }
+                        KeyCode::End if !app.packets.is_empty() => {
+                            app.selected = app.packets.len() - 1;
+                            app.update_scroll(visible_rows);
                         }
+                        KeyCode::End => {}
                         KeyCode::Enter => {
                             // Only expand/collapse in details pane
                             if matches!(app.focused_pane, FocusedPane::Details) {
@@ -361,31 +360,26 @@ fn run_app(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &mut App)
                                 }
                             }
                         }
-                        KeyCode::Char('a') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                        KeyCode::Char('a')
+                            if key.modifiers.contains(KeyModifiers::CONTROL)
+                                && matches!(app.focused_pane, FocusedPane::Details)
+                                && !app.packets.is_empty() =>
+                        {
                             // Ctrl+a: expand all nodes
-                            if matches!(app.focused_pane, FocusedPane::Details)
-                                && !app.packets.is_empty()
-                            {
-                                let packet = &app.packets[app.selected];
-                                if let Ok(json_val) =
-                                    serde_json::from_str::<Value>(&packet.raw_json)
-                                {
-                                    collect_all_paths(
-                                        &json_val,
-                                        String::new(),
-                                        &mut app.tree_expanded,
-                                    );
-                                }
+                            let packet = &app.packets[app.selected];
+                            if let Ok(json_val) = serde_json::from_str::<Value>(&packet.raw_json) {
+                                collect_all_paths(&json_val, String::new(), &mut app.tree_expanded);
                             }
                         }
                         _ => {}
                     }
                 }
-                Event::Mouse(mouse) => {
-                    if mouse.kind == MouseEventKind::Up(crossterm::event::MouseButton::Left) {
-                        handle_mouse_click(mouse, app);
-                    }
+                Event::Mouse(mouse)
+                    if mouse.kind == MouseEventKind::Up(crossterm::event::MouseButton::Left) =>
+                {
+                    handle_mouse_click(mouse, app);
                 }
+                Event::Mouse(_) => {}
                 _ => {}
             }
         }

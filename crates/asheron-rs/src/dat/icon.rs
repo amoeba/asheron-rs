@@ -351,9 +351,12 @@ impl Icon {
 /// # Example
 /// ```no_run
 /// use asheron_rs::dat::{DatDatabase, IconBuilder};
-/// use asheron_rs::generated::enums::{ItemType, UiEffects};
+/// use asheron_rs::dat::reader::FileRangeReader;
+/// use asheron_rs::enums::{ItemType, UiEffects};
 ///
 /// # async fn example() -> Result<(), Box<dyn std::error::Error>> {
+/// # let file = tokio::fs::File::open("client_portal.dat").await?;
+/// # let mut reader = FileRangeReader::new(file);
 /// let dat = DatDatabase::read_async(&mut reader).await?;
 ///
 /// let icon = IconBuilder::new(0x06001234)

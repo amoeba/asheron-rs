@@ -6937,7 +6937,7 @@ impl crate::readers::ACDataType for BlobFragments {
         let size = read_u16(reader)?;
         #[cfg(feature = "tracing")]
         drop(_field_span_size);
-        let body_size = (size - 16) as u16;
+        let body_size = size - 16;
         #[cfg(feature = "tracing")]
         let _field_span_index = {
             let pos = reader.stream_position().unwrap_or(0);
@@ -10805,9 +10805,9 @@ impl crate::readers::ACDataType for PackedMotionCommand {
         #[cfg(feature = "tracing")]
         drop(_field_span_packed_sequence);
         #[allow(unused_variables)]
-        let server_action_sequence = (packed_sequence & 0x7FFF) as u16;
+        let server_action_sequence = packed_sequence & 0x7FFF;
         #[allow(unused_variables)]
-        let autonomous = ((packed_sequence >> 15) & 0x1) as u16;
+        let autonomous = (packed_sequence >> 15) & 0x1;
         #[cfg(feature = "tracing")]
         let _field_span_speed = {
             let pos = reader.stream_position().unwrap_or(0);
@@ -11645,7 +11645,7 @@ impl crate::readers::ACDataType for InterpretedMotionState {
         let flags = read_u32(reader)?;
         #[cfg(feature = "tracing")]
         drop(_field_span_flags);
-        let command_list_length = ((flags >> 7) & 0x7F) as u32;
+        let command_list_length = (flags >> 7) & 0x7F;
         let mut current_style = None;
         if (flags & 0x00000001) != 0 {
             #[cfg(feature = "tracing")]
@@ -15106,4 +15106,3 @@ impl crate::writers::ACWritable for ContractTrackerTable {
         Ok(())
     }
 }
-

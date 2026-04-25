@@ -506,7 +506,7 @@ fn generate_nested_switch_enum_writer(
     }
 
     let mut sorted_groups: Vec<_> = field_groups.into_iter().collect();
-    sorted_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
+    sorted_groups.sort_by_key(|a| a.1.0);
 
     for (_field_sig, (_primary_value, all_values)) in sorted_groups {
         let mut sorted_values = all_values.clone();

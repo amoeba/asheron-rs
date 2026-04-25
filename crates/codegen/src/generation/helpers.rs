@@ -178,6 +178,6 @@ pub fn group_case_values_by_field_signature(
     }
 
     let mut sorted_groups: Vec<_> = field_groups.into_iter().collect();
-    sorted_groups.sort_by(|a, b| a.1.0.cmp(&b.1.0));
+    sorted_groups.sort_by_key(|a| a.1.0);
     sorted_groups
 }
