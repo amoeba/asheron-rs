@@ -10,7 +10,7 @@ pub mod icon;
 
 // Re-export commonly used types
 pub use enums::*;
-pub use file_types::{CharGen, DatFile, DatFileRead, Texture};
+pub use file_types::{CharGen, DatFile, DatFileRead, SpellTable, Texture};
 pub use reader::{
     DatBlock, DatDatabase, DatDatabaseHeader, DatDirectory, DatDirectoryEntry, DatDirectoryHeader,
 };

@@ -4,7 +4,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use asheron_rs::dat::{CharGen, DatDatabase, DatFile, DatFileType, Texture, find_file_by_id};
+use asheron_rs::dat::{
+    CharGen, DatDatabase, DatFile, DatFileType, SpellTable, Texture, find_file_by_id,
+};
 use clap::{Parser, Subcommand};
 use strum::IntoEnumIterator;
 
@@ -114,6 +116,7 @@ enum ListFileTypeFilter {
 enum ExportHandler {
     Texture,
     CharGen,
+    SpellTable,
     NotImplemented,
 }
 
@@ -146,6 +149,7 @@ fn export_handler(file_type: DatFileType) -> ExportHandler {
     match file_type {
         DatFileType::Texture => ExportHandler::Texture,
         DatFileType::CharGen | DatFileType::CharacterGenerator => ExportHandler::CharGen,
+        DatFileType::SpellTable => ExportHandler::SpellTable,
         DatFileType::Unknown
         | DatFileType::LandBlock
         | DatFileType::LandBlockInfo
@@ -199,7 +203,6 @@ fn export_handler(file_type: DatFileType) -> ExportHandler {
         | DatFileType::WeenieDefaults
         | DatFileType::SecondaryAttributeTable
         | DatFileType::SkillTable
-        | DatFileType::SpellTable
         | DatFileType::SpellComponentTable
         | DatFileType::TreasureTable
         | DatFileType::CraftTable
@@ -223,6 +226,7 @@ fn export_not_implemented_error(file_type: DatFileType) -> std::io::Error {
 fn export_directory_name(file_type: DatFileType) -> &'static str {
     match file_type {
         DatFileType::CharGen | DatFileType::CharacterGenerator => "CharGen",
+        DatFileType::SpellTable => "SpellTable",
         _ => unreachable!("directory name is only needed for exportable file types"),
     }
 }
@@ -235,7 +239,9 @@ fn export_output_path(
 ) -> PathBuf {
     let dir = match export_handler(file_type) {
         ExportHandler::Texture => file_type.to_string(),
-        ExportHandler::CharGen => export_directory_name(file_type).to_string(),
+        ExportHandler::CharGen | ExportHandler::SpellTable => {
+            export_directory_name(file_type).to_string()
+        }
         ExportHandler::NotImplemented => {
             unreachable!("unsupported file types are filtered earlier")
         }
@@ -343,6 +349,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         extract_output_path(&output_dir, &object_id, chargen.file_extension());
                     chargen.export_to_path(&output_path.to_string_lossy())?;
                     println!("CharGen saved to {:?}", output_path);
+                }
+                ExportHandler::SpellTable => {
+                    let spell_table = SpellTable::read(&mut buf_reader)?;
+                    let output_path =
+                        extract_output_path(&output_dir, &object_id, spell_table.file_extension());
+                    spell_table.export_to_path(&output_path.to_string_lossy())?;
+                    println!("SpellTable saved to {:?}", output_path);
                 }
                 ExportHandler::NotImplemented => {
                     return Err(export_not_implemented_error(file_type).into());
@@ -635,10 +648,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 Path::new(&output).join(export_directory_name(DatFileType::CharGen)),
             )
             .await?;
+            tokio::fs::create_dir_all(
+                Path::new(&output).join(export_directory_name(DatFileType::SpellTable)),
+            )
+            .await?;
 
             // Export each file
             let mut texture_count = 0;
             let mut chargen_count = 0;
+            let mut spell_table_count = 0;
             let mut not_implemented_count = 0;
             let mut error_count = 0;
 
@@ -713,7 +731,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     ExportHandler::CharGen => {
                         use asheron_rs::dat::Exportable;
                         let mut buf_reader = Cursor::new(buf);
-                        // Skip outer 4-byte ID; inner data starts with the same ID.
                         buf_reader.set_position(4);
                         match CharGen::read(&mut buf_reader) {
                             Ok(chargen) => {
@@ -737,6 +754,34 @@ async fn main() -> Result<(), Box<dyn Error>> {
                             }
                         }
                     }
+                    ExportHandler::SpellTable => {
+                        use asheron_rs::dat::Exportable;
+                        let mut buf_reader = Cursor::new(buf);
+                        match SpellTable::read(&mut buf_reader) {
+                            Ok(spell_table) => {
+                                let output_path = export_output_path(
+                                    Path::new(&output),
+                                    file_type,
+                                    &object_id,
+                                    spell_table.file_extension(),
+                                );
+                                match spell_table.export_to_path(&output_path.to_string_lossy()) {
+                                    Ok(_) => spell_table_count += 1,
+                                    Err(e) => {
+                                        eprintln!(
+                                            "Error exporting spell table {}: {}",
+                                            object_id, e
+                                        );
+                                        error_count += 1;
+                                    }
+                                }
+                            }
+                            Err(e) => {
+                                eprintln!("Error parsing spell table {}: {}", object_id, e);
+                                error_count += 1;
+                            }
+                        }
+                    }
                     ExportHandler::NotImplemented => {
                         unreachable!("unsupported handlers should continue before read")
                     }
@@ -746,11 +791,16 @@ async fn main() -> Result<(), Box<dyn Error>> {
             println!("\nExport complete!");
             println!("  Textures exported: {}", texture_count);
             println!("  CharGen exported: {}", chargen_count);
+            println!("  SpellTable exported: {}", spell_table_count);
             println!("  Not implemented: {}", not_implemented_count);
             println!("  Errors: {}", error_count);
             println!(
                 "  Total: {}",
-                texture_count + chargen_count + not_implemented_count + error_count
+                texture_count
+                    + chargen_count
+                    + spell_table_count
+                    + not_implemented_count
+                    + error_count
             );
         }
     }
@@ -897,6 +947,7 @@ mod tests {
             let expected = match file_type {
                 DatFileType::Texture => ExportHandler::Texture,
                 DatFileType::CharGen | DatFileType::CharacterGenerator => ExportHandler::CharGen,
+                DatFileType::SpellTable => ExportHandler::SpellTable,
                 DatFileType::Unknown
                 | DatFileType::LandBlock
                 | DatFileType::LandBlockInfo
@@ -950,7 +1001,6 @@ mod tests {
                 | DatFileType::WeenieDefaults
                 | DatFileType::SecondaryAttributeTable
                 | DatFileType::SkillTable
-                | DatFileType::SpellTable
                 | DatFileType::SpellComponentTable
                 | DatFileType::TreasureTable
                 | DatFileType::CraftTable

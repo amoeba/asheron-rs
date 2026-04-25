@@ -1,4 +1,5 @@
 use byteorder::{LittleEndian, ReadBytesExt};
+use std::collections::BTreeMap;
 use std::io::{Read, Result, Seek, SeekFrom};
 
 /// C# `ReadCompressedUInt32`: 1, 2, or 4 bytes depending on high bits.
@@ -67,6 +68,47 @@ pub(crate) fn read_smart_array_i32<R: Read>(r: &mut R) -> Result<Vec<i32>> {
     let mut out = Vec::with_capacity(count);
     for _ in 0..count {
         out.push(r.read_i32::<LittleEndian>()?);
+    }
+    Ok(out)
+}
+
+/// Obfuscated string: u16 length, then bytes with nibbles swapped (C# `ReadObfuscatedString`).
+pub(crate) fn read_obfuscated_string<R: Read>(r: &mut R) -> Result<String> {
+    let len = r.read_u16::<LittleEndian>()? as usize;
+    let mut buf = vec![0u8; len];
+    r.read_exact(&mut buf)?;
+    for b in &mut buf {
+        *b = b.rotate_right(4);
+    }
+    Ok(String::from_utf8_lossy(&buf).into_owned())
+}
+
+/// Packed hash table: u16 count, u16 bucket count (discarded), then count × (u32 key, value).
+pub(crate) fn read_packed_hash_table<R, T, F>(
+    r: &mut R,
+    mut read_val: F,
+) -> Result<BTreeMap<u32, T>>
+where
+    R: Read,
+    F: FnMut(&mut R) -> Result<T>,
+{
+    let count = r.read_u16::<LittleEndian>()? as usize;
+    let _bucket_count = r.read_u16::<LittleEndian>()?;
+    let mut map = BTreeMap::new();
+    for _ in 0..count {
+        let key = r.read_u32::<LittleEndian>()?;
+        let val = read_val(r)?;
+        map.insert(key, val);
+    }
+    Ok(map)
+}
+
+/// Plain array: u32 count then count × u32 elements (C# `List<uint>.Unpack`).
+pub(crate) fn read_plain_array_u32<R: Read>(r: &mut R) -> Result<Vec<u32>> {
+    let count = r.read_u32::<LittleEndian>()? as usize;
+    let mut out = Vec::with_capacity(count);
+    for _ in 0..count {
+        out.push(r.read_u32::<LittleEndian>()?);
     }
     Ok(out)
 }

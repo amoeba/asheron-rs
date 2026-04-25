@@ -1,11 +1,13 @@
 pub mod chargen;
 pub(crate) mod common;
 pub mod dat_file;
+pub mod spell_table;
 pub mod texture;
 
 // Re-export commonly used types
 pub use chargen::CharGen;
 pub use dat_file::{DatFile, DatFileRead};
+pub use spell_table::SpellTable;
 pub use texture::Texture;
 
 #[cfg(feature = "dat-export")]
