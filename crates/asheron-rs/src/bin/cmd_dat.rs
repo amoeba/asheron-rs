@@ -687,7 +687,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 let raw_data = match texture.export() {
                     Ok(data) => data,
                     Err(e) => {
-                        eprintln!("Error converting texture {:08X}: {}", file_entry.object_id, e);
+                        eprintln!(
+                            "Error converting texture {:08X}: {}",
+                            file_entry.object_id, e
+                        );
                         continue;
                     }
                 };
@@ -697,7 +700,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
                 let mut processed_img: RgbaImage = ImageBuffer::new(32, 32);
                 for (x, y, pixel) in icon_img.enumerate_pixels() {
-                    let is_white = pixel[0] == 255 && pixel[1] == 255 && pixel[2] == 255 && pixel[3] == 255;
+                    let is_white =
+                        pixel[0] == 255 && pixel[1] == 255 && pixel[2] == 255 && pixel[3] == 255;
                     if is_white {
                         processed_img.put_pixel(x, y, Rgba([0, 0, 0, 255]));
                     } else {
