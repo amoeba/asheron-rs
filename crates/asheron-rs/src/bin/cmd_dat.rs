@@ -98,6 +98,12 @@ enum Commands {
         #[arg(short, long, default_value = "1", help = "Scale factor (1-10)")]
         scale: u32,
     },
+    Icons {
+        #[arg(help = "Path to DAT file", short('f'), long("file"))]
+        dat_file: String,
+        #[arg(short, long, default_value = "icons", help = "Output directory")]
+        output: String,
+    },
     Export {
         #[arg(help = "Path to DAT file", short('f'), long("file"))]
         dat_file: String,
@@ -609,6 +615,108 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 "Saved composited icon to {} ({}x{} @ {}x scale)",
                 output, width, height, scale
             );
+        }
+        Commands::Icons { dat_file, output } => {
+            use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
+            use asheron_rs::dat::reader::file_reader::FileRangeReader;
+            use image::{ImageBuffer, Rgba, RgbaImage};
+
+            println!("Exporting 32x32 icons from {} to {}", dat_file, output);
+
+            if tokio::fs::metadata(&output).await.is_ok() {
+                eprintln!(
+                    "Error: Output directory '{}' already exists. Please delete it before running icons.",
+                    output
+                );
+                std::process::exit(1);
+            }
+
+            let file = tokio::fs::File::open(&dat_file).await?;
+            let compat_file = tokio_util::compat::TokioAsyncReadCompatExt::compat(file);
+            let mut range_reader = FileRangeReader::new(compat_file);
+            let dat = DatDatabase::read_async(&mut range_reader).await?;
+
+            let all_files = dat.list_files(true)?;
+            let files: Vec<_> = all_files.iter().collect();
+
+            tokio::fs::create_dir_all(&output).await?;
+
+            let mut icon_count = 0;
+
+            for file_entry in &files {
+                if file_entry.file_type() != DatFileType::Texture {
+                    continue;
+                }
+
+                let read_result = async {
+                    let file = tokio::fs::File::open(&dat_file).await?;
+                    let compat_file = tokio_util::compat::TokioAsyncReadCompatExt::compat(file);
+                    let mut file_reader = FileRangeReader::new(compat_file);
+                    let mut reader = DatFileReader::new(
+                        file_entry.file_size as usize,
+                        dat.header.block_size as usize,
+                    )?;
+                    reader
+                        .read_file(&mut file_reader, file_entry.file_offset)
+                        .await
+                }
+                .await;
+
+                let buf = match read_result {
+                    Ok(buf) => buf,
+                    Err(e) => {
+                        eprintln!("Error reading file {:08X}: {}", file_entry.object_id, e);
+                        continue;
+                    }
+                };
+
+                let mut buf_reader = Cursor::new(buf);
+                let outer_file = match DatFile::<Texture>::read(&mut buf_reader) {
+                    Ok(f) => f,
+                    Err(e) => {
+                        eprintln!("Error parsing texture {:08X}: {}", file_entry.object_id, e);
+                        continue;
+                    }
+                };
+
+                let texture = outer_file.inner;
+                if texture.width != 32 || texture.height != 32 {
+                    continue;
+                }
+
+                let raw_data = match texture.export() {
+                    Ok(data) => data,
+                    Err(e) => {
+                        eprintln!("Error converting texture {:08X}: {}", file_entry.object_id, e);
+                        continue;
+                    }
+                };
+
+                let icon_img: RgbaImage =
+                    ImageBuffer::from_raw(32, 32, raw_data).expect("Failed to create ImageBuffer");
+
+                let mut processed_img: RgbaImage = ImageBuffer::new(32, 32);
+                for (x, y, pixel) in icon_img.enumerate_pixels() {
+                    let is_white = pixel[0] == 255 && pixel[1] == 255 && pixel[2] == 255 && pixel[3] == 255;
+                    if is_white {
+                        processed_img.put_pixel(x, y, Rgba([0, 0, 0, 255]));
+                    } else {
+                        processed_img.put_pixel(x, y, *pixel);
+                    }
+                }
+
+                let object_id_str = format!("{:08X}", file_entry.object_id);
+                let output_path = Path::new(&output).join(format!("{}.png", object_id_str));
+
+                if let Err(e) = processed_img.save(&output_path) {
+                    eprintln!("Error saving icon {}: {}", object_id_str, e);
+                    continue;
+                }
+
+                icon_count += 1;
+            }
+
+            println!("Exported {} icons to {}", icon_count, output);
         }
         Commands::Export { dat_file, output } => {
             use asheron_rs::dat::Exportable;
