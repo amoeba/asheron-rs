@@ -91,6 +91,29 @@ pub fn group_consecutive_fields_by_condition(fields: &[Field]) -> Vec<FieldGroup
     groups
 }
 
+/// Returns the Rust type produced by a subfield's value expression when that
+/// expression references exactly one field and therefore has that field's type.
+/// Returns `None` when the expression references zero or multiple fields, in
+/// which case the caller must keep the explicit cast.
+fn subfield_expression_source_type<'a>(
+    value_expression: &str,
+    all_fields: &'a [Field],
+) -> Option<&'a str> {
+    let mut matched: Option<&str> = None;
+    for token in value_expression
+        .split(|c: char| !(c.is_ascii_alphanumeric() || c == '_'))
+        .filter(|token| !token.is_empty())
+    {
+        if let Some(field) = all_fields.iter().find(|field| field.name == token) {
+            if matched.is_some() {
+                return None;
+            }
+            matched = Some(get_rust_type(&field.field_type));
+        }
+    }
+    matched
+}
+
 /// Generate reads for a group of fields with the same condition
 pub fn generate_field_group_reads(
     ctx: &ReaderContext,
@@ -138,10 +161,21 @@ pub fn generate_field_group_reads(
                     );
                     let subfield_rust_type = get_rust_type(&subfield.field_type);
                     out.push_str(allow_directive);
-                    out.push_str(&format!(
-                        "        let {} = ({}) as {};\n",
-                        subfield_name, subfield_expr, subfield_rust_type
-                    ));
+                    if subfield_expression_source_type(&subfield.value_expression, all_fields)
+                        == Some(subfield_rust_type)
+                    {
+                        // The expression already evaluates to the target type; a cast
+                        // here would be a clippy::unnecessary_cast.
+                        out.push_str(&format!(
+                            "        let {} = {};\n",
+                            subfield_name, subfield_expr
+                        ));
+                    } else {
+                        out.push_str(&format!(
+                            "        let {} = ({}) as {};\n",
+                            subfield_name, subfield_expr, subfield_rust_type
+                        ));
+                    }
                 }
             }
         }

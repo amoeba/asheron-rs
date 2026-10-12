@@ -78,7 +78,9 @@ impl Texture {
                 // TODO: This is untested (PFID_A8R8G8B8 is tested)
                 let result = self
                     .data
-                    .chunks_exact(3)
+                    .as_chunks::<3>()
+                    .0
+                    .iter()
                     .flat_map(|chunk| {
                         // [B,G,R] -> [R,G,B,255]
                         [chunk[2], chunk[1], chunk[0], 255]
@@ -90,7 +92,9 @@ impl Texture {
             SurfacePixelFormat::PFID_A8R8G8B8 => {
                 let result = self
                     .data
-                    .chunks_exact(4)
+                    .as_chunks::<4>()
+                    .0
+                    .iter()
                     .flat_map(|chunk| {
                         // [B,G,R,A] -> [R,G,B,A]
                         [chunk[2], chunk[1], chunk[0], chunk[3]]
