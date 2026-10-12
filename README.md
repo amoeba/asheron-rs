@@ -70,6 +70,25 @@ cargo run --bin dat --features dat-export,dat-tokio -- icon \
   --output icon.png
 ```
 
+Export every file in a DAT:
+
+```sh
+cargo run --bin dat --features dat-export,dat-tokio -- export \
+  --file client_portal.dat \
+  --output export/
+```
+
+By default `export` converts each entry to its native format (textures to PNG, CharGen/SpellTable to JSON). File types without a converter are skipped and reported in the summary.
+
+Pass `--raw` (`-r`) to write every entry verbatim as `<output>/0x<object_id>.bin` instead. Raw export covers the whole database: `Texture`, `CharGen`, and `SpellTable` entries go to their own subdirectories and everything else goes to the output root. Because it bypasses parsing, it also works for formats the converter cannot decode (for example DXT or INDEX16 textures):
+
+```sh
+cargo run --bin dat --features dat-export,dat-tokio -- export \
+  --file client_portal.dat \
+  --output export-raw/ \
+  --raw
+```
+
 ## Development
 
 The workspace has three crates:
