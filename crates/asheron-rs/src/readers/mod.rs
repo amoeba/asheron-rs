@@ -230,7 +230,9 @@ pub fn read_wstring(reader: &mut dyn ACReader) -> Result<String, Box<dyn Error>>
 
     // Decode as UTF-16LE
     let u16_vec: Vec<u16> = buf
-        .chunks_exact(2)
+        .as_chunks::<2>()
+        .0
+        .iter()
         .map(|chunk| u16::from_le_bytes([chunk[0], chunk[1]]))
         .collect();
 

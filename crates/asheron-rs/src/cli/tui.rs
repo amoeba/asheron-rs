@@ -701,7 +701,7 @@ fn ui(f: &mut ratatui::Frame, app: &mut App) {
             Ok(json_val) => tree_display_lines(&json_val, &app.tree_expanded),
             Err(e) => {
                 vec![(
-                    format!("Failed to parse JSON: {}\n\nRaw:\n{}", e, &packet.raw_json),
+                    format!("Failed to parse JSON: {}\n\nRaw:\n{}", e, packet.raw_json),
                     String::new(),
                 )]
             }
