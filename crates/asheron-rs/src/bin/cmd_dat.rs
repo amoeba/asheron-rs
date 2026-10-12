@@ -259,6 +259,22 @@ fn export_output_path(
         .join(format!("0x{}.{}", object_id, extension))
 }
 
+fn raw_output_path(base: &Path, file_type: DatFileType, object_id: &str) -> PathBuf {
+    let dir = match export_handler(file_type) {
+        ExportHandler::Texture => file_type.to_string(),
+        ExportHandler::CharGen | ExportHandler::SpellTable => {
+            export_directory_name(file_type).to_string()
+        }
+        ExportHandler::NotImplemented => String::new(),
+    };
+
+    if dir.is_empty() {
+        base.join(format!("0x{}.bin", object_id))
+    } else {
+        base.join(dir).join(format!("0x{}.bin", object_id))
+    }
+}
+
 fn extract_output_path(base: &Path, object_id: &str, extension: &str) -> PathBuf {
     base.join(format!("{}.{}", object_id, extension))
 }
@@ -724,7 +740,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             println!("Exported {} icons to {}", icon_count, output);
         }
-        Commands::Export { dat_file, output, raw } => {
+        Commands::Export {
+            dat_file,
+            output,
+            raw,
+        } => {
             use asheron_rs::dat::Exportable;
             use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
             use std::path::Path;
@@ -817,25 +837,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
                 // Handle raw binary export
                 if raw {
-                    let output_path = if handler == ExportHandler::Texture {
-                        Path::new(&output).join("Texture").join(format!("0x{}.bin", object_id))
-                    } else if handler == ExportHandler::CharGen {
-                        Path::new(&output).join("CharGen").join(format!("0x{}.bin", object_id))
-                    } else if handler == ExportHandler::SpellTable {
-                        Path::new(&output).join("SpellTable").join(format!("0x{}.bin", object_id))
-                    } else {
-                        // For other file types, put in a generic directory or root
-                        Path::new(&output).join(format!("0x{}.bin", object_id))
-                    };
-                    
+                    let output_path = raw_output_path(Path::new(&output), file_type, &object_id);
+
                     // Create parent directory if needed
                     if let Some(parent) = output_path.parent() {
                         tokio::fs::create_dir_all(parent).await?;
                     }
-                    
+
                     tokio::fs::write(&output_path, &buf).await?;
                     raw_count += 1;
-                    println!("Raw exported {} to {:?} ({} bytes)", object_id, output_path, buf.len());
+                    println!(
+                        "Raw exported {} to {:?} ({} bytes)",
+                        object_id,
+                        output_path,
+                        buf.len()
+                    );
                     continue;
                 }
 
@@ -1046,6 +1062,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Commands::Export {
             dat_file: _,
             output: _,
+            raw: _,
         } => {
             eprintln!(
                 "Export requires the 'dat-tokio' feature. Please rebuild with --features=\"dat-tokio dat-export\""
@@ -1061,7 +1078,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 mod tests {
     use super::{
         ExportHandler, ListFileTypeFilter, export_handler, export_not_implemented_error,
-        export_output_path, extract_output_path, parse_list_file_type_filter,
+        export_output_path, extract_output_path, parse_list_file_type_filter, raw_output_path,
     };
     use asheron_rs::dat::DatFileType;
     use std::path::Path;
@@ -1174,6 +1191,32 @@ mod tests {
         assert_eq!(
             export_output_path(base, DatFileType::CharacterGenerator, "ABCDEF01", "json"),
             base.join("CharGen").join("0xABCDEF01.json")
+        );
+    }
+
+    #[test]
+    fn raw_output_path_routes_supported_types_to_their_directories() {
+        let base = Path::new("export");
+
+        assert_eq!(
+            raw_output_path(base, DatFileType::Texture, "ABCDEF01"),
+            base.join("Texture").join("0xABCDEF01.bin")
+        );
+        assert_eq!(
+            raw_output_path(base, DatFileType::CharGen, "ABCDEF01"),
+            base.join("CharGen").join("0xABCDEF01.bin")
+        );
+        assert_eq!(
+            raw_output_path(base, DatFileType::CharacterGenerator, "ABCDEF01"),
+            base.join("CharGen").join("0xABCDEF01.bin")
+        );
+        assert_eq!(
+            raw_output_path(base, DatFileType::SpellTable, "ABCDEF01"),
+            base.join("SpellTable").join("0xABCDEF01.bin")
+        );
+        assert_eq!(
+            raw_output_path(base, DatFileType::LandBlock, "ABCDEF01"),
+            base.join("0xABCDEF01.bin")
         );
     }
 
