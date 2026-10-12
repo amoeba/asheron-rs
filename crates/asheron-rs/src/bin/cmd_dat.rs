@@ -109,6 +109,8 @@ enum Commands {
         dat_file: String,
         #[arg(short, long, default_value = "export", help = "Output directory")]
         output: String,
+        #[arg(short, long, help = "Output raw binary bytes without conversion")]
+        raw: bool,
     },
 }
 
@@ -722,7 +724,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             println!("Exported {} icons to {}", icon_count, output);
         }
-        Commands::Export { dat_file, output } => {
+        Commands::Export { dat_file, output, raw } => {
             use asheron_rs::dat::Exportable;
             use asheron_rs::dat::reader::dat_file_reader::DatFileReader;
             use std::path::Path;
@@ -771,6 +773,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let mut spell_table_count = 0;
             let mut not_implemented_count = 0;
             let mut error_count = 0;
+            let mut raw_count = 0;
 
             for (index, file_entry) in files.iter().enumerate() {
                 if index % 100 == 0 {
@@ -781,7 +784,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 let object_id = format!("{:08X}", file_entry.object_id);
                 let handler = export_handler(file_type);
 
-                if handler == ExportHandler::NotImplemented {
+                if handler == ExportHandler::NotImplemented && !raw {
                     let err = export_not_implemented_error(file_type);
                     eprintln!("{} (object_id=0x{})", err, object_id);
                     not_implemented_count += 1;
@@ -811,6 +814,30 @@ async fn main() -> Result<(), Box<dyn Error>> {
                         continue;
                     }
                 };
+
+                // Handle raw binary export
+                if raw {
+                    let output_path = if handler == ExportHandler::Texture {
+                        Path::new(&output).join("Texture").join(format!("0x{}.bin", object_id))
+                    } else if handler == ExportHandler::CharGen {
+                        Path::new(&output).join("CharGen").join(format!("0x{}.bin", object_id))
+                    } else if handler == ExportHandler::SpellTable {
+                        Path::new(&output).join("SpellTable").join(format!("0x{}.bin", object_id))
+                    } else {
+                        // For other file types, put in a generic directory or root
+                        Path::new(&output).join(format!("0x{}.bin", object_id))
+                    };
+                    
+                    // Create parent directory if needed
+                    if let Some(parent) = output_path.parent() {
+                        tokio::fs::create_dir_all(parent).await?;
+                    }
+                    
+                    tokio::fs::write(&output_path, &buf).await?;
+                    raw_count += 1;
+                    println!("Raw exported {} to {:?} ({} bytes)", object_id, output_path, buf.len());
+                    continue;
+                }
 
                 // Parse and export based on file type
                 match handler {
@@ -906,6 +933,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             println!("  SpellTable exported: {}", spell_table_count);
             println!("  Not implemented: {}", not_implemented_count);
             println!("  Errors: {}", error_count);
+            println!("  Raw: {}", raw_count);
             println!(
                 "  Total: {}",
                 texture_count
@@ -913,6 +941,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                     + spell_table_count
                     + not_implemented_count
                     + error_count
+                    + raw_count
             );
         }
     }
